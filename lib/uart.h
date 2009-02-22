@@ -17,7 +17,7 @@
 void uart_Init(void);
 uint8_t uart_PutChar(const uint8_t character);
 void uart_PutChar_Wait(const uint8_t character);
-int16_t uart_GetChar(void);
+uint8_t uart_GetChar(void);
 uint8_t uart_Write(const uint8_t * data);
 
 #endif

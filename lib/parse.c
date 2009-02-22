@@ -1,200 +1,123 @@
-#include <inttypes.h>
-#include <ctype.h>
-#include <stdlib.h>
-#include "definitions.h"
-#include "flags.h"
 #include "parse.h"
-#include "queue.h"
+#include "order.h"
 
-const drive_order_t parse_clean = { {0, 0, 0}, {0, 0, 0, 0}, 0, 0 };
+order_t parser_order_buffer[5];
+int8_t current_buffer_position = 0;
+int8_t first_buffer_position = -1;
+uint8_t current_order_position = 0;
 
-#define PARSE_NEGATIVE      0
-
-int8_t
-parse_character(const uint8_t character, drive_order_t * parser, parse_set_t * pset)
-{
-  int8_t exit_code = 0;
-
-  if (character == 27)
-    {
-      // ESC beendet alle Eingaben
-      pset->status = 0;
-      exit_code = -1;
-    }
-  else
-    {
-      switch (pset->status)
-        {
-        case 0:
-          // Parser im Initialzustand
-
-          *parser = parse_clean;
-          flag_Clear(PARSE_COMMAND_COMPLETE);
-
-          if (character == '>')
-            pset->status = 1;
-          else
-            {
-              exit_code = -1;
-            }
-          break;
-
-        case 1:
-          // Letzte Eingabe war '>', beginne mit Parsen
-          if (character == '>')
-            {
-              // Neues Startzeichen ignorieren...
-            }
-          else if (isprint(character))
-            {
-              // Nur druckbare Zeichen verarbeiten
-              parser->command[parser->command_length++] = character;
-              pset->status = 2;
-            }
-          break;
-
-        case 2:
-          // Kommando gelesen, jetzt muss ',' oder Return folgen
-          switch (character)
-            {
-            case ',':
-              // Komma ist toll
-              pset->status = 3;
-              break;
-
-            case '\r':
-              // Return beendet Eingabe
-              pset->status = 0;
-              flag_Set(PARSE_COMMAND_COMPLETE);
-              exit_code = 1;
-              break;
-
-            default:
-              // Ein weiteres Kommando?
-              if ((isprint(character)) && (parser->command_length < 3))
-                {
-                  parser->command[parser->command_length++] = character;
-                }
-              else
-                {
-                  pset->status = 0;
-                  exit_code = -1;
-                }
-              break;
-            }
-          break;
-
-        case 3:
-          // Jetzt kommt ein Parameter, also entweder Ziffer oder '-'
-          if (isdigit(character))
-            {
-              pset->number[pset->number_length++] = character;
-              pset->status = 4;
-            }
-          else
-            {
-              switch (character)
-                {
-                case '-':
-                  // Vorzeichen erkannt
-                  flagLocal_Set(&pset->flags, PARSE_NEGATIVE);
-                  pset->status = 4;
-                  break;
-                case '\r':
-                  // Return erkannt aber nicht zulässig
-                  pset->status = 0;
-                  break;
-                }
-            }
-          break;
-
-        case 4:
-          // Weitere Ziffern folgen
-          if (isdigit(character))
-            {
-              if (pset->number_length < 5)
-                pset->number[pset->number_length++] = character;
-            }
-          else
-            {
-              switch (character)
-                {
-                case ',':
-                case '\r':
-                  // Parameter abgeschlossen
-                  pset->number[pset->number_length] = '\0';
-                  if (pset->number_length > 0)
-                    {
-                      parser->parameter[parser->parameter_count++] = atoi(pset->number);
-                      if (flagLocal_Read(&pset->flags, PARSE_NEGATIVE))
-                        parser->parameter[parser->parameter_count - 1] *= -1;
-                      flagLocal_Clear(&pset->flags, PARSE_NEGATIVE);
-                      pset->number_length = 0;
-                      switch (character)
-                        {
-                        case ',':
-                          // Wenn noch Platz ist, folgt weiterer Parameter
-                          if (parser->parameter_count < 4)
-                            pset->status = 3;
-                          else
-                            pset->status = 0;
-                          break;
-
-                        case '\r':
-                          // Eingabe abgeschlossen
-                          pset->status = 0;
-                          flag_Set(PARSE_COMMAND_COMPLETE);
-                          exit_code = 1;
-                          break;
-                        }
-                    }
-                  else
-                    pset->status = 0;
-                  break;
-                }
-            }
-          break;
-        }
-    }
-  return exit_code;
+void parser_init(void) {
+	uint8_t i = 0;
+	for(; i < 5; i++) {
+		order_init(&parser_order_buffer[0]);
+	}
 }
 
-int8_t
-parse_string(const char *progmem_input, drive_order_t * output)
-// fertigen String durch den Parser schicken
-{
-  parse_set_t pset;
-  pset.status = 0;
-  pset.number_length = 0;
-  pset.number[0] = '\0';
-  pset.flags = 0;
-
-  parse_character('>', output, &pset);
-  char character;
-  while ((character = pgm_read_byte(progmem_input++)))
-    {
-      parse_character(character, output, &pset);
-    }
-
-  return parse_character(13, output, &pset);
+int parser_extended_order_complete(const order_t* order, uint8_t num_bytes) { //Doesn't really do anything, because there aren't any extended orders at the moment
+	return 1;
 }
 
-int8_t
-parse_string_twi(const char *input, drive_order_t * output)
-// fertigen String von TWI durch Parser schicken
-// ('>' als erstes Zeichen ist schon dabei)
-{
-  parse_set_t pset;
-  pset.status = 0;
-  pset.number_length = 0;
-  pset.number[0] = '\0';
-  pset.flags = 0;
+uint8_t bytes_needed(uint8_t order) {
+	uint8_t ret_value = 0;
+	switch(order & 0x0f) {
+		case 1: //Reset Instruction
+		case 2: //Register Query Instruction
+		case 3: //Queue Query Instruction
+		case 4: //Current Order Instruction
+			return 1; //These are all one byte Instructions
+		case 5: //Drive Instruction is a variable byte order
+			ret_value = 3; //min. three bytes are neccessary: one as order, two for speed (left and right)
+			if(order & 0x10) { //left Wheel Time Trigger, needs one extra byte
+				ret_value += 1;
+			} else if(order & 0x20) { //left Wheel Position Trigger, needs two extra bytes
+				ret_value += 2;
+			}
+			if(order & 0x40) { //right Wheel Time Trigger, needs one extra byte
+				ret_value += 1;
+			} else if(order & 0x80) { //right Wheel Position Trigger, needs two extra bytes
+				ret_value += 2;
+			}
+			return ret_value;
+		case 6: //PID Drive Instruction is a variable byte order
+			ret_value = 3; //at least three bytes are neccessary
+			if(order & 0x10) { //Time Trigger, needs an extra byte
+				ret_value += 1;
+			} else if(order & 0x20) { //Position Trigger, needs two extra bytes
+				ret_value += 2;
+			} else if(order & 0x40) { //set differential value, needs two bytes FIXME
+				ret_value += 2;
+			}
+			return ret_value;
+		case 7: //Set PID Parameters Instruction
+			if(order & 0x10 || order & 0x20) { //Set PID Parameters for the right or/and left wheel
+				return 5; //FIXME
+			}
+			return 3; //FIXME
+	}
+	return 1;
+}
 
-  char character;
-  while ((character = *input++))
-    {
-      parse_character(character, output, &pset);
-    }
+int parser_order_complete(const order_t* order, uint8_t num_bytes) { //TODO Recovery for Instructions which are too long
+	if( order->data[0] & 0x0f == 0 )
+		return parser_extended_order_complete(order, num_bytes);
+	else if( order->data[0] & 0x0f <= 8 ) {
+		if(num_bytes >= bytes_needed(order->data[0]))
+			return 1;
+	}
+	return 0;
+}
 
-  return parse_character(13, output, &pset);
+void parser_add_byte(uint8_t byte) { //TODO FIXME Maybe a mutex or a other kind of lock would be good
+// TODO Syntax-check has to be in here or right after this
+	if( current_buffer_position == first_buffer_position ) {
+		return;
+	}
+	parser_order_buffer[current_buffer_position].data[current_order_position] = byte;
+	current_order_position++;
+	if(current_order_position >= 32 || parser_order_complete(&parser_order_buffer[current_buffer_position], current_order_position + 1)) {
+		if( first_buffer_position == -1 ) {
+			first_buffer_position = current_buffer_position;
+		}
+		current_buffer_position = (current_buffer_position + 1) % 5;
+		current_order_position = 0;
+	}
+}
+
+uint8_t parser_has_new_order() {
+	if(first_buffer_position != -1) {
+		return 1;
+	}
+	return 0;
+}
+
+// This is the Syntax-check function to determine whether or not the order is valid
+// Could get really ugly :/
+void parser_check_order(order_t* order) {
+	// TODO Implement
+	order->status |= ORDER_STATUS_VALID;
+	/*
+	 *	switch(order->data[0] & 0x0f) {
+	 *		case 0: //Extended Instruction Format, no more tests ATM
+	 *			break;
+	 *		case 1: //Reset Instruction, everything else is ignored
+	 *			break;
+	 *		case 2: //Register Query Instruction, look for a valid register
+	 *			break;
+	 *		case 3: //Queue Query Instruction
+	 *			break;
+	 *
+	 *		default:
+	 *			order->status -= ORDER_STATUS_VALID;
+	 *			break;
+	 *	}
+	 */
+}
+
+void parser_get_new_order(order_t* order) {
+	parser_check_order(&parser_order_buffer[first_buffer_position]);
+	order_copy(&parser_order_buffer[first_buffer_position], order);
+	first_buffer_position = (first_buffer_position + 1) % 5;
+	if( first_buffer_position == current_buffer_position ) {
+		first_buffer_position = -1;
+	}
 }

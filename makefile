@@ -83,7 +83,10 @@ OBJDIR = .
 SRC = $(TARGET).c   ./lib/motor.c ./lib/flags.c ./lib/uart.c ./lib/led.c \
                     ./lib/timer.c ./lib/irq.c ./lib/lcd.c ./lib/parse.c \
                     ./lib/fifo.c ./lib/pid.c ./lib/drive.c ./lib/debug.c \
-                    ./lib/queue.c ./lib/twi.c ./lib/dip.c ./lib/status.c
+                    ./lib/queue.c ./lib/twi.c ./lib/dip.c ./lib/status.c \
+                    ./lib/order.c ./lib/order_functions.c ./lib/parse.c \
+                    ./lib/timer.c
+
 
 
 # List C++ source files here. (C dependencies are automatically generated.)

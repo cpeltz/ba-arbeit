@@ -1,76 +1,52 @@
 #include <inttypes.h>
 #include "flags.h"
 
-static uint32_t flags_Storage = 0;
+static uint32_t flags_global_storage = 0;
 
-void
-flag_Set(uint8_t flag)
 // globale Flagge setzen
-{
-  flags_Storage |= ((uint32_t) 1 << flag);
+void flag_set(uint8_t flag) {
+	flags_global_storage |= ((uint32_t) 1 << flag);
 }
 
-void
-flag_Clear(uint8_t flag)
 // globale Flagge löschen
-{
-  flags_Storage &= ~((uint32_t) 1 << flag);
+void flag_clear(uint8_t flag) {
+	flags_global_storage &= ~((uint32_t) 1 << flag);
 }
 
-uint8_t
-flag_Read(uint8_t flag)
 // globale Flagge lesen
-{
-  return ((flags_Storage & ((uint32_t) 1 << flag)) >> flag);
+uint8_t flag_read(uint8_t flag) {
+	return ((flags_global_storage & ((uint32_t) 1 << flag)) >> flag);
 }
 
-uint8_t
-flag_ReadAndClear(uint8_t flag)
 // globale Flagge lesen und löschen
-{
-  if ((flags_Storage & ((uint32_t) 1 << flag)))
-    {
-      flag_Clear(flag);
-      return 1;
-    }
-  else
-    {
-      return 0;
-    }
+uint8_t flag_read_and_clear(uint8_t flag) {
+	if ((flags_global_storage & ((uint32_t) 1 << flag))) {
+		flag_clear(flag);
+		return 1;
+	}
+	return 0;
 }
 
-void
-flagLocal_Set(uint8_t * storage, const uint8_t flag)
 // lokale Flagge setzen
-{
-  *storage |= (1 << flag);
+void flag_local_set(uint8_t * storage, const uint8_t flag) {
+	*storage |= (1 << flag);
 }
 
-void
-flagLocal_Clear(uint8_t * storage, const uint8_t flag)
 // lokale Flagge löschen
-{
-  *storage &= ~(1 << flag);
+void flag_local_clear(uint8_t * storage, const uint8_t flag) {
+	*storage &= ~(1 << flag);
 }
 
-uint8_t
-flagLocal_Read(const uint8_t * storage, const uint8_t flag)
 // lokale Flagge lesen
-{
-  return ((*storage & (1 << flag)) >> flag);
+uint8_t flag_local_read(const uint8_t * storage, const uint8_t flag) {
+	return ((*storage & (1 << flag)) >> flag);
 }
 
-uint8_t
-flagLocal_ReadAndClear(uint8_t * storage, const uint8_t flag)
 // lokale Flagge lesen und löschen
-{
-  if ((*storage & (1 << flag)))
-    {
-      flagLocal_Clear(storage, flag);
-      return 1;
-    }
-  else
-    {
-      return 0;
-    }
+uint8_t flag_local_read_and_clear(uint8_t * storage, const uint8_t flag) {
+	if ((*storage & (1 << flag))) {
+		flag_local_clear(storage, flag);
+		return 1;
+	}
+	return 0;
 }

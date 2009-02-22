@@ -2,15 +2,15 @@
 #define FLAGS_H
 
 // Funktionen für globale Flags
-void flag_Set(uint8_t flag);
-void flag_Clear(uint8_t flag);
-uint8_t flag_Read(uint8_t flag);
-uint8_t flag_ReadAndClear(uint8_t flag);
+void flag_set(uint8_t flag);
+void flag_clear(uint8_t flag);
+uint8_t flag_read(uint8_t flag);
+uint8_t flag_read_and_clear(uint8_t flag);
 
 // und für lokale Flags
-void flagLocal_Set(uint8_t * storage, const uint8_t flag);
-void flagLocal_Clear(uint8_t * storage, const uint8_t flag);
-uint8_t flagLocal_Read(const uint8_t * storage, const uint8_t flag);
-uint8_t flagLocal_ReadAndClear(uint8_t * storage, const uint8_t flag);
+void flag_local_set(uint8_t * storage, const uint8_t flag);
+void flag_local_clear(uint8_t * storage, const uint8_t flag);
+uint8_t flag_local_read(const uint8_t * storage, const uint8_t flag);
+uint8_t flag_local_read_and_clear(uint8_t * storage, const uint8_t flag);
 
 #endif

@@ -2,18 +2,13 @@
 #define QUEUE_H
 
 #include <inttypes.h>
-#include "parse.h"
+#include "types.h"
 
-void queue_Init(void);
-void queue_Flush(void);
-int8_t queue_Write(const drive_order_t * order);
-int8_t queue_Read(drive_order_t * output);
-int8_t queue_Delete(void);
-uint8_t queue_Entries(void);
-uint8_t queue_ReadPosition(void);
-uint8_t queue_WritePosition(void);
-void queue_ReadEntry(uint8_t entry, drive_order_t * output);
-int8_t queue_Do(const char *progmem_input);
-int8_t queue_Do_twi(const char *input);
+void queue_init(void);
+const order_t * const queue_get_current_order(void);
+void queue_pop(void);
+uint8_t queue_order_available(void);
+void queue_update(void);	// TODO Implement
+uint8_t queue_push(const order_t * const order);
 
 #endif

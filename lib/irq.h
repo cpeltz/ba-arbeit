@@ -1,14 +1,9 @@
 #ifndef IRQ_H
 #define IRQ_H
 
-typedef struct TACHO
-{
-  int16_t left;
-  int16_t right;
-  int16_t difference;
-} tacho_t;
+#include "types.h"
 
-void irq_Init(void);
+void irq_init(void);
 int16_t wheel_ReadPosition(uint8_t wheel);
 void wheel_ClearPosition(uint8_t wheel);
 int16_t wheel_ReadDifference(void);

@@ -15,6 +15,5 @@ void debug_ClearEOL(void);
 void debug_CursorUp(const uint8_t y);
 void debug_NewLine(void);
 void debug_WriteInteger(const char *message, const int16_t integer);
-void debug_WriteDriveOrder(const drive_order_t * order);
 
 #endif

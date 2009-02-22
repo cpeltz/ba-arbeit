@@ -28,7 +28,7 @@
 #define IRQ_A1                  PE6
 #define IRQ_B1                  PE7
 
-// Flaggen (0 - 31)
+// Flags (0 - 31)
 #define TIMER_1MS               0
 #define TIMER_10MS              1
 #define TIMER_100MS             2
@@ -41,12 +41,12 @@
 #define P_TRIGGER_L             9
 #define P_TRIGGER_R             10
 
-#define INTERFACE_UART          11
-#define INTERFACE_TWI           12
-#define DEBUG_ENABLE            13
-#define HALT_DRIVE              14
-#define LCD_PRESENT             15
-#define RESET_TWI               16
+#define INTERFACE_TWI           11
+#define DEBUG_ENABLE            12
+#define HALT_DRIVE              13
+#define LCD_PRESENT             14
+#define RESET_TWI               15
+
 
 // LEDs
 #define LED_DDR                 DDRG
