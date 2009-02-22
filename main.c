@@ -13,7 +13,9 @@
 #include <avr/pgmspace.h>
 #include <avr/wdt.h>
 
+// Where does the reset came from?
 int8_t reset_source = 0;
+// Local storage for timer flags.
 uint8_t local_time_flags = 0;
 
 void initialize(void) {
@@ -90,6 +92,8 @@ void print_startup(void) {
 }
 
 void copy_timer_flags(void) {
+	// Copy global timer flags to a local copy, which will be used throughout the program.
+	// This is done to not miss a timer tick.
 	if (flag_read_and_clear(TIMER_1MS))
 		flag_local_set( &local_time_flags, TIMER_1MS );
 	if (flag_read_and_clear(TIMER_10MS))
@@ -101,14 +105,13 @@ void copy_timer_flags(void) {
 }
 
 void process_orders(void) {
+	// This function gets an order and lets it execute
 	static order_t *current_order = NULL;
 
-	if (current_order == NULL) {
-		if (queue_order_available())
-			current_order = queue_get_current_order();
-		else
-			drive_brake_active();
-	}
+	if (queue_order_available())
+		current_order = queue_get_current_order();
+	else
+		drive_brake_active(); // TODO Needed? At the moment in here to make sure we mimic the old drivers behaviour
 	if (current_order != NULL) {
 		order_process(current_order);
 		order_check_triggers(current_order);

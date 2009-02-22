@@ -108,7 +108,7 @@ ISR(TWI_vect) {
 			break;
 	}
 	TWCR |= (1 << TWINT);
-	// TODO push the data into the parser
+	parser_add_byte(twi_data);
 }
 
 void twi_init(void) {

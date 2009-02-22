@@ -2,6 +2,10 @@
 #define _TYPES_H_
 #include <inttypes.h>
 
+/* Global storage for the different Types,
+ * like fifo's, order's, and stati.
+ */
+
 typedef struct FIFO_BUFFER {
 	uint8_t volatile count;
 	uint8_t size;

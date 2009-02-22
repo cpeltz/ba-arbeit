@@ -6,6 +6,7 @@
 #include "definitions.h"
 
 // Routinen teilweise übernommen von http://www.roboternetz.de/wissen/index.php/FIFO_mit_avr-gcc
+// Routines unchanged - till now
 
 void fifo_Init(fifo_t * fifo, uint8_t * fifo_Buffer, const uint8_t fifo_Size) {
 	fifo->count = 0;

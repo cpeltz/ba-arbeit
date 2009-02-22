@@ -29,7 +29,7 @@ void queue_instruction(order_t *order) {}
 void current_order_instruction(order_t *order) {}
 
 void setTrigger(uint8_t trigger_type, uint8_t wheel, int16_t trigger_value) {
-	//FIXME Just simply wrong
+	//FIXME Just simply wrong, don't set triggers through global variables
 	switch(trigger_type) {
 		case 1:
 			// Time trigger

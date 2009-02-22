@@ -8,17 +8,12 @@
 #include "irq.h"
 #include "stdlib.h"
 
-// lokale Flag-Variable
-static uint8_t drive_flags = 0;
-
-// und die dazu gehörigen Flags
-#define DRIVE_TOGGLE            0
-
+// Status field to remember the Wheels
 static pid_data_t drive_PID[2];
 
 void drive_SetPIDParameter(	const uint8_t wheel, const int16_t Pfactor, const int16_t Ifactor,
 							const int16_t Dfactor, const int16_t SErrorMAX) {
-	// Läd übergebene Parameter in PID Controller
+	// Sets the parameter for a PID enabled movement
 	switch (wheel) {
 		case 0:
 		case 1:
@@ -31,8 +26,9 @@ void drive_SetPIDParameter(	const uint8_t wheel, const int16_t Pfactor, const in
     }
 }
 
-// Einstellen des derzeitigen Summenfehlers
+
 void drive_SetPIDSumError(const uint8_t wheel, const int16_t sumError) {
+	// Used to set the SumError for a PID enabled movement
 	switch (wheel) {
 		case 0:
 		case 1:
@@ -73,10 +69,8 @@ void drive_UsePID(const uint8_t wheel, const int8_t speed) {
 
 			// bei ungerader Differenz immer abwechselnd
 			if (wheel_Difference % 2) {
-				if (flagLocal_ReadAndClear(&drive_flags, DRIVE_TOGGLE)) {
 					wheel_ModSpeed[0] += wheel_Difference;
 				} else {
-					flagLocal_Set(&drive_flags, DRIVE_TOGGLE);
 					wheel_ModSpeed[1] -= wheel_Difference;
 				}
 			}
@@ -118,12 +112,17 @@ void drive_UsePID(const uint8_t wheel, const int8_t speed) {
 }
 
 void drive_status(global_state_t *state) {
-
+	// Should fill the state parameter to reflect the current
+	// status of the driver. Useful for state requests from 
+	// outside.
+	//TODO Implement
 }
 
 void drive_break_active() {
+	// Do active braking. Wheels shouldn't move from their position.
 	//TODO Implement
 }
 void drive_break_active_set() {
+	// Set the Position of the wheels for use with active braking.
 	//TODO Implement
 }

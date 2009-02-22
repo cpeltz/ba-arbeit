@@ -218,6 +218,7 @@ void wheel_ClearDifference(void) {
 }
 
 void trigger_Set_P(const uint8_t wheel, const int16_t trigger_position) {
+	//Used to set the Position trigger for the wheel(s).
 	sreg = SREG;
 	cli();
 	switch (wheel) {
@@ -236,6 +237,7 @@ void trigger_Set_P(const uint8_t wheel, const int16_t trigger_position) {
 }
 
 void trigger_Clear_P(const uint8_t wheel) {
+	// Clears to previously set Positions for the trigger.
 	sreg = SREG;
 	cli();
 	switch (wheel) {

@@ -3,6 +3,10 @@
 
 #include "parse.h"
 
+/* Mostly unchanged. I took this part from the old Driver.
+ * It's used to print out debugging Information.
+ */
+
 void debug_PutChar(const uint8_t data);
 void debug_PutChar_P(const uint8_t * data);
 void debug_PutString(const char *data);

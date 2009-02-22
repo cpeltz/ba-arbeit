@@ -1,7 +1,9 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
-// Definitionen für Motortreiber
+/* In this file are many global definitions
+ * used throughout the program.
+ */
 #define INPUT_DDR               DDRB
 #define INPUT_PORT              PORTB
 #define INPUT1                  PB0
