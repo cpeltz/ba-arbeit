@@ -17,7 +17,7 @@ extern uint16_t irq_p_trigger_position[2];
 * Extended Instruction Format Handler Function
 */
 void extended_instruction(order_t *order) {
-	return;
+	order->status |= ORDER_STATUS_DONE;
 }
 
 void control_instruction(order_t *order) {}

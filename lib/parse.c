@@ -27,6 +27,7 @@ int parser_extended_order_complete(const order_t* order, uint8_t num_bytes) {
 uint8_t bytes_needed(uint8_t order) {
 	uint8_t ret_value = 0;
 	switch(order & 0x0f) {
+		case 0:
 		case 1: //Control Instruction
 		case 2: //Register Query Instruction
 			return 1; //These are all one byte Instructions
@@ -81,6 +82,7 @@ int parser_order_complete(const order_t* order, uint8_t num_bytes) {
 void parser_add_byte(uint8_t byte) { 
 	// TODO FIXME Maybe a mutex or a other kind of lock would be good
 	// TODO Syntax-check has to be in here or right after this
+	// TODO Look for optimizations, this function has to be as fasat as possible
 	// This function simple adds another byte to the current order
 	// or discards the byte if the buffer is full.
 	if( current_buffer_position == first_buffer_position ) {
@@ -112,6 +114,7 @@ uint8_t parser_has_new_order() {
 
 // This is the Syntax-check function to determine whether or not the order is valid
 // Could get really ugly :/
+// TODO is a check really a good idea? Orders with wrong cmd code will be ignored in order_process()
 void parser_check_order(order_t* order) {
 	// TODO Implement
 	order->status |= ORDER_STATUS_VALID;

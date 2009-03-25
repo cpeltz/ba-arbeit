@@ -9,7 +9,7 @@
 #define ORDER_STATUS_TRIGGER_REACHED        8
 #define ORDER_STATUS_TRIGGER_LEFT_REACHED   8
 #define ORDER_STATUS_TRIGGER_RIGHT_REACHED 16
-#define ORDER_STATUS_STARTED		   32
+#define ORDER_STATUS_STARTED               32
 
 void order_init(order_t *order);
 void order_copy(order_t *from, order_t *to);
