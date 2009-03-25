@@ -23,15 +23,14 @@ int parser_extended_order_complete(const order_t* order, uint8_t num_bytes) {
 	return 1;
 }
 
+//TODO Maybe if the value was once calculated it should be cached somewhere
 uint8_t bytes_needed(uint8_t order) {
 	uint8_t ret_value = 0;
 	switch(order & 0x0f) {
-		case 1: //Reset Instruction
+		case 1: //Control Instruction
 		case 2: //Register Query Instruction
-		case 3: //Queue Query Instruction
-		case 4: //Current Order Instruction
 			return 1; //These are all one byte Instructions
-		case 5: //Drive Instruction is a variable byte order
+		case 3: //Drive Instruction is a variable byte order
 			ret_value = 3; //min. three bytes are neccessary: one as order, two for speed (left and right)
 			if(order & 0x10) { //left Wheel Time Trigger, needs one extra byte
 				ret_value += 1;
@@ -44,7 +43,12 @@ uint8_t bytes_needed(uint8_t order) {
 				ret_value += 2;
 			}
 			return ret_value;
-		case 6: //PID Drive Instruction is a variable byte order
+		case 4: //Set PID Parameters Instruction
+			if(order & 0x10 || order & 0x20) { //Set PID Parameters for the right or/and left wheel
+				return 5; //FIXME, needs two bytes
+			}
+			return 3; //FIXME, needs two bytes
+		case 5: //PID Drive Instruction is a variable byte order
 			ret_value = 3; //at least three bytes are neccessary
 			if(order & 0x10) { //Time Trigger, needs an extra byte
 				ret_value += 1;
@@ -54,11 +58,6 @@ uint8_t bytes_needed(uint8_t order) {
 				ret_value += 2;
 			}
 			return ret_value;
-		case 7: //Set PID Parameters Instruction
-			if(order & 0x10 || order & 0x20) { //Set PID Parameters for the right or/and left wheel
-				return 5; //FIXME, needs two bytes
-			}
-			return 3; //FIXME, needs two bytes
 	}
 	return 1;
 }

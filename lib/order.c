@@ -10,14 +10,15 @@ order_function order_array[16];
 
 void order_array_init() {
 	// Initialize the Call Table with the appropriate functions
+	// these are implemented in order_functions.c
 	order_array[0]  = &extended_instruction;
-	order_array[1]  = &reset_instruction;
+	order_array[1]  = &control_instruction;
 	order_array[2]  = &register_instruction;
-	order_array[3]  = &queue_instruction;
-	order_array[4]  = &current_order_instruction;
-	order_array[5]  = &drive_instruction;
-	order_array[6]  = &pid_drive_instruction;
-	order_array[7]  = &set_pid_instruction;
+	order_array[3]  = &drive_instruction;
+	order_array[4]  = &set_pid_instruction;
+	order_array[5]  = &pid_drive_instruction;
+	order_array[6]  = 0;
+	order_array[7]  = 0;
 	order_array[8]  = 0;
 	order_array[9]  = 0;
 	order_array[10] = 0;
@@ -51,8 +52,10 @@ void order_copy(order_t *from, order_t *to) {
 void order_process(order_t * const order) {
 	// Dispatch first stage of processing
 	// That means, call the right function
-	// TODO check previously if there is a function there
-	order_array[order->data[0] & 0x0f](order);
+	if(order_array[order->data[0] & 0x0f] != 0)
+		order_array[order->data[0] & 0x0f](order);
+	else // Set the Order status to done if there is no function for this order
+		order->status |= ORDER_STATUS_DONE; 
 }
 
 void order_check_triggers(order_t * const order) {

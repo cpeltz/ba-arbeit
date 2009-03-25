@@ -20,13 +20,9 @@ void extended_instruction(order_t *order) {
 	return;
 }
 
-void reset_instruction(order_t *order) {}
+void control_instruction(order_t *order) {}
 
 void register_instruction(order_t *order) {}
-
-void queue_instruction(order_t *order) {}
-
-void current_order_instruction(order_t *order) {}
 
 void setTrigger(uint8_t trigger_type, uint8_t wheel, int16_t trigger_value) {
 	//FIXME Just simply wrong, don't set triggers through global variables
