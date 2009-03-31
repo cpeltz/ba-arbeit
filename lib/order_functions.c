@@ -41,7 +41,7 @@ void control_instruction(order_t *order) {
 			queue_pause();
 			break;
 	}
-	queue_clear_control();
+	queue_clear_priority();
 }
 
 void register_instruction(order_t *order) {
@@ -56,7 +56,7 @@ void register_instruction(order_t *order) {
 		case 0x40: // current Order
 			break;
 	}
-	queue_clear_register();
+	queue_clear_priority();
 }
 
 void setTrigger(uint8_t trigger_type, uint8_t wheel, int16_t trigger_value) {

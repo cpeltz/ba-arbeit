@@ -2,10 +2,11 @@
 #include "lib/debug.h"
 #include "lib/dip.h"
 #include "lib/flags.h"
+#include "lib/io.h"
+#include "lib/motor.h"
+#include "lib/order.h"
 #include "lib/queue.h"
 #include "lib/status.h"
-#include "lib/order.h"
-#include "lib/motor.h"
 #include <inttypes.h>
 #include <stdlib.h>
 #include <avr/io.h>
@@ -22,13 +23,11 @@ void initialize(void) {
 	// init all subsystems
 	dip_init();
 	motor_init();
-	uart_init();
-	led_init();
 	timer_init();
 	irq_init();
 	queue_init();
-	twi_init();
 	status_init();
+	io_init();
 
 	// activate interrupts
 	sei();
@@ -57,7 +56,7 @@ void print_startup(void) {
 	// Startup Debug Infos
 	flag_set(DEBUG_ENABLE);
 	debug_ResetTerminal();
-	debug_WriteString_P(PSTR("Motorsteuerung V2.9.20081127\r\n"));
+	debug_WriteString_P(PSTR("Motorsteuerung V2.9.20090331\r\n"));
 	debug_WriteString_P(PSTR("---------------------------\r\n\n"));
 	debug_WriteString_P(PSTR("DIP-Schalter Einstellungen:\r\n"));
 	if (dip_read(0))
@@ -160,11 +159,17 @@ int main(void) {
 		if (flag_read(LCD_PRESENT))
 			lcd_print_status();
 
+		// Update the order parser
+		parser_update();
+
 		// Housekeeping for the order queue
 		queue_update();
 		
 		// Update the global status of the program
 		status_update();
+
+		// Write Output Buffer to medium
+		io_flush();
 	}
 
 	// Should be never reached

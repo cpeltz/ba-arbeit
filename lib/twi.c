@@ -1,35 +1,19 @@
 
 #define __AVR_ATmega2561__
 #include <avr/interrupt.h>
-#include <avr/wdt.h>
 #include <inttypes.h>
-#include <ctype.h>
-#include <stdlib.h>
 #include "twi.h"
-#include "debug.h"
-#include "queue.h"
 #include "flags.h"
 #include "irq.h"
-#include "parse.h"
 #include "fifo.h"
 #include "definitions.h"
-#include "status.h"
-#include "motor.h"
 #include "led.h"
 
 uint8_t twi_rx_state = 0;
 uint8_t twi_tx_state = 0;
-char twi_receive[32];
-uint8_t twi_receive_length = 0;
-drive_order_t twi_transfer;
 
-uint8_t output = 0;
-uint8_t output_offset = 0;
-static uint8_t twi_comfifoBuffer[10];
 static uint8_t twi_stateBuffer[10];
-static fifo_t twi_comfifo;
 static fifo_t twi_state;
-static global_state_t temp_state;
 
 ISR(TWI_vect) {
 	led_switch(LED_BLUE, SINGLE);
@@ -104,7 +88,7 @@ ISR(TWI_vect) {
 			break;
 	}
 	TWCR |= (1 << TWINT);
-	parser_add_byte(twi_data);
+	_io_push(twi_data);
 }
 
 void twi_init(void) {
@@ -113,8 +97,7 @@ void twi_init(void) {
 		TWAR = 84;
 		// TWI aktivieren
 		TWCR = (1 << TWEA) | (1 << TWEN) | (1 << TWIE);
-//		fifo_Init(&twi_comfifo, twi_comfifoBuffer, 10);
-//		fifo_Init(&twi_state, twi_stateBuffer, 10); 
+		fifo_Init(&twi_state, twi_stateBuffer, 10); 
 	}
 }
 

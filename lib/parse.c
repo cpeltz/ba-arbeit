@@ -18,6 +18,14 @@ void parser_init(void) {
 	}
 }
 
+void parser_update(void) {
+	uint8_t value = 0, times = io_get_available();
+	for (; 0 < times; times--) {
+		io_get(&value);
+		parser_add_byte(value);
+	}
+}
+
 int parser_extended_order_complete(const order_t* order, uint8_t num_bytes) { 
 	//Doesn't really do anything, because there aren't any extended orders at the moment
 	return 1;
