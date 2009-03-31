@@ -89,8 +89,10 @@
 	Dieser Befehls ist eher eine Befehlsgattung, der sehr unterschiedliche Optionen zu Verfügung stellt. So wird der
 	Befehl benutzt um das Board und die Software zu reseten, die Ausführung des Aktuellen Befehls zu stoppen, den
 	nächsten Befehl in der Warteschlange zu bearbeiten, einen Fahrstopp mit aktivem Bremsen auszuführen oder einfach die
-	Warteschlange zu leeren.
-	Momentan noch nicht implementiert.
+	Warteschlange zu leeren. 
+	Control-Befehle können nicht in die Warteschlange eingereiht werden und es kann nur eine gleichzeitig verarbeitet werden.
+	Sie umgehen die Warteschlange und werden sogar während noch laufenden Befehlen ausgeführt. Sie erhalten den frühst
+	möglichen Zeitslot zur Ausführung.
 
 	\subsection{Register - 0x02}
 
@@ -144,7 +146,8 @@
 
 	Um auf das richtige Befehlsbyte zu kommen muss die Option mit dem Befehl verundet werden. Als Beispiel dient hier das Löschen
 	der Queue: 0x40 \& 0x01 = 0x41. Dies gilt für alle Befehle hier.
-	Der Control-Befehl hat keine Parameter und ist damit konstant 1 Byte lang.
+	Der Control-Befehl hat keine Parameter und ist damit konstant 1 Byte lang. Außerdem umgehet dieser Befehl die Warteschlange,
+	wird also sofort ausgeführt, auch während noch ein anderer Befehl bearbeitet wird.
 
 	\subsection{0x02}
 
