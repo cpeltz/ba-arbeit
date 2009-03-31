@@ -20,7 +20,29 @@ void extended_instruction(order_t *order) {
 	order->status |= ORDER_STATUS_DONE;
 }
 
-void control_instruction(order_t *order) {}
+void control_instruction(order_t *order) {
+	// Extract the specific Control Instruction we should carry out
+	int control_instruction = order->data[0] & 0xf0;
+	switch(control_instruction) {
+		case 0x10: // Reset Instruction
+			WDRF = 1; // Set reset flag in MCUSR TODO: Verify if it works that way
+			break;
+		case 0x20: // Stop Queue execution and abaddon current order
+			queue_pause();
+			queue_pop();
+			break;
+		case 0x30: // Continue Queue execution
+			queue_unpause();
+			break;
+		case 0x40: // Clear the Queue
+			queue_clear();
+			break;
+		case 0x50: // Stop current Order and go over to active braking
+			queue_pause();
+			break;
+	}
+	queue_clear_control();
+}
 
 void register_instruction(order_t *order) {}
 

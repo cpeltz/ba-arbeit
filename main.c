@@ -114,7 +114,7 @@ void process_orders(void) {
 		drive_brake_active(); // TODO Needed? At the moment in here to make sure we mimic the old drivers behaviour
 	if (current_order != NULL) {
 		order_process(current_order);
-		order_check_triggers(current_order);
+		//order_check_triggers(current_order); // FIXME: Do not need this here, should be in the order functions
 		if (current_order->status & ORDER_STATUS_DONE) {
 			drive_brake_active_set();
 			queue_pop();
