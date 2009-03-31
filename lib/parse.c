@@ -91,10 +91,10 @@ void parser_add_byte(uint8_t byte) {
 	// Put the byte at its position and increment
 	parser_order_buffer[current_buffer_position].data[current_order_position] = byte;
 	current_order_position++;
-	if(current_order_position >= 32 || parser_order_complete(&parser_order_buffer[current_buffer_position], current_order_position + 1)) {
+	if (current_order_position >= 32 || parser_order_complete(&parser_order_buffer[current_buffer_position], current_order_position + 1)) {
 		// if the order is full (bad sign) or the order is complete
 		// go on to the next order structure
-		if( first_buffer_position == -1 ) {
+		if (first_buffer_position == -1 ) {
 			// This trick is needed to acknowledge a full buffer
 			first_buffer_position = current_buffer_position;
 		}
@@ -106,34 +106,19 @@ void parser_add_byte(uint8_t byte) {
 uint8_t parser_has_new_order() {
 	// Simple Query funtion
 	// return 1 if there is a new order waiting and 0 if there isn't
-	if(first_buffer_position != -1) {
+	if (first_buffer_position != -1) {
 		return 1;
 	}
 	return 0;
 }
 
-// This is the Syntax-check function to determine whether or not the order is valid
-// Could get really ugly :/
-// TODO is a check really a good idea? Orders with wrong cmd code will be ignored in order_process()
 void parser_check_order(order_t* order) {
-	// TODO Implement
+	int8_t cmd = -1;
 	order->status |= ORDER_STATUS_VALID;
-	/*
-	 *	switch(order->data[0] & 0x0f) {
-	 *		case 0: //Extended Instruction Format, no more tests ATM
-	 *			break;
-	 *		case 1: //Reset Instruction, everything else is ignored
-	 *			break;
-	 *		case 2: //Register Query Instruction, look for a valid register
-	 *			break;
-	 *		case 3: //Queue Query Instruction
-	 *			break;
-	 *
-	 *		default:
-	 *			order->status -= ORDER_STATUS_VALID;
-	 *			break;
-	 *	}
-	 */
+	cmd = order->data[0] & 0x0f;
+	if (cmd - ORDER_TYPE_CONTROL  == 0 ||
+		cmd - ORDER_TYPE_REGISTER == 0)
+		order->status |= ORDER_STATUS_PRIORITY;
 }
 
 void parser_get_new_order(order_t* order) {

@@ -4,7 +4,7 @@
 #define QUEUE_SIZE  10
 
 static order_t order_queue[QUEUE_SIZE];
-static order_t control_order;
+static order_t priority_order;
 static uint8_t paused;
 
 static uint8_t queue_readposition = 0;
@@ -16,19 +16,19 @@ void queue_init(void) {
 	for (; i < (QUEUE_SIZE - 1); i++) {
 		order_init(&order_queue[i]);
 	}
-	order_init(&control_order);
+	order_init(&priority_order);
 	queue_readposition = 0;
 	queue_writeposition = 0;
 	queue_entries = 0;
 	paused = 0;
 }
 
+uint8_t queue_push_priority(const order_t * const order) {
+	priority_order = *order;
+	return 1;
+}
+
 uint8_t queue_push(const order_t * const order) {
-	// Bypass normal queue for Control orders
-	if (order->data[0] & ORDER_TYPE_CONTROL) {
-		control_order = *order;
-		return 1;
-	}
 	// Add Order to the Queue if Queue not full
 	if (queue_entries == QUEUE_SIZE)
 		return 0;
@@ -40,9 +40,9 @@ uint8_t queue_push(const order_t * const order) {
 }
 
 const order_t * const queue_get_current_order(void) {
-	// Bypass normal Queue if we have a control instruction
-	if (control_order.data[0])
-		return &control_order;
+	// Bypass normal Queue if we have a priority instruction
+	if (priority_order.status & ORDER_STATUS_PRIORITY)
+		return &priority_order;
 	// Execution is paused, don't return an order
 	if (pause)
 		return 0;
@@ -66,14 +66,25 @@ uint8_t queue_order_available(void) {
 	return queue_entries;
 }
 
-void queue_update(void) {}
+// TODO: What should be done if pushing failed?
+void queue_update(void) {
+	order_t local_order;
+	if (parser_has_new_order()) {
+		order_init(&local_order);
+		parser_get_new_order(&local_order);
+		if (local_order->status & ORDER_STATUS_PRIORITY)
+			queue_push_priority(&local_order);
+		else
+			queue_push(&local_order);
+	}
+}
 
 void queue_clear(void) {
 	queue_init();
 }
 
-void queue_clear_control(void) {
-	order_init(&control_order);
+void queue_clear_priority(void) {
+	order_init(&priority_order);
 }
 
 void queue_pause(void) {

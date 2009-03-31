@@ -22,8 +22,8 @@ void extended_instruction(order_t *order) {
 
 void control_instruction(order_t *order) {
 	// Extract the specific Control Instruction we should carry out
-	int control_instruction = order->data[0] & 0xf0;
-	switch(control_instruction) {
+	int instruction = order->data[0] & 0xf0;
+	switch(instruction) {
 		case 0x10: // Reset Instruction
 			WDRF = 1; // Set reset flag in MCUSR TODO: Verify if it works that way
 			break;
@@ -44,7 +44,20 @@ void control_instruction(order_t *order) {
 	queue_clear_control();
 }
 
-void register_instruction(order_t *order) {}
+void register_instruction(order_t *order) {
+	int instruction = order[0] & 0xf0;
+	switch(instruction) {
+		case 0x10: // left wheel Speed
+			break;
+		case 0x20: // right wheel Speed
+			break;
+		case 0x30: // number of Orders in the Queue
+			break;
+		case 0x40: // current Order
+			break;
+	}
+	queue_clear_register();
+}
 
 void setTrigger(uint8_t trigger_type, uint8_t wheel, int16_t trigger_value) {
 	//FIXME Just simply wrong, don't set triggers through global variables
