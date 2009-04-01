@@ -12,14 +12,10 @@
 uint8_t twi_rx_state = 0;
 uint8_t twi_tx_state = 0;
 
-static uint8_t twi_stateBuffer[10];
-static fifo_t twi_state;
-
 ISR(TWI_vect) {
 	led_switch(LED_BLUE, SINGLE);
   
 	uint8_t twi_status = TWSR & 0xf8;
-	fifo_Write(&twi_state, twi_status);
 	char twi_data = 0; // TODO Really a char? Check documentation!
 
 	switch (twi_status) {
@@ -38,7 +34,7 @@ ISR(TWI_vect) {
 			// ACK has been returned
 
 			twi_data = TWDR;
-			//debug_WriteInteger(PSTR("D:"), twi_data);
+			_io_push(twi_data);
 
 			TWCR &= ~(1 << TWSTO);
 			TWCR |= (1 << TWEA);
@@ -88,16 +84,13 @@ ISR(TWI_vect) {
 			break;
 	}
 	TWCR |= (1 << TWINT);
-	_io_push(twi_data);
 }
 
 void twi_init(void) {
-	if (flag_Read(INTERFACE_TWI)) {
+	if (flag_read(INTERFACE_TWI)) {
 		// Slave Address = 84
-		TWAR = 84;
+		TWAR = TWI_ADDRESS;
 		// TWI aktivieren
 		TWCR = (1 << TWEA) | (1 << TWEN) | (1 << TWIE);
-		fifo_Init(&twi_state, twi_stateBuffer, 10); 
 	}
 }
-
