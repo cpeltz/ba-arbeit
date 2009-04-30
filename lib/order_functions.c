@@ -46,14 +46,35 @@ void control_instruction(order_t *order) {
 
 void register_instruction(order_t *order) {
 	int instruction = order[0] & 0xf0;
+	order_t *current_order = 0;
+	uint8_t current_order_size = 0;
 	switch(instruction) {
 		case 0x10: // left wheel Speed
+				//TODO Implement (don't know where the Speed is)
 			break;
 		case 0x20: // right wheel Speed
+				//TODO Implement (don't know where the Speed is)
 			break;
 		case 0x30: // number of Orders in the Queue
+			io_obj_start();
+			io_put(queue_order_available());
+			io_obj_end();
 			break;
 		case 0x40: // current Order
+			if (current_order = queue_get_current_normal_order()) {
+				current_order_size = order_size(current_order) % (ORDER_TYPE_MAX_LENGTH + 1);
+			}
+			io_obj_start();
+			io_put(current_order_size);
+			io_obj_end();
+			if (current_order) {
+				uint8_t i = 0;
+				io_obj_start();
+				for (;i < current_order_size;i++) {
+					io_obj_put(current_order->data[current_order_size]);
+				}
+				io_obj_end();
+			}
 			break;
 	}
 	queue_clear_priority();
@@ -138,6 +159,21 @@ void drive_instruction(order_t *order) {
 	}
 }
 
-void pid_drive_instruction(order_t *order) {}
+void pid_drive_instruction(order_t *order) {
+	//TODO Implement 
+}
 
-void set_pid_instruction(order_t *order) {}
+void set_pid_instruction(order_t *order) {
+	uint8_t wheel = order->data[0] >> 4;
+	int16_t P, I, D, S;
+
+	if(order->status & ORDER_STATUS_DONE)
+		return;
+
+	P = order->data[1] << 8 + order->data[2];
+	I = order->data[3] << 8 + order->data[4];
+	D = order->data[5] << 8 + order->data[6];
+	S = order->data[7] << 8 + order->data[8];
+	drive_SetPIDParameter(wheel, P, I, D, S);
+	order->status |= ORDER_STATUS_DONE;
+}

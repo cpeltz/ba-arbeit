@@ -5,6 +5,7 @@
 #include "types.h"
 
 void queue_init(void);
+const order_t * const queue_get_current_normal_order(void);
 const order_t * const queue_get_current_order(void);
 void queue_pop(void);
 uint8_t queue_order_available(void);

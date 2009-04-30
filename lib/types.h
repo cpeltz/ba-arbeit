@@ -51,8 +51,10 @@ typedef struct GLOBAL_STATE {
 	uint8_t flags;
 } global_state_t;
 
+#define ORDER_TYPE_MAX_LENGTH 32
+
 typedef struct ORDER {
-	uint8_t data[32];
+	uint8_t data[ORDER_TYPE_MAX_LENGTH];
 	uint8_t status;
 } order_t;
 

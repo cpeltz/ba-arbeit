@@ -39,6 +39,13 @@ uint8_t queue_push(const order_t * const order) {
 	return 1;
 }
 
+const order_t * const queue_get_current_normal_order(void) {
+	if (queue_entries != 0) {
+		return &order_queue[queue_readposition];
+	}
+	return 0;
+}
+
 const order_t * const queue_get_current_order(void) {
 	// Bypass normal Queue if we have a priority instruction
 	if (priority_order.status & ORDER_STATUS_PRIORITY)
@@ -47,6 +54,7 @@ const order_t * const queue_get_current_order(void) {
 	if (pause)
 		return 0;
 	// Return the current Order
+	// TODO Maybe exchange with "return queue_get_current_normal_order();"
 	if (queue_entries != 0) {
 		return &order_queue[queue_readposition];
 	}
