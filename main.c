@@ -56,7 +56,7 @@ void print_startup(void) {
 	// Startup Debug Infos
 	flag_set(DEBUG_ENABLE);
 	debug_ResetTerminal();
-	debug_WriteString_P(PSTR("Motorsteuerung V2.9.20090331\r\n"));
+	debug_WriteString_P(PSTR("Motorsteuerung V2.9.20090501\r\n"));
 	debug_WriteString_P(PSTR("---------------------------\r\n\n"));
 	debug_WriteString_P(PSTR("DIP-Schalter Einstellungen:\r\n"));
 	if (dip_read(0))

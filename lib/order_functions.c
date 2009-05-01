@@ -3,7 +3,7 @@
 #include "definitions.h"
 
 /**
-* This file contains the handler functions for the protokoll.
+* This file contains the handler functions for the protocol.
 */
 
 extern uint8_t local_time_flags;
@@ -12,6 +12,9 @@ extern uint16_t irq_p_trigger_position[2];
 #define LEFT_WHEEL 0
 #define RIGHT_WHEEL 1
 #define BOTH_WHEELS 2
+
+// TODO Write Helper functions to help with repetetive tasks and clarify them
+// TODO need more defines for constants so they are more readable
 
 /**
 * Extended Instruction Format Handler Function
@@ -111,12 +114,12 @@ int checkTrigger(uint8_t trigger_type, uint8_t wheel) {
 }
 
 void drive_instruction(order_t *order) {
-	if(order->status & ORDER_STATUS_DONE)
-		return;
-
 	// Extract the type of triggers to be used
 	uint8_t trigger_type_left = order->data[0] & 0x30;
-	uint8_t trigger_type_right = order->data[0] & 0xa0;
+	uint8_t trigger_type_right = order->data[0] & 0xc0;
+
+	if(order->status & ORDER_STATUS_DONE)
+		return;
 
 	if(order->status & ORDER_STATUS_STARTED) { //Instruction is already running
 		// Left trigger reached
@@ -126,6 +129,12 @@ void drive_instruction(order_t *order) {
 		// Right trigger reached
 		if(checkTrigger(trigger_type_right, RIGHT_WHEEL) == 0 ) {
 			order->status |= ORDER_STATUS_TRIGGER_RIGHT_REACHED;
+		}
+		// If in PID with D mode one reached trigger equals all trigger reached
+		if((order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED ||
+			order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED) &&
+			trigger_type_left == 0x30) {
+			order->status |= ORDER_STATUS_TRIGGER_LEFT_REACHED + ORDER_STATUS_TRIGGER_RIGHT_REACHED;
 		}
 		// both triggers reached, ergo order is done 
 		if(order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED && 
@@ -137,30 +146,33 @@ void drive_instruction(order_t *order) {
 	
 		// Use error-correction while driving every 100 ms
 		if(flag_local_read( &local_time_flags, TIMER_100MS)) {
-			drive_UsePID(LEFT_WHEEL, order->data[1]);
-			drive_UsePID(RIGHT_WHEEL, order->data[2]);
+			if(trigger_type_left == 0x30) { // Use function for both wheels to use PID mode with D
+				drive_UsePID(BOTH_WHEELS, order->data[1]);
+			} else {
+				drive_UsePID(LEFT_WHEEL, order->data[1]);
+				drive_UsePID(RIGHT_WHEEL, order->data[2]);
+			}
 		}
 	} else { //Instruction isn't running
 		// Build the values for the specified triggers, even if there aren't any triggers present
 		// FIXME This is ugly, fix it
 		int16_t trigger_value_left = 0;
 		int16_t trigger_value_right = 0;
-		if(trigger_type_left & 0x10) //Time trigger
-			trigger_value_left = order->data[3];
-		else if(trigger_type_left & 0x20) //Position trigger
+
+		if (trigger_type_right == 0xc0) { // Set new differential correction
+			// TODO Implement the setting of the differential correction
+			order->status |= ORDER_STATUS_DONE;
+		}
+		if (trigger_type_left == 0x30) { // PID with differential correction
+			trigger_value_left = trigger_value_right = order->data[2] << 8 + order->data[3];
+		} else {
 			trigger_value_left = order->data[3] << 8 + order->data[4];
-		if(trigger_type_right & 0x40) //Time trigger
-			trigger_value_right = order->data[4];
-		else if(trigger_type_right & 0x80) //Position trigger
 			trigger_value_right = order->data[5] << 8 + order->data[6];
+		}
 		// Set the triggers for each wheel
 		setTrigger(trigger_type_left, LEFT_WHEEL, trigger_value_left);
 		setTrigger(trigger_type_right, RIGHT_WHEEL, trigger_value_right);
 	}
-}
-
-void pid_drive_instruction(order_t *order) {
-	//TODO Implement 
 }
 
 void set_pid_instruction(order_t *order) {

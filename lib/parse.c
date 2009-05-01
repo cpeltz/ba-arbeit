@@ -35,38 +35,31 @@ int parser_extended_order_complete(const order_t* order, uint8_t num_bytes) {
 uint8_t bytes_needed(uint8_t order) {
 	uint8_t ret_value = 0;
 	switch(order & 0x0f) {
-		case 0:
 		case 1: //Control Instruction
 		case 2: //Register Query Instruction
 			return 1; //These are all one byte Instructions
 		case 3: //Drive Instruction is a variable byte order
 			ret_value = 3; //min. three bytes are neccessary: one as order, two for speed (left and right)
-			if(order & 0x10) { //left Wheel Time Trigger, needs one extra byte
-				ret_value += 1;
-			} else if(order & 0x20) { //left Wheel Position Trigger, needs two extra bytes
-				ret_value += 2;
-			}
-			if(order & 0x40) { //right Wheel Time Trigger, needs one extra byte
-				ret_value += 1;
-			} else if(order & 0x80) { //right Wheel Position Trigger, needs two extra bytes
-				ret_value += 2;
+			if((order & 0x30) == 0x30) { // Drive Instruction with differntial correction
+				ret_value = 2;
+				if((order & 0xc0) == 0xc0) { // Set differential correction value flag
+					ret_value = 3;
+				} else {
+					if(order & 0x40 || order & 0x80) { // Time/Position Trigger, needs two extra bytes
+						ret_value += 2;
+					}
+				}
+			} else { // Normal drive command
+				if(order & 0x10 || order & 0x20) { //left Wheel Time/Position Trigger, needs two extra bytes
+					ret_value += 2;
+				}
+				if(order & 0x40 || order & 0x80) { //right Wheel Time/Position Trigger, needs two extra bytes
+					ret_value += 2;
+				}
 			}
 			return ret_value;
 		case 4: //Set PID Parameters Instruction
-			if(order & 0x10 || order & 0x20) { //Set PID Parameters for the right or/and left wheel
-				return 5; //FIXME, needs two bytes
-			}
-			return 3; //FIXME, needs two bytes
-		case 5: //PID Drive Instruction is a variable byte order
-			ret_value = 3; //at least three bytes are neccessary
-			if(order & 0x10) { //Time Trigger, needs an extra byte
-				ret_value += 1;
-			} else if(order & 0x20) { //Position Trigger, needs two extra bytes
-				ret_value += 2;
-			} else if(order & 0x40) { //set differential value, needs two bytes FIXME
-				ret_value += 2;
-			}
-			return ret_value;
+			return 9; //FIXME, needs two bytes
 	}
 	return 1;
 }

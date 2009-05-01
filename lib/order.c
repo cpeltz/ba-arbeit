@@ -16,7 +16,7 @@ void order_array_init() {
 	order_array[2]  = &register_instruction;
 	order_array[3]  = &drive_instruction;
 	order_array[4]  = &set_pid_instruction;
-	order_array[5]  = &pid_drive_instruction;
+	order_array[5]  = 0;
 	order_array[6]  = 0;
 	order_array[7]  = 0;
 	order_array[8]  = 0;
