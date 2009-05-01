@@ -21,7 +21,8 @@
 		\textbf{Version} & \textbf{Datum} & \textbf{Autor} 	& \textbf{Status} & \textbf{Kommentar} \\
 		\hline
 		\hline
-		1 				 & 25.02.1009 	  & Christoph Peltz & 				  & Erste Version \\
+		1 				 & 25.02.2009 	  & Christoph Peltz & 				  & Erste Version \\
+		2 				 & 01.05.2009 	  & Christoph Peltz & 				  & Korrigierung und neue Features \\
 		\hline
 	\end{tabularx}
 
@@ -102,30 +103,27 @@
 	\subsection{Drive - 0x03}
 
 	Mithilfe des Drive-Befehls werden allgemeine Fahrbefehle angenommen. Zu den Optionen zählen die Benutzung von Triggern
-	auf Rad-Ebene, wie z.B. Kein Trigger, Positions-Trigger und Zeit-Trigger.
+	auf Rad-Ebene, wie z.B. Kein Trigger, Positions-Trigger und Zeit-Trigger. Außerdem gibt es hier die Möglichkeit
+	mithilfe des Differntialausgleichs sehr genau geradeaus zu fahren.
 
 	\subsection{SetPID - 0x04}
 
 	Durch diesen Befehl ist es möglich die Parameter für eine PID-Verbesserte-Fahrt selber zu setzen und somit für sich
 	anzupassen.
 
-	\subsection{PID-Drive - 0x05}
-
-	Dieser Befehl schaltet eine PID-Verbeserte Fahrt ein, dadurch kann man zwar nur Geradeaus fahren, dies tut man dann aber
-	sehr präzise.
-
-	\subsection{0x06 - 0x0f}
+	\subsection{0x05 - 0x0f}
 
 	Diese Befehlscodes sind bisher nicht vergeben.
 
 
 	\section{Befehlsreferenz}
 
-	\subsection{0x00}
+	\subsection{Extended Instruction - 0x00}
 
-	Bisher werden Befehle mit diesem Code ignoriert.
+	Bisher werden Befehle mit diesem Code werden nach einem Byte abgebrochen und in die Queue gestellt. Es existiert noch
+	keine Anwendung für diese Befehlsgattung.
 
-	\subsection{0x01}
+	\subsection{Control - 0x01}
 
 	\begin{tabularx}{\linewidth}{|l|l|X|}
 		\hline
@@ -149,7 +147,7 @@
 	Der Control-Befehl hat keine Parameter und ist damit konstant 1 Byte lang. Außerdem umgehet dieser Befehl die Warteschlange,
 	wird also sofort ausgeführt, auch während noch ein anderer Befehl bearbeitet wird.
 
-	\subsection{0x02}
+	\subsection{Register - 0x02}
 
 	\begin{tabularx}{\linewidth}{|l|l|X|}
 		\hline
@@ -162,7 +160,7 @@
 		\hline
 		0x30				& Anzahl der Befehl in der Queue & 1 \\
 		\hline
-		0x40				& Aktueller Befehl & 2 - 33 \\
+		0x40				& Aktueller Befehl & 2 - 33 (siehe Text) \\
 		\hline
 	\end{tabularx}
 	
@@ -170,11 +168,10 @@
 	Welche zur Verfügung stehen und welche Bitmaske man dafür verwenden muss, wird aus der obigen Tabelle entnommen. Es kann immer
 	nur ein Register per Befehl abgefragt werden. Die Antwort auf solch eine Anfrage hat eine variable Länge, die ebenfalls aus
 	der Tabelle entnommen werden kann (sie ist in Byte angegeben).
-	Bei der Antwort mit dem Aktuellen Befehl ist das erste Byte die Längenangabe für den folgenden Befehl, darauf folgen die
-	rohen Befehlsdaten (ohne Status). Das Byte der Längenangabe wird dabei NICHT mitgezähl (enthält also einen wert zwischen 1 und
-	32).
+	Bei der Antwort mit dem Aktuellen Befehl gilt zu beachten, dass zweimal von der Platine gelesen werden muss. Die erste
+	Antwort ist immer 1 Byte lang und gibt an wie lang die zweite Antwort sein wird. Diese hält dann den eigentlichen Befehl.
 
-	\subsection{0x03}
+	\subsection{Drive - 0x03}
 
 	Beim Drive Befehl sind die vier Optionsbits in zweimal zwei Bit unterteilt, die jeweils für ein Rad den Trigger angeben.
 
@@ -185,14 +182,14 @@
 		\hline
 		Kein Trigger	& 0x00						   & 0x00						   & Endlosfahrt \\
 		\hline
-		Zeit Trigger	& 0x40						   & 0x10						   & zeitlich Begrenzte Fahrt\\
+		Zeit Trigger	& 0x10						   & 0x40						   & zeitlich Begrenzte Fahrt\\
 		\hline
-		Positions Trigger & 0x80					   & 0x20						   & Fährt eine bestimmte Strecke \\
+		Positions Trigger & 0x20					   & 0x80						   & Fährt eine bestimmte Strecke \\
 		\hline
 	\end{tabularx}
 	
 	Hier müssen für beide Räder eine Options ausgewählt werden und zusammen auf den Befehl geundet werden. Beispiel linkes
-	Rad benutzt einen Zeit Trigger, das rechte einen Positionstrigger: 0x40 \& 0x20 \& 0x03 = 0x63.
+	Rad benutzt einen Zeit Trigger, das rechte einen Positionstrigger: 0x10 | 0x80 | 0x03 = 0x93.
 	Der Befehl erwartet mindestens zwei Parameter, die jeweils ein Byte lang sind und die Geschwindigkeit vom linken und
 	vom rechten Rad angeben.
 
@@ -220,41 +217,50 @@
 	Die Minimale Länge beläuft sich damit auf 3 Byte (1 Byte Kommando + 2 Byte für die Geschwindigkeiten) und die
 	Maximale auf 7 Byte (1 Byte Kommando + 2 Byte Geschwindigkeit + 2*2 Byte für Trigger-Werte pro Rad).
 
-	\subsection{0x04}
+	Es gibt noch einen speziellen Fahrmodus: Fahren mit Differentialausgleich. Dieser wird aktiviert wenn im Befehlsbyte
+	die Bitmaske 0x30 benutzt wird. Die Trigger Bitmasken für das rechte Rad (siehe Tabelle) gelten dann für beide Räder.
+	Folgend auf das Befehlsbyte tut dann ein Geschwindigkeitsbyte sowie, falls erforderlich, 2 Bytes für den ausgewählten
+	Trigger. Die Minimale Länge beläuft sich hier auf 2 Byte, die Maximale auf 4.
 
-	Noch nicht implementiert oder definiert.
+	Wenn die Fahrt mit Differntialausgleich gewählt wurde (Bitmaske 0x30) und die Bitmaske 0xc0 auf dem Befehlsbyte
+	genutzt wird, kann der relative Differentialwert für die Fahrt eingestellt werden. Ein Wert gleich 0 setzt den Wert auf
+	0. Von 0 verschiedene Werte werden auf den aktuellen Differentialwert addiert. Der Differntialwert darf einen wert zwischen
+	-32768 bis 32767. Die Länge beträgt immer 3 Byte.
 
-	\subsection{0x05}
+	\subsection{SetPID - 0x04}
+
+	Mithilfe dieses Befehls können die Reglergrößen für den PID-Regler eingestellt werden.
 
 	\begin{tabularx}{\linewidth}{|l|l|l|X|}
 		\hline
-		\textbf{Option} & \textbf{Bitmaske} & \textbf{Beschreibung} \\
+		\textbf{Byte Anzahl} & \textbf{Position} & \textbf{Wertebereich} & \textbf{Beschreibung} \\
 		\hline
 		\hline
-		Kein Trigger	& 0x00						   & Endlosfahrt \\
+		2					 & 1 & -32768 bis 32767 & Proportinaler Faktor\\
 		\hline
-		Zeit Trigger	& 0x10						   & zeitlich Begrenzte Fahrt\\
+		2					 & 2 & -32768 bis 32767 & Integraler Faktor\\
 		\hline
-		Positions Trigger & 0x20						   & Fährt eine bestimmte Strecke \\
+		2					 & 3 & -32768 bis 32767 & Differentieller Faktor\\
 		\hline
-	\end{tabularx}
-	
-	\begin{tabularx}{\linewidth}{|l|l|l|X|}
-		\hline
-		\textbf{Byte Anzahl} & \textbf{Option} & \textbf{Wertebereich} & \textbf{Beschreibung} \\
-		\hline
-		\hline
-		1					 & - & -128 bis 127 & Geschwindigkeit der Räder \\
-		\hline
-		2					 & Zeit Trigger & 0 bis 65535 &  Anzahl der ms die das Gerät fährt\\
-		\hline
-		2					 & Positions Trigger & 0 bis 65535 &  Anzahl der Ticks die das Gerät fährt\\
+		2					 & 4 & -32768 bis 32767 & Maximale Fehlersummen Modifikator\\
 		\hline
 	\end{tabularx}
 
-	Die selben Bedingungen und Angaben wie beim 0x03-Code gelten auch hier. Die Minimale Länge beträgt hier
-	allerdings nur 2 Byte (1 Byte Kommando + 1 Byte Geschwindigkeit) und die Maximale Länge 4 Byte (1 Byte
-	Kommando + 1 Byte Geschwindigkeit + 2 Byte Trigger).
-	
+	Im Befehlsbyte muss außerdem einkodiert werden für welches Rad die Parameter gesetzt werden.
 
+	\begin{tabularx}{\linewidth}{|l|X|}
+		\hline
+		\textbf{Option} & \textbf{Bitmaske} \\
+		\hline
+		\hline
+		Linkes Rad	& 0x00 \\
+		\hline
+		Rechtes Rad	& 0x10 \\
+		\hline
+		Beide Räder & 0x20 \\
+		\hline
+	\end{tabularx}
+
+	Die Länge des Befehls beträgt immer 9 Byte.
+	
 \end{document}
