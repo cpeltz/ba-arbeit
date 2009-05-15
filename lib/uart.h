@@ -1,15 +1,15 @@
 #ifndef UART_H
 #define UART_H
 
+#include "options.h"
+
 #ifndef F_CPU
 #define F_CPU 16000000L
 #endif
 
-#define BAUD 115200L
-
-#define UBRR_VAL ((F_CPU+BAUD*8)/(BAUD*16)-1)
+#define UBRR_VAL ((F_CPU+UART_BAUD_RATE*8)/(UART_BAUD_RATE*16)-1)
 #define BAUD_REAL (F_CPU/(16*(UBRR_VAL+1)))
-#define BAUD_ERROR ((BAUD_REAL*1000)/BAUD-1000)
+#define BAUD_ERROR ((UART_BAUD_RATE_REAL*1000)/UART_BAUD_RATE-1000)
 
 #define UART_TX_BUFFER_SIZE 128
 #define UART_RX_BUFFER_SIZE 128

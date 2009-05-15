@@ -14,11 +14,21 @@
 #include <avr/pgmspace.h>
 #include <avr/wdt.h>
 
-// Where does the reset came from?
+/**
+ *	Show from which source the system got resettet.
+ */
 int8_t reset_source = 0;
-// Local storage for timer flags.
+/**
+ *	Stores the local time flags.
+ *
+ *	On the timer Interrupts which occure every 1ms, 10ms, 100ms and 262ms, the respective flag
+ *	in this bitfield will be set.
+ */
 uint8_t local_time_flags = 0;
 
+/**
+ *	The Main setup function; calls every needed *_init() function
+ */
 void initialize(void) {
 	// init all subsystems
 	dip_init();
@@ -36,6 +46,12 @@ void initialize(void) {
 	drive_SetPIDParameter(2, 80, 20, 10, 500);
 }
 
+/**
+ *	Used to read the settings given by the position of the dip switches.
+ *
+ *	With the dip switches, the user chooses which Interface he wants to use, if a LCD is plugged in or
+ *	to enable the debugging output.
+ */
 void update_dip_flags(void) {
 	// clear all dip flags
 	flag_clear(DEBUG_ENABLE);
@@ -52,6 +68,10 @@ void update_dip_flags(void) {
 		flag_set(LCD_PRESENT);
 }
 
+/**
+ *	This function prints, on every system start, information about the System.
+ */
+//TODO correct the "PSTR" uses
 void print_startup(void) {
 	// Startup Debug Infos
 	flag_set(DEBUG_ENABLE);
@@ -90,6 +110,12 @@ void print_startup(void) {
 	debug_NewLine();
 }
 
+/**
+ *	Fills the local variable with time tick flags.
+ *
+ *	To show how much time has passed since last execution and to
+ *	be able to do order maintainace time based, this is used.
+ */
 void copy_timer_flags(void) {
 	// Copy global timer flags to a local copy, which will be used throughout the program.
 	// This is done to not miss a timer tick.
@@ -103,6 +129,12 @@ void copy_timer_flags(void) {
 		flag_local_set( &local_time_flags, TIMER_262MS );
 }
 
+/**
+ *	Main process for orders.
+ *
+ *	This function simply maintains an order, gets a new one from the queue
+ *	or just brake active.
+ */
 void process_orders(void) {
 	// This function gets an order and lets it execute
 	static order_t *current_order = NULL;

@@ -1,6 +1,7 @@
 #ifndef PID_H
 #define PID_H
 
+#include <inttypes.h>
 #include "types.h"
 
 void pid_Init(	const int16_t pfactor, const int16_t ifactor, const int16_t dfactor,

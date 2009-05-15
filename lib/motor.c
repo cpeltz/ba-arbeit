@@ -114,17 +114,17 @@ static void motor_SetSpeed_M1(int8_t speed) {
 
 void motor_SetSpeed(uint8_t motor, int8_t speed) {
 	switch (motor) {
-		case 0:
-			motor_speed[0] = speed;
+		case WHEEL_LEFT:
+			motor_speed[WHEEL_LEFT] = speed;
 			motor_SetSpeed_M0(speed);
 			break;
-		case 1:
-			motor_speed[1] = speed;
+		case WHEEL_RIGHT:
+			motor_speed[WHEEL_RIGHT] = speed;
 			motor_SetSpeed_M1(speed);
 			break;
-		case 2:
-			motor_speed[0] = speed;
-			motor_speed[1] = speed;
+		case WHEEL_BOTH:
+			motor_speed[WHEEL_LEFT] = speed;
+			motor_speed[WHEEL_RIGHT] = speed;
 			motor_SetSpeed_M0(speed);
 			motor_SetSpeed_M1(speed);
 			break;
@@ -137,20 +137,15 @@ int8_t motor_ReadSpeed(uint8_t motor) {
 
 void motor_Break(uint8_t motor) {
 	switch (motor) {
-		case 0:
+		case WHEEL_LEFT:
 			motor_Break_M0();
 			break;
-		case 1:
+		case WHEEL_RIGHT:
 			motor_Break_M1();
 			break;
-		case 2:
+		case WHEEL_BOTH:
 			motor_Break_M0();
 			motor_Break_M1();
 			break;
 	}
-}
-
-void motor_status(global_state_t *state) {
-	state->speed_left = motor_speed[0];
-	state->speed_left = motor_speed[1];
 }

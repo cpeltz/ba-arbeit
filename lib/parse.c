@@ -2,7 +2,7 @@
 #include "order.h"
 
 // Ring Buffer of orders, holds 5 orders
-order_t parser_order_buffer[5];
+order_t parser_order_buffer[PARSER_ORDER_BUFFER_SIZE];
 // Holds the current position in the Ring
 int8_t current_buffer_position = 0;
 // Holds the position of the first order in the Ring
@@ -59,7 +59,7 @@ uint8_t bytes_needed(uint8_t order) {
 			}
 			return ret_value;
 		case 4: //Set PID Parameters Instruction
-			return 9; //FIXME, needs two bytes
+			return 9;
 	}
 	return 1;
 }
@@ -92,14 +92,14 @@ void parser_add_byte(uint8_t byte) {
 	// Put the byte at its position and increment
 	parser_order_buffer[current_buffer_position].data[current_order_position] = byte;
 	current_order_position++;
-	if (current_order_position >= 32 || parser_order_complete(&parser_order_buffer[current_buffer_position], current_order_position + 1)) {
+	if (current_order_position >= ORDER_TYPE_MAX_LENGTH || parser_order_complete(&parser_order_buffer[current_buffer_position], current_order_position + 1)) {
 		// if the order is full (bad sign) or the order is complete
 		// go on to the next order structure
 		if (first_buffer_position == -1 ) {
 			// This trick is needed to acknowledge a full buffer
 			first_buffer_position = current_buffer_position;
 		}
-		current_buffer_position = (current_buffer_position + 1) % 5;
+		current_buffer_position = (current_buffer_position + 1) % PARSER_ORDER_BUFFER_SIZE;
 		current_order_position = 0;
 	}
 }
@@ -129,7 +129,7 @@ void parser_get_new_order(order_t* order) {
 	// TODO or should this function discard it?
 	parser_check_order(&parser_order_buffer[first_buffer_position]);
 	order_copy(&parser_order_buffer[first_buffer_position], order);
-	first_buffer_position = (first_buffer_position + 1) % 5;
+	first_buffer_position = (first_buffer_position + 1) % PARSER_ORDER_BUFFER_SIZE;
 	if( first_buffer_position == current_buffer_position ) {
 		first_buffer_position = -1;
 	}

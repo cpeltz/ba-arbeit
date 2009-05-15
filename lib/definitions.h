@@ -1,9 +1,10 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
-/* In this file are many global definitions
- * used throughout the program.
+/** \file definitions.h
+ *	This file holds many global definitions used through the program.
  */
+
 #define INPUT_DDR               DDRB
 #define INPUT_PORT              PORTB
 #define INPUT1                  PB0
@@ -78,5 +79,10 @@
 #define DIP2                    PD5
 #define DIP3                    PD6
 #define DIP4                    PD7
+
+// Wheels
+#define WHEEL_LEFT              0
+#define WHEEL_RIGHT             1
+#define WHEEL_BOTH              2
 
 #endif

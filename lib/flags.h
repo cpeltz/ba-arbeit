@@ -1,6 +1,8 @@
 #ifndef FLAGS_H
 #define FLAGS_H
 
+#include <inttypes.h>
+
 // Funktionen für globale Flags
 void flag_set(uint8_t flag);
 void flag_clear(uint8_t flag);

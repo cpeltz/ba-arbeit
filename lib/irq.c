@@ -8,19 +8,50 @@
 #include "timer.h"
 #include "motor.h"
 
+/**
+ * Position of wheel 0 (left)
+ */
 static int16_t irq_Position_W0 = 0;
+/**
+ * Position of wheel 1 (right)
+ */
 static int16_t irq_Position_W1 = 0;
+/**
+ * Difference between both wheels.
+ */
 static int16_t irq_WheelDifference = 0;
+/**
+ * Probably used for triggering on position.
+ *
+ * ToDo: refactor
+ */
 static int16_t irq_p_trigger_position[2] = { 0, 0 };
+/**
+ * Probably used for triggering on position.
+ *
+ * ToDo: refactor
+ */
 static uint8_t irq_p_trigger = 0;
+/**
+ * Holds the tacho value (whatever that is)
+ */
 static tacho_t irq_tacho;
 
+/**
+ * Don't have a clue what this is.
+ */
 static int16_t irq_t_i16 = 0;
+/**
+ * Temp register
+ */
 static uint8_t sreg = 0;
 
 #define IRQ_P_TRIGGER_L   0
 #define IRQ_P_TRIGGER_R   1
 
+/**
+ * Interrupt Service Routine for wheel 0 (left) sensor A.
+ */
 ISR(INT4_vect) {
 	// Interrupt Service Routine für Drehgeber A-0
 
@@ -55,6 +86,9 @@ ISR(INT4_vect) {
 	}
 }
 
+/**
+ * Interrupt Service Routine for wheel 0 (left) sensor B.
+ */
 ISR(INT5_vect) {
 	// Interrupt Service Routine für Drehgeber B-0
 
@@ -89,6 +123,9 @@ ISR(INT5_vect) {
 	}
 }
 
+/**
+ * Interrupt Service Routine for wheel 1 (right) sensor A.
+ */
 ISR(INT6_vect) {
 	// Interrupt Service Routine für Drehgeber A-1
 	
@@ -123,6 +160,9 @@ ISR(INT6_vect) {
 	}
 }
 
+/**
+ * Interrupt Service Routine for wheel 1 (right) sensor B.
+ */
 ISR(INT7_vect) {
 	// Interrupt Service Routine für Drehgeber B-1
 
@@ -157,6 +197,9 @@ ISR(INT7_vect) {
 	}
 }
 
+/**
+ * Setup for the Hall-sensors.
+ */
 void irq_init(void) {
 	IRQ_DDR &= ~((1 << IRQ_A0) | (1 << IRQ_B0) | (1 << IRQ_A1) | (1 << IRQ_B1));
 	IRQ_PORT |= (1 << IRQ_A0) | (1 << IRQ_B0) | (1 << IRQ_A1) | (1 << IRQ_B1);
@@ -171,10 +214,10 @@ void irq_init(void) {
 
 int16_t	wheel_ReadPosition(uint8_t wheel) {
 	switch (wheel) {
-		case 0:
+		case WHEEL_LEFT:
 			irq_t_i16 = irq_Position_W0;
 			break;
-		case 1:
+		case WHEEL_RIGHT:
 			irq_t_i16 = irq_Position_W1;
 			break;
 	}
@@ -185,13 +228,13 @@ void wheel_ClearPosition(uint8_t wheel) {
 	sreg = SREG;
 	cli();
 	switch (wheel) {
-		case 0:
+		case WHEEL_LEFT:
 			irq_Position_W0 = 0;
 			break;
-		case 1:
+		case WHEEL_RIGHT:
 			irq_Position_W1 = 0;
 			break;
-		case 2:
+		case WHEEL_BOTH:
 			irq_Position_W0 = 0;
 			irq_Position_W1 = 0;
 			break;
@@ -222,15 +265,15 @@ void trigger_Set_P(const uint8_t wheel, const int16_t trigger_position) {
 	sreg = SREG;
 	cli();
 	switch (wheel) {
-		case 0:
-		case 1:
+		case WHEEL_LEFT:
+		case WHEEL_RIGHT:
 			irq_p_trigger_position[wheel] = trigger_position;
 			flagLocal_Set(&irq_p_trigger, IRQ_P_TRIGGER_L + wheel);
 			flag_Clear(P_TRIGGER_L + wheel);
 			break;
-		case 2:
-			trigger_Set_P(0, trigger_position);
-			trigger_Set_P(1, trigger_position);
+		case WHEEL_BOTH:
+			trigger_Set_P(WHEEL_LEFT, trigger_position);
+			trigger_Set_P(WHEEL_RIGHT, trigger_position);
 			break;
 	}
 	SREG = sreg;
@@ -241,14 +284,14 @@ void trigger_Clear_P(const uint8_t wheel) {
 	sreg = SREG;
 	cli();
 	switch (wheel) {
-		case 0:
-		case 1:
+		case WHEEL_LEFT:
+		case WHEEL_RIGHT:
 			flagLocal_Clear(&irq_p_trigger, IRQ_P_TRIGGER_L + wheel);
 			flag_Clear(P_TRIGGER_L + wheel);
 			break;
-		case 2:
-			trigger_Clear_P(0);
-			trigger_Clear_P(1);
+		case WHEEL_BOTH:
+			trigger_Clear_P(WHEEL_LEFT);
+			trigger_Clear_P(WHEEL_RIGHT);
 			break;
 	}
 	SREG = sreg;

@@ -1,7 +1,4 @@
-#include <inttypes.h>
 #include "pid.h"
-#include "definitions.h"
-#include "flags.h"
 
 void pid_Init(	const int16_t pfactor, const int16_t ifactor, const int16_t dfactor,
 				const int16_t sumErrorMax, pid_data_t * pid) {

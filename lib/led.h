@@ -1,6 +1,8 @@
 #ifndef LED_H
 #define LED_H
 
+#include <inttypes.h>
+
 void led_init(void);
 void led_switch(uint8_t led, uint8_t state);
 void led_switchoff(void);

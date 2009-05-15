@@ -1,10 +1,10 @@
 #define __AVR_ATmega2561__
 #include <avr/interrupt.h>
 #include <inttypes.h>
+#include "options.h"
 #include "twi.h"
 #include "flags.h"
 #include "irq.h"
-#include "fifo.h"
 #include "definitions.h"
 #include "led.h"
 
@@ -24,8 +24,6 @@ ISR(TWI_vect) {
 
 	switch (twi_status) {
 		// The following status codes refer to the Slave Reciever Mode (see Chip Documentation Page 260)
-		// TODO maybe NOT ACK should only be send if we really didn't took the byte, but
-		// that would complicate things for the sender i would think
 		case 0x88:
 			// Previously addressed with own
 			// SLA+W; data has been received;

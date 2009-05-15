@@ -1,8 +1,6 @@
 #include "queue.h"
 #include "order.h"
 
-#define QUEUE_SIZE  10
-
 static order_t order_queue[QUEUE_SIZE];
 static order_t priority_order;
 static uint8_t paused;

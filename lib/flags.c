@@ -1,4 +1,3 @@
-#include <inttypes.h>
 #include "flags.h"
 
 static uint32_t flags_global_storage = 0;

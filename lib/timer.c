@@ -151,10 +151,10 @@ void wheel_DelSpeed_W1(void) {
 
 int8_t wheel_ReadSpeed(const uint8_t wheel) {
 	switch (wheel) {
-		case 0:
+		case WHEEL_LEFT:
 			timer_t_i8 = timer_Speed_W0;
 			break;
-		case 1:
+		case WHEEL_RIGHT:
 			timer_t_i8 = timer_Speed_W1;
 			break;
 	}
@@ -163,29 +163,29 @@ int8_t wheel_ReadSpeed(const uint8_t wheel) {
 
 void trigger_Set_T(const uint8_t wheel, const uint16_t time) {
 	switch (wheel) {
-		case 0:
-		case 1:
+		case WHEEL_LEFT:
+		case WHEEL_RIGHT:
 			timer_t_trigger_counter[wheel] = time;
 			flag_local_set(&timer_trigger, TIMER_T_TRIGGER_L + wheel);
 			flag_clear(T_TRIGGER_L + wheel);
 			break;
-		case 2:
-			trigger_Set_T(0, time);
-			trigger_Set_T(1, time);
+		case WHEEL_BOTH:
+			trigger_Set_T(WHEEL_LEFT, time);
+			trigger_Set_T(WHEEL_RIGHT, time);
 			break;
 	}
 }
 
 void trigger_Clear_T(const uint8_t wheel) {
 	switch (wheel) {
-		case 0:
-		case 1:
+		case WHEEL_LEFT:
+		case WHEEL_RIGHT:
 			flag_local_clear(&timer_trigger, TIMER_T_TRIGGER_L + wheel);
 			flag_clear(T_TRIGGER_L + wheel);
 			break;
-		case 2:
-			trigger_Clear_T(0);
-			trigger_Clear_T(1);
+		case WHEEL_BOTH:
+			trigger_Clear_T(WHEEL_LEFT);
+			trigger_Clear_T(WHEEL_RIGHT);
 			break;
 	}
 }
@@ -193,11 +193,11 @@ void trigger_Clear_T(const uint8_t wheel) {
 uint16_t trigger_Get_T(const uint8_t wheel) {
 	uint16_t ret = 0;
 	switch (wheel) {
-		case 0:
-			ret = timer_t_trigger_counter[0];
+		case WHEEL_LEFT:
+			ret = timer_t_trigger_counter[WHEEL_LEFT];
 			break;
-		case 1:
-			ret = timer_t_trigger_counter[1];
+		case WHEEL_RIGHT:
+			ret = timer_t_trigger_counter[WHEEL_RIGHT];
 			break;
 	}
 	return ret;
