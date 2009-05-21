@@ -7,16 +7,6 @@
  * like fifo's, order's, and stati.
  */
 
-// TODO Find out wheter or not the FIFO_BUFFER can be removed
-// TODO Flagged for DELETION
-typedef struct FIFO_BUFFER {
-	uint8_t volatile count;
-	uint8_t size;
-	uint8_t *p_read;
-	uint8_t *p_write;
-	uint8_t read2end, write2end;
-} fifo_t;
-
 // TODO wth is TACHO ?
 // TODO Flagged for DELETION
 typedef struct TACHO {

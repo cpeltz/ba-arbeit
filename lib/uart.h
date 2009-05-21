@@ -9,15 +9,9 @@
 
 #define UBRR_VAL ((F_CPU+UART_BAUD_RATE*8)/(UART_BAUD_RATE*16)-1)
 #define BAUD_REAL (F_CPU/(16*(UBRR_VAL+1)))
-#define BAUD_ERROR ((UART_BAUD_RATE_REAL*1000)/UART_BAUD_RATE-1000)
-
-#define UART_TX_BUFFER_SIZE 128
-#define UART_RX_BUFFER_SIZE 128
+#define BAUD_ERROR ((BAUD_REAL*1000)/UART_BAUD_RATE-1000)
 
 void uart_Init(void);
-uint8_t uart_PutChar(const uint8_t character);
-void uart_PutChar_Wait(const uint8_t character);
-uint8_t uart_GetChar(void);
-uint8_t uart_Write(const uint8_t * data);
+void uart_start_transmission(void);
 
 #endif

@@ -1,8 +1,8 @@
 #include "io.h"
 #include "twi.h"
 #include "uart.h"
-#include "led.h"
 #include "options.h"
+#include "led.h"
 
 /**
  * Stores every byte recieved, until it gets fetched.
@@ -54,10 +54,12 @@ void io_init(void) {
  * @return <em>uint8_t</em> Returns the number of available bytes in the in_buffer.
  */
 uint8_t io_get_available(void) {
+	if (inpos_end == 0)
+		return IO_INBUFFER_SIZE - inpos_begin;
 	if (inpos_begin > inpos_end)
-		return IO_INBUFFER_SIZE - (inpos_begin - inpos_end);
+		return IO_INBUFFER_SIZE - (inpos_begin - (inpos_end - 1));
 	else
-		return inpos_end - inpos_begin;
+		return (inpos_end - 1) - inpos_begin;
 }
 
 /**
@@ -119,10 +121,12 @@ uint8_t io_get_next_transmission_byte(void) {
 /**
  * Returns the number of bytes the current object has.
  *
- * @return <em>uint8_t</em> Returns the number of bytes of the current object.
+ * @return <em>uint8_t</em> Returns the number of bytes of the current object. 0 if there isn't an object.
  */
 uint8_t io_obj_get_current_size() {
 	uint8_t obj_end = obj_memory[objpos_begin];
+	if((objpos_begin + 1) % IO_OUTBUFFER_SIZE == objpos_end)
+		return 0;
 	if(obj_end > outpos_begin)
 		return obj_end - outpos_begin;
 	return IO_OUTBUFFER_SIZE - (outpos_begin - obj_end);
@@ -144,6 +148,7 @@ void io_obj_remove_current(void) {
 	if ((objpos_begin + 1) % IO_OUTBUFFER_SIZE == objpos_end)
 		return;
 	objpos_begin++;
+	transmission_offset = 0;
 }
 
 /**
@@ -166,4 +171,19 @@ void io_obj_start(void) {
 void io_obj_end(void) {
 	obj_memory[objpos_end - 1] = outpos_end - 1;
 	objpos_end = (objpos + 1) % IO_OUTBUFFER_SIZE;
+	if (!flag_read(INTERFACE_TWI))
+		uart_start_transmission();
+}
+
+void io_reset_transmission_status(void) {
+	transmission_offset = 0;
+}
+
+uint8_t io_obj_remaining(void) {
+	if (objpos_end == 0)
+		return IO_OUTBUFFER_SIZE - objpos_begin;
+	if (objpos_begin > objpos_end)
+		return IO_OUTBUFFER_SIZE - (objpos_begin - (objpos_end - 1));
+	else
+		return (objpos_end - 1) - objpos_begin;
 }

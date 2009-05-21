@@ -17,4 +17,6 @@ uint8_t io_get_next_transmission_byte(void);
 uint8_t io_obj_get_current_size();
 void io_obj_start(void);
 void io_obj_end(void);
+void io_reset_transmission_status(void);
+uint8_t io_obj_remaining(void);
 #endif

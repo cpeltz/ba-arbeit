@@ -102,6 +102,7 @@ ISR(TWI_vect) {
 
 			// Only reset the status bit to retry the send the next time, as we couldn't complete
 			transmission_underway = 0;
+			io_reset_transmission_status();
 			break;
 
 		case 0x00:
@@ -110,6 +111,7 @@ ISR(TWI_vect) {
 
 			// To make sure we send the object correctly
 			transmission_underway = 0;
+			io_reset_transmission_status();
 			// Recover from Bus Error with TWSTA = 0, TWSTO = 1 and TWINT = 1. See Chip Documentation Page 264.
 			TWCR = ~(1 << TWSTA) | (1 << TWSTO) | (1 << TWEN);
 			break;
