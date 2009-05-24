@@ -5,20 +5,40 @@
 #include "flags.h"
 #include "debug.h"
 
+/**
+ * @defgroup LED_Library LED Library.
+ * The LED Library provides functions to deal with the
+ * onboard LED's.
+ * @{
+ */
+
 static uint16_t led_State = 0;
 
+/**
+ * Switches all LED's off.
+ */
 void led_switchoff(void) {
 	// Alle LEDs ausschalten
 	led_State &= (1<<15);
 }
 
+/**
+ * Setup the LED's for useage.
+ */
 void led_init(void) {
 	// Initialisiere LED Ausgänge und schalte LEDs aus
 	LED_DDR |= (1 << LED_RED1) | (1 << LED_RED2) | (1 << LED_ORANGE) | (1 << LED_GREEN) | (1 << LED_BLUE);
 	led_switchoff();
 }
 
-// LED an/aus schalten
+/**
+ * Set a specific LED to a specific state.
+ *
+ * @param[in] led The LED to be used. Valid values are #LED_RED1,
+ * #LED_RED2, #LED_ORANGE, #LED_GREEN and #LED_BLUE.
+ * @param[in] state The state the LED should enter.
+ * @todo Find out more about the valid values for state.
+ */
 void led_switch(uint8_t led, uint8_t state) {
 	switch(led) {
 		case LED_RED1:
@@ -44,7 +64,9 @@ void led_switch(uint8_t led, uint8_t state) {
 	} 
 }
 
-// LEDs testen
+/**
+ * Runs a simple test for the LED's.
+ */
 void led_test(void) {
 	debug_WriteString_P(("\nTeste Leuchtdioden...\r\n"));
 	while(!(flag_read_and_clear(TIMER_262MS)));
@@ -65,6 +87,11 @@ void led_test(void) {
 	while(!(flag_read_and_clear(TIMER_262MS)));
 }
 
+/**
+ * Reads the state of all(?) LED's.
+ *
+ * @return <em>uint16_t</em> The state of the LED's.
+ */
 uint16_t led_GetState(void) {
 	return led_State;
 }
@@ -76,3 +103,4 @@ void led_ToggleBit(void) {
 uint8_t led_ReadToggleBit(void) {
 	return (led_State>>15);
 }
+/*@}*/

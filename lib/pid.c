@@ -1,5 +1,21 @@
 #include "pid.h"
 
+/**
+ * @defgroup PID_Module PID Control
+ *
+ * Contains the functions to control the PID controller.
+ * @{
+ */
+
+/**
+ * Initializes the PID Controller with the given parameters.
+ *
+ * @param[in] pfactor The Proportional factor.
+ * @param[in] ifactor The integral factor.
+ * @param[in] dfactor The differential factor.
+ * @param[in] sumErrorMax The max sum of all errors.
+ * @param[out] pid The structure to save the pid parameters.
+ */
 void pid_Init(	const int16_t pfactor, const int16_t ifactor, const int16_t dfactor,
 				const int16_t sumErrorMax, pid_data_t * pid) {
 	pid->P_Factor = pfactor;
@@ -11,6 +27,10 @@ void pid_Init(	const int16_t pfactor, const int16_t ifactor, const int16_t dfact
 	pid->sumError_Max = sumErrorMax;
 }
 
+/**
+ * Controls the PID values.
+ * @todo Discern what this functions does.
+ */
 uint8_t pid_Controller(const uint8_t setPoint, const int16_t processValue, pid_data_t * pid) {
 	int16_t error = 0;
 	int16_t p_term = 0;
@@ -44,3 +64,4 @@ uint8_t pid_Controller(const uint8_t setPoint, const int16_t processValue, pid_d
 
 	return ret;
 }
+/*@}*/

@@ -23,13 +23,13 @@ static int16_t irq_WheelDifference = 0;
 /**
  * Probably used for triggering on position.
  *
- * ToDo: refactor
+ * \todo Needs refactoring
  */
 static int16_t irq_p_trigger_position[2] = { 0, 0 };
 /**
  * Probably used for triggering on position.
  *
- * ToDo: refactor
+ * \todo Needs refactoring
  */
 static uint8_t irq_p_trigger = 0;
 /**
@@ -212,6 +212,13 @@ void irq_init(void) {
 	// External Interrupt Request 7 - 4 Enable 
 }
 
+/**
+ * Reads the current position for the requested wheel.
+ *
+ * @param[in] wheel Selects for which wheel the position will be returned.
+ * Possible values are #WHEEL_LEFT and #WHEEL_RIGHT
+ * @return <em>int16_t</em> The Position of the given wheel.
+ */
 int16_t	wheel_ReadPosition(uint8_t wheel) {
 	switch (wheel) {
 		case WHEEL_LEFT:
@@ -224,6 +231,12 @@ int16_t	wheel_ReadPosition(uint8_t wheel) {
 	return irq_t_i16;
 }
 
+/**
+ * Resets the position counter for the given wheel.
+ *
+ * @param[in] wheel Selects the wheel for reset. Possible values are
+ * #WHEEL_LEFT, #WHEEL_RIGHT and #WHEEL_BOTH.
+ */
 void wheel_ClearPosition(uint8_t wheel) {
 	sreg = SREG;
 	cli();
@@ -242,10 +255,23 @@ void wheel_ClearPosition(uint8_t wheel) {
 	SREG = sreg;
 }
 
+/**
+ * Reads the difference between both wheels.
+ *
+ * @return <em>int16_t</em> The difference between the left and the right wheel.
+ * @todo Find out what negative and positive values mean.
+ */
 int16_t wheel_ReadDifference(void) {
 	return irq_WheelDifference;
 }
 
+/**
+ * Sets the difference of the wheels to a defined value.
+ *
+ * @param[in] difference The difference of the left and right wheel.
+ * @todo Find out what negative and positive values mean.
+ * @todo Why is cli() here?
+ */
 void wheel_WriteDifference(int16_t difference) {
 	sreg = SREG;
 	cli();
@@ -253,6 +279,11 @@ void wheel_WriteDifference(int16_t difference) {
 	SREG = sreg;
 }
 
+/**
+ * Resets the difference between the wheels.
+ *
+ * @todo Why is cli() here?
+ */
 void wheel_ClearDifference(void) {
 	sreg = SREG;
 	cli();
@@ -260,6 +291,13 @@ void wheel_ClearDifference(void) {
 	SREG = sreg;
 }
 
+/**
+ * Sets the position trigger.
+ *
+ * @param[in] wheel The wheel for which the trigger will be set. Valid values
+ * are #WHEEL_LEFT, #WHEEL_RIGHT and #WHEEL_BOTH.
+ * @param[in] trigger_position The end position for the wheel(s).
+ */
 void trigger_Set_P(const uint8_t wheel, const int16_t trigger_position) {
 	//Used to set the Position trigger for the wheel(s).
 	sreg = SREG;
@@ -279,6 +317,12 @@ void trigger_Set_P(const uint8_t wheel, const int16_t trigger_position) {
 	SREG = sreg;
 }
 
+/**
+ * Resets the position trigger for a given wheel.
+ *
+ * @param[in] wheel The wheel which trigger should be reset. Valid values
+ * are #WHEEL_LEFT, #WHEEL_RIGHT and #WHEEL_BOTH.
+ */
 void trigger_Clear_P(const uint8_t wheel) {
 	// Clears to previously set Positions for the trigger.
 	sreg = SREG;

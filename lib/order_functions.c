@@ -3,29 +3,52 @@
 #include "definitions.h"
 
 /**
-* This file contains the handler functions for the protocol.
-*/
+ * @addtogroup ORDER_Module
+ * @{
+ */
 
+/**
+ * @file
+ *
+ * Contains the protocol order functions.
+ * @todo Write Helper functions to help with repetetive tasks and clarify them
+ * @todo need more defines for constants so they are more readable
+ * @todo Put references to the Protocol document in here.
+ */
+ 
 extern uint8_t local_time_flags;
 extern uint16_t timer_t_trigger_counter[2];
 extern uint16_t irq_p_trigger_position[2];
 
-// TODO Write Helper functions to help with repetetive tasks and clarify them
-// TODO need more defines for constants so they are more readable
-
 /**
-* Extended Instruction Format Handler Function
-*/
+ * Extended Instruction Format Handler Function.
+ *
+ * This function currently does nothing besides setting the order
+ * status to #ORDER_STATUS_DONE. It can be used later on if all the
+ * other order choices have already been taken, but one needs a new
+ * protocol command.
+ * @param[in,out] order The specific order to be used.
+ */
 void extended_instruction(order_t *order) {
 	order->status |= ORDER_STATUS_DONE;
 }
 
+/**
+ * The control instruction handler function.
+ *
+ * The Control instruction is used for a variaty of different tasks
+ * like resetting the board or controlling the order queue from the
+ * outside.
+ * @param[in,out] order The order data that specifies what exactly
+ * should be done.
+ * @todo Verify that the reset code works.
+ */
 void control_instruction(order_t *order) {
 	// Extract the specific Control Instruction we should carry out
 	int instruction = order->data[0] & 0xf0;
 	switch(instruction) {
 		case 0x10: // Reset Instruction
-			WDRF = 1; // Set reset flag in MCUSR TODO: Verify if it works that way
+			WDRF = 1; // Set reset flag in MCUSR
 			break;
 		case 0x20: // Stop Queue execution and abaddon current order
 			queue_pause();
@@ -44,6 +67,14 @@ void control_instruction(order_t *order) {
 	queue_clear_priority();
 }
 
+/**
+ * Register query instruction handler function.
+ *
+ * Used to ask the system from the outside about interesting
+ * information, like the current order or the current speed.
+ * @param{in,out] order The order that specifies which register
+ * (not real register) should be returned.
+ */
 void register_instruction(order_t *order) {
 	int instruction = order[0] & 0xf0;
 	order_t *current_order = 0;
@@ -86,8 +117,22 @@ void register_instruction(order_t *order) {
 	queue_clear_priority();
 }
 
+/**
+ * Sets the trigger.
+ *
+ * To set for any wheel any trigger to a value, this function
+ * should be used.
+ * @param[in] trigger_type The type of the trigger, which should
+ * be set. Valid values are 1 for time trigger and 2 for position
+ * trigger.
+ * @param[in] wheel For which wheel the trigger should be set.
+ * Valid values are #WHEEL_LEFT and #WHEEL_RIGHT.
+ * @param[in] trigger_value The raw value to which the trigger
+ * will be set.
+ * @todo Create defines for the trigger_type parameter
+ * @todo Fix the setting of the triggers through global variables
+ */
 void setTrigger(uint8_t trigger_type, uint8_t wheel, int16_t trigger_value) {
-	//FIXME Just simply wrong, don't set triggers through global variables
 	switch(trigger_type) {
 		case 1:
 			// Time trigger
@@ -103,6 +148,21 @@ void setTrigger(uint8_t trigger_type, uint8_t wheel, int16_t trigger_value) {
 	}
 }
 
+/**
+ * Checks the trigger on the given wheel.
+ *
+ * The trigger type of the wheel has to be known.
+ * @param[in] trigger_type 1 for time trigger and 2 for position
+ * trigger.
+ * @param[in] wheel The wheel which trigger we request. Valid
+ * values are #WHEEL_LEFT and #WHEEL_RIGHT.
+ * @return <em>int</em> Zero if trigger is reached.
+ * @todo Make sure this function returns the right values
+ * @todo Really used to check if triggers reached? looks more like
+ * checking the values of the triggers
+ * @todo Make some defines for the trigger_type parameter.
+ * @todo Compare with the trigger function in order.c
+ */
 int checkTrigger(uint8_t trigger_type, uint8_t wheel) {
 	switch(trigger_type) {
 		case 1:
@@ -116,6 +176,16 @@ int checkTrigger(uint8_t trigger_type, uint8_t wheel) {
 	}
 }
 
+/**
+ * Drive instruction handler function.
+ *
+ * Very long but versitile function used to drive around the world
+ * (maybe not in 80 days).
+ * @param[in,out] order The order which specifies what exactly
+ * should be done.
+ * @todo Implement the setting of the differential correction
+ * @todo The function is partially really ugly. Refactor it.
+ */
 void drive_instruction(order_t *order) {
 	// Extract the type of triggers to be used
 	uint8_t trigger_type_left = order->data[0] & 0x30;
@@ -163,7 +233,7 @@ void drive_instruction(order_t *order) {
 		int16_t trigger_value_right = 0;
 
 		if (trigger_type_right == 0xc0) { // Set new differential correction
-			// TODO Implement the setting of the differential correction
+			/* IMPLEMENT */
 			order->status |= ORDER_STATUS_DONE;
 		}
 		if (trigger_type_left == 0x30) { // PID with differential correction
@@ -178,6 +248,13 @@ void drive_instruction(order_t *order) {
 	}
 }
 
+/**
+ * SetPID instruction handler function.
+ *
+ * Used to set the PID control parameters from the outside.
+ * @param[in,out] order The order which contains the new parameters.
+ * @todo maybe make it possible to only set one parameter at a time.
+ */
 void set_pid_instruction(order_t *order) {
 	uint8_t wheel = order->data[0] >> 4;
 	int16_t P, I, D, S;
@@ -192,3 +269,4 @@ void set_pid_instruction(order_t *order) {
 	drive_SetPIDParameter(wheel, P, I, D, S);
 	order->status |= ORDER_STATUS_DONE;
 }
+/*@}*/

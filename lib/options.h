@@ -1,5 +1,12 @@
-#ifndef IO_H
-#define IO_H
+#ifndef OPTIONS_H
+#define OPTIONS_H
+
+/**
+ * @defgroup OPTIONS_Module Options
+ * This Module contains define-options which influence
+ * many other modules.
+ * @{
+ */
 
 /**
  * Defines the size of the incoming Buffer.
@@ -67,4 +74,5 @@
  */
 #define UART_BAUD_RATE 115200L
 
+/*@}*/
 #endif

@@ -7,6 +7,13 @@
 #include "irq.h"
 
 /**
+ * @defgroup DRIVE_Module Drive Module
+ * This module provides access to the drive managment
+ * and control.
+ * @{
+ */
+
+/**
  *	Used to remember the PID-Parameters for each wheel
  */
 static pid_data_t drive_PID[2];
@@ -26,11 +33,11 @@ int16_t drive_brake_position_right;
 /**
  * Sets the PID-Parameter for either one wheel or both wheels.
  *
- * @param [in] wheel Either 0 for the left wheel, 1 for the right wheel or 2 for both wheels.
- * @param [in] Pfactor the proportional Factor of the PID-System
- * @param [in] Ifactor the integral Part of the PID-System
- * @param [in] Dfactor the differential factor
- * @param [in] SErrorMAX the max value for the sum of all errors
+ * @param[in] wheel Either 0 for the left wheel, 1 for the right wheel or 2 for both wheels.
+ * @param[in] Pfactor the proportional Factor of the PID-System
+ * @param[in] Ifactor the integral Part of the PID-System
+ * @param[in] Dfactor the differential factor
+ * @param[in] SErrorMAX the max value for the sum of all errors
  */
 void drive_SetPIDParameter(	const uint8_t wheel, const int16_t Pfactor, const int16_t Ifactor,
 							const int16_t Dfactor, const int16_t SErrorMAX) {
@@ -51,8 +58,8 @@ void drive_SetPIDParameter(	const uint8_t wheel, const int16_t Pfactor, const in
  *	Sets the max value for the sum off all errors.
  *
  *	Beware that this function may be obsolete.
- *	@param [in] wheel Either 0 for the left wheel, 1 for the right wheel or 2 for both wheels.
- *	@param [in] sumError the max value for the sum of all errors
+ *	@param[in] wheel Either 0 for the left wheel, 1 for the right wheel or 2 for both wheels.
+ *	@param[in] sumError the max value for the sum of all errors
  */
 
 void drive_SetPIDSumError(const uint8_t wheel, const int16_t sumError) {
@@ -74,8 +81,8 @@ void drive_SetPIDSumError(const uint8_t wheel, const int16_t sumError) {
  *
  * This function uses the PID-System to control the use of
  * the wheels while driving.
- * @param [in] wheel Either 0 for the left wheel, 1 for the right wheel or 2 for both wheels.
- * @param [in] speed Describes the speed with which the wheel should be used.
+ * @param[in] wheel Either 0 for the left wheel, 1 for the right wheel or 2 for both wheels.
+ * @param[in] speed Describes the speed with which the wheel should be used.
  */
 void drive_UsePID(const uint8_t wheel, const int8_t speed) {
 	int16_t wheel_ModSpeed[2];
@@ -150,12 +157,12 @@ void drive_UsePID(const uint8_t wheel, const int8_t speed) {
  * Query's the status of the drive related parameters.
  *
  * @param [out] state A instance of the struct, which should be filled with values.
+ * @todo Implementation not complete.
  */
 void drive_status(global_state_t *state) {
 	// Should fill the state parameter to reflect the current
 	// status of the driver. Useful for state requests from 
 	// outside.
-	//TODO Implement completely
 	state->speed_left = motor_ReadSpeed(WHEEL_LEFT);
 	state->speed_right = motor_ReadSpeed(WHEEL_RIGHT);
 	state->position_left = irq_Position_W0;
@@ -193,3 +200,5 @@ void drive_break_active_set() {
 	drive_brake_position_left = irq_Position_W0;
 	drive_brake_position_right = irq_Position_W1;
 }
+
+/*@}*/

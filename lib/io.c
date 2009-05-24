@@ -5,6 +5,14 @@
 #include "led.h"
 
 /**
+ * \defgroup IO_Module IO Module
+ * This Module is an abstraction layer between
+ * the outgoing/incomming interfaces and the rest
+ * of the System.
+ * @{
+ */
+
+/**
  * Stores every byte recieved, until it gets fetched.
  */
 static uint8_t in_buffer[IO_INBUFFER_SIZE];
@@ -187,3 +195,5 @@ uint8_t io_obj_remaining(void) {
 	else
 		return (objpos_end - 1) - objpos_begin;
 }
+
+/*@}*/

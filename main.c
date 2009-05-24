@@ -14,6 +14,49 @@
 #include <avr/pgmspace.h>
 #include <avr/wdt.h>
 
+/** 
+ * @mainpage Drive Software Documenation
+ * @section intro_sec Introduction
+ * The aim of the Project is to provide a modern, well written,
+ * good documented and extensible control software for a drive hardware
+ * module, which was created in an earlier work by Timo ***. The challenges
+ * lie in the constrained resources of the hardware, a high tolerance
+ * against errors and throughput.
+ *
+ * @section design_sec Design
+ * The design of the functions, modules and structures is geared towards
+ * an object-oriented approch, where applicable and where it doesn't impedes
+ * speed. The time spent in interrupt service routines (ISR) has been
+ * minimized to the point, that they are still readable but only do the
+ * needed steps (which can be seen in the USART ISR's). There are many
+ * options which influence the whole software system and the user may
+ * adjust these (located in options.h) to fit the software more to his/her
+ * needs or just decrease memory footprint. Extensibility is mostly
+ * implemented in the protocol part of the system, but most functions are
+ * as general as they can be and as much side-effect free as possible.
+ * With placeholder functions to support more then 15 different normal
+ * orders and simple steps to add a normal function the protocol is as
+ * extensible as it can get.
+ *
+ * @section howto_sec Howtos
+ * Collection of different "HowTos".
+ * @subsection howto_add_norder_sec How to add a normal order to the system.
+ * Description will come soon ... it's to hot at the moment.
+ *
+ * @section adddoc_sec Additional Documentation
+ * To be able to use the software documented here, one should read the
+ * protocol reference document provided with the software in the doc/
+ * directory. To completely understand what the software does on a low-level
+ * one has to read the chip documentation from atmel. Also provided in the
+ * doc/ directory.
+ */
+
+/**
+ * @defgroup MAIN_Module System
+ * Holds the main function and the logical program system.
+ * @{
+ */
+
 /**
  *	Show from which source the system got resettet.
  */
@@ -69,9 +112,9 @@ void update_dip_flags(void) {
 }
 
 /**
- *	This function prints, on every system start, information about the System.
+ * This function prints, on every system start, information about the System.
+ * @todo correct the "PSTR" uses
  */
-//TODO correct the "PSTR" uses
 void print_startup(void) {
 	// Startup Debug Infos
 	flag_set(DEBUG_ENABLE);
@@ -207,3 +250,4 @@ int main(void) {
 	// Should be never reached
 	return 0;
 }
+/*@}*/

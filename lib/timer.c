@@ -9,6 +9,12 @@
 #include "flags.h"
 #include "led.h"
 
+/**
+ * @defgroup TIMER_Module Timer Module
+ * Provides functions and variables for timing purposes.
+ * @{
+ */
+
 static int8_t timer_Speed_W0 = 0;
 static int8_t timer_Speed_W1 = 0;
 static int8_t timer_SpeedSum_W0 = 0;
@@ -111,6 +117,9 @@ ISR(TIMER1_OVF_vect) {
 	}
 }
 
+/**
+ * Initializes the timer registers.
+ */
 void timer_init(void) {
 	// Compare Matches einstellen
 	OCR1A = 250;
@@ -202,3 +211,4 @@ uint16_t trigger_Get_T(const uint8_t wheel) {
 	}
 	return ret;
 }
+/*@}*/

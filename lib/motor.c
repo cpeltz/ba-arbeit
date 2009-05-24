@@ -6,38 +6,75 @@
 #include "motor.h"
 #include "flags.h"
 
+/**
+ * @defgroup MOTOR_Module Motor Module
+ * This Module provides low-level access and manipulation
+ * of the drives.
+ * @{
+ */
+
+/**
+ * Stores the speed for both wheels.
+ */
 static int8_t motor_speed[2];
 
+/**
+ * Simple function to let motor 0 run forward.
+ * @todo Still used? If not remove.
+ */
 static void motor_RunForward_M0(void) {
 	INPUT_PORT |= (1 << INPUT2);
 	INPUT_PORT &= ~(1 << INPUT1);
 }
 
+/**
+ * Simple function to let motor 0 run backward.
+ * @todo Still used? If not remove.
+ */
 static void motor_RunReverse_M0(void) {
 	INPUT_PORT &= ~(1 << INPUT2);
 	INPUT_PORT |= (1 << INPUT1);
 }
 
+/**
+ * Simple function to let motor 0 break.
+ * @todo Still used? If not remove.
+ */
 static void motor_Break_M0(void) {
 	INPUT_PORT |= (1 << INPUT1) | (1 << INPUT2);
 	ENABLE_A_PWM = 255;
 }
 
+/**
+ * Simple function to let motor 1 run forward.
+ * @todo Still used? If not remove.
+ */
 static void motor_RunForward_M1(void) {
 	INPUT_PORT &= ~(1 << INPUT4);
 	INPUT_PORT |= (1 << INPUT3);
 }
 
+/**
+ * Simple function to let motor 1 run backward.
+ * @todo Still used? If not remove.
+ */
 static void motor_RunReverse_M1(void) {
 	INPUT_PORT |= (1 << INPUT4);
 	INPUT_PORT &= ~(1 << INPUT3);
 }
 
+/**
+ * Simple function to let motor 1 break.
+ * @todo Still used? If not remove.
+ */
 static void motor_Break_M1(void) {
 	INPUT_PORT |= (1 << INPUT3) | (1 << INPUT4);
 	ENABLE_B_PWM = 255;
 }
 
+/**
+ * Initialize the motor module.
+ */
 void motor_init(void) {
 	// Ausgänge für L298 Motortreiber initialisieren
 	INPUT_DDR |= (1 << INPUT1) | (1 << INPUT2) | (1 << INPUT3) | (1 << INPUT4);
@@ -61,10 +98,18 @@ void motor_init(void) {
 	ENABLE_B_PWM = 0;
 }
 
-// Wenn speed = 0 -> PWM = 0,
-// 1 < speed < 38 -> PWM = speed + 38,
-// 38 < speed -> PWM = (speed * 2) + 1.
+/**
+ * Helper function. Used to calculate the PWM value.
+ *
+ * The PWM devices needs a good value. Otherwise the motor
+ * won't run smoothly.
+ * @param[in] speed The speed for which the PWM value should be calculated.
+ * @return <em>uint8_t</em> The PWM value for the speed parameter.
+ */
 static uint8_t motor_CalculatePWM(int8_t speed) {
+	// Wenn speed = 0 -> PWM = 0,
+	// 1 < speed < 38 -> PWM = speed + 38,
+	// 38 < speed -> PWM = (speed * 2) + 1.
 	if ((speed < 1)) {
 		return 0;
 	} else if ((speed < 38)) {
@@ -74,6 +119,11 @@ static uint8_t motor_CalculatePWM(int8_t speed) {
 	}
 }
 
+/**
+ * Sets the speed for motor 0.
+ *
+ * @param[in] speed The desired speed of motor 0.
+ */
 static void motor_SetSpeed_M0(int8_t speed) {
 	uint8_t positive;
 
@@ -93,6 +143,11 @@ static void motor_SetSpeed_M0(int8_t speed) {
 	}
 }
 
+/**
+ * Sets the speed for motor 1.
+ *
+ * @param[in] speed The desired speed of motor 1.
+ */
 static void motor_SetSpeed_M1(int8_t speed) {
 	uint8_t positive;
 
@@ -112,6 +167,13 @@ static void motor_SetSpeed_M1(int8_t speed) {
 	}
 }
 
+/**
+ * Sets the speed for a motor.
+ *
+ * @param[in] motor The motor. Valid values are #WHEEL_LEFT,
+ * #WHEEL_RIGHT and #WHEEL_BOTH.
+ * @param[in] speed The desired speed of motor 0.
+ */
 void motor_SetSpeed(uint8_t motor, int8_t speed) {
 	switch (motor) {
 		case WHEEL_LEFT:
@@ -131,10 +193,24 @@ void motor_SetSpeed(uint8_t motor, int8_t speed) {
 	}
 }
 
+/**
+ * Reads the set speed for a motor.
+ *
+ * @param[in] motor The motor, which speed one wants. Valid
+ * values are #WHEEL_LEFT and #WHEEL_RIGHT.
+ * @return <em>int8_t</em> The speed of the requested motor.
+ */
 int8_t motor_ReadSpeed(uint8_t motor) {
 	return motor_speed[motor];
 }
 
+/**
+ * Used to brake the wheels.
+ *
+ * @param[in] motor The motor which should brake. Valid
+ * values are #WHEEL_LEFT, #WHEEL_RIGHT and #WHEEL_BOTH.
+ * @todo Why is it called Break and not Brake?
+ */
 void motor_Break(uint8_t motor) {
 	switch (motor) {
 		case WHEEL_LEFT:
@@ -149,3 +225,4 @@ void motor_Break(uint8_t motor) {
 			break;
 	}
 }
+/*@}*/

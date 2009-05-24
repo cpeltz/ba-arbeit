@@ -1,5 +1,11 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
+/**
+ * @defgroup DEFINITIONS_Module Definitions
+ * This module contains the constant definitions
+ * which are used throughout the system.
+ * @{
+ */
 
 /** \file definitions.h
  *	This file holds many global definitions used through the program.
@@ -81,8 +87,18 @@
 #define DIP4                    PD7
 
 // Wheels
+/**
+ * Define to identify the left wheel.
+ */
 #define WHEEL_LEFT              0
+/**
+ * Define to identify the right wheel.
+ */
 #define WHEEL_RIGHT             1
+/**
+ * Convinience define to use in functions, which can operate on both wheels.
+ */
 #define WHEEL_BOTH              2
 
+/*@}*/
 #endif

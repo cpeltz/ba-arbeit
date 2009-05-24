@@ -1,23 +1,52 @@
 #include "parse.h"
 #include "order.h"
 
-// Ring Buffer of orders, holds 5 orders
+/**
+ * @defgroup PARSER_Module Parser
+ * This Modules is used to convert the raw byte stream from
+ * the incoming interfaces to orders which which the system
+ * can work.
+ * @{
+ */
+
+/**
+ * Ring Buffer of orders, holds #PARSER_ORDER_BUFFER_SIZE orders
+ */
 order_t parser_order_buffer[PARSER_ORDER_BUFFER_SIZE];
-// Holds the current position in the Ring
+/**
+ * Holds the current position in the Ring
+ */
 int8_t current_buffer_position = 0;
-// Holds the position of the first order in the Ring
+/**
+ * Holds the position of the first order in the Ring
+ */
 int8_t first_buffer_position = -1;
-// Holds the current position IN the order structure
+/**
+ * Holds the current position IN the order structure
+ */
 uint8_t current_order_position = 0;
 
+/**
+ * Initializes the Parser Module.
+ *
+ * Mainly needed to init the ring buffer of orders.
+ */
 void parser_init(void) {
 	// Initialize the Ringbuffer
 	uint8_t i = 0;
-	for(; i < 5; i++) {
+	for(; i < PARSER_ORDER_BUFFER_SIZE; i++) {
 		order_init(&parser_order_buffer[0]);
 	}
 }
 
+/**
+ * Updates the parser.
+ *
+ * Takes all available bytes from the incoming buffer and
+ * then puts them in the parser.
+ * @todo Abort when parser_add_byte fails, or better get a
+ * test function to check for more space.
+ */
 void parser_update(void) {
 	uint8_t value = 0, times = io_get_available();
 	for (; 0 < times; times--) {
@@ -26,12 +55,25 @@ void parser_update(void) {
 	}
 }
 
+/**
+ * Checks if an extended order is complete.
+ *
+ * Not implemented because there are no extended orders at the
+ * moment.
+ */
 int parser_extended_order_complete(const order_t* order, uint8_t num_bytes) { 
 	//Doesn't really do anything, because there aren't any extended orders at the moment
 	return 1;
 }
 
-//TODO Maybe if the value was once calculated it should be cached somewhere
+/**
+ * Returns the number of bytes needed for the particular order.
+ *
+ * @param[in] order The command byte of the order (first byte).
+ * @return <em>uint8_t</em> The number of bytes needed for this order to
+ * be complete.
+ * @todo Maybe if the value was once calculated it should be cached somewhere
+ */
 uint8_t bytes_needed(uint8_t order) {
 	uint8_t ret_value = 0;
 	switch(order & 0x0f) {
@@ -64,10 +106,14 @@ uint8_t bytes_needed(uint8_t order) {
 	return 1;
 }
 
+/**
+ * Test whether a order is complete.
+ *
+ * @param[in] order The order, which gets tested.
+ * @param[in] num_bytes The number of bytes already in the order.
+ * @return <em>int</em> 1 if the order is complete, otherwise 0.
+ */
 int parser_order_complete(const order_t* order, uint8_t num_bytes) { 
-	//TODO Recovery for Instructions which are too long
-	// This function returns a 1 if an order is complete or
-	// a 0 if it isn't.
 	if( order->data[0] & 0x0f == 0 )
 		return parser_extended_order_complete(order, num_bytes);
 	else if( order->data[0] & 0x0f <= 8 ) {
@@ -80,10 +126,13 @@ int parser_order_complete(const order_t* order, uint8_t num_bytes) {
 	return 0;
 }
 
+/**
+ * Adds a byte to the order.
+ *
+ * @param[in] byte The byte which should be added to the order.
+ * @todo Look for optimizations, this function has to be as fast as possible
+ */
 void parser_add_byte(uint8_t byte) { 
-	// TODO FIXME Maybe a mutex or a other kind of lock would be good
-	// TODO Syntax-check has to be in here or right after this
-	// TODO Look for optimizations, this function has to be as fasat as possible
 	// This function simple adds another byte to the current order
 	// or discards the byte if the buffer is full.
 	if( current_buffer_position == first_buffer_position ) {
@@ -113,6 +162,12 @@ uint8_t parser_has_new_order() {
 	return 0;
 }
 
+/**
+ * Checks whether the order is valid and/or a priority order.
+ *
+ * It will set the status accordingly.
+ * @param[in,out] order The order to be checked.
+ */
 void parser_check_order(order_t* order) {
 	int8_t cmd = -1;
 	order->status |= ORDER_STATUS_VALID;
@@ -122,11 +177,15 @@ void parser_check_order(order_t* order) {
 		order->status |= ORDER_STATUS_PRIORITY;
 }
 
+/**
+ * Fills the given order with the data of the next buffered order.
+ *
+ * @param[out] order The order structure which should be filled.
+ */
 void parser_get_new_order(order_t* order) {
 	// Function fills the parameter with the next order in the ringbuffer
 	// but will do a check on it first. if the Order isn't flagged valid
 	// the caller must discard it.
-	// TODO or should this function discard it?
 	parser_check_order(&parser_order_buffer[first_buffer_position]);
 	order_copy(&parser_order_buffer[first_buffer_position], order);
 	first_buffer_position = (first_buffer_position + 1) % PARSER_ORDER_BUFFER_SIZE;
@@ -134,3 +193,4 @@ void parser_get_new_order(order_t* order) {
 		first_buffer_position = -1;
 	}
 }
+/*@}*/

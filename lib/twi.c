@@ -8,9 +8,21 @@
 #include "definitions.h"
 #include "led.h"
 
-// Local variable to remember whether or not a transmission is going on
+/**
+ * @defgroup TWI_Module I²C-Bus Module
+ * This module controls the low level access and policy to the
+ * I²C-Bus.
+ * @{
+ */
+
+/**
+ * Local variable to remember whether or not a transmission is going on.
+ */
 uint8_t transmission_underway = 0;
 
+/**
+ * ISR for the TWI (I²C) Interrupt.
+ */
 ISR(TWI_vect) {
 	// Led the blue LED blink if we are in here
 	led_switch(LED_BLUE, SINGLE);
@@ -121,6 +133,10 @@ ISR(TWI_vect) {
 	TWCR |= (1 << TWINT);
 }
 
+/**
+ * Initializes the I²c Bus Module.
+ * @todo remove the flag_read(int) call
+ */
 void twi_init(void) {
 	if (flag_read(INTERFACE_TWI)) {
 		// Slave Address = 84
@@ -129,3 +145,4 @@ void twi_init(void) {
 		TWCR = (1 << TWEA) | (1 << TWEN) | (1 << TWIE);
 	}
 }
+/*@}*/
