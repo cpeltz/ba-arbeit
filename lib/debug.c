@@ -1,5 +1,4 @@
-#define __AVR_ATmega2561__
-#include <inttypes.h>
+/*#define __AVR_ATmega2561__*/
 #include <stdlib.h>
 #include <avr/pgmspace.h>
 #include "uart.h"
@@ -10,13 +9,13 @@
 static char buffer[10];
 
 void debug_PutChar(const uint8_t data) {
-	if (flag_Read(DEBUG_ENABLE))
-		uart_PutChar_Wait(data);
+	if (flag_read(DEBUG_ENABLE));
+		//uart_PutChar_Wait(data);
 }
 
 void debug_PutChar_P(const uint8_t * data) {
-	if (flag_Read(DEBUG_ENABLE))
-		uart_PutChar_Wait(*data);
+	if (flag_read(DEBUG_ENABLE));
+		//uart_PutChar_Wait(*data);
 }
 
 static void debug_SendESC(void) {

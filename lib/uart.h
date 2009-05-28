@@ -11,7 +11,7 @@
 #define BAUD_REAL (F_CPU/(16*(UBRR_VAL+1)))
 #define BAUD_ERROR ((BAUD_REAL*1000)/UART_BAUD_RATE-1000)
 
-void uart_Init(void);
+void uart_init(void);
 void uart_start_transmission(void);
 
 #endif

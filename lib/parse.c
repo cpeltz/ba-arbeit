@@ -1,4 +1,5 @@
 #include "parse.h"
+#include "io.h"
 #include "order.h"
 
 /**
@@ -25,6 +26,8 @@ int8_t first_buffer_position = -1;
  * Holds the current position IN the order structure
  */
 uint8_t current_order_position = 0;
+
+void parser_add_byte(uint8_t);
 
 /**
  * Initializes the Parser Module.
@@ -114,9 +117,9 @@ uint8_t bytes_needed(uint8_t order) {
  * @return <em>int</em> 1 if the order is complete, otherwise 0.
  */
 int parser_order_complete(const order_t* order, uint8_t num_bytes) { 
-	if( order->data[0] & 0x0f == 0 )
+	if( (order->data[0] & 0x0f) == 0 )
 		return parser_extended_order_complete(order, num_bytes);
-	else if( order->data[0] & 0x0f <= 8 ) {
+	else if( (order->data[0] & 0x0f) <= 8 ) {
 		// Call "bytes_needed()", a simple helper function
 		// to determine whether or not the order has the right
 		// amount of parameters and therefor bytes.

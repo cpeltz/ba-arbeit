@@ -5,6 +5,7 @@
 #include "drive.h"
 #include "motor.h"
 #include "irq.h"
+#include "timer.h" /**< @todo move the wheel function out of this file */
 
 /**
  * @defgroup DRIVE_Module Drive Module
@@ -18,8 +19,8 @@
  */
 static pid_data_t drive_PID[2];
 
-extern static int16_t irq_Position_W0;
-extern static int16_t irq_Position_W1;
+extern int16_t irq_Position_W0;
+extern int16_t irq_Position_W1;
 
 /**
  *	Stores the position the left wheel should hold during active braking.
@@ -111,10 +112,9 @@ void drive_UsePID(const uint8_t wheel, const int8_t speed) {
 
 			// bei ungerader Differenz immer abwechselnd
 			if (wheel_Difference % 2) {
-					wheel_ModSpeed[WHEEL_LEFT] += wheel_Difference;
-				} else {
-					wheel_ModSpeed[WHEEL_RIGHT] -= wheel_Difference;
-				}
+				wheel_ModSpeed[WHEEL_LEFT] += wheel_Difference;
+			} else {
+				wheel_ModSpeed[WHEEL_RIGHT] -= wheel_Difference;
 			}
 
 			// geraden Differenzanteil gerecht verteilen
@@ -148,7 +148,7 @@ void drive_UsePID(const uint8_t wheel, const int8_t speed) {
 
 				motor_SetSpeed(WHEEL_LEFT, -pid_Controller(-speed, -wheel_ModSpeed[WHEEL_LEFT], &drive_PID[WHEEL_LEFT]));
 				motor_SetSpeed(WHEEL_RIGHT, -pid_Controller(-speed, -wheel_ModSpeed[WHEEL_RIGHT], &drive_PID[WHEEL_RIGHT]));
-			}
+				}
 			break;
 	}
 }
@@ -172,7 +172,7 @@ void drive_status(global_state_t *state) {
 /**
  * Function used to handle active braking.
  */
-void drive_break_active() {
+void drive_brake_active(void) {
 	// Do active braking. Wheels shouldn't move from their position.
 	// Left Side
 	if (drive_brake_position_left == irq_Position_W0) {
@@ -195,7 +195,7 @@ void drive_break_active() {
 /**
  * Sets the current position as holding position used while doing active braking.
  */
-void drive_break_active_set() {
+void drive_brake_active_set(void) {
 	// Set the Position of the wheels for use with active braking.
 	drive_brake_position_left = irq_Position_W0;
 	drive_brake_position_right = irq_Position_W1;

@@ -1,4 +1,4 @@
-#define __AVR_ATmega2561__
+/*#define __AVR_ATmega2561__*/
 #include <inttypes.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -11,11 +11,11 @@
 /**
  * Position of wheel 0 (left)
  */
-static int16_t irq_Position_W0 = 0;
+int16_t irq_Position_W0 = 0;
 /**
  * Position of wheel 1 (right)
  */
-static int16_t irq_Position_W1 = 0;
+int16_t irq_Position_W1 = 0;
 /**
  * Difference between both wheels.
  */
@@ -25,7 +25,7 @@ static int16_t irq_WheelDifference = 0;
  *
  * \todo Needs refactoring
  */
-static int16_t irq_p_trigger_position[2] = { 0, 0 };
+int16_t irq_p_trigger_position[2] = { 0, 0 };
 /**
  * Probably used for triggering on position.
  *
@@ -77,11 +77,11 @@ ISR(INT4_vect) {
 			break;
 	}
 
-	if (flagLocal_Read(&irq_p_trigger, IRQ_P_TRIGGER_L)) {
+	if (flag_local_read(&irq_p_trigger, IRQ_P_TRIGGER_L)) {
 		// IRQ_P_Trigger, links aktiv
 		if (irq_Position_W0 == irq_p_trigger_position[0]) {
-			flag_Set(P_TRIGGER_L);
-			flagLocal_Clear(&irq_p_trigger, IRQ_P_TRIGGER_L);
+			flag_set(P_TRIGGER_L);
+			flag_local_clear(&irq_p_trigger, IRQ_P_TRIGGER_L);
 		}
 	}
 }
@@ -114,11 +114,11 @@ ISR(INT5_vect) {
 			break;
 	}
 
-	if (flagLocal_Read(&irq_p_trigger, IRQ_P_TRIGGER_L)) {
+	if (flag_local_read(&irq_p_trigger, IRQ_P_TRIGGER_L)) {
 		// IRQ_P_Trigger, links aktiv
 		if (irq_Position_W0 == irq_p_trigger_position[0]) {
-			flag_Set(P_TRIGGER_L);
-			flagLocal_Clear(&irq_p_trigger, IRQ_P_TRIGGER_L);
+			flag_set(P_TRIGGER_L);
+			flag_local_clear(&irq_p_trigger, IRQ_P_TRIGGER_L);
 		}
 	}
 }
@@ -151,11 +151,11 @@ ISR(INT6_vect) {
 			break;
 	}
 
-	if (flagLocal_Read(&irq_p_trigger, IRQ_P_TRIGGER_R)) {
+	if (flag_local_read(&irq_p_trigger, IRQ_P_TRIGGER_R)) {
 		// IRQ_P_Trigger, rechts aktiv
 		if (irq_Position_W1 == irq_p_trigger_position[1]) {
-			flag_Set(P_TRIGGER_R);
-			flagLocal_Clear(&irq_p_trigger, IRQ_P_TRIGGER_R);
+			flag_set(P_TRIGGER_R);
+			flag_local_clear(&irq_p_trigger, IRQ_P_TRIGGER_R);
 		}
 	}
 }
@@ -188,11 +188,11 @@ ISR(INT7_vect) {
 			break;
 	}
 
-	if (flagLocal_Read(&irq_p_trigger, IRQ_P_TRIGGER_R)) {
+	if (flag_local_read(&irq_p_trigger, IRQ_P_TRIGGER_R)) {
 		// IRQ_P_Trigger, rechts aktiv
 		if (irq_Position_W1 == irq_p_trigger_position[1]) {
-			flag_Set(P_TRIGGER_R);
-			flagLocal_Clear(&irq_p_trigger, IRQ_P_TRIGGER_R);
+			flag_set(P_TRIGGER_R);
+			flag_local_clear(&irq_p_trigger, IRQ_P_TRIGGER_R);
 		}
 	}
 }
@@ -306,8 +306,8 @@ void trigger_Set_P(const uint8_t wheel, const int16_t trigger_position) {
 		case WHEEL_LEFT:
 		case WHEEL_RIGHT:
 			irq_p_trigger_position[wheel] = trigger_position;
-			flagLocal_Set(&irq_p_trigger, IRQ_P_TRIGGER_L + wheel);
-			flag_Clear(P_TRIGGER_L + wheel);
+			flag_local_set(&irq_p_trigger, IRQ_P_TRIGGER_L + wheel);
+			flag_clear(P_TRIGGER_L + wheel);
 			break;
 		case WHEEL_BOTH:
 			trigger_Set_P(WHEEL_LEFT, trigger_position);
@@ -330,8 +330,8 @@ void trigger_Clear_P(const uint8_t wheel) {
 	switch (wheel) {
 		case WHEEL_LEFT:
 		case WHEEL_RIGHT:
-			flagLocal_Clear(&irq_p_trigger, IRQ_P_TRIGGER_L + wheel);
-			flag_Clear(P_TRIGGER_L + wheel);
+			flag_local_clear(&irq_p_trigger, IRQ_P_TRIGGER_L + wheel);
+			flag_clear(P_TRIGGER_L + wheel);
 			break;
 		case WHEEL_BOTH:
 			trigger_Clear_P(WHEEL_LEFT);

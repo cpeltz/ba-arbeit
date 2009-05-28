@@ -1,12 +1,16 @@
 #include "lib/definitions.h"
 #include "lib/debug.h"
 #include "lib/dip.h"
+#include "lib/drive.h"
 #include "lib/flags.h"
 #include "lib/io.h"
+#include "lib/irq.h"
 #include "lib/motor.h"
 #include "lib/order.h"
+#include "lib/parse.h"
 #include "lib/queue.h"
 #include "lib/status.h"
+#include "lib/timer.h"
 #include <inttypes.h>
 #include <stdlib.h>
 #include <avr/io.h>
@@ -73,17 +77,18 @@ uint8_t local_time_flags = 0;
  *	The Main setup function; calls every needed *_init() function
  */
 void initialize(void) {
+	// activate interrupts
+	sei();
+
 	// init all subsystems
 	dip_init();
 	motor_init();
 	timer_init();
+	order_array_init();
 	irq_init();
 	queue_init();
 	status_init();
 	io_init();
-
-	// activate interrupts
-	sei();
 
 	// set standard PID parameter
 	drive_SetPIDParameter(2, 80, 20, 10, 500);
@@ -113,7 +118,7 @@ void update_dip_flags(void) {
 
 /**
  * This function prints, on every system start, information about the System.
- * @todo correct the "PSTR" uses
+ * @todo Disable dbug at the end
  */
 void print_startup(void) {
 	// Startup Debug Infos
@@ -180,7 +185,7 @@ void copy_timer_flags(void) {
  */
 void process_orders(void) {
 	// This function gets an order and lets it execute
-	static order_t *current_order = NULL;
+	order_t *current_order = NULL;
 
 	if (queue_order_available())
 		current_order = queue_get_current_order();
@@ -242,9 +247,6 @@ int main(void) {
 		
 		// Update the global status of the program
 		status_update();
-
-		// Write Output Buffer to medium
-		io_flush();
 	}
 
 	// Should be never reached

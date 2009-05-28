@@ -10,7 +10,7 @@ void drive_SetPIDSumError(const uint8_t wheel, const int16_t sumError);
 void drive_UsePID(const uint8_t wheel, const int8_t speed);
 void drive_status(global_state_t *state);
 
-void drive_break_active();
-void drive_break_active_set();
+void drive_brake_active(void);
+void drive_brake_active_set(void);
 
 #endif

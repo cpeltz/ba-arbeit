@@ -1,6 +1,8 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
+#include <inttypes.h>
+
 /* Mostly unchanged. I took this part from the old Driver.
  * It's used to print out debugging Information.
  */

@@ -1,4 +1,5 @@
 #include "queue.h"
+#include "parse.h"
 #include "order.h"
 
 /**
@@ -87,7 +88,7 @@ uint8_t queue_push(const order_t * const order) {
  * order that gets executed right now. Needed to be able to
  * answer on the "get current order" register instruction.
  */
-const order_t * const queue_get_current_normal_order(void) {
+order_t * queue_get_current_normal_order(void) {
 	if (queue_entries != 0) {
 		return &order_queue[queue_readposition];
 	}
@@ -102,12 +103,12 @@ const order_t * const queue_get_current_normal_order(void) {
  * @return <em>const order_t *</em> The order to be worked with.
  * @todo Remove the const, it will hinder status setting.
  */
-const order_t * const queue_get_current_order(void) {
+order_t * queue_get_current_order(void) {
 	// Bypass normal Queue if we have a priority instruction
 	if (priority_order.status & ORDER_STATUS_PRIORITY)
 		return &priority_order;
 	// Execution is paused, don't return an order
-	if (pause)
+	if (paused)
 		return 0;
 	// Return the current Order
 	// TODO Maybe exchange with "return queue_get_current_normal_order();"
@@ -147,7 +148,7 @@ void queue_update(void) {
 	if (parser_has_new_order()) {
 		order_init(&local_order);
 		parser_get_new_order(&local_order);
-		if (local_order->status & ORDER_STATUS_PRIORITY)
+		if (local_order.status & ORDER_STATUS_PRIORITY)
 			queue_push_priority(&local_order);
 		else
 			queue_push(&local_order);
@@ -172,13 +173,13 @@ void queue_clear_priority(void) {
  * Pauses the execution of the queue.
  */
 void queue_pause(void) {
-	pause = 1;
+	paused = 1;
 }
 
 /**
  * Unpauses the execution of the queue.
  */
 void queue_unpause(void) {
-	pause = 0;
+	paused = 0;
 }
 /*@}*/

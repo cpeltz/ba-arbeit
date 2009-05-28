@@ -1,4 +1,5 @@
 #include "status.h"
+#include "drive.h"
 #include "motor.h"
 
 /**
@@ -16,7 +17,7 @@ global_state_t global_state;
 /**
  * Keeps the global status up to date.
  */
-void status_update() {
+void status_update(void) {
 	motor_status( &global_state );
 	drive_status( &global_state );
 }

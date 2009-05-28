@@ -1,4 +1,4 @@
-#define __AVR_ATmega2561__
+/*#define __AVR_ATmega2561__*/
 #include <avr/interrupt.h>
 #include <inttypes.h>
 #include "options.h"
@@ -6,6 +6,7 @@
 #include "flags.h"
 #include "irq.h"
 #include "definitions.h"
+#include "io.h"
 #include "led.h"
 
 /**

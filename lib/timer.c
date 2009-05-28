@@ -1,4 +1,4 @@
-#define __AVR_ATmega2561__
+/*#define __AVR_ATmega2561__*/
 
 #include <inttypes.h>
 #include <stdlib.h>
@@ -19,7 +19,7 @@ static int8_t timer_Speed_W0 = 0;
 static int8_t timer_Speed_W1 = 0;
 static int8_t timer_SpeedSum_W0 = 0;
 static int8_t timer_SpeedSum_W1 = 0;
-static uint16_t timer_t_trigger_counter[2] = { 0, 0 };
+uint16_t timer_t_trigger_counter[2] = { 0, 0 };
 static uint8_t timer_trigger = 0;
 
 static int8_t timer_t_i8 = 0;

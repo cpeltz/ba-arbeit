@@ -1,4 +1,4 @@
-#define __AVR_ATmega2561__
+/*#define __AVR_ATmega2561__*/
 #include <avr/io.h>
 #include <inttypes.h>
 #include <stdlib.h>
@@ -225,4 +225,10 @@ void motor_Break(uint8_t motor) {
 			break;
 	}
 }
+
+/**
+ * Fills the given structure with avaiable data.
+ * @todo Implement.
+ */
+void motor_status(global_state_t *state) {}
 /*@}*/

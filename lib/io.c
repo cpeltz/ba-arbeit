@@ -1,5 +1,7 @@
 #include "io.h"
 #include "twi.h"
+#include "flags.h"
+#include "definitions.h"
 #include "uart.h"
 #include "options.h"
 #include "led.h"
@@ -25,7 +27,7 @@ static uint8_t out_buffer[IO_OUTBUFFER_SIZE];
  *
  * An Object is always a unit transmitted at once. Object may be as long as 1 byte or IO_OUTBUFFER_SIZE.
  */
-static uint8_t obj_memory[IO_OUTBUFFER_SIZE]
+static uint8_t obj_memory[IO_OUTBUFFER_SIZE];
 /**
  * Used for maintaining the in_buffer ring buffer.
  */
@@ -51,9 +53,15 @@ static uint8_t transmission_offset = 0;
  * Setup-Function for IO related subsystems
  */
 void io_init(void) {
+	uint8_t test = 0;
 	twi_init();
 	uart_init();
 	led_init();
+//	led_test();
+	for(;test < 32; test++) {
+		led_next_test(test);
+	}
+	led_switchoff();
 }
 
 /**
@@ -118,7 +126,7 @@ void _io_push(uint8_t value) {
  *		a valid byte).
  */
 uint8_t io_get_next_transmission_byte(void) {
-	if ((outpos_start + 1) % IO_OUTBUFFER_SIZE == outpos_end)
+	if ((outpos_begin + 1) % IO_OUTBUFFER_SIZE == outpos_end)
 		return 0xff;
 	if (transmission_offset >= io_obj_get_current_size())
 		return 0xff;
@@ -178,7 +186,7 @@ void io_obj_start(void) {
  */
 void io_obj_end(void) {
 	obj_memory[objpos_end - 1] = outpos_end - 1;
-	objpos_end = (objpos + 1) % IO_OUTBUFFER_SIZE;
+	objpos_end = (objpos_end + 1) % IO_OUTBUFFER_SIZE;
 	if (!flag_read(INTERFACE_TWI))
 		uart_start_transmission();
 }

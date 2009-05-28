@@ -1,6 +1,11 @@
 #include "order_functions.h"
 #include "order.h"
+#include "queue.h"
+#include "io.h"
+#include "drive.h"
+#include "flags.h"
 #include "definitions.h"
+#include <avr/wdt.h>
 
 /**
  * @addtogroup ORDER_Module
@@ -18,7 +23,7 @@
  
 extern uint8_t local_time_flags;
 extern uint16_t timer_t_trigger_counter[2];
-extern uint16_t irq_p_trigger_position[2];
+extern int16_t irq_p_trigger_position[2];
 
 /**
  * Extended Instruction Format Handler Function.
@@ -41,14 +46,15 @@ void extended_instruction(order_t *order) {
  * outside.
  * @param[in,out] order The order data that specifies what exactly
  * should be done.
- * @todo Verify that the reset code works.
  */
 void control_instruction(order_t *order) {
 	// Extract the specific Control Instruction we should carry out
 	int instruction = order->data[0] & 0xf0;
 	switch(instruction) {
 		case 0x10: // Reset Instruction
-			WDRF = 1; // Set reset flag in MCUSR
+			wdt_reset();
+			wdt_enable(4);
+			while(1) {} // Wait for the watchdog to reset the board
 			break;
 		case 0x20: // Stop Queue execution and abaddon current order
 			queue_pause();
@@ -76,7 +82,7 @@ void control_instruction(order_t *order) {
  * (not real register) should be returned.
  */
 void register_instruction(order_t *order) {
-	int instruction = order[0] & 0xf0;
+	int instruction = (order->data[0] & 0xf0);
 	order_t *current_order = 0;
 	uint8_t current_order_size = 0;
 	global_state_t state;
@@ -98,7 +104,7 @@ void register_instruction(order_t *order) {
 			io_obj_end();
 			break;
 		case 0x40: // current Order
-			if (current_order = queue_get_current_normal_order()) {
+			if ((current_order = queue_get_current_normal_order())) {
 				current_order_size = order_size(current_order) % (ORDER_TYPE_MAX_LENGTH + 1);
 			}
 			io_obj_start();
@@ -108,7 +114,7 @@ void register_instruction(order_t *order) {
 				uint8_t i = 0;
 				io_obj_start();
 				for (;i < current_order_size;i++) {
-					io_obj_put(current_order->data[current_order_size]);
+					io_put(current_order->data[current_order_size]);
 				}
 				io_obj_end();
 			}
@@ -237,10 +243,10 @@ void drive_instruction(order_t *order) {
 			order->status |= ORDER_STATUS_DONE;
 		}
 		if (trigger_type_left == 0x30) { // PID with differential correction
-			trigger_value_left = trigger_value_right = order->data[2] << 8 + order->data[3];
+			trigger_value_left = trigger_value_right = ((order->data[2] << 8) + order->data[3]);
 		} else {
-			trigger_value_left = order->data[3] << 8 + order->data[4];
-			trigger_value_right = order->data[5] << 8 + order->data[6];
+			trigger_value_left = ((order->data[3] << 8) + order->data[4]);
+			trigger_value_right = ((order->data[5] << 8) + order->data[6]);
 		}
 		// Set the triggers for each wheel
 		setTrigger(trigger_type_left, WHEEL_LEFT, trigger_value_left);
@@ -262,10 +268,10 @@ void set_pid_instruction(order_t *order) {
 	if(order->status & ORDER_STATUS_DONE)
 		return;
 
-	P = order->data[1] << 8 + order->data[2];
-	I = order->data[3] << 8 + order->data[4];
-	D = order->data[5] << 8 + order->data[6];
-	S = order->data[7] << 8 + order->data[8];
+	P = ((order->data[1] << 8) + order->data[2]);
+	I = ((order->data[3] << 8) + order->data[4]);
+	D = ((order->data[5] << 8) + order->data[6]);
+	S = ((order->data[7] << 8) + order->data[8]);
 	drive_SetPIDParameter(wheel, P, I, D, S);
 	order->status |= ORDER_STATUS_DONE;
 }

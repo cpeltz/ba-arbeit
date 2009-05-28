@@ -1,4 +1,4 @@
-#define __AVR_ATmega2561__
+/*#define __AVR_ATmega2561__*/
 #include <avr/io.h>
 #include "led.h"
 #include "definitions.h"
@@ -85,6 +85,21 @@ void led_test(void) {
 	led_switch(LED_BLUE, ON);
 	debug_WriteString_P((", BLUE\r\n"));
 	while(!(flag_read_and_clear(TIMER_262MS)));
+	led_switchoff();
+}
+
+void led_next_test(uint8_t arg) {
+	arg = arg % (31);
+	if ( arg % 2 )
+		led_switch(LED_RED1, ON);
+	if ( (arg % 2) == 0 )
+		led_switch(LED_RED2, ON);
+	if ( (arg % 4) == 0 )
+		led_switch(LED_ORANGE, ON);
+	if ( (arg % 8) == 0 )
+		led_switch(LED_GREEN, ON);
+	if ( (arg % 16) == 0 )
+		led_switch(LED_BLUE, ON);
 }
 
 /**

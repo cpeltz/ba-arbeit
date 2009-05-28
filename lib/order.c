@@ -1,4 +1,5 @@
 #include "order.h"
+#include "parse.h"
 #include "flags.h"
 #include "order_functions.h"
 
@@ -31,7 +32,7 @@ order_function order_array[16];
 /**
  * Setup the order function call table.
  */
-void order_array_init() {
+void order_array_init(void) {
 	// Initialize the Call Table with the appropriate functions
 	// these are implemented in order_functions.c
 	order_array[0]  = &extended_instruction;
@@ -116,5 +117,9 @@ void order_process(order_t * const order) {
  */
 void order_check_triggers(order_t * const order) {
 	// Check the triggers of the order
+}
+
+uint8_t order_size(order_t *order) {
+	return bytes_needed(order->data[0]);
 }
 /*@}*/

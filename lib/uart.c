@@ -1,8 +1,9 @@
-#define __AVR_ATmega2561__
+/*#define __AVR_ATmega2561__*/
 #include <inttypes.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include "uart.h"
+#include "io.h"
 #include "flags.h"
 #include "definitions.h"
 #include "led.h"
