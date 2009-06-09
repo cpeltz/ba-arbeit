@@ -2,6 +2,7 @@
 #include "io.h"
 #include "order.h"
 
+#include <avr/pgmspace.h>
 /**
  * @defgroup PARSER_Module Parser
  * This Modules is used to convert the raw byte stream from
@@ -42,6 +43,8 @@ void parser_init(void) {
 	}
 }
 
+#include "debug.h"
+
 /**
  * Updates the parser.
  *
@@ -52,8 +55,14 @@ void parser_init(void) {
  */
 void parser_update(void) {
 	uint8_t value = 0, times = io_get_available();
+	if( times ) {
+		debug_WriteString_P(PSTR("parse.c : parser_update() : Begin\r\n"));
+		debug_WriteInteger(PSTR("parse.c : parser_update() : Times ="), times);
+	}
 	for (; 0 < times; times--) {
 		io_get(&value);
+		uart_put_debug(value);
+		debug_WriteInteger(PSTR("parse.c : parser_update() : Value ="), value);
 		parser_add_byte(value);
 	}
 }
@@ -79,9 +88,12 @@ int parser_extended_order_complete(const order_t* order, uint8_t num_bytes) {
  */
 uint8_t bytes_needed(uint8_t order) {
 	uint8_t ret_value = 0;
+	debug_WriteInteger(PSTR("Bytes needed for "), order);
+	debug_WriteString_P(PSTR(" = "));
 	switch(order & 0x0f) {
 		case 1: //Control Instruction
 		case 2: //Register Query Instruction
+			debug_WriteInteger(PSTR(""), 1);
 			return 1; //These are all one byte Instructions
 		case 3: //Drive Instruction is a variable byte order
 			ret_value = 3; //min. three bytes are neccessary: one as order, two for speed (left and right)
@@ -102,11 +114,15 @@ uint8_t bytes_needed(uint8_t order) {
 					ret_value += 2;
 				}
 			}
+			debug_WriteInteger(PSTR(""), ret_value);
 			return ret_value;
 		case 4: //Set PID Parameters Instruction
+			debug_WriteInteger(PSTR(""), 9);
 			return 9;
 	}
+			debug_WriteInteger(PSTR("default  = "), 1);
 	return 1;
+	debug_NewLine();
 }
 
 /**
@@ -138,22 +154,33 @@ int parser_order_complete(const order_t* order, uint8_t num_bytes) {
 void parser_add_byte(uint8_t byte) { 
 	// This function simple adds another byte to the current order
 	// or discards the byte if the buffer is full.
+	
+	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Begin\r\n"));
 	if( current_buffer_position == first_buffer_position ) {
+		debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Buffer full\r\n"));
 		return; // Discard, buffer full
 	}
 	// Put the byte at its position and increment
+	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 1\r\n"));
 	parser_order_buffer[current_buffer_position].data[current_order_position] = byte;
+	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 2\r\n"));
 	current_order_position++;
+	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 3\r\n"));
 	if (current_order_position >= ORDER_TYPE_MAX_LENGTH || parser_order_complete(&parser_order_buffer[current_buffer_position], current_order_position + 1)) {
 		// if the order is full (bad sign) or the order is complete
 		// go on to the next order structure
+		debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 4\r\n"));
 		if (first_buffer_position == -1 ) {
 			// This trick is needed to acknowledge a full buffer
 			first_buffer_position = current_buffer_position;
+			debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 5\r\n"));
 		}
+		debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 6\r\n"));
 		current_buffer_position = (current_buffer_position + 1) % PARSER_ORDER_BUFFER_SIZE;
+		debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 7\r\n"));
 		current_order_position = 0;
 	}
+	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 8\r\n"));
 }
 
 uint8_t parser_has_new_order() {

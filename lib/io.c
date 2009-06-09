@@ -5,6 +5,8 @@
 #include "uart.h"
 #include "options.h"
 #include "led.h"
+#include "debug.h"
+#include <avr/pgmspace.h>
 
 /**
  * \defgroup IO_Module IO Module
@@ -53,15 +55,17 @@ static uint8_t transmission_offset = 0;
  * Setup-Function for IO related subsystems
  */
 void io_init(void) {
-	uint8_t test = 0;
-	twi_init();
+//	uint8_t test = 0;
+//	twi_init();
 	uart_init();
 	led_init();
 //	led_test();
-	for(;test < 32; test++) {
+/*	for(;test < 32; test++) {
+		while(!(flag_read_and_clear(TIMER_262MS)));
 		led_next_test(test);
 	}
 	led_switchoff();
+*/
 }
 
 /**
@@ -70,6 +74,7 @@ void io_init(void) {
  * @return <em>uint8_t</em> Returns the number of available bytes in the in_buffer.
  */
 uint8_t io_get_available(void) {
+	debug_WriteString_P(PSTR("io.c : io_get_available() : Begin\r\n"));
 	if (inpos_end == 0)
 		return IO_INBUFFER_SIZE - inpos_begin;
 	if (inpos_begin > inpos_end)

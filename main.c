@@ -82,13 +82,13 @@ void initialize(void) {
 
 	// init all subsystems
 	dip_init();
+	io_init();
 	motor_init();
 	timer_init();
 	order_array_init();
 	irq_init();
 	queue_init();
 	status_init();
-	io_init();
 
 	// set standard PID parameter
 	drive_SetPIDParameter(2, 80, 20, 10, 500);
@@ -124,27 +124,27 @@ void print_startup(void) {
 	// Startup Debug Infos
 	flag_set(DEBUG_ENABLE);
 	debug_ResetTerminal();
-	debug_WriteString_P(PSTR("Motorsteuerung V2.9.20090501\r\n"));
-	debug_WriteString_P(PSTR("---------------------------\r\n\n"));
-	debug_WriteString_P(PSTR("DIP-Schalter Einstellungen:\r\n"));
+	debug_WriteString_P(PSTR("Motorsteuerung V2.9.20090528\n"));
+	debug_WriteString_P(PSTR("----------------------------\n\n"));
+	debug_WriteString_P(PSTR("DIP-Schalter Einstellungen:\n"));
 	if (dip_read(0))
-		debug_WriteString_P(PSTR("DIP1: ON   Interface = TWI\r\n"));
+		debug_WriteString_P(PSTR("DIP1: ON   Interface = TWI\n"));
 	else
-		debug_WriteString_P(PSTR("DIP1: OFF  Interface = UART\r\n"));
+		debug_WriteString_P(PSTR("DIP1: OFF  Interface = UART\n"));
 	if (dip_read(1))
-		debug_WriteString_P(PSTR("DIP2: ON   Debug-Ausgaben aktiv\r\n"));
+		debug_WriteString_P(PSTR("DIP2: ON   Debug-Ausgaben aktiv\n"));
 	else
-		debug_WriteString_P(PSTR("DIP2: OFF  Debug-Ausgaben inaktiv\r\n"));
+		debug_WriteString_P(PSTR("DIP2: OFF  Debug-Ausgaben inaktiv\n"));
 	if (dip_read(2))
-		debug_WriteString_P(PSTR("DIP3: ON   LCD aktiv\r\n"));
+		debug_WriteString_P(PSTR("DIP3: ON   LCD aktiv\n"));
 	else
-		debug_WriteString_P(PSTR("DIP3: OFF  LCD inaktiv\r\n"));
+		debug_WriteString_P(PSTR("DIP3: OFF  LCD inaktiv\n"));
 	if (dip_read(3))
-		debug_WriteString_P(PSTR("DIP4: ON   nicht verwendet\r\n"));
+		debug_WriteString_P(PSTR("DIP4: ON   nicht verwendet\n"));
 	else
-		debug_WriteString_P(PSTR("DIP4: OFF  nicht verwendet\r\n"));
+		debug_WriteString_P(PSTR("DIP4: OFF  nicht verwendet\n"));
 
-	debug_WriteString_P(PSTR("\nReset Quelle:\r\n"));
+	debug_WriteString_P(PSTR("\nReset Quelle:\n"));
 	if (reset_source & (1<<PORF)) 
 		debug_WriteString_P(PSTR("Power-On "));
 	if (reset_source & (1<<EXTRF))
@@ -229,9 +229,11 @@ int main(void) {
 
 
 	while(1) {
+		debug_WriteString_P(PSTR("main.c : main() :  copy_timer_flags()\r\n"));
 		// Copy the global timer flags to a local variable (but global for this file)
 		copy_timer_flags();
 
+		debug_WriteString_P(PSTR("main.c : main() :  process_orders()\r\n"));
 		// Processes the next or current order
 		process_orders();		
 
@@ -239,12 +241,15 @@ int main(void) {
 		if (flag_read(LCD_PRESENT))
 			lcd_print_status();
 
+		debug_WriteString_P(PSTR("main.c : main() :  parser_update()\n"));
 		// Update the order parser
 		parser_update();
 
+		debug_WriteString_P(PSTR("main.c : main() :  queue_update()\n"));
 		// Housekeeping for the order queue
 		queue_update();
 		
+		debug_WriteString_P(PSTR("main.c : main() :  status_update()\n"));
 		// Update the global status of the program
 		status_update();
 	}
