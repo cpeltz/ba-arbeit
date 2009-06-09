@@ -66,7 +66,7 @@ void order_init(order_t *order) {
 	uint8_t i = 0;
 	// Overwrite every piece of memory with 0
 	// Have to do it that way because no memset available
-	for(; i < 32; i++) {
+	for(; i < ORDER_TYPE_MAX_LENGTH; i++) {
 		order->data[i] = 0;
 	}
 	// Set the Status of the order to Initialized
@@ -82,7 +82,7 @@ void order_init(order_t *order) {
 void order_copy(order_t *from, order_t *to) {
 	// Used to copy the order data from one to another
 	uint8_t i = 0;
-	for(; i < 32; i++)
+	for(; i < ORDER_TYPE_MAX_LENGTH; i++)
 		to->data[i] = from->data[i];
 	to->status = from->status;
 }
