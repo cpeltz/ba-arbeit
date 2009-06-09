@@ -72,7 +72,7 @@
 /**
  * The Baud rate for the UART Interface.
  */
-#define UART_BAUD_RATE 76800L
+#define UART_BAUD_RATE 57600L
 
 /*@}*/
 #endif
