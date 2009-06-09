@@ -10,12 +10,12 @@ static char buffer[10];
 
 void debug_PutChar(const uint8_t data) {
 	if (flag_read(DEBUG_ENABLE));
-		//uart_PutChar_Wait(data);
+		uart_put_debug(data);
 }
 
 void debug_PutChar_P(const uint8_t * data) {
 	if (flag_read(DEBUG_ENABLE));
-		//uart_PutChar_Wait(*data);
+		debug_PutChar(*data);
 }
 
 static void debug_SendESC(void) {
@@ -34,7 +34,7 @@ void debug_WriteString_P(const char *progmem_string) {
 	uint8_t character;
 
 	while ((character = pgm_read_byte(progmem_string++))) {
-		debug_PutChar_P(&character);
+		debug_PutChar(character);
 	}
 }
 
