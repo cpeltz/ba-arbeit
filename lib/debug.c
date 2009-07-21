@@ -9,12 +9,12 @@
 static char buffer[10];
 
 void debug_PutChar(const uint8_t data) {
-	if (flag_read(DEBUG_ENABLE));
+	if (flag_read(DEBUG_ENABLE))
 		uart_put_debug(data);
 }
 
 void debug_PutChar_P(const uint8_t * data) {
-	if (flag_read(DEBUG_ENABLE));
+	if (flag_read(DEBUG_ENABLE))
 		debug_PutChar(*data);
 }
 
@@ -73,7 +73,7 @@ void debug_ClearEOL(void) {
 }
 
 void debug_NewLine(void) {
-	debug_WriteString_P(PSTR("\r\n"));
+	debug_WriteString_P(PSTR("\n"));
 }
 
 void debug_WriteInteger(const char *progmem_message, const int16_t integer) {

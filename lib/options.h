@@ -33,7 +33,7 @@
  * last known position. If it is deviated it will use it's wheels
  * with a speed equal to this constant to correct it.
  */
-#define DRIVE_ACTIVE_BRAKE_AMOUNT 10
+#define DRIVE_ACTIVE_BRAKE_AMOUNT 40
 
 /**
  * Number of distinct orders the parser can buffer.

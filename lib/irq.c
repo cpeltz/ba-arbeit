@@ -46,9 +46,6 @@ static int16_t irq_t_i16 = 0;
  */
 static uint8_t sreg = 0;
 
-#define IRQ_P_TRIGGER_L   0
-#define IRQ_P_TRIGGER_R   1
-
 /**
  * Interrupt Service Routine for wheel 0 (left) sensor A.
  */
@@ -77,12 +74,9 @@ ISR(INT4_vect) {
 			break;
 	}
 
-	if (flag_local_read(&irq_p_trigger, IRQ_P_TRIGGER_L)) {
-		// IRQ_P_Trigger, links aktiv
-		if (irq_Position_W0 == irq_p_trigger_position[0]) {
-			flag_set(P_TRIGGER_L);
-			flag_local_clear(&irq_p_trigger, IRQ_P_TRIGGER_L);
-		}
+	// IRQ_P_Trigger, links aktiv
+	if (irq_p_trigger_position[0] != 0) {
+		irq_p_trigger_position[0]--;
 	}
 }
 
@@ -114,12 +108,8 @@ ISR(INT5_vect) {
 			break;
 	}
 
-	if (flag_local_read(&irq_p_trigger, IRQ_P_TRIGGER_L)) {
-		// IRQ_P_Trigger, links aktiv
-		if (irq_Position_W0 == irq_p_trigger_position[0]) {
-			flag_set(P_TRIGGER_L);
-			flag_local_clear(&irq_p_trigger, IRQ_P_TRIGGER_L);
-		}
+	if (irq_p_trigger_position[0] != 0) {
+		irq_p_trigger_position[0]--;
 	}
 }
 
@@ -151,12 +141,8 @@ ISR(INT6_vect) {
 			break;
 	}
 
-	if (flag_local_read(&irq_p_trigger, IRQ_P_TRIGGER_R)) {
-		// IRQ_P_Trigger, rechts aktiv
-		if (irq_Position_W1 == irq_p_trigger_position[1]) {
-			flag_set(P_TRIGGER_R);
-			flag_local_clear(&irq_p_trigger, IRQ_P_TRIGGER_R);
-		}
+	if (irq_p_trigger_position[1] != 0) {
+		irq_p_trigger_position[1]--;
 	}
 }
 
@@ -188,12 +174,8 @@ ISR(INT7_vect) {
 			break;
 	}
 
-	if (flag_local_read(&irq_p_trigger, IRQ_P_TRIGGER_R)) {
-		// IRQ_P_Trigger, rechts aktiv
-		if (irq_Position_W1 == irq_p_trigger_position[1]) {
-			flag_set(P_TRIGGER_R);
-			flag_local_clear(&irq_p_trigger, IRQ_P_TRIGGER_R);
-		}
+	if (irq_p_trigger_position[1] != 0) {
+		irq_p_trigger_position[1]--;
 	}
 }
 
@@ -288,56 +270,6 @@ void wheel_ClearDifference(void) {
 	sreg = SREG;
 	cli();
 	irq_WheelDifference = 0;
-	SREG = sreg;
-}
-
-/**
- * Sets the position trigger.
- *
- * @param[in] wheel The wheel for which the trigger will be set. Valid values
- * are #WHEEL_LEFT, #WHEEL_RIGHT and #WHEEL_BOTH.
- * @param[in] trigger_position The end position for the wheel(s).
- */
-void trigger_Set_P(const uint8_t wheel, const int16_t trigger_position) {
-	//Used to set the Position trigger for the wheel(s).
-	sreg = SREG;
-	cli();
-	switch (wheel) {
-		case WHEEL_LEFT:
-		case WHEEL_RIGHT:
-			irq_p_trigger_position[wheel] = trigger_position;
-			flag_local_set(&irq_p_trigger, IRQ_P_TRIGGER_L + wheel);
-			flag_clear(P_TRIGGER_L + wheel);
-			break;
-		case WHEEL_BOTH:
-			trigger_Set_P(WHEEL_LEFT, trigger_position);
-			trigger_Set_P(WHEEL_RIGHT, trigger_position);
-			break;
-	}
-	SREG = sreg;
-}
-
-/**
- * Resets the position trigger for a given wheel.
- *
- * @param[in] wheel The wheel which trigger should be reset. Valid values
- * are #WHEEL_LEFT, #WHEEL_RIGHT and #WHEEL_BOTH.
- */
-void trigger_Clear_P(const uint8_t wheel) {
-	// Clears to previously set Positions for the trigger.
-	sreg = SREG;
-	cli();
-	switch (wheel) {
-		case WHEEL_LEFT:
-		case WHEEL_RIGHT:
-			flag_local_clear(&irq_p_trigger, IRQ_P_TRIGGER_L + wheel);
-			flag_clear(P_TRIGGER_L + wheel);
-			break;
-		case WHEEL_BOTH:
-			trigger_Clear_P(WHEEL_LEFT);
-			trigger_Clear_P(WHEEL_RIGHT);
-			break;
-	}
 	SREG = sreg;
 }
 

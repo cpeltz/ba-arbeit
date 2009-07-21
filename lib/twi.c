@@ -33,7 +33,7 @@ ISR(TWI_vect) {
 	uint8_t twi_data = 0;
 
 	// Standard bit combination for the Control Register
-	TWCR = ~((1 << TWSTA) | (1 << TWSTO)) | (1 << TWEA) | (1 << TWEN);
+	TWCR = ~((1 << TWSTA) | (1 << TWSTO)) | (1 << TWEA) | (1 << TWEN) | (1 << TWIE);
 
 	switch (twi_status) {
 		// The following status codes refer to the Slave Reciever Mode (see Chip Documentation Page 260)
@@ -52,20 +52,22 @@ ISR(TWI_vect) {
 			// SLA+W; data has been received;
 			// ACK has been returned
 
-			// The missing break statement is correct and wanted
 
 			twi_data = TWDR;
 			_io_push(twi_data);
 
+			if (io_get_available() <= 1)
+				TWCR = ~((1 << TWSTA) | (1 << TWSTO) | (1 << TWEA)) | (1 << TWEN) | (1 << TWIE);
+			break;
 		case 0x60:
 			// Own SLA+W has been received;
 			// ACK has been returned
 			
 			if (io_get_available() <= 1)
-				TWCR = ~((1 << TWSTA) | (1 << TWSTO) | (1 << TWEA)) | (1 << TWEN);
-			break;
+				TWCR = ~((1 << TWSTA) | (1 << TWSTO) | (1 << TWEA)) | (1 << TWEN) | (1 << TWIE);
 
 			twi_data = TWDR;
+			led_switch(LED_GREEN, SINGLE);
 			_io_push(twi_data);
 			break;
 
@@ -95,7 +97,7 @@ ISR(TWI_vect) {
 			// Set the correct control bits: if there is more then 1 byte remaining to send, then
 			// we have to await an ACK, otherwise we await a NOT ACK (thats what io_get_remaining_obj_size()
 			// is for). The TWSTA and TWSTO get always set to 0 and TWINT is always set to 1;
-			TWCR = ~((1 << TWSTA) | (1 << TWSTO)) | ((io_obj_get_remaining_size() > 1) << TWEA) | (1 << TWEN);
+			TWCR = ~((1 << TWSTA) | (1 << TWSTO)) | ((io_obj_get_remaining_size() > 1) << TWEA) | (1 << TWIE);
 			break;
 
 		case 0xc8:

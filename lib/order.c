@@ -2,6 +2,8 @@
 #include "parse.h"
 #include "flags.h"
 #include "order_functions.h"
+#include "debug.h"
+#include <avr/pgmspace.h>
 
 /**
  * @defgroup ORDER_Module Order Module
@@ -103,10 +105,13 @@ void order_copy(order_t *from, order_t *to) {
 void order_process(order_t * const order) {
 	// Dispatch first stage of processing
 	// That means, call the right function
-	if(order_array[order->data[0] & 0x0f] != 0)
+	if(order_array[order->data[0] & 0x0f] != 0) {
+//		debug_WriteString_P(PSTR("order.c : order_process() :  Found a function, now calling\n"));
 		order_array[order->data[0] & 0x0f](order);
-	else // Set the Order status to done if there is no function for this order
+	} else { // Set the Order status to done if there is no function for this order
+//		debug_WriteString_P(PSTR("order.c : order_process() :  No Function found, setting status to DONE\n"));
 		order->status |= ORDER_STATUS_DONE; 
+	}
 }
 
 /**

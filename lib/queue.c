@@ -61,7 +61,7 @@ void queue_init(void) {
  * @return <em>uint8_t</em> 1 (can be ignored for now).
  * @todo Either remove the return value or give it meaning.
  */
-uint8_t queue_push_priority(const order_t * const order) {
+uint8_t queue_push_priority(order_t * order) {
 	//priority_order = *order;
 	order_copy(order, &priority_order);
 	return 1;
@@ -117,8 +117,9 @@ order_t * queue_get_current_normal_order(void) {
  */
 order_t * queue_get_current_order(void) {
 	// Bypass normal Queue if we have a priority instruction
-	if (priority_order.status & ORDER_STATUS_PRIORITY)
+	if (priority_order.status & ORDER_STATUS_PRIORITY) {
 		return &priority_order;
+	}
 	// Execution is paused, don't return an order
 	if (paused)
 		return 0;
@@ -148,7 +149,7 @@ void queue_pop(void) {
  * @return <em>uint8_t</em> The number of orders in the buffer.
  */
 uint8_t queue_order_available(void) {
-	return queue_entries;
+	return queue_entries + ((priority_order.status & ORDER_STATUS_PRIORITY) > 0);
 }
 
 /**

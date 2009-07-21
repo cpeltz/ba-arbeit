@@ -22,11 +22,6 @@ static int8_t timer_SpeedSum_W1 = 0;
 uint16_t timer_t_trigger_counter[2] = { 0, 0 };
 static uint8_t timer_trigger = 0;
 
-static int8_t timer_t_i8 = 0;
-
-#define TIMER_T_TRIGGER_L   0
-#define TIMER_T_TRIGGER_R   1
-
 ISR(TIMER1_COMPA_vect) {
 	// ISR wird jede Millisekunde ausgeführt
 	OCR1A = TCNT1 + 250;
@@ -50,27 +45,16 @@ ISR(TIMER1_COMPC_vect) {
 	flag_set(TIMER_100MS);
 	// und TIMER_100MS Flag setzen
 
-	// T_TRIGGER überprüfen
-	if (flag_local_read(&timer_trigger, TIMER_T_TRIGGER_L)) {
-		// linker T_Trigger aktiv
-		if (timer_t_trigger_counter[0] == 0) {
-			flag_set(T_TRIGGER_L);
-			flag_local_clear(&timer_trigger, TIMER_T_TRIGGER_L);
-		} else {
-			timer_t_trigger_counter[0]--;
-		}
+	// linker T_Trigger aktiv
+	if (timer_t_trigger_counter[0] != 0) {
+		timer_t_trigger_counter[0]--;
 	}
-	if (flag_local_read(&timer_trigger, TIMER_T_TRIGGER_R)) {
-		// rechter T_Trigger aktiv
-		if (timer_t_trigger_counter[1] == 0) {
-			flag_set(T_TRIGGER_R);
-			flag_local_clear(&timer_trigger, TIMER_T_TRIGGER_R);
-		} else {
-			timer_t_trigger_counter[1]--;
-		}
+	if (timer_t_trigger_counter[1] != 0) {
+		timer_t_trigger_counter[1]--;
 	}
 
 	// Geschwindigkeiten in timer_Speed_W0/1 übertragen
+	// TODO Was ist das hier?
 	timer_Speed_W0 = timer_SpeedSum_W0;
 	timer_Speed_W1 = timer_SpeedSum_W1;
 	timer_SpeedSum_W0 = 0;
@@ -78,43 +62,9 @@ ISR(TIMER1_COMPC_vect) {
 }
 
 ISR(TIMER1_OVF_vect) {
-	uint8_t led_counter = 0;
 	// ISR wird alle 262 Millisekunden aufgerufen
 	flag_set(TIMER_262MS);
 	// TIMER_262MS Flag setzen
-
-	// LEDs schalten
-	led_ToggleBit();
-  
-	for (; led_counter < 5; led_counter++) {
-		switch ((led_GetState()&(7<<(led_counter * 3)))>>(led_counter * 3)) {
-			case 0:
-				LED_PORT |= (1<<led_counter);
-				break;
-			case 1:
-				LED_PORT &= ~(1<<led_counter);
-				break;
-			case 2:
-				if (led_ReadToggleBit())
-					LED_PORT ^= (1<<led_counter);
-				break;
-			case 3:
-				LED_PORT ^= (1<<led_counter);
-				break;
-			case 4:
-				if (!(led_ReadToggleBit())) {
-					LED_PORT &= ~(1<<led_counter);
-					led_switch(led_counter, SINGLEOFF);
-				}
-				break;
-			case 5:
-				if (led_ReadToggleBit()) {
-					LED_PORT |= (1<<led_counter);
-					led_switch(led_counter, OFF);
-				}
-				break;
-		}
-	}
 }
 
 /**
@@ -161,54 +111,12 @@ void wheel_DelSpeed_W1(void) {
 int8_t wheel_ReadSpeed(const uint8_t wheel) {
 	switch (wheel) {
 		case WHEEL_LEFT:
-			timer_t_i8 = timer_Speed_W0;
+			return timer_Speed_W0;
 			break;
 		case WHEEL_RIGHT:
-			timer_t_i8 = timer_Speed_W1;
+			return timer_Speed_W1;
 			break;
 	}
-	return timer_t_i8;
-}
-
-void trigger_Set_T(const uint8_t wheel, const uint16_t time) {
-	switch (wheel) {
-		case WHEEL_LEFT:
-		case WHEEL_RIGHT:
-			timer_t_trigger_counter[wheel] = time;
-			flag_local_set(&timer_trigger, TIMER_T_TRIGGER_L + wheel);
-			flag_clear(T_TRIGGER_L + wheel);
-			break;
-		case WHEEL_BOTH:
-			trigger_Set_T(WHEEL_LEFT, time);
-			trigger_Set_T(WHEEL_RIGHT, time);
-			break;
-	}
-}
-
-void trigger_Clear_T(const uint8_t wheel) {
-	switch (wheel) {
-		case WHEEL_LEFT:
-		case WHEEL_RIGHT:
-			flag_local_clear(&timer_trigger, TIMER_T_TRIGGER_L + wheel);
-			flag_clear(T_TRIGGER_L + wheel);
-			break;
-		case WHEEL_BOTH:
-			trigger_Clear_T(WHEEL_LEFT);
-			trigger_Clear_T(WHEEL_RIGHT);
-			break;
-	}
-}
-
-uint16_t trigger_Get_T(const uint8_t wheel) {
-	uint16_t ret = 0;
-	switch (wheel) {
-		case WHEEL_LEFT:
-			ret = timer_t_trigger_counter[WHEEL_LEFT];
-			break;
-		case WHEEL_RIGHT:
-			ret = timer_t_trigger_counter[WHEEL_RIGHT];
-			break;
-	}
-	return ret;
+	return 0;
 }
 /*@}*/

@@ -166,7 +166,7 @@ void parser_add_byte(uint8_t byte) {
 	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 2\r\n"));
 	current_order_position++;
 	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 3\r\n"));
-	if (current_order_position >= ORDER_TYPE_MAX_LENGTH || parser_order_complete(&parser_order_buffer[current_buffer_position], current_order_position + 1)) {
+	if (current_order_position >= ORDER_TYPE_MAX_LENGTH || parser_order_complete(&parser_order_buffer[current_buffer_position], current_order_position)) {
 		// if the order is full (bad sign) or the order is complete
 		// go on to the next order structure
 		debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 4\r\n"));

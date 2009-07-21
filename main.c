@@ -5,6 +5,7 @@
 #include "lib/flags.h"
 #include "lib/io.h"
 #include "lib/irq.h"
+#include "lib/lcd.h"
 #include "lib/motor.h"
 #include "lib/order.h"
 #include "lib/parse.h"
@@ -89,6 +90,7 @@ void initialize(void) {
 	irq_init();
 	queue_init();
 	status_init();
+	lcd_init(LCD_DISP_ON);
 
 	// set standard PID parameter
 	drive_SetPIDParameter(2, 80, 20, 10, 500);
@@ -122,9 +124,24 @@ void update_dip_flags(void) {
  */
 void print_startup(void) {
 	// Startup Debug Infos
+	if(flag_read(LCD_PRESENT)) {
+		lcd_puts("Ver. 2.9.20090721");
+		lcd_gotoxy(0,1);
+		if (dip_read(0)) {
+			lcd_puts("TWI enabled");
+		} else {
+			lcd_puts("UART enabled");
+		}
+		lcd_gotoxy(0,2);
+		if (dip_read(1)) {
+			lcd_puts("DEBUG enabled");
+		} else {
+			lcd_puts("DEBUG disabled");
+		}
+	}
 	flag_set(DEBUG_ENABLE);
 	debug_ResetTerminal();
-	debug_WriteString_P(PSTR("Motorsteuerung V2.9.20090528\n"));
+	debug_WriteString_P(PSTR("Motorsteuerung V2.9.20090721\n"));
 	debug_WriteString_P(PSTR("----------------------------\n\n"));
 	debug_WriteString_P(PSTR("DIP-Schalter Einstellungen:\n"));
 	if (dip_read(0))
@@ -156,6 +173,7 @@ void print_startup(void) {
 	if (reset_source & (1<<JTRF))
 		debug_WriteString_P(PSTR("JTAG"));
 	debug_NewLine();
+	update_dip_flags();
 }
 
 /**
@@ -187,23 +205,32 @@ void process_orders(void) {
 	// This function gets an order and lets it execute
 	order_t *current_order = NULL;
 
-	if (queue_order_available())
-		current_order = queue_get_current_order();
-	else
-		drive_brake_active(); // TODO Needed? At the moment in here to make sure we mimic the old drivers behaviour
+//	debug_WriteInteger(PSTR("main.c : process_orders() :  Avaialable Orders = "), queue_order_available());
+//	debug_NewLine();
+	current_order = queue_get_current_order();
 	if (current_order != NULL) {
+//		debug_WriteString_P(PSTR("main.c : process_orders() :  Ack new Order, starting processing\n"));
 		order_process(current_order);
-		//order_check_triggers(current_order); // FIXME: Do not need this here, should be in the order functions
+//		debug_WriteString_P(PSTR("main.c : process_orders() :  Processing done\n"));
 		if (current_order->status & ORDER_STATUS_DONE) {
+//			debug_WriteString_P(PSTR("main.c : process_orders() :  Order has status = DONE\n"));
 			drive_brake_active_set();
 			queue_pop();
 			current_order = NULL;
 		}
+	} else {
+		drive_brake_active();
 	}
 }
 
 void lcd_print_status(void) {
 	// TODO Implement
+//	static char buffer[10];
+//	lcd_clrscr();
+
+/*	itoa(queue_order_available(), buffer, 10);
+	lcd_puts_p(PSTR("Orders: "));
+	lcd_puts(buffer);*/
 }
 
 int main(void) {
@@ -229,11 +256,11 @@ int main(void) {
 
 
 	while(1) {
-		debug_WriteString_P(PSTR("main.c : main() :  copy_timer_flags()\r\n"));
+//		debug_WriteString_P(PSTR("main.c : main() :  copy_timer_flags()\r\n"));
 		// Copy the global timer flags to a local variable (but global for this file)
 		copy_timer_flags();
 
-		debug_WriteString_P(PSTR("main.c : main() :  process_orders()\r\n"));
+//		debug_WriteString_P(PSTR("main.c : main() :  process_orders()\r\n"));
 		// Processes the next or current order
 		process_orders();		
 
@@ -241,15 +268,15 @@ int main(void) {
 		if (flag_read(LCD_PRESENT))
 			lcd_print_status();
 
-		debug_WriteString_P(PSTR("main.c : main() :  parser_update()\n"));
+//		debug_WriteString_P(PSTR("main.c : main() :  parser_update()\n"));
 		// Update the order parser
 		parser_update();
 
-		debug_WriteString_P(PSTR("main.c : main() :  queue_update()\n"));
+//		debug_WriteString_P(PSTR("main.c : main() :  queue_update()\n"));
 		// Housekeeping for the order queue
 		queue_update();
 		
-		debug_WriteString_P(PSTR("main.c : main() :  status_update()\n"));
+//		debug_WriteString_P(PSTR("main.c : main() :  status_update()\n"));
 		// Update the global status of the program
 		status_update();
 	}

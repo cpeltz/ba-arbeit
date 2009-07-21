@@ -19,9 +19,9 @@
  */
 ISR(USART1_UDRE_vect) {
 	//if (flag_read(INTERFACE_TWI)) {
-		UCSR1B &= ~(1 << UDRIE1);
+	//	UCSR1B &= ~(1 << UDRIE1);
 	//}
-	/*
+	
 	if (io_obj_get_remaining_size() > 0) {
 		UDR1 = io_get_next_transmission_byte();
 	} else {
@@ -31,7 +31,7 @@ ISR(USART1_UDRE_vect) {
 		} else {
 			UCSR1B &= ~(1 << UDRIE1);
 		}
-	}*/
+	}
 }
 
 /**
@@ -52,9 +52,9 @@ void uart_init(void) {
 	UBRR1H = UBRR_VAL >> 8;
 	UBRR1L = UBRR_VAL & 0xff;
 	// Aktiviere RX, TX und RX Complete IRQ
-//	if (!flag_read(INTERFACE_TWI)) {
+	if (!flag_read(INTERFACE_TWI)) {
 		UCSR1B = (1 << RXEN1) | (1 << TXEN1) | (1 << RXCIE1);
-//	} 
+	} 
 	// Lösche IRQ Flags
 	UCSR1A = (1 << RXC1) | (1 << TXC1);
 }
@@ -71,8 +71,8 @@ void uart_start_transmission() {
 }
  
 void uart_put_debug(const uint8_t data) {
-//	if (!flag_read(INTERFACE_TWI))
-//		return;
+	if (!flag_read(INTERFACE_TWI) && !flag_read(DEBUG_ENABLE))
+		return;
 	UDR1 = data;
 	uart_start_transmission();
 	while(UCSR1B & (1 << UDRIE1));

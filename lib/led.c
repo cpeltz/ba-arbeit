@@ -20,6 +20,7 @@ static uint16_t led_State = 0;
 void led_switchoff(void) {
 	// Alle LEDs ausschalten
 	led_State &= (1<<15);
+	LED_DDR = led_State;
 }
 
 /**
@@ -61,7 +62,8 @@ void led_switch(uint8_t led, uint8_t state) {
 			led_State &= ~(7<<LED_BLUE_BIT);
 			led_State |= (state<<LED_BLUE_BIT);
 			break;
-	} 
+	}
+	LED_DDR = led_State;
 }
 
 /**
@@ -113,6 +115,7 @@ uint16_t led_GetState(void) {
 
 void led_ToggleBit(void) {
 	led_State ^= (1<<15);
+	LED_DDR = led_State;
 }
 
 uint8_t led_ReadToggleBit(void) {
