@@ -1,0 +1,43 @@
+C51 COMPILER V8.09   SERVO                                                                 07/20/2009 13:39:03 PAGE 1   
+
+
+C51 COMPILER V8.09, COMPILATION OF MODULE SERVO
+OBJECT MODULE PLACED IN servo.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE servo.c LARGE BROWSE INTVECTOR(0X2000) DEFINE(MONITOR51) DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include "servo.h"
+   2          
+   3          /**
+   4           * Steuert die Position des Servomotors per PWM.
+   5           * Stellt dazu die Frequenz der PWM auf 200 Hz
+   6           * und setzt den Counter auf PWM1 und damit die
+   7           * Länge des HI-Impulses auf die für den
+   8           * Servo erforderliche Länge. Die Länge regelt
+   9           * dabei den einzustellenden Winkel.
+  10           * Parameter:
+  11           * - pos: Einzustellende Grad-Zahl, mit 0 <= pos <= 180
+  12           * Rückgabewert: void
+  13           */
+  14          void servo_set_pos(unsigned char pos) {
+  15   1              if(pos > 180) {
+  16   2                      pos = 180;
+  17   2              }
+  18   1              PWMP = 107; // 200 Hz: 107
+  19   1              PWM1 = 255 - (31 + (pos / 2));
+  20   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     22    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

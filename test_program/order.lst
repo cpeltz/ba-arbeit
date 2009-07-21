@@ -1,0 +1,137 @@
+C51 COMPILER V8.09   ORDER                                                                 07/20/2009 13:39:03 PAGE 1   
+
+
+C51 COMPILER V8.09, COMPILATION OF MODULE ORDER
+OBJECT MODULE PLACED IN order.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE motor_platine\order.c LARGE BROWSE INTVECTOR(0X2000) DEFINE(MONITOR51) DEBU
+                    -G OBJECTEXTEND PRINT(.\order.lst) OBJECT(order.obj)
+
+line level    source
+
+   1          #include "order.h"
+   2          #include "../i2c_master.h"
+   3          #include <string.h>
+   4          #include <stdarg.h>
+   5          
+   6          void order_init(order_t *order) {
+   7   1              // Function to Initialize a order_t structure
+   8   1              unsigned char i = 0;
+   9   1              // Overwrite every piece of memory with 0
+  10   1              // Have to do it that way because no memset available
+  11   1              for(; i < ORDER_TYPE_MAX_LENGTH; i++) {
+  12   2                      order->dat[i] = 0;
+  13   2              }
+  14   1              // Set the position to write to
+  15   1              order->pos = 0;
+  16   1      }
+  17          
+  18          void intern_order_shift(order_t *order) {
+  19   1              unsigned char i = ORDER_TYPE_MAX_LENGTH;
+  20   1              for(; i > 1; i--) {
+  21   2                      order[i] = order[i - 1];
+  22   2              }
+  23   1              order->dat[0] = 0;
+  24   1      }
+  25          
+  26          void order_shift(order_t *order, unsigned char times) {
+  27   1              unsigned char i = 0;
+  28   1              for(; i < times; i++) {
+  29   2                      intern_order_shift(order);
+  30   2              }
+  31   1      }
+  32          
+  33          void intern_order_unshift(order_t *order) {
+  34   1              unsigned char i = 0;
+  35   1              for(; i < ORDER_TYPE_MAX_LENGTH - 1; i++) {
+  36   2                      order[i] = order[i + 1];
+  37   2              }
+  38   1              order->dat[ORDER_TYPE_MAX_LENGTH - 1] = 0;
+  39   1      }
+  40          
+  41          void order_unshift(order_t *order, unsigned char times) {
+  42   1              unsigned char i = 0;
+  43   1              for(; i < times; i++) {
+  44   2                      intern_order_unshift(order);
+  45   2              }
+  46   1      }
+  47          
+  48          unsigned char order_send(order_t *order) {
+  49   1              unsigned char bytes_send = 0;
+  50   1              order_shift(order, 1);
+  51   1              order->dat[0] = TWI_ADDRESS;
+  52   1              bytes_send = i2c_send(order->dat, order->pos + 1);
+  53   1              order_unshift(order, 1);
+  54   1              return bytes_send;
+C51 COMPILER V8.09   ORDER                                                                 07/20/2009 13:39:03 PAGE 2   
+
+  55   1              //return i2c_send(order->data, order->pos + 1);
+  56   1      }
+  57          
+  58          unsigned char order_send_and_recv_current_order(order_t *order) {
+  59   1              order_send(order);
+  60   1              order_init(order);
+  61   1              order->dat[0] = TWI_ADDRESS;
+  62   1              i2c_receive(order->dat, 2);
+  63   1              return i2c_receive(order->dat, order->dat[1]);
+  64   1      }
+  65          
+  66          unsigned char bytes_to_recv(order_t *order) {
+  67   1              switch(order->dat[0]) {
+  68   2                      case 0x12:
+  69   2                      case 0x22:
+  70   2                      case 0x32:
+  71   2                              return 1;
+  72   2                      default:
+  73   2                              return 0;
+  74   2              }
+  75   1      }
+  76          
+  77          void order_send_and_recv(order_t *order) {
+  78   1              order_shift(order, 1);
+  79   1              order->dat[0] = TWI_ADDRESS;
+  80   1              i2c_send(order->dat, order->pos + 1);
+  81   1              order_init(order);
+  82   1              order->dat[0] = TWI_ADDRESS;
+  83   1              i2c_receive(order->dat, bytes_to_recv(order));
+  84   1      }
+  85          
+  86          void order_set_type(order_t *order, unsigned char type) {
+  87   1              order->dat[0] = type;
+  88   1              order->pos = 1;
+  89   1      }
+  90          
+  91          void order_add_params(order_t *order, char *format, ...) {
+  92   1              int num = strlen(format);
+  93   1              va_list arglist;
+  94   1              int i = 0;
+  95   1      
+  96   1              va_start(arglist, format);
+  97   1              for(; i < num; i++) {
+  98   2                      if(format[i] == '1') {
+  99   3                              order->dat[order->pos] = va_arg(arglist, unsigned char);
+ 100   3                              order->pos += 1;
+ 101   3                      } else if(format[i] == '2') {
+ 102   3                              long arg = va_arg(arglist, long);
+ 103   3                              order->dat[order->pos] = arg & 0xff00;
+ 104   3                              order->dat[order->pos + 1] = arg & 0x00ff;
+ 105   3                              order->pos += 2;
+ 106   3                      }
+ 107   2              }
+ 108   1              va_end(arglist);
+ 109   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1015    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----      88
+   PDATA SIZE       =   ----    ----
+C51 COMPILER V8.09   ORDER                                                                 07/20/2009 13:39:03 PAGE 3   
+
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

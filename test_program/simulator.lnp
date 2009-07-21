@@ -1,0 +1,11 @@
+"timing.obj",
+"lcd.obj",
+"i2c_master.obj",
+"servo.obj",
+"main.obj",
+"helper.obj",
+"order.obj" 
+TO "simulator" 
+RAMSIZE(256) 
+CODE( 0X0000-0X0FFF )
+XDATA( 0X0000-0X0FFF )

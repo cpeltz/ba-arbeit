@@ -1,0 +1,351 @@
+A51 MACRO ASSEMBLER  ASM_HELPER                                                           06/18/2009 11:03:20 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.00d
+OBJECT MODULE PLACED IN asm_helper.OBJ
+ASSEMBLER INVOKED BY: C:\Keil\C51\BIN\A51.EXE asm_helper.src PR(.\asm_helper.ls1) EP DEBUG
+
+LOC  OBJ            LINE     SOURCE
+
+                       1     ; .\asm_helper.SRC generated from: asm_helper.c
+                       2     ; COMPILER INVOKED BY:
+                       3     ;        C:\Keil\C51\BIN\C51.EXE asm_helper.c LARGE BROWSE INTVECTOR(0X2000) DEFINE(MONITOR
+                             51) DEBUG OBJECTEXTEND SRC(.\asm_helper.SRC)
+                       4     
+                       5     
+                       6     NAME    ASM_HELPER
+                       7     
+                       8     ?PR?_asm_call?ASM_HELPER                 SEGMENT CODE 
+                       9     ?PR?asm_initFuncTable?ASM_HELPER         SEGMENT CODE 
+                      10     ?PR?_asm_getFuncAddress?ASM_HELPER       SEGMENT CODE 
+                      11     ?PR?asm_getFuncTable?ASM_HELPER          SEGMENT CODE 
+                      12     ?C_INITSEG           SEGMENT CODE 
+                      13     ?XD?ASM_HELPER       SEGMENT XDATA 
+                      14             EXTRN   CODE (_driver_rotate)
+                      15             EXTRN   CODE (driver_moveForward)
+                      16             EXTRN   CODE (driver_rotateRight)
+                      17             EXTRN   CODE (_driver_drive)
+                      18             EXTRN   XDATA (?_driver_drive?BYTE)
+                      19             EXTRN   CODE (driver_rotateLeft)
+                      20             EXTRN   CODE (driver_pause)
+                      21             EXTRN   CODE (driver_status)
+                      22             EXTRN   CODE (driver_stop)
+                      23             EXTRN   CODE (driver_moveBackward)
+                      24             EXTRN   CODE (_sharpa_measure)
+                      25             EXTRN   CODE (_driver_driveStraight)
+                      26             EXTRN   CODE (_samplea_to_cm)
+                      27             EXTRN   CODE (driver_unpause)
+                      28             PUBLIC  asm_funcTable
+                      29             PUBLIC  asm_getFuncTable
+                      30             PUBLIC  _asm_getFuncAddress
+                      31             PUBLIC  asm_initFuncTable
+                      32             PUBLIC  _asm_call
+                      33     
+----                  34             RSEG  ?XD?ASM_HELPER
+0000                  35     table_long_dist:   DS   24
+0018                  36     table_short_dist:   DS   54
+004E                  37       asm_funcTable:   DS   26
+                      38     
+----                  39             RSEG  ?C_INITSEG
+0000 60               40             DB      060H
+0001 36               41             DB      036H
+0002 0000     F       42             DW      table_short_dist
+0004 03B1             43             DW      003B1H
+0006 033E             44             DW      0033EH
+0008 02C6             45             DW      002C6H
+000A 0276             46             DW      00276H
+000C 021C             47             DW      0021CH
+000E 01E5             48             DW      001E5H
+0010 01B3             49             DW      001B3H
+0012 01A4             50             DW      001A4H
+0014 0181             51             DW      00181H
+0016 0168             52             DW      00168H
+0018 014E             53             DW      0014EH
+001A 0138             54             DW      00138H
+001C 0125             55             DW      00125H
+001E 0117             56             DW      00117H
+0020 0109             57             DW      00109H
+A51 MACRO ASSEMBLER  ASM_HELPER                                                           06/18/2009 11:03:20 PAGE     2
+
+0022 00FC             58             DW      000FCH
+0024 00F2             59             DW      000F2H
+0026 00E1             60             DW      000E1H
+0028 00D4             61             DW      000D4H
+002A 00D1             62             DW      000D1H
+002C 00C2             63             DW      000C2H
+002E 00BE             64             DW      000BEH
+0030 00B9             65             DW      000B9H
+0032 00B4             66             DW      000B4H
+0034 00AF             67             DW      000AFH
+0036 00AA             68             DW      000AAH
+0038 00A0             69             DW      000A0H
+                      70     
+003A 58               71             DB      058H
+003B 0000     F       72             DW      table_long_dist
+003D 0370             73             DW      00370H
+003F 027B             74             DW      0027BH
+0041 01EF             75             DW      001EFH
+0043 0195             76             DW      00195H
+0045 015E             77             DW      0015EH
+0047 0131             78             DW      00131H
+0049 010E             79             DW      0010EH
+004B 00F0             80             DW      000F0H
+004D 00DC             81             DW      000DCH
+004F 00C8             82             DW      000C8H
+0051 00B4             83             DW      000B4H
+0053 0096             84             DW      00096H
+                      85     
+                      86     ; #include "asm_helper.h"
+                      87     ; #include <stdio.h>
+                      88     ; #include "lcd.h"
+                      89     ; #include "driver.h"
+                      90     ; #include "sharp_sensor.h"
+                      91     ; 
+                      92     ; byte xdata *asm_funcTable[FUNCTION_LAST];
+                      93     ; 
+                      94     ; void asm_call(byte xdata *addr) {
+                      95     
+----                  96             RSEG  ?PR?_asm_call?ASM_HELPER
+0000                  97     _asm_call:
+                      98                             ; SOURCE LINE # 9
+                      99     ;       addr = addr;
+                     100                             ; SOURCE LINE # 10
+                     101     ; 
+                     102     ;       // push the address onto the stack, so that this function's RET calls it
+                     103     ; #pragma asm
+                     104     ;       MOV A, R7
+0000 EF              105               MOV A, R7
+                     106     ;       PUSH ACC
+0001 C0E0            107               PUSH ACC
+                     108     ;       MOV A, R6
+0003 EE              109               MOV A, R6
+                     110     ;       PUSH ACC
+0004 C0E0            111               PUSH ACC
+                     112     ; #pragma endasm
+                     113     ; }
+                     114                             ; SOURCE LINE # 19
+0006 22              115             RET     
+                     116     ; END OF _asm_call
+                     117     
+                     118     ; 
+                     119     ; void asm_initFuncTable() {
+                     120     
+----                 121             RSEG  ?PR?asm_initFuncTable?ASM_HELPER
+0000                 122     asm_initFuncTable:
+                     123                             ; SOURCE LINE # 21
+A51 MACRO ASSEMBLER  ASM_HELPER                                                           06/18/2009 11:03:20 PAGE     3
+
+                     124     ;       asm_funcTable[FUNCTION_STOP]          = (byte xdata *) driver_stop;
+                     125                             ; SOURCE LINE # 22
+0000 900000   F      126             MOV     DPTR,#asm_funcTable
+0003 7400     F      127             MOV     A,#HIGH (driver_stop)
+0005 F0              128             MOVX    @DPTR,A
+0006 A3              129             INC     DPTR
+0007 7400     F      130             MOV     A,#LOW (driver_stop)
+0009 F0              131             MOVX    @DPTR,A
+                     132     ;       asm_funcTable[FUNCTION_PAUSE]         = (byte xdata *) driver_pause;
+                     133                             ; SOURCE LINE # 23
+000A A3              134             INC     DPTR
+000B 7400     F      135             MOV     A,#HIGH (driver_pause)
+000D F0              136             MOVX    @DPTR,A
+000E A3              137             INC     DPTR
+000F 7400     F      138             MOV     A,#LOW (driver_pause)
+0011 F0              139             MOVX    @DPTR,A
+                     140     ;       asm_funcTable[FUNCTION_UNPAUSE]       = (byte xdata *) driver_unpause;
+                     141                             ; SOURCE LINE # 24
+0012 A3              142             INC     DPTR
+0013 7400     F      143             MOV     A,#HIGH (driver_unpause)
+0015 F0              144             MOVX    @DPTR,A
+0016 A3              145             INC     DPTR
+0017 7400     F      146             MOV     A,#LOW (driver_unpause)
+0019 F0              147             MOVX    @DPTR,A
+                     148     ;       asm_funcTable[FUNCTION_MOVEFORWARD]   = (byte xdata *) driver_moveForward;
+                     149                             ; SOURCE LINE # 25
+001A A3              150             INC     DPTR
+001B 7400     F      151             MOV     A,#HIGH (driver_moveForward)
+001D F0              152             MOVX    @DPTR,A
+001E A3              153             INC     DPTR
+001F 7400     F      154             MOV     A,#LOW (driver_moveForward)
+0021 F0              155             MOVX    @DPTR,A
+                     156     ;       asm_funcTable[FUNCTION_MOVEBACKWARD]  = (byte xdata *) driver_moveBackward;
+                     157                             ; SOURCE LINE # 26
+0022 A3              158             INC     DPTR
+0023 7400     F      159             MOV     A,#HIGH (driver_moveBackward)
+0025 F0              160             MOVX    @DPTR,A
+0026 A3              161             INC     DPTR
+0027 7400     F      162             MOV     A,#LOW (driver_moveBackward)
+0029 F0              163             MOVX    @DPTR,A
+                     164     ;       asm_funcTable[FUNCTION_ROTATELEFT]    = (byte xdata *) driver_rotateLeft;
+                     165                             ; SOURCE LINE # 27
+002A A3              166             INC     DPTR
+002B 7400     F      167             MOV     A,#HIGH (driver_rotateLeft)
+002D F0              168             MOVX    @DPTR,A
+002E A3              169             INC     DPTR
+002F 7400     F      170             MOV     A,#LOW (driver_rotateLeft)
+0031 F0              171             MOVX    @DPTR,A
+                     172     ;       asm_funcTable[FUNCTION_ROTATERIGHT]   = (byte xdata *) driver_rotateRight;
+                     173                             ; SOURCE LINE # 28
+0032 A3              174             INC     DPTR
+0033 7400     F      175             MOV     A,#HIGH (driver_rotateRight)
+0035 F0              176             MOVX    @DPTR,A
+0036 A3              177             INC     DPTR
+0037 7400     F      178             MOV     A,#LOW (driver_rotateRight)
+0039 F0              179             MOVX    @DPTR,A
+                     180     ;       asm_funcTable[FUNCTION_DRIVERSTATUS]  = (byte xdata *) driver_status;
+                     181                             ; SOURCE LINE # 29
+003A A3              182             INC     DPTR
+003B 7400     F      183             MOV     A,#HIGH (driver_status)
+003D F0              184             MOVX    @DPTR,A
+003E A3              185             INC     DPTR
+003F 7400     F      186             MOV     A,#LOW (driver_status)
+0041 F0              187             MOVX    @DPTR,A
+                     188     ;       asm_funcTable[FUNCTION_DRIVE]         = (byte xdata *) driver_drive;
+                     189                             ; SOURCE LINE # 30
+A51 MACRO ASSEMBLER  ASM_HELPER                                                           06/18/2009 11:03:20 PAGE     4
+
+0042 A3              190             INC     DPTR
+0043 7400     F      191             MOV     A,#HIGH (_driver_drive)
+0045 F0              192             MOVX    @DPTR,A
+0046 A3              193             INC     DPTR
+0047 7400     F      194             MOV     A,#LOW (_driver_drive)
+0049 F0              195             MOVX    @DPTR,A
+                     196     ;       asm_funcTable[FUNCTION_DRIVESTRAIGHT] = (byte xdata *) driver_driveStraight;
+                     197                             ; SOURCE LINE # 31
+004A A3              198             INC     DPTR
+004B 7400     F      199             MOV     A,#HIGH (_driver_driveStraight)
+004D F0              200             MOVX    @DPTR,A
+004E A3              201             INC     DPTR
+004F 7400     F      202             MOV     A,#LOW (_driver_driveStraight)
+0051 F0              203             MOVX    @DPTR,A
+                     204     ;       asm_funcTable[FUNCTION_ROTATE]        = (byte xdata *) driver_rotate;
+                     205                             ; SOURCE LINE # 32
+0052 A3              206             INC     DPTR
+0053 7400     F      207             MOV     A,#HIGH (_driver_rotate)
+0055 F0              208             MOVX    @DPTR,A
+0056 A3              209             INC     DPTR
+0057 7400     F      210             MOV     A,#LOW (_driver_rotate)
+0059 F0              211             MOVX    @DPTR,A
+                     212     ;       asm_funcTable[FUNCTION_GETSENSOR]     = (byte xdata *) sharpa_measure;
+                     213                             ; SOURCE LINE # 33
+005A A3              214             INC     DPTR
+005B 7400     F      215             MOV     A,#HIGH (_sharpa_measure)
+005D F0              216             MOVX    @DPTR,A
+005E A3              217             INC     DPTR
+005F 7400     F      218             MOV     A,#LOW (_sharpa_measure)
+0061 F0              219             MOVX    @DPTR,A
+                     220     ;       asm_funcTable[FUNCTION_SENSORTOCM]    = (byte xdata *) samplea_to_cm;
+                     221                             ; SOURCE LINE # 34
+0062 A3              222             INC     DPTR
+0063 7400     F      223             MOV     A,#HIGH (_samplea_to_cm)
+0065 F0              224             MOVX    @DPTR,A
+0066 A3              225             INC     DPTR
+0067 7400     F      226             MOV     A,#LOW (_samplea_to_cm)
+0069 F0              227             MOVX    @DPTR,A
+                     228     ; }
+                     229                             ; SOURCE LINE # 35
+006A 22              230             RET     
+                     231     ; END OF asm_initFuncTable
+                     232     
+                     233     ; 
+                     234     ; byte xdata *asm_getFuncAddress(Function func) {
+                     235     
+----                 236             RSEG  ?PR?_asm_getFuncAddress?ASM_HELPER
+0000                 237     _asm_getFuncAddress:
+                     238             USING   0
+                     239                             ; SOURCE LINE # 37
+                     240     ;---- Variable 'func?241' assigned to Register 'R7' ----
+                     241     ;       func %= FUNCTION_LAST;
+                     242                             ; SOURCE LINE # 38
+0000 EF              243             MOV     A,R7
+0001 75F00D          244             MOV     B,#0DH
+0004 84              245             DIV     AB
+0005 AFF0            246             MOV     R7,B
+                     247     ; 
+                     248     ;       return asm_funcTable[func];
+                     249                             ; SOURCE LINE # 40
+0007 EF              250             MOV     A,R7
+0008 25E0            251             ADD     A,ACC
+000A 2400     F      252             ADD     A,#LOW (asm_funcTable)
+000C F582            253             MOV     DPL,A
+000E E4              254             CLR     A
+000F 3400     F      255             ADDC    A,#HIGH (asm_funcTable)
+A51 MACRO ASSEMBLER  ASM_HELPER                                                           06/18/2009 11:03:20 PAGE     5
+
+0011 F583            256             MOV     DPH,A
+0013 E0              257             MOVX    A,@DPTR
+0014 FE              258             MOV     R6,A
+0015 A3              259             INC     DPTR
+0016 E0              260             MOVX    A,@DPTR
+0017 FF              261             MOV     R7,A
+                     262     ; }
+                     263                             ; SOURCE LINE # 41
+0018                 264     ?C0003:
+0018 22              265             RET     
+                     266     ; END OF _asm_getFuncAddress
+                     267     
+                     268     ; 
+                     269     ; byte xdata **asm_getFuncTable() {
+                     270     
+----                 271             RSEG  ?PR?asm_getFuncTable?ASM_HELPER
+0000                 272     asm_getFuncTable:
+                     273             USING   0
+                     274                             ; SOURCE LINE # 43
+                     275     ;       return asm_funcTable;
+                     276                             ; SOURCE LINE # 44
+0000 7B01            277             MOV     R3,#01H
+0002 7A00     F      278             MOV     R2,#HIGH (asm_funcTable)
+0004 7900     F      279             MOV     R1,#LOW (asm_funcTable)
+                     280     ; }                     ; SOURCE LINE # 45
+0006                 281     ?C0004:
+0006 22              282             RET     
+                     283     ; END OF asm_getFuncTable
+                     284     
+                     285             END
+A51 MACRO ASSEMBLER  ASM_HELPER                                                           06/18/2009 11:03:20 PAGE     6
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E                             T Y P E  V A L U E   ATTRIBUTES
+
+?C0003 . . . . . . . . . . . . . .  C ADDR   0018H   R   SEG=?PR?_ASM_GETFUNCADDRESS?ASM_HELPER
+?C0004 . . . . . . . . . . . . . .  C ADDR   0006H   R   SEG=?PR?ASM_GETFUNCTABLE?ASM_HELPER
+?C_INITSEG . . . . . . . . . . . .  C SEG    0055H       REL=UNIT
+?PR?ASM_GETFUNCTABLE?ASM_HELPER. .  C SEG    0007H       REL=UNIT
+?PR?ASM_INITFUNCTABLE?ASM_HELPER .  C SEG    006BH       REL=UNIT
+?PR?_ASM_CALL?ASM_HELPER . . . . .  C SEG    0007H       REL=UNIT
+?PR?_ASM_GETFUNCADDRESS?ASM_HELPER  C SEG    0019H       REL=UNIT
+?XD?ASM_HELPER . . . . . . . . . .  X SEG    0068H       REL=UNIT
+?_DRIVER_DRIVE?BYTE. . . . . . . .  X ADDR   -----       EXT
+ACC. . . . . . . . . . . . . . . .  D ADDR   00E0H   A   
+ASM_FUNCTABLE. . . . . . . . . . .  X ADDR   004EH   R   SEG=?XD?ASM_HELPER
+ASM_GETFUNCTABLE . . . . . . . . .  C ADDR   0000H   R   SEG=?PR?ASM_GETFUNCTABLE?ASM_HELPER
+ASM_HELPER . . . . . . . . . . . .  N NUMB   -----       
+ASM_INITFUNCTABLE. . . . . . . . .  C ADDR   0000H   R   SEG=?PR?ASM_INITFUNCTABLE?ASM_HELPER
+B. . . . . . . . . . . . . . . . .  D ADDR   00F0H   A   
+DPH. . . . . . . . . . . . . . . .  D ADDR   0083H   A   
+DPL. . . . . . . . . . . . . . . .  D ADDR   0082H   A   
+DRIVER_MOVEBACKWARD. . . . . . . .  C ADDR   -----       EXT
+DRIVER_MOVEFORWARD . . . . . . . .  C ADDR   -----       EXT
+DRIVER_PAUSE . . . . . . . . . . .  C ADDR   -----       EXT
+DRIVER_ROTATELEFT. . . . . . . . .  C ADDR   -----       EXT
+DRIVER_ROTATERIGHT . . . . . . . .  C ADDR   -----       EXT
+DRIVER_STATUS. . . . . . . . . . .  C ADDR   -----       EXT
+DRIVER_STOP. . . . . . . . . . . .  C ADDR   -----       EXT
+DRIVER_UNPAUSE . . . . . . . . . .  C ADDR   -----       EXT
+TABLE_LONG_DIST. . . . . . . . . .  X ADDR   0000H   R   SEG=?XD?ASM_HELPER
+TABLE_SHORT_DIST . . . . . . . . .  X ADDR   0018H   R   SEG=?XD?ASM_HELPER
+_ASM_CALL. . . . . . . . . . . . .  C ADDR   0000H   R   SEG=?PR?_ASM_CALL?ASM_HELPER
+_ASM_GETFUNCADDRESS. . . . . . . .  C ADDR   0000H   R   SEG=?PR?_ASM_GETFUNCADDRESS?ASM_HELPER
+_DRIVER_DRIVE. . . . . . . . . . .  C ADDR   -----       EXT
+_DRIVER_DRIVESTRAIGHT. . . . . . .  C ADDR   -----       EXT
+_DRIVER_ROTATE . . . . . . . . . .  C ADDR   -----       EXT
+_SAMPLEA_TO_CM . . . . . . . . . .  C ADDR   -----       EXT
+_SHARPA_MEASURE. . . . . . . . . .  C ADDR   -----       EXT
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

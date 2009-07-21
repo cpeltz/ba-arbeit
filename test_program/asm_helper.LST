@@ -1,0 +1,71 @@
+C51 COMPILER V8.09   ASM_HELPER                                                            06/18/2009 11:03:20 PAGE 1   
+
+
+C51 COMPILER V8.09, COMPILATION OF MODULE ASM_HELPER
+NO OBJECT MODULE REQUESTED
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE asm_helper.c LARGE BROWSE INTVECTOR(0X2000) DEFINE(MONITOR51) DEBUG OBJECTE
+                    -XTEND SRC(.\asm_helper.SRC)
+
+line level    source
+
+   1          #include "asm_helper.h"
+   2          #include <stdio.h>
+   3          #include "lcd.h"
+   4          #include "driver.h"
+   5          #include "sharp_sensor.h"
+   6          
+   7          byte xdata *asm_funcTable[FUNCTION_LAST];
+   8          
+   9          void asm_call(byte xdata *addr) {
+  10   1              addr = addr;
+  11   1      
+  12   1              // push the address onto the stack, so that this function's RET calls it
+  13   1      #pragma asm
+  14   1              MOV A, R7
+  15   1              PUSH ACC
+  16   1              MOV A, R6
+  17   1              PUSH ACC
+  18   1      #pragma endasm
+  19   1      }
+  20          
+  21          void asm_initFuncTable() {
+  22   1              asm_funcTable[FUNCTION_STOP]          = (byte xdata *) driver_stop;
+  23   1              asm_funcTable[FUNCTION_PAUSE]         = (byte xdata *) driver_pause;
+  24   1              asm_funcTable[FUNCTION_UNPAUSE]       = (byte xdata *) driver_unpause;
+  25   1              asm_funcTable[FUNCTION_MOVEFORWARD]   = (byte xdata *) driver_moveForward;
+  26   1              asm_funcTable[FUNCTION_MOVEBACKWARD]  = (byte xdata *) driver_moveBackward;
+  27   1              asm_funcTable[FUNCTION_ROTATELEFT]    = (byte xdata *) driver_rotateLeft;
+  28   1              asm_funcTable[FUNCTION_ROTATERIGHT]   = (byte xdata *) driver_rotateRight;
+  29   1              asm_funcTable[FUNCTION_DRIVERSTATUS]  = (byte xdata *) driver_status;
+  30   1              asm_funcTable[FUNCTION_DRIVE]         = (byte xdata *) driver_drive;
+  31   1              asm_funcTable[FUNCTION_DRIVESTRAIGHT] = (byte xdata *) driver_driveStraight;
+  32   1              asm_funcTable[FUNCTION_ROTATE]        = (byte xdata *) driver_rotate;
+  33   1              asm_funcTable[FUNCTION_GETSENSOR]     = (byte xdata *) sharpa_measure;
+  34   1              asm_funcTable[FUNCTION_SENSORTOCM]    = (byte xdata *) samplea_to_cm;
+  35   1      }
+  36          
+  37          byte xdata *asm_getFuncAddress(Function func) {
+  38   1              func %= FUNCTION_LAST;
+  39   1      
+  40   1              return asm_funcTable[func];
+  41   1      }
+  42          
+  43          byte xdata **asm_getFuncTable() {
+  44   1              return asm_funcTable;
+  45   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    152    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =    104    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+C51 COMPILER V8.09   ASM_HELPER                                                            06/18/2009 11:03:20 PAGE 2   
+
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

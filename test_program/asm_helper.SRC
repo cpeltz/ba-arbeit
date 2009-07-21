@@ -1,0 +1,285 @@
+; .\asm_helper.SRC generated from: asm_helper.c
+; COMPILER INVOKED BY:
+;        C:\Keil\C51\BIN\C51.EXE asm_helper.c LARGE BROWSE INTVECTOR(0X2000) DEFINE(MONITOR51) DEBUG OBJECTEXTEND SRC(.\asm_helper.SRC)
+
+
+NAME	ASM_HELPER
+
+?PR?_asm_call?ASM_HELPER                 SEGMENT CODE 
+?PR?asm_initFuncTable?ASM_HELPER         SEGMENT CODE 
+?PR?_asm_getFuncAddress?ASM_HELPER       SEGMENT CODE 
+?PR?asm_getFuncTable?ASM_HELPER          SEGMENT CODE 
+?C_INITSEG           SEGMENT CODE 
+?XD?ASM_HELPER       SEGMENT XDATA 
+	EXTRN	CODE (_driver_rotate)
+	EXTRN	CODE (driver_moveForward)
+	EXTRN	CODE (driver_rotateRight)
+	EXTRN	CODE (_driver_drive)
+	EXTRN	XDATA (?_driver_drive?BYTE)
+	EXTRN	CODE (driver_rotateLeft)
+	EXTRN	CODE (driver_pause)
+	EXTRN	CODE (driver_status)
+	EXTRN	CODE (driver_stop)
+	EXTRN	CODE (driver_moveBackward)
+	EXTRN	CODE (_sharpa_measure)
+	EXTRN	CODE (_driver_driveStraight)
+	EXTRN	CODE (_samplea_to_cm)
+	EXTRN	CODE (driver_unpause)
+	PUBLIC	asm_funcTable
+	PUBLIC	asm_getFuncTable
+	PUBLIC	_asm_getFuncAddress
+	PUBLIC	asm_initFuncTable
+	PUBLIC	_asm_call
+
+	RSEG  ?XD?ASM_HELPER
+table_long_dist:   DS   24
+table_short_dist:   DS   54
+  asm_funcTable:   DS   26
+
+	RSEG  ?C_INITSEG
+	DB	060H
+	DB	036H
+	DW	table_short_dist
+	DW	003B1H
+	DW	0033EH
+	DW	002C6H
+	DW	00276H
+	DW	0021CH
+	DW	001E5H
+	DW	001B3H
+	DW	001A4H
+	DW	00181H
+	DW	00168H
+	DW	0014EH
+	DW	00138H
+	DW	00125H
+	DW	00117H
+	DW	00109H
+	DW	000FCH
+	DW	000F2H
+	DW	000E1H
+	DW	000D4H
+	DW	000D1H
+	DW	000C2H
+	DW	000BEH
+	DW	000B9H
+	DW	000B4H
+	DW	000AFH
+	DW	000AAH
+	DW	000A0H
+
+	DB	058H
+	DW	table_long_dist
+	DW	00370H
+	DW	0027BH
+	DW	001EFH
+	DW	00195H
+	DW	0015EH
+	DW	00131H
+	DW	0010EH
+	DW	000F0H
+	DW	000DCH
+	DW	000C8H
+	DW	000B4H
+	DW	00096H
+
+; #include "asm_helper.h"
+; #include <stdio.h>
+; #include "lcd.h"
+; #include "driver.h"
+; #include "sharp_sensor.h"
+; 
+; byte xdata *asm_funcTable[FUNCTION_LAST];
+; 
+; void asm_call(byte xdata *addr) {
+
+	RSEG  ?PR?_asm_call?ASM_HELPER
+_asm_call:
+			; SOURCE LINE # 9
+; 	addr = addr;
+			; SOURCE LINE # 10
+; 
+; 	// push the address onto the stack, so that this function's RET calls it
+; #pragma asm
+; 	MOV A, R7
+	  MOV A, R7
+; 	PUSH ACC
+	  PUSH ACC
+; 	MOV A, R6
+	  MOV A, R6
+; 	PUSH ACC
+	  PUSH ACC
+; #pragma endasm
+; }
+			; SOURCE LINE # 19
+	RET  	
+; END OF _asm_call
+
+; 
+; void asm_initFuncTable() {
+
+	RSEG  ?PR?asm_initFuncTable?ASM_HELPER
+asm_initFuncTable:
+			; SOURCE LINE # 21
+; 	asm_funcTable[FUNCTION_STOP]          = (byte xdata *) driver_stop;
+			; SOURCE LINE # 22
+	MOV  	DPTR,#asm_funcTable
+	MOV  	A,#HIGH (driver_stop)
+	MOVX 	@DPTR,A
+	INC  	DPTR
+	MOV  	A,#LOW (driver_stop)
+	MOVX 	@DPTR,A
+; 	asm_funcTable[FUNCTION_PAUSE]         = (byte xdata *) driver_pause;
+			; SOURCE LINE # 23
+	INC  	DPTR
+	MOV  	A,#HIGH (driver_pause)
+	MOVX 	@DPTR,A
+	INC  	DPTR
+	MOV  	A,#LOW (driver_pause)
+	MOVX 	@DPTR,A
+; 	asm_funcTable[FUNCTION_UNPAUSE]       = (byte xdata *) driver_unpause;
+			; SOURCE LINE # 24
+	INC  	DPTR
+	MOV  	A,#HIGH (driver_unpause)
+	MOVX 	@DPTR,A
+	INC  	DPTR
+	MOV  	A,#LOW (driver_unpause)
+	MOVX 	@DPTR,A
+; 	asm_funcTable[FUNCTION_MOVEFORWARD]   = (byte xdata *) driver_moveForward;
+			; SOURCE LINE # 25
+	INC  	DPTR
+	MOV  	A,#HIGH (driver_moveForward)
+	MOVX 	@DPTR,A
+	INC  	DPTR
+	MOV  	A,#LOW (driver_moveForward)
+	MOVX 	@DPTR,A
+; 	asm_funcTable[FUNCTION_MOVEBACKWARD]  = (byte xdata *) driver_moveBackward;
+			; SOURCE LINE # 26
+	INC  	DPTR
+	MOV  	A,#HIGH (driver_moveBackward)
+	MOVX 	@DPTR,A
+	INC  	DPTR
+	MOV  	A,#LOW (driver_moveBackward)
+	MOVX 	@DPTR,A
+; 	asm_funcTable[FUNCTION_ROTATELEFT]    = (byte xdata *) driver_rotateLeft;
+			; SOURCE LINE # 27
+	INC  	DPTR
+	MOV  	A,#HIGH (driver_rotateLeft)
+	MOVX 	@DPTR,A
+	INC  	DPTR
+	MOV  	A,#LOW (driver_rotateLeft)
+	MOVX 	@DPTR,A
+; 	asm_funcTable[FUNCTION_ROTATERIGHT]   = (byte xdata *) driver_rotateRight;
+			; SOURCE LINE # 28
+	INC  	DPTR
+	MOV  	A,#HIGH (driver_rotateRight)
+	MOVX 	@DPTR,A
+	INC  	DPTR
+	MOV  	A,#LOW (driver_rotateRight)
+	MOVX 	@DPTR,A
+; 	asm_funcTable[FUNCTION_DRIVERSTATUS]  = (byte xdata *) driver_status;
+			; SOURCE LINE # 29
+	INC  	DPTR
+	MOV  	A,#HIGH (driver_status)
+	MOVX 	@DPTR,A
+	INC  	DPTR
+	MOV  	A,#LOW (driver_status)
+	MOVX 	@DPTR,A
+; 	asm_funcTable[FUNCTION_DRIVE]         = (byte xdata *) driver_drive;
+			; SOURCE LINE # 30
+	INC  	DPTR
+	MOV  	A,#HIGH (_driver_drive)
+	MOVX 	@DPTR,A
+	INC  	DPTR
+	MOV  	A,#LOW (_driver_drive)
+	MOVX 	@DPTR,A
+; 	asm_funcTable[FUNCTION_DRIVESTRAIGHT] = (byte xdata *) driver_driveStraight;
+			; SOURCE LINE # 31
+	INC  	DPTR
+	MOV  	A,#HIGH (_driver_driveStraight)
+	MOVX 	@DPTR,A
+	INC  	DPTR
+	MOV  	A,#LOW (_driver_driveStraight)
+	MOVX 	@DPTR,A
+; 	asm_funcTable[FUNCTION_ROTATE]        = (byte xdata *) driver_rotate;
+			; SOURCE LINE # 32
+	INC  	DPTR
+	MOV  	A,#HIGH (_driver_rotate)
+	MOVX 	@DPTR,A
+	INC  	DPTR
+	MOV  	A,#LOW (_driver_rotate)
+	MOVX 	@DPTR,A
+; 	asm_funcTable[FUNCTION_GETSENSOR]     = (byte xdata *) sharpa_measure;
+			; SOURCE LINE # 33
+	INC  	DPTR
+	MOV  	A,#HIGH (_sharpa_measure)
+	MOVX 	@DPTR,A
+	INC  	DPTR
+	MOV  	A,#LOW (_sharpa_measure)
+	MOVX 	@DPTR,A
+; 	asm_funcTable[FUNCTION_SENSORTOCM]    = (byte xdata *) samplea_to_cm;
+			; SOURCE LINE # 34
+	INC  	DPTR
+	MOV  	A,#HIGH (_samplea_to_cm)
+	MOVX 	@DPTR,A
+	INC  	DPTR
+	MOV  	A,#LOW (_samplea_to_cm)
+	MOVX 	@DPTR,A
+; }
+			; SOURCE LINE # 35
+	RET  	
+; END OF asm_initFuncTable
+
+; 
+; byte xdata *asm_getFuncAddress(Function func) {
+
+	RSEG  ?PR?_asm_getFuncAddress?ASM_HELPER
+_asm_getFuncAddress:
+	USING	0
+			; SOURCE LINE # 37
+;---- Variable 'func?241' assigned to Register 'R7' ----
+; 	func %= FUNCTION_LAST;
+			; SOURCE LINE # 38
+	MOV  	A,R7
+	MOV  	B,#0DH
+	DIV  	AB
+	MOV  	R7,B
+; 
+; 	return asm_funcTable[func];
+			; SOURCE LINE # 40
+	MOV  	A,R7
+	ADD  	A,ACC
+	ADD  	A,#LOW (asm_funcTable)
+	MOV  	DPL,A
+	CLR  	A
+	ADDC 	A,#HIGH (asm_funcTable)
+	MOV  	DPH,A
+	MOVX 	A,@DPTR
+	MOV  	R6,A
+	INC  	DPTR
+	MOVX 	A,@DPTR
+	MOV  	R7,A
+; }
+			; SOURCE LINE # 41
+?C0003:
+	RET  	
+; END OF _asm_getFuncAddress
+
+; 
+; byte xdata **asm_getFuncTable() {
+
+	RSEG  ?PR?asm_getFuncTable?ASM_HELPER
+asm_getFuncTable:
+	USING	0
+			; SOURCE LINE # 43
+; 	return asm_funcTable;
+			; SOURCE LINE # 44
+	MOV  	R3,#01H
+	MOV  	R2,#HIGH (asm_funcTable)
+	MOV  	R1,#LOW (asm_funcTable)
+; }			; SOURCE LINE # 45
+?C0004:
+	RET  	
+; END OF asm_getFuncTable
+
+	END

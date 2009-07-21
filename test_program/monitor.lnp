@@ -1,0 +1,12 @@
+"Startup.obj",
+"timing.obj",
+"lcd.obj",
+"i2c_master.obj",
+"servo.obj",
+"main.obj",
+"helper.obj",
+"order.obj" 
+TO "monitor" 
+RAMSIZE(256) 
+CODE( 0X2000-0X7FFF )
+XDATA( 0X8000-0XEFFF )

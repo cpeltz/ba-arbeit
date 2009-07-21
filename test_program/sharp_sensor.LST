@@ -1,0 +1,96 @@
+C51 COMPILER V8.09   SHARP_SENSOR                                                          07/07/2009 11:16:19 PAGE 1   
+
+
+C51 COMPILER V8.09, COMPILATION OF MODULE SHARP_SENSOR
+OBJECT MODULE PLACED IN sharp_sensor.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE sharp_sensor.c DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          #include <reg552.h>
+   2          #include <timing.h>
+   3          #include "sharp_sensor.h"
+   4          
+   5          /**
+   6           * Führt eine Messung mit dem analogen Sharp-Abstandssensor durch.
+   7           * Stößt eine Messung an, wartet auf Resultat, und gibt dieses
+   8           * nach erfolgter Messung zurück.
+   9           * Parameter:
+  10           * - sens: Nummer des analogen Eingangs
+  11           * Rückgabewert: unsigned int: Ausgelesener 10-Bit-Messwert
+  12           */
+  13          unsigned int sharpa_measure(byte sens) {
+  14   1              //wait_ms(100);   // TODO: ??
+  15   1              sens %= 8;
+  16   1              ADCON&=0xE7;
+  17   1              ADCON = sens | 0x08; // Set software-only start-mode and start measurement
+  18   1              while(!(ADCON & 0x10));
+  19   1              return ((ADCH << 2)     | ((ADCON & 0xC0) >> 6));
+  20   1      }
+  21          
+  22          /**
+  23           * Wandelt den Messwert eines analogen Abstandssensors
+  24           * in einen cm-Wert mittels einer Messtabelle und einer
+  25           * linearen Interpolation um.
+  26           * Fängt Messwerte außerhalb des sinnergebenden Bereichs ab.
+  27           * Parameter:
+  28           * - val: Messwert des Sensors
+  29           * Rückgabewert: unsigned char: cm-Abstand
+  30           */
+  31          byte samplea_to_cm(unsigned int val, SensorType type) {
+  32   1              switch(type) {
+  33   2                      case SENSOR_SHORT_DIST:
+  34   2                              if(val > TABLE_SHORT_DIST_MAX) return 4;
+  35   2                              else if(val < TABLE_SHORT_DIST_MIN) return 30;
+  36   2                              else return sample_to_cm(table_short_dist, TABLE_SHORT_DIST_LEN - 1, 1, val);
+  37   2                              break;
+  38   2                      case SENSOR_LONG_DIST:
+  39   2                              if(val > TABLE_LONG_DIST_MAX) return 10;
+  40   2                              else if(val < TABLE_LONG_DIST_MIN) return 70;
+  41   2                              else return sample_to_cm(table_long_dist, TABLE_LONG_DIST_LEN - 1, 5, val);
+  42   2                              break;
+  43   2              }
+  44   1      }
+  45          
+  46          /**
+  47           * Wandelt den Messwert eines Abstandssensors in einen cm-Wert
+  48           * mittels einer gegebenen Messtabelle und einer linearen
+  49           * Interpolation um.
+  50           * Parameter:
+  51           * - table: gegebene Messtabelle
+  52           * - offset: Index des letzten Elements der Tabelle
+  53           * - val: Messwert des Sensors
+  54           * Rückgabewert: unsigned char: cm-Abstand
+  55           */
+C51 COMPILER V8.09   SHARP_SENSOR                                                          07/07/2009 11:16:19 PAGE 2   
+
+  56           
+  57          #pragma OPTIMIZE (4)
+  58          byte sample_to_cm(const unsigned int table[], unsigned int offset, unsigned int interval, unsigned int val
+             -) {
+  59   1              unsigned int lower = 0;
+  60   1      
+  61   1              while(offset > 1) {
+  62   2                      if(offset % 2 == 1) offset++;
+  63   2                      offset /= 2;
+  64   2                      if(val <= table[lower+offset]) {
+  65   3                              lower += offset;
+  66   3                      }
+  67   2              }
+  68   1              return (lower + 2) * interval + interval * (table[lower] - val) / (table[lower] - table[lower + 1]);
+  69   1      }
+  70          #pragma OPTIMIZE (5)
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    328    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     78      13
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

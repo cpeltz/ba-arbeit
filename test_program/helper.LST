@@ -1,0 +1,48 @@
+C51 COMPILER V8.09   HELPER                                                                07/20/2009 13:39:03 PAGE 1   
+
+
+C51 COMPILER V8.09, COMPILATION OF MODULE HELPER
+OBJECT MODULE PLACED IN helper.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE helper.c LARGE BROWSE INTVECTOR(0X2000) DEFINE(MONITOR51) DEBUG OBJECTEXTEN
+                    -D
+
+line level    source
+
+   1          #include "helper.h"
+   2          
+   3          void int2str(char *str, int i) {
+   4   1              int xdata a;
+   5   1              byte j, n;
+   6   1      
+   7   1              if (i < 0) {
+   8   2                      *str++ = '-';
+   9   2                      i = -i;
+  10   2              }
+  11   1      
+  12   1              a = i;
+  13   1              for (n = 1; n < 7; n++)
+  14   1                      if ((a /= 10) == 0)
+  15   1                              break;
+  16   1      
+  17   1              a = i;
+  18   1              for (j = 0; j < n; j++) {
+  19   2                      a /= 10;
+  20   2                      str[n - 1 - j] = (i - (a * 10)) + '0';
+  21   2                      i /= 10;
+  22   2              }
+  23   1              str[n] = '\0';
+  24   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    282    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----       9
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

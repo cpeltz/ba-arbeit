@@ -1,0 +1,121 @@
+C51 COMPILER V8.09   MAIN                                                                  07/20/2009 13:39:03 PAGE 1   
+
+
+C51 COMPILER V8.09, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE main.c LARGE BROWSE INTVECTOR(0X2000) DEFINE(MONITOR51) DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          
+   2          /*******************************************************
+   3           **  Mikroprozessorlabor                              **
+   4           **                                                   **
+   5           **  Institut für Betriebssysteme und Rechnerverbund  **
+   6           **  Technische Universität Braunschweig              **
+   7           *******************************************************/
+   8          
+   9          // File :  main.c
+  10          // Modul:  Nähere Bezeichnung des Projektes oder Teilprojektes
+  11          // Vers.:  x.yy
+  12          // Autor:  Name, Vorname 
+  13          
+  14          // Letzte Änderung: 2004.11.05.
+  15          //*****************************
+  16          
+  17          
+  18          
+  19          // ----- Includes -----
+  20          // ====================
+  21          
+  22          #include <REG552.H>               // special function register declarations
+  23          #include <stdio.h>                // prototype declarations for I/O functions
+  24          #include <string.h>
+  25          #include "byte.h"
+  26          #include "timing.h"
+  27          #include "helper.h"
+  28          #include "lcd.h"
+  29          #include "i2c_master.h"
+  30          #include "motor_platine/order.h"
+  31          
+  32          
+  33          
+  34          // ----- Definitionen -----
+  35          // ========================
+  36          
+  37          #ifdef MONITOR51                         // Debugging with Monitor-51 needs space   
+  38          char code reserve [3] _at_ 0x23;         // for serial interrupt if Stop Exection    
+  39          #endif                                   // with Serial Intr. is enabled                        
+  40          
+  41          
+  42          // ----- Deklarationen, die nur innerhalb dieser Datei gebraucht werden -----
+  43          // ==========================================================================
+  44          
+  45          
+  46          
+  47          // ----- Funktionsdefinitionen -----
+  48          // =================================
+  49          
+  50          #ifndef MONITOR51
+              void initSerial()
+              {
+                 S0CON = 0x50;                // S0CON: mode 1, 8bit Uart 
+                 TMOD  = 0x20;                // TMOD : timer 1, mode 2 => 8bit Auto-Reload 
+                 TH1   = 0xfd;                // TH1  : reload value for 9600baud @ 11,0592 MHz 
+C51 COMPILER V8.09   MAIN                                                                  07/20/2009 13:39:03 PAGE 2   
+
+                 TR1   = 1;                   // TR1  : timer 1 run (TR1 = TCON.6) 
+                 TI    = 1;                   // TI   : set TI to send first char of UART (TI = SCON.1) 
+              }
+              #endif
+  60          
+  61          byte xdata buf[5];
+  62          
+  63          void main() {
+  64   1              // Main-Funktion
+  65   1              byte send = 0;
+  66   1              order_t order;
+  67   1              #ifndef MONITOR51               // Falls nicht für den Monitor übersetzt wird und die
+                              initSerial();           // serielle Schnittstelle dort schon initialisiert
+                      #endif                                  // wurde, initialisiere sie jetzt.
+  70   1      
+  71   1              i2c_init();
+  72   1              lcd_init();
+  73   1              lcd_print_string("Waiting ... (10s)");
+  74   1              wait_ms(10000);
+  75   1              lcd_print_string("Ready");
+  76   1      
+  77   1              while(1) {
+  78   2                      //order_init(&order);
+  79   2                      /*lcd_print_string("Test 1: 0x03 0x40 0x40");
+  80   2                      order_set_type(&order, ORDER_DRIVE_N_N);
+  81   2                      order_add_params(&order, "11", 0x40, 0x40);*/
+  82   2                      //order->dat[0] = 0x11;
+  83   2                      //send = order_send(&order);
+  84   2                      buf[0]=84;
+  85   2                      buf[1]=0x11;
+  86   2                      send = i2c_send(buf,2);
+  87   2                      int2str(buf, send);
+  88   2                      lcd_print_string(buf);
+  89   2                      //wait_ms(20000);
+  90   2                      //lcd_print_string("STOP");
+  91   2                      //order_set_type(&order, ORDER_CONTROL_STOP_DRIVE);
+  92   2                      //order_send(&order);
+  93   2                      wait_ms(20000);
+  94   2              }
+  95   1      }
+*** WARNING C280 IN LINE 66 OF MAIN.C: 'order': unreferenced local variable
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     92    ----
+   CONSTANT SIZE    =     24    ----
+   XDATA SIZE       =      5      17
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
