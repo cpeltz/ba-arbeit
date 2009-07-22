@@ -61,7 +61,7 @@ void parser_update(void) {
 	}
 	for (; 0 < times; times--) {
 		io_get(&value);
-		uart_put_debug(value);
+//		uart_put_debug(value);
 		debug_WriteInteger(PSTR("parse.c : parser_update() : Value ="), value);
 		parser_add_byte(value);
 	}

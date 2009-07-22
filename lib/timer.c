@@ -20,23 +20,24 @@ static int8_t timer_Speed_W1 = 0;
 static int8_t timer_SpeedSum_W0 = 0;
 static int8_t timer_SpeedSum_W1 = 0;
 uint16_t timer_t_trigger_counter[2] = { 0, 0 };
-static uint8_t timer_trigger = 0;
+uint16_t timer_1s_counter = 0;
+uint8_t timer_100ms_counter = 0;
 
-ISR(TIMER1_COMPA_vect) {
+/*ISR(TIMER1_COMPA_vect) {
 	// ISR wird jede Millisekunde ausgeführt
 	OCR1A = TCNT1 + 250;
 	// Neuen Wert für Compare Match A setzen
 	flag_set(TIMER_1MS);
 	// und TIMER_1MS Flag setzen
-}
+}*/
 
-ISR(TIMER1_COMPB_vect) {
+/*ISR(TIMER1_COMPB_vect) {
 	// IST wird alle 10 Millisekunden ausgeführt
 	OCR1B = TCNT1 + 2500;
 	// Neuen Wert für Compare Match B setzen
 	flag_set(TIMER_10MS);
 	// under TIMER_10MS Flag setzen
-}
+}*/
 
 ISR(TIMER1_COMPC_vect) {
 	// ISR wird alle 100 Millisekunden ausgeführt
@@ -54,17 +55,23 @@ ISR(TIMER1_COMPC_vect) {
 	}
 
 	// Geschwindigkeiten in timer_Speed_W0/1 übertragen
-	// TODO Was ist das hier?
 	timer_Speed_W0 = timer_SpeedSum_W0;
 	timer_Speed_W1 = timer_SpeedSum_W1;
 	timer_SpeedSum_W0 = 0;
 	timer_SpeedSum_W1 = 0;
+
+	// Increase counter
+	timer_100ms_counter++;
 }
 
 ISR(TIMER1_OVF_vect) {
 	// ISR wird alle 262 Millisekunden aufgerufen
 	flag_set(TIMER_262MS);
 	// TIMER_262MS Flag setzen
+	if( timer_100ms_counter > 10 ) {
+		timer_1s_counter += timer_100ms_counter / 10;
+		timer_100ms_counter %= 10;
+	}
 }
 
 /**
@@ -72,13 +79,13 @@ ISR(TIMER1_OVF_vect) {
  */
 void timer_init(void) {
 	// Compare Matches einstellen
-	OCR1A = 250;
+//	OCR1A = 250;
 	// Compare Match A -> 1kHz -> 1ms
-	OCR1B = 2500;
+//	OCR1B = 2500;
 	// Compare Match B -> 100Hz -> 10ms
 	OCR1C = 25000;
 	// Compare Match C -> 10Hz -> 100ms
-	TIMSK1 = (1 << OCIE1C) | (1 << OCIE1B) | (1 << OCIE1A) | (1 << TOIE1);
+	TIMSK1 = (1 << OCIE1C) | /*(1 << OCIE1B) | (1 << OCIE1A) |*/ (1 << TOIE1);
 	// Aktiviere Compare Match A+B+C IRQ und Overflow IRQ
 	TCCR1B = (3 << CS10);
 	// Prescaler = clkIO/64 -> 250kHz -> 4µs

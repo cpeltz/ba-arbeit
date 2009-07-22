@@ -63,7 +63,6 @@ void led_switch(uint8_t led, uint8_t state) {
 			led_State |= (state<<LED_BLUE_BIT);
 			break;
 	}
-	LED_DDR = led_State;
 }
 
 /**

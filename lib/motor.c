@@ -20,7 +20,6 @@ static int8_t motor_speed[2];
 
 /**
  * Simple function to let motor 0 run forward.
- * @todo Still used? If not remove.
  */
 static void motor_RunForward_M0(void) {
 	INPUT_PORT |= (1 << INPUT2);
@@ -29,7 +28,6 @@ static void motor_RunForward_M0(void) {
 
 /**
  * Simple function to let motor 0 run backward.
- * @todo Still used? If not remove.
  */
 static void motor_RunReverse_M0(void) {
 	INPUT_PORT &= ~(1 << INPUT2);
@@ -37,17 +35,7 @@ static void motor_RunReverse_M0(void) {
 }
 
 /**
- * Simple function to let motor 0 break.
- * @todo Still used? If not remove.
- */
-static void motor_Break_M0(void) {
-	INPUT_PORT |= (1 << INPUT1) | (1 << INPUT2);
-	ENABLE_A_PWM = 255;
-}
-
-/**
  * Simple function to let motor 1 run forward.
- * @todo Still used? If not remove.
  */
 static void motor_RunForward_M1(void) {
 	INPUT_PORT &= ~(1 << INPUT4);
@@ -56,20 +44,10 @@ static void motor_RunForward_M1(void) {
 
 /**
  * Simple function to let motor 1 run backward.
- * @todo Still used? If not remove.
  */
 static void motor_RunReverse_M1(void) {
 	INPUT_PORT |= (1 << INPUT4);
 	INPUT_PORT &= ~(1 << INPUT3);
-}
-
-/**
- * Simple function to let motor 1 break.
- * @todo Still used? If not remove.
- */
-static void motor_Break_M1(void) {
-	INPUT_PORT |= (1 << INPUT3) | (1 << INPUT4);
-	ENABLE_B_PWM = 255;
 }
 
 /**
@@ -202,28 +180,6 @@ void motor_SetSpeed(uint8_t motor, int8_t speed) {
  */
 int8_t motor_ReadSpeed(uint8_t motor) {
 	return motor_speed[motor];
-}
-
-/**
- * Used to brake the wheels.
- *
- * @param[in] motor The motor which should brake. Valid
- * values are #WHEEL_LEFT, #WHEEL_RIGHT and #WHEEL_BOTH.
- * @todo Why is it called Break and not Brake?
- */
-void motor_Break(uint8_t motor) {
-	switch (motor) {
-		case WHEEL_LEFT:
-			motor_Break_M0();
-			break;
-		case WHEEL_RIGHT:
-			motor_Break_M1();
-			break;
-		case WHEEL_BOTH:
-			motor_Break_M0();
-			motor_Break_M1();
-			break;
-	}
 }
 
 /**

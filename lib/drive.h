@@ -13,4 +13,10 @@ void drive_status(global_state_t *state);
 void drive_brake_active(void);
 void drive_brake_active_set(void);
 
+void drive_brake_active_left(void);
+void drive_brake_active_set_left(void);
+
+void drive_brake_active_right(void);
+void drive_brake_active_set_right(void);
+
 #endif

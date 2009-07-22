@@ -174,7 +174,20 @@ void drive_status(global_state_t *state) {
  */
 void drive_brake_active(void) {
 	// Do active braking. Wheels shouldn't move from their position.
-	// Left Side
+	drive_brake_active_left();
+	drive_brake_active_right();
+}
+
+/**
+ * Sets the current position as holding position used while doing active braking.
+ */
+void drive_brake_active_set(void) {
+	// Set the Position of the wheels for use with active braking.
+	drive_brake_active_set_left();
+	drive_brake_active_set_right();
+}
+
+void drive_brake_active_left(void) {
 	if (drive_brake_position_left == irq_Position_W0) {
 		motor_SetSpeed(WHEEL_LEFT, 0);
 	} else if (drive_brake_position_left < irq_Position_W0) {
@@ -182,7 +195,13 @@ void drive_brake_active(void) {
 	} else {
 		motor_SetSpeed(WHEEL_LEFT, DRIVE_ACTIVE_BRAKE_AMOUNT);
 	}
-	// Right Side
+}
+
+void drive_brake_active_set_left(void) {
+	drive_brake_position_left = irq_Position_W0;
+}
+
+void drive_brake_active_right(void) {
 	if (drive_brake_position_right == irq_Position_W1) {
 		motor_SetSpeed(WHEEL_RIGHT, 0);
 	} else if (drive_brake_position_right < irq_Position_W1) {
@@ -192,13 +211,7 @@ void drive_brake_active(void) {
 	}
 }
 
-/**
- * Sets the current position as holding position used while doing active braking.
- */
-void drive_brake_active_set(void) {
-	// Set the Position of the wheels for use with active braking.
-	drive_brake_position_left = irq_Position_W0;
+void drive_brake_active_set_right(void) {
 	drive_brake_position_right = irq_Position_W1;
 }
-
 /*@}*/

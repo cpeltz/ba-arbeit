@@ -39,10 +39,10 @@ void order_array_init(void) {
 	// these are implemented in order_functions.c
 	order_array[0]  = &extended_instruction;
 	order_array[1]  = &control_instruction;
-	order_array[2]  = &register_instruction;
+	order_array[2]  = &query_instruction;
 	order_array[3]  = &drive_instruction;
-	order_array[4]  = &set_pid_instruction;
-	order_array[5]  = 0;
+	order_array[4]  = &advanced_drive_instruction;
+	order_array[5]  = &set_pid_instruction;
 	order_array[6]  = 0;
 	order_array[7]  = 0;
 	order_array[8]  = 0;
@@ -112,16 +112,6 @@ void order_process(order_t * const order) {
 //		debug_WriteString_P(PSTR("order.c : order_process() :  No Function found, setting status to DONE\n"));
 		order->status |= ORDER_STATUS_DONE; 
 	}
-}
-
-/**
- * Check whether the triggers for the given order have been reached.
- *
- * @param[in] order The order which should be checked.
- * @todo Implement.
- */
-void order_check_triggers(order_t * const order) {
-	// Check the triggers of the order
 }
 
 uint8_t order_size(order_t *order) {

@@ -124,24 +124,24 @@ void update_dip_flags(void) {
  */
 void print_startup(void) {
 	// Startup Debug Infos
-	if(flag_read(LCD_PRESENT)) {
-		lcd_puts("Ver. 2.9.20090721");
+	if (flag_read(LCD_PRESENT)) {
+		lcd_clrscr();
+		lcd_puts("Ver. 2.9.20090722");
 		lcd_gotoxy(0,1);
 		if (dip_read(0)) {
-			lcd_puts("TWI enabled");
+			lcd_puts("TWI ");
 		} else {
-			lcd_puts("UART enabled");
+			lcd_puts("twi ");
 		}
-		lcd_gotoxy(0,2);
 		if (dip_read(1)) {
-			lcd_puts("DEBUG enabled");
+			lcd_puts("DEBUG");
 		} else {
-			lcd_puts("DEBUG disabled");
+			lcd_puts("debug");
 		}
 	}
 	flag_set(DEBUG_ENABLE);
 	debug_ResetTerminal();
-	debug_WriteString_P(PSTR("Motorsteuerung V2.9.20090721\n"));
+	debug_WriteString_P(PSTR("Motorsteuerung V2.9.20090722\n"));
 	debug_WriteString_P(PSTR("----------------------------\n\n"));
 	debug_WriteString_P(PSTR("DIP-Schalter Einstellungen:\n"));
 	if (dip_read(0))
@@ -185,10 +185,11 @@ void print_startup(void) {
 void copy_timer_flags(void) {
 	// Copy global timer flags to a local copy, which will be used throughout the program.
 	// This is done to not miss a timer tick.
-	if (flag_read_and_clear(TIMER_1MS))
-		flag_local_set( &local_time_flags, TIMER_1MS );
-	if (flag_read_and_clear(TIMER_10MS))
-		flag_local_set( &local_time_flags, TIMER_10MS );
+	local_time_flags = 0;
+//	if (flag_read_and_clear(TIMER_1MS))
+//		flag_local_set( &local_time_flags, TIMER_1MS );
+//	if (flag_read_and_clear(TIMER_10MS))
+//		flag_local_set( &local_time_flags, TIMER_10MS );
 	if (flag_read_and_clear(TIMER_100MS))
 		flag_local_set( &local_time_flags, TIMER_100MS );
 	if (flag_read_and_clear(TIMER_262MS))
@@ -223,14 +224,48 @@ void process_orders(void) {
 	}
 }
 
-void lcd_print_status(void) {
-	// TODO Implement
-//	static char buffer[10];
-//	lcd_clrscr();
+void itoa_hex(uint8_t value, char *buffer, uint8_t size) {
+	uint8_t lower = value & 0x0f;
+	uint8_t upper = (value & 0xf0) >> 4;
+	if( size <= 2)
+		return;
+	buffer[0] = (upper < 10) ? ('0' + upper) : ('a' + (upper-10));
+	buffer[1] = (lower < 10) ? ('0' + lower) : ('a' + (lower-10));
+	buffer[2] = '\0';
+}
 
-/*	itoa(queue_order_available(), buffer, 10);
-	lcd_puts_p(PSTR("Orders: "));
-	lcd_puts(buffer);*/
+void lcd_print_status(void) {
+	static order_t *order = NULL;
+	order_t *current = queue_get_current_order();
+	char buffer[3];
+	if(order != current) {
+		order = current;
+		lcd_clrscr();
+		lcd_puts("Ver. 2.9.20090722");
+		lcd_gotoxy(0,1);
+		if (dip_read(0)) {
+			lcd_puts("TWI ");
+		} else {
+			lcd_puts("twi ");
+		}
+		if (dip_read(1)) {
+			lcd_puts("DEBUG");
+		} else {
+			lcd_puts("debug");
+		}
+		if(order != NULL) {
+			lcd_gotoxy(0,2);
+			int length = bytes_needed(order->data[0]);
+			for(int i=0; i < length; i++) {
+				itoa_hex(order->data[i], buffer, 3);
+				lcd_puts(buffer);
+				if(i == 6)
+					lcd_gotoxy(0,3);
+				else
+					lcd_puts(" ");
+			}
+		}
+	}
 }
 
 int main(void) {
