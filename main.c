@@ -74,6 +74,8 @@ int8_t reset_source = 0;
  */
 uint8_t local_time_flags = 0;
 
+void update_dip_flags(void);
+
 /**
  *	The Main setup function; calls every needed *_init() function
  */
@@ -83,6 +85,8 @@ void initialize(void) {
 
 	// init all subsystems
 	dip_init();
+	update_dip_flags();
+	lcd_init(LCD_DISP_ON);
 	io_init();
 	motor_init();
 	timer_init();
@@ -90,7 +94,6 @@ void initialize(void) {
 	irq_init();
 	queue_init();
 	status_init();
-	lcd_init(LCD_DISP_ON);
 
 	// set standard PID parameter
 	drive_SetPIDParameter(2, 80, 20, 10, 500);
@@ -284,6 +287,7 @@ int main(void) {
 	status_update();
 
 	// Set Global flags which are depending on the dip switches
+	// TODO remove, is done in init now
 	update_dip_flags();
 
 	// Print driver version etc pp to debug
