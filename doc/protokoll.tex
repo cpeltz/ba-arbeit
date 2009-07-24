@@ -15,7 +15,6 @@
 
 \begin{document}
 \maketitle
-\tableofcontents
 	\begin{tabularx}{\linewidth}{|l|l|l|l|X|}
 		\hline
 		\textbf{Version} & \textbf{Datum} & \textbf{Autor} 	& \textbf{Status} & \textbf{Kommentar} \\
@@ -23,9 +22,12 @@
 		\hline
 		1 				 & 25.02.2009 	  & Christoph Peltz & 				  & Erste Version \\
 		2 				 & 01.05.2009 	  & Christoph Peltz & 				  & Korrigierung und neue Features \\
+		3				 & 24.07.2009	  & Christoph Peltz &				  & Option und Advanced Drive Befehl \\
 		\hline
 	\end{tabularx}
 
+\pagebreak
+\tableofcontents
 \pagebreak
 	\section{Aktuelle Lage und Ziele}
 
@@ -106,12 +108,23 @@
 	auf Rad-Ebene, wie z.B. Kein Trigger, Positions-Trigger und Zeit-Trigger. Außerdem gibt es hier die Möglichkeit
 	mithilfe des Differntialausgleichs sehr genau geradeaus zu fahren.
 
-	\subsection{SetPID - 0x04}
+	\subsection{Advanced Drive - 0x04}
+
+	Der Advanced-Drive-Befehl ist in erster Linie ein Drive-Befehl mit erweiterten Trigger-Bedingungen. So ist es möglich
+	ein Rad entweder 100 ms oder 2000 Ticks fahren zu lassen oder aber das Rad erst dann annzuhalten, wenn es mindestens
+	100 ms und 2000 Ticks gefahren ist.
+
+	\subsection{SetPID - 0x05}
 
 	Durch diesen Befehl ist es möglich die Parameter für eine PID-Verbesserte-Fahrt selber zu setzen und somit für sich
 	anzupassen.
 
-	\subsection{0x05 - 0x0f}
+	\subsection{Option - 0x06}
+
+	Dank des Option-Befehls ist es dem Benutzer möglich Werte für bestimmte Verhaltenskritische Variablen während des
+	Betriebs zu verändern.
+
+	\subsection{0x07 - 0x0f}
 
 	Diese Befehlscodes sind bisher nicht vergeben.
 
@@ -227,7 +240,39 @@
 	0. Von 0 verschiedene Werte werden auf den aktuellen Differentialwert addiert. Der Differntialwert darf einen wert zwischen
 	-32768 bis 32767. Die Länge beträgt immer 3 Byte.
 
-	\subsection{SetPID - 0x04}
+	\subsection{Advanced Drive - 0x04}
+
+	Ist identisch zu dem Drive Befehl, bis auf folgende Ausnahmen:
+	
+	\begin{tabularx}{\linewidth}{|l|l|l|X|}
+		\hline
+		\textbf{Option} & \textbf{Bitmaske linkes Rad} & \textbf{Bitmaske rechtes Rad} & \textbf{Beschreibung} \\
+		\hline
+		\hline
+		Kein Trigger				& 0x00						   & 0x00						   & Endlosfahrt \\
+		\hline
+		Zeit ODER Position Trigger	& 0x10						   & 0x40						   & zeitlich Begrenzte Fahrt\\
+		\hline
+		Zeit UND Positions Trigger  & 0x20						   & 0x80						   & Fährt eine bestimmte Strecke \\
+		\hline
+	\end{tabularx}
+
+	Außerdem sind die Bitmasken 0x30 und 0xc0 hier ungültig. Der "Zeit ODER Position"-Trigger bewirkt, dass das Rad angehalten
+	wird, wenn einer der beiden Trigger erreicht wurde. Analog bewirkt der "Zeit UND Position"-Trigger, dass das Rad
+	beide Trigger erfüllen muss, bevor das Rad angehalten wird. Dadurch, dass jetzt zwei Trigger gleichzeitig angegeben werden
+	pro Rad ist wichtig zu wissen, wo die Bytes hinkommen müssen. Dies zeigt die folgende Illustration:
+	\begin{figure}[!ht]
+		\centering
+		\scalebox{1.0}{
+				\includegraphics{advanced_drive_instruction.png}
+		}
+		\caption{Ein Advanced-Drive-Befehl mit Zeit ODER Position Trigger für beide Räder (daher die 0x54)}
+	\end{figure}
+	Wenn kein Trigger verwendet wird, benötigt der Befehl 3 Byte, wenn für beide Räder Trigger verwendet werden sind es im
+	maximal Fall 11 Byte.
+	
+
+	\subsection{SetPID - 0x05}
 
 	Mithilfe dieses Befehls können die Reglergrößen für den PID-Regler eingestellt werden.
 
@@ -262,5 +307,32 @@
 	\end{tabularx}
 
 	Die Länge des Befehls beträgt immer 9 Byte.
+
+	\subsection{Option - 0x06}
+
+	Der Option-Befehl dient dazu Verhaltenskritische Variablen während des Betriebs zu verändern.
+	Die oberen 4 Bit des Befehlsbytes geben an, welche Variable gesetzt werden soll. Anzumerken ist,
+	dass 0x06 an sich, also die oberen 4 Bit gleich 0, reserviert ist für zukünftige Erweiterungen.
+
+	\begin{tabularx}{\linewidth}{|l|l|l|X|}
+		\hline
+		\textbf{Bitmaske} & \textbf{Default} & \textbf{Wertebereich (Bytes)} & \textbf{Beschreibung} \\
+		\hline
+		\hline
+		0x10 & 40 & -128 bis +127 (1) & Der Geschwindigkeitswert, der beim aktiven Bremsen benutzt wird. \\
+		\hline
+		0x20 & 1 & 0 oder 1 (1) & Switch zum aktivieren des aktiven Bremsen. Eine 1 bedeutet, dass das Bremsen aktiviert ist. \\
+		\hline
+		0x30 & 1 & 0 oder 1 (1) & Switch zum aktivieren des aktiven Bremsens, eines Rades, das bereits seinen Trigger erreicht hat, das andere aber noch weiterfährt. \\
+		\hline
+		0x40 & 1 & 0 oder 1 (1) & Switch zum aktivieren des aktiven Bremsens, wenn kein Befehl bearbeitet wird. \\
+		\hline
+	\end{tabularx}
+
+	0x20 kann zum einfachen an- und ausschalten des Aktiven Bremsens verwendet werden,
+	die 0x30 und 0x40 Varianten sind für die Einschränkung des Aktiven Bremsens, wenn es
+	aktiviert ist, verantwortlich. Momentan sind alle Option-Befehle 2 Byte lang.
 	
+	\section{Verwendung der Befehls-Bibliothek}
+	\section{Befehlsbeispiele}
 \end{document}
