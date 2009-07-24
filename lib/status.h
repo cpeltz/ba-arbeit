@@ -7,5 +7,4 @@ void status_update(void);
 void status_init(void);
 void status_read(global_state_t * status);
 
-
 #endif

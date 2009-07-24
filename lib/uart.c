@@ -52,6 +52,8 @@ void uart_init(void) {
 	UBRR1H = UBRR_VAL >> 8;
 	UBRR1L = UBRR_VAL & 0xff;
 	// Aktiviere RX, TX und RX Complete IRQ
+	// FIXME if interface = TWI then we need the transmission Interrupt when debug is enabled
+	// FIXME the Interrupt has to be modified for that
 	if (!flag_read(INTERFACE_TWI)) {
 		UCSR1B = (1 << RXEN1) | (1 << TXEN1) | (1 << RXCIE1);
 	} 
