@@ -8,6 +8,7 @@
 #include "definitions.h"
 #include "io.h"
 #include "led.h"
+#include "lcd.h"
 
 /**
  * @defgroup TWI_Module I²C-Bus Module
@@ -27,13 +28,12 @@ uint8_t transmission_underway = 0;
 ISR(TWI_vect) {
 	// Led the blue LED blink if we are in here
 	led_switch(LED_BLUE, SINGLE);
+		lcd_gotoxy(0,0);
+//	lcd_puts("XXX");
   
   	// Mask the prescaler bit out of the status
 	uint8_t twi_status = TWSR & 0xf8;
-	uint8_t twi_data = 0;
-
-	// Standard bit combination for the Control Register
-	TWCR = ~((1 << TWSTA) | (1 << TWSTO)) | (1 << TWEA) | (1 << TWEN) | (1 << TWIE);
+	uint8_t twi_data = TWDR;
 
 	switch (twi_status) {
 		// The following status codes refer to the Slave Reciever Mode (see Chip Documentation Page 260)
@@ -53,22 +53,23 @@ ISR(TWI_vect) {
 			// ACK has been returned
 
 
-			twi_data = TWDR;
 			_io_push(twi_data);
 
 			if (io_get_available() <= 1)
-				TWCR = ~((1 << TWSTA) | (1 << TWSTO) | (1 << TWEA)) | (1 << TWEN) | (1 << TWIE);
+				TWCR = ~((1 << TWSTA) | (1 << TWSTO) | (1 << TWEA)) | (1 << TWEN) | (1 << TWIE) | (1 << TWINT);
 			break;
 		case 0x60:
 			// Own SLA+W has been received;
 			// ACK has been returned
 			
-			if (io_get_available() <= 1)
-				TWCR = ~((1 << TWSTA) | (1 << TWSTO) | (1 << TWEA)) | (1 << TWEN) | (1 << TWIE);
-
-			twi_data = TWDR;
 			led_switch(LED_GREEN, SINGLE);
-			_io_push(twi_data);
+//			if (io_get_available() <= 1) {
+//				TWCR = ~((1 << TWSTA) | (1 << TWSTO) | (1 << TWEA)) | (1 << TWEN) | (1 << TWIE) | (1 << TWINT);
+//				lcd_puts("ONE");
+//			} else {
+				TWCR = (1 << TWEA) | (1 << TWINT) | (1 << TWEN) | (1 << TWIE);
+//				lcd_puts("TWO");
+//			}
 			break;
 
 		// From here on the status codes refer to the Slave Transmitter Mode (See Chip Documentation Page 263)
@@ -97,7 +98,7 @@ ISR(TWI_vect) {
 			// Set the correct control bits: if there is more then 1 byte remaining to send, then
 			// we have to await an ACK, otherwise we await a NOT ACK (thats what io_get_remaining_obj_size()
 			// is for). The TWSTA and TWSTO get always set to 0 and TWINT is always set to 1;
-			TWCR = ~((1 << TWSTA) | (1 << TWSTO)) | ((io_obj_get_remaining_size() > 1) << TWEA) | (1 << TWIE);
+			TWCR = ~((1 << TWSTA) | (1 << TWSTO)) | ((io_obj_get_remaining_size() > 1) << TWEA) | (1 << TWIE) | (1 << TWINT);
 			break;
 
 		case 0xc8:
@@ -128,12 +129,9 @@ ISR(TWI_vect) {
 			transmission_underway = 0;
 			io_reset_transmission_status();
 			// Recover from Bus Error with TWSTA = 0, TWSTO = 1 and TWINT = 1. See Chip Documentation Page 264.
-			TWCR = ~(1 << TWSTA) | (1 << TWSTO) | (1 << TWEN);
+			TWCR = ~(1 << TWSTA) | (1 << TWSTO) | (1 << TWEN) | (1 << TWINT);
 			break;
 	}
-	// Have to set TWINT here because after setting TWINT TW operation will start again and
-	// access to TWSR, TWDR and TWAR are not safe anymore
-	TWCR |= (1 << TWINT);
 }
 
 /**
@@ -145,7 +143,7 @@ void twi_init(void) {
 		// Slave Address = 84
 		TWAR = TWI_ADDRESS;
 		// TWI aktivieren
-		TWCR = (1 << TWEA) | (1 << TWEN) | (1 << TWIE);
+		TWCR = (1 << TWEA) | (1 << TWINT) | (1 << TWEN) | (1 << TWIE);
 	}
 }
 /*@}*/
