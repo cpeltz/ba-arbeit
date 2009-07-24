@@ -67,7 +67,7 @@
 /**
  * The I²C Bus Slave Address.
  */
-#define TWI_ADDRESS 84
+#define TWI_ADDRESS 42
 
 /**
  * The Baud rate for the UART Interface.

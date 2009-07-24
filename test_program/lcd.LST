@@ -1,4 +1,4 @@
-C51 COMPILER V8.09   LCD                                                                   07/20/2009 13:39:03 PAGE 1   
+C51 COMPILER V8.09   LCD                                                                   07/23/2009 15:03:50 PAGE 1   
 
 
 C51 COMPILER V8.09, COMPILATION OF MODULE LCD
@@ -62,7 +62,7 @@ line level    source
   53          /**
   54           * Initialisiert das Display wie im Datenblatt beschrieben (8-Bit).
   55           */
-C51 COMPILER V8.09   LCD                                                                   07/20/2009 13:39:03 PAGE 2   
+C51 COMPILER V8.09   LCD                                                                   07/23/2009 15:03:50 PAGE 2   
 
   56          void lcd_init() {
   57   1              wait_ms(16);
@@ -126,7 +126,7 @@ line level    source
  115                          buf++;
  116                  }
  117          }*/
-C51 COMPILER V8.09   LCD                                                                   07/20/2009 13:39:03 PAGE 3   
+C51 COMPILER V8.09   LCD                                                                   07/23/2009 15:03:50 PAGE 3   
 
  118          
  119          /**

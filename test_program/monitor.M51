@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.05                                                        07/20/2009  13:39:03  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.05                                                        07/23/2009  15:03:51  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.05, INVOKED BY:
@@ -59,7 +59,7 @@ LINK MAP OF MODULE:  monitor (?C_STARTUP)
             XDATA   8000H     0039H     UNIT         ?XD?_ORDER_ADD_PARAMS?ORDER
             XDATA   8039H     001AH     UNIT         _XDATA_GROUP_
             XDATA   8053H     0008H     UNIT         ?XD?LCD
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/20/2009  13:39:03  PAGE 2
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/23/2009  15:03:51  PAGE 2
 
 
             XDATA   805BH     0006H     UNIT         ?XD?I2C_MASTER
@@ -119,7 +119,7 @@ LINK MAP OF MODULE:  monitor (?C_STARTUP)
             CODE    2D08H     0013H     UNIT         ?PR?I2C_INIT?I2C_MASTER
             CODE    2D1BH     0010H     UNIT         ?PR?LCD_BUSY?LCD
             CODE    2D2BH     000CH     UNIT         ?PR?_ORDER_SET_TYPE?ORDER
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/20/2009  13:39:03  PAGE 3
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/23/2009  15:03:51  PAGE 3
 
 
 
@@ -179,7 +179,7 @@ SEGMENT                                            XDATA_GROUP
   +--> ?PR?_CHECKSTATUS?I2C_MASTER
 
 
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/20/2009  13:39:03  PAGE 4
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/23/2009  15:03:51  PAGE 4
 
 
 
@@ -239,7 +239,7 @@ SYMBOL TABLE OF MODULE:  monitor (?C_STARTUP)
   X:8072H         PUBLIC        wait_ms_current
   C:2C74H         PUBLIC        init_timer0
   C:27E3H         PUBLIC        _wait_ms
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/20/2009  13:39:03  PAGE 5
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/23/2009  15:03:51  PAGE 5
 
 
   -------         PROC          INIT_TIMER0
@@ -299,7 +299,7 @@ SYMBOL TABLE OF MODULE:  monitor (?C_STARTUP)
   -------         ENDDO         
   C:28BBH         LINE#         88
   C:28BBH         LINE#         91
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/20/2009  13:39:03  PAGE 6
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/23/2009  15:03:51  PAGE 6
 
 
   C:28C1H         LINE#         92
@@ -359,7 +359,7 @@ SYMBOL TABLE OF MODULE:  monitor (?C_STARTUP)
   C:2CF4H         LINE#         40
   -------         ENDPROC       _LCD_COMMAND
   -------         PROC          _LCD_DATA
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/20/2009  13:39:03  PAGE 7
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/23/2009  15:03:51  PAGE 7
 
 
   D:0005H         SYMBOL        c
@@ -419,7 +419,7 @@ SYMBOL TABLE OF MODULE:  monitor (?C_STARTUP)
   C:252FH         PUBLIC        _checkStatus
   C:2B9AH         PUBLIC        _i2c_send
   C:2D08H         PUBLIC        i2c_init
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/20/2009  13:39:03  PAGE 8
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/23/2009  15:03:51  PAGE 8
 
 
   B:00D8H.6       PUBLIC        ENS1
@@ -479,7 +479,7 @@ SYMBOL TABLE OF MODULE:  monitor (?C_STARTUP)
   C:258BH         LINE#         106
   C:258EH         LINE#         107
   C:258FH         LINE#         109
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/20/2009  13:39:03  PAGE 9
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/23/2009  15:03:51  PAGE 9
 
 
   C:258FH         LINE#         110
@@ -539,7 +539,7 @@ SYMBOL TABLE OF MODULE:  monitor (?C_STARTUP)
   C:2B0FH         LINE#         189
   C:2B14H         LINE#         191
   C:2B17H         LINE#         192
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/20/2009  13:39:03  PAGE 10
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/23/2009  15:03:51  PAGE 10
 
 
   C:2B1CH         LINE#         193
@@ -599,7 +599,7 @@ SYMBOL TABLE OF MODULE:  monitor (?C_STARTUP)
   C:294BH         LINE#         86
   C:295BH         LINE#         87
   C:2967H         LINE#         88
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/20/2009  13:39:03  PAGE 11
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/23/2009  15:03:51  PAGE 11
 
 
   C:2970H         LINE#         93
@@ -659,7 +659,7 @@ SYMBOL TABLE OF MODULE:  monitor (?C_STARTUP)
   -------         ENDDO         
   C:2B25H         LINE#         6
   C:2B30H         LINE#         8
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/20/2009  13:39:03  PAGE 12
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/23/2009  15:03:51  PAGE 12
 
 
   C:2B32H         LINE#         11
@@ -719,7 +719,7 @@ SYMBOL TABLE OF MODULE:  monitor (?C_STARTUP)
   -------         ENDPROC       _ORDER_UNSHIFT
   -------         PROC          _ORDER_SEND
   X:807CH         SYMBOL        order
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/20/2009  13:39:03  PAGE 13
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/23/2009  15:03:51  PAGE 13
 
 
   -------         DO            
@@ -779,7 +779,7 @@ SYMBOL TABLE OF MODULE:  monitor (?C_STARTUP)
   X:8003H         SYMBOL        format
   -------         DO            
   X:8006H         SYMBOL        ellipsis_40
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/20/2009  13:39:03  PAGE 14
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/23/2009  15:03:51  PAGE 14
 
 
   X:802EH         SYMBOL        num
@@ -839,7 +839,7 @@ SYMBOL TABLE OF MODULE:  monitor (?C_STARTUP)
   -------         MODULE        ?C?IILDX
   C:2207H         PUBLIC        ?C?IILDX
   -------         ENDMOD        ?C?IILDX
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/20/2009  13:39:03  PAGE 15
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/23/2009  15:03:51  PAGE 15
 
 
 
@@ -899,7 +899,7 @@ SYMBOL TABLE OF MODULE:  monitor (?C_STARTUP)
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
 
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/20/2009  13:39:03  PAGE 16
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/23/2009  15:03:51  PAGE 16
 
 
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS

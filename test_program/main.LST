@@ -1,4 +1,4 @@
-C51 COMPILER V8.09   MAIN                                                                  07/20/2009 13:39:03 PAGE 1   
+C51 COMPILER V8.09   MAIN                                                                  07/23/2009 15:03:50 PAGE 1   
 
 
 C51 COMPILER V8.09, COMPILATION OF MODULE MAIN
@@ -62,7 +62,7 @@ line level    source
                  S0CON = 0x50;                // S0CON: mode 1, 8bit Uart 
                  TMOD  = 0x20;                // TMOD : timer 1, mode 2 => 8bit Auto-Reload 
                  TH1   = 0xfd;                // TH1  : reload value for 9600baud @ 11,0592 MHz 
-C51 COMPILER V8.09   MAIN                                                                  07/20/2009 13:39:03 PAGE 2   
+C51 COMPILER V8.09   MAIN                                                                  07/23/2009 15:03:50 PAGE 2   
 
                  TR1   = 1;                   // TR1  : timer 1 run (TR1 = TCON.6) 
                  TI    = 1;                   // TI   : set TI to send first char of UART (TI = SCON.1) 
@@ -92,7 +92,7 @@ line level    source
   81   2                      order_add_params(&order, "11", 0x40, 0x40);*/
   82   2                      //order->dat[0] = 0x11;
   83   2                      //send = order_send(&order);
-  84   2                      buf[0]=84;
+  84   2                      buf[0]=42;
   85   2                      buf[1]=0x11;
   86   2                      send = i2c_send(buf,2);
   87   2                      int2str(buf, send);
