@@ -270,7 +270,8 @@ void drive_instruction(order_t *order) {
 		// Left trigger reached
 		result = checkTrigger(trigger_type_left, WHEEL_LEFT);
 		//debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  checkTrigger(LEFT) = "), result);
-		if(checkTrigger(trigger_type_left, WHEEL_LEFT) == 0) {
+		if(!(order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED) &&
+				checkTrigger(trigger_type_left, WHEEL_LEFT) == 0) {
 			order->status |= ORDER_STATUS_TRIGGER_LEFT_REACHED;
 			drive_brake_active_set_left();
 			//debug_WriteString_P(PSTR("order_functions.c : drive_instruction() :  status = ORDER_STATUS_TRIGGER_LEFT_REACHED\n"));
@@ -278,7 +279,8 @@ void drive_instruction(order_t *order) {
 		// Right trigger reached
 		result = checkTrigger(trigger_type_right, WHEEL_RIGHT);
 		//debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  checkTrigger(RIGHT) = "), result);
-		if(checkTrigger(trigger_type_right, WHEEL_RIGHT) == 0 ) {
+		if(!(order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED) &&
+				checkTrigger(trigger_type_right, WHEEL_RIGHT) == 0 ) {
 			order->status |= ORDER_STATUS_TRIGGER_RIGHT_REACHED;
 			drive_brake_active_set_right();
 			//debug_WriteString_P(PSTR("order_functions.c : drive_instruction() :  status = ORDER_STATUS_TRIGGER_RIGHT_REACHED\n"));
@@ -298,19 +300,19 @@ void drive_instruction(order_t *order) {
 			drive_UsePID(WHEEL_BOTH, 0);
 		}
 	
+		if(order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED)
+			drive_brake_active_left();
+		else if(order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED)
+			drive_brake_active_right();
 		// Use error-correction while driving every 100 ms
 		if(flag_local_read( &local_time_flags, TIMER_100MS)) {
 			if(trigger_type_left == 0x30) { // Use function for both wheels to use PID mode with D
 				drive_UsePID(WHEEL_BOTH, order->data[1]);
 			} else {
-				if(order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED) {
-					drive_brake_active_left();
-				} else {
+				if(!(order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED)) {
 					drive_UsePID(WHEEL_LEFT, order->data[1]);
 				}
-				if(order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED) {
-					drive_brake_active_right();
-				} else {
+				if(!(order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED)) {
 					drive_UsePID(WHEEL_RIGHT, order->data[2]);
 				}
 			}
@@ -352,12 +354,14 @@ void advanced_drive_instruction(order_t *order) {
 
 	if(order->status & ORDER_STATUS_STARTED) { //Instruction is already running
 		// Left trigger reached
-		if(checkAdvancedTrigger(trigger_type_left, WHEEL_LEFT) == 0) {
+		if(!(order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED) && 
+				checkAdvancedTrigger(trigger_type_left, WHEEL_LEFT) == 0) {
 			order->status |= ORDER_STATUS_TRIGGER_LEFT_REACHED;
 			drive_brake_active_set_left();
 		}
 		// Right trigger reached
-		if(checkAdvancedTrigger(trigger_type_right, WHEEL_RIGHT) == 0 ) {
+		if(!(order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED) &&
+				checkAdvancedTrigger(trigger_type_right, WHEEL_RIGHT) == 0 ) {
 			order->status |= ORDER_STATUS_TRIGGER_RIGHT_REACHED;
 			drive_brake_active_set_right();
 		}
@@ -369,16 +373,16 @@ void advanced_drive_instruction(order_t *order) {
 			drive_UsePID(WHEEL_BOTH, 0);
 		}
 	
+		if(order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED)
+			drive_brake_active_left();
+		else if(order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED)
+			drive_brake_active_right();
 		// Use error-correction while driving every 100 ms
 		if(flag_local_read( &local_time_flags, TIMER_100MS)) {
-			if(order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED) {
-				drive_brake_active_left();
-			} else {
+			if(!(order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED)) {
 				drive_UsePID(WHEEL_LEFT, order->data[1]);
 			}
-			if(order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED) {
-				drive_brake_active_right();
-			} else {
+			if(!(order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED)) {
 				drive_UsePID(WHEEL_RIGHT, order->data[2]);
 			}
 		}
