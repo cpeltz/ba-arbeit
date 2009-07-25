@@ -2,6 +2,7 @@
 
 /**
  * Static storage for the global flags used throughout the program.
+ * @todo Remove need for flags or migrate more settings to flags
  */
 static uint32_t flags_global_storage = 0;
 

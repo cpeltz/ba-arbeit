@@ -1,4 +1,3 @@
-/*#define __AVR_ATmega2561__*/
 #include <inttypes.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -72,6 +71,11 @@ void uart_start_transmission() {
 	UCSR1B |= (1 << UDRIE1);
 }
  
+/**
+ * Prints one character for debugging and waits till it was transmitted.
+ *
+ * @param[in] data The Character to be send per UART.
+ */
 void uart_put_debug(const uint8_t data) {
 	if (!flag_read(INTERFACE_TWI) && !flag_read(DEBUG_ENABLE))
 		return;

@@ -46,7 +46,27 @@
  * @section howto_sec Howtos
  * Collection of different "HowTos".
  * @subsection howto_add_norder_sec How to add a normal order to the system.
- * Description will come soon ... it's to hot at the moment.
+ * To add a new order, following things have to be done:
+ * In the File order_functions.[ch] the new handler function has to be inserted.
+ * Please use void $OrderName_instruction(order_t *order) as Prototype (with the
+ * $OrderName replaced by the real name for the order). When the Order is done
+ * you have to set order->status |= ORDER_STATUS_DONE so the order will be
+ * discarded. You can use ORDER_STATUS_STARTED to use the same handler function
+ * for setting up things and for maintaining an order (look for an example of
+ * this at the drive_instruction handler function.
+ * After this, you have to register your handler function, you do that in the
+ * file order.c in order_init(). There is an array, that gets initialized with
+ * the functions, put you function at the correct array position as the position
+ * corresponds with the command code (thats the lower 4 bit of the first byte of
+ * the order.
+ * Then you need to visit the parser.c file and edit the bytes_needed(uint8_t)
+ * function. That function gives back the number of bytes a order will be long
+ * debending on it's command byte (the first byte of the order). In the big
+ * switch statement add a case for your new order with the case beeing 0x0y with
+ * y beeing the hexadecimal value of the lower 4 bits of the command byte.
+ * Please make sure, that every possibility of the order lengths is smaller then
+ * the ORDER_TYPE_MAX_LENGTH variable (in options.h) and at least 1, as the command
+ * byte will be counted too.
  *
  * @section adddoc_sec Additional Documentation
  * To be able to use the software documented here, one should read the
@@ -123,13 +143,13 @@ void update_dip_flags(void) {
 
 /**
  * This function prints, on every system start, information about the System.
- * @todo Disable dbug at the end
+ * @todo Only to dip_update once on startup and use a temp variable here
  */
 void print_startup(void) {
 	// Startup Debug Infos
 	if (flag_read(LCD_PRESENT)) {
 		lcd_clrscr();
-		lcd_puts("Ver. 2.9.20090722");
+		lcd_puts("Ver. 2.9.20090725");
 		lcd_gotoxy(0,1);
 		if (dip_read(0)) {
 			lcd_puts("TWI ");
@@ -144,7 +164,7 @@ void print_startup(void) {
 	}
 	flag_set(DEBUG_ENABLE);
 	debug_ResetTerminal();
-	debug_WriteString_P(PSTR("Motorsteuerung V2.9.20090722\n"));
+	debug_WriteString_P(PSTR("Motorsteuerung V2.9.20090725\n"));
 	debug_WriteString_P(PSTR("----------------------------\n\n"));
 	debug_WriteString_P(PSTR("DIP-Schalter Einstellungen:\n"));
 	if (dip_read(0))
@@ -227,6 +247,14 @@ void process_orders(void) {
 	}
 }
 
+/**
+ * Helper function to convert an integer to a string in hex notation.
+ *
+ * @param[in] value The integer, which should be converted.
+ * @param[out] buffer The string in which the characters will be written, must be at least 3.
+ * @param[in] size The size of the buffer, has to be at least 3 big, and more then
+ * 3 won't be used.
+ */
 void itoa_hex(uint8_t value, char *buffer, uint8_t size) {
 	uint8_t lower = value & 0x0f;
 	uint8_t upper = (value & 0xf0) >> 4;
@@ -237,6 +265,11 @@ void itoa_hex(uint8_t value, char *buffer, uint8_t size) {
 	buffer[2] = '\0';
 }
 
+/**
+ * Prints current status informations on the LCD.
+ *
+ * Will only be updated if the current order changes.
+ */
 void lcd_print_status(void) {
 	static order_t *order = NULL;
 	order_t *current = queue_get_current_order();
@@ -244,7 +277,7 @@ void lcd_print_status(void) {
 	if(order != current) {
 		order = current;
 		lcd_clrscr();
-		lcd_puts("Ver. 2.9.20090722");
+		lcd_puts("Ver. 2.9.20090725");
 		lcd_gotoxy(0,1);
 		if (dip_read(0)) {
 			lcd_puts("TWI ");

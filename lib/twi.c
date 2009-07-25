@@ -1,4 +1,3 @@
-/*#define __AVR_ATmega2561__*/
 #include <avr/interrupt.h>
 #include <inttypes.h>
 #include "options.h"
@@ -28,8 +27,6 @@ uint8_t transmission_underway = 0;
 ISR(TWI_vect) {
 	// Led the blue LED blink if we are in here
 	led_switch(LED_BLUE, SINGLE);
-		lcd_gotoxy(0,0);
-//	lcd_puts("XXX");
   
   	// Mask the prescaler bit out of the status
 	uint8_t twi_status = TWSR & 0xf8;
