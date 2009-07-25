@@ -5,7 +5,6 @@
 #include "uart.h"
 #include "options.h"
 #include "led.h"
-#include "debug.h"
 #include <avr/pgmspace.h>
 
 /**
@@ -65,9 +64,9 @@ void io_init(void) {
  * Returns how much bytes are still available in the incoming buffer.
  *
  * @return <em>uint8_t</em> Returns the number of available bytes in the in_buffer.
+ * @todo This Methode is wrong and has to be rewritten.
  */
 uint8_t io_get_available(void) {
-	//debug_WriteString_P(PSTR("io.c : io_get_available() : Begin\r\n"));
 	if (inpos_end == 0)
 		return IO_INBUFFER_SIZE - inpos_begin;
 	if (inpos_begin > inpos_end)
@@ -170,6 +169,7 @@ void io_obj_remove_current(void) {
  *
  * When putting something in the out_buffer with io_put(), one should always call io_obj_start() first
  * and after finishing using io_put(), io_obj_end() has to be called.
+ * @todo Function has to be rewritten.
  */
 void io_obj_start(void) {
 //	if (obj_memory[objpos_end - 1] != outpos_end - 1)
@@ -189,10 +189,18 @@ void io_obj_end(void) {
 		uart_start_transmission();
 }
 
+/**
+ * Simple function to reset the transmission_offset and with that the transmission status.
+ */
 void io_reset_transmission_status(void) {
 	transmission_offset = 0;
 }
 
+/**
+ * Used to find out the number of Objects still in the buffer.
+ *
+ * @return <em>uint8_t</em> The count of the Objects still in the Buffer.
+ */
 uint8_t io_obj_remaining(void) {
 	if (objpos_end == 0)
 		return IO_OUTBUFFER_SIZE - objpos_begin;

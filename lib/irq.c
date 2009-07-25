@@ -1,4 +1,3 @@
-/*#define __AVR_ATmega2561__*/
 #include <inttypes.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -7,6 +6,13 @@
 #include "flags.h"
 #include "timer.h"
 #include "motor.h"
+
+/**
+ * @defgroup MOTOR_Module Motor Module
+ * This Module provides low-level access and manipulation
+ * of the drives.
+ * @{
+ */
 
 /**
  * Position of wheel 0 (left)
@@ -34,13 +40,12 @@ int16_t irq_p_trigger_position[2] = { 0, 0 };
 static uint8_t irq_p_trigger = 0;
 /**
  * Holds the tacho value (whatever that is)
+ *
+ * @todo Marked for removal
+ * @todo find out what a tacho is
  */
 static tacho_t irq_tacho;
 
-/**
- * Don't have a clue what this is.
- */
-static int16_t irq_t_i16 = 0;
 /**
  * Temp register
  */
@@ -57,9 +62,9 @@ ISR(INT4_vect) {
 		case ((1 << IRQ_A0) | (1 << IRQ_B0)):
 			// Linksdrehung, Rad 0
 			irq_Position_W0++;
-			irq_tacho.left++;
+//			irq_tacho.left++;
 			irq_WheelDifference++;
-			irq_tacho.difference++;
+//			irq_tacho.difference++;
 			wheel_AddSpeed_W0();
 			break;
 
@@ -67,9 +72,9 @@ ISR(INT4_vect) {
 		case ((1 << IRQ_A0) | (0 << IRQ_B0)):
 			// Rechtsdrehung, Rad 0
 			irq_Position_W0--;
-			irq_tacho.left--;
+//			irq_tacho.left--;
 			irq_WheelDifference--;
-			irq_tacho.difference--;
+//			irq_tacho.difference--;
 			wheel_DelSpeed_W0();
 			break;
 	}
@@ -91,9 +96,9 @@ ISR(INT5_vect) {
 		case ((1 << IRQ_A0) | (1 << IRQ_B0)):
 			// Rechtsdrehung, Rad 0
 			irq_Position_W0--;
-			irq_tacho.left--;
+//			irq_tacho.left--;
 			irq_WheelDifference--;
-			irq_tacho.difference--;
+//			irq_tacho.difference--;
 			wheel_DelSpeed_W0();
 			break;
 
@@ -101,9 +106,9 @@ ISR(INT5_vect) {
 		case ((1 << IRQ_A0) | (0 << IRQ_B0)):
 			// Linksdrehung, Rad 0
 			irq_Position_W0++;
-			irq_tacho.left++;
+//			irq_tacho.left++;
 			irq_WheelDifference++;
-			irq_tacho.difference++;
+//			irq_tacho.difference++;
 			wheel_AddSpeed_W0();
 			break;
 	}
@@ -124,9 +129,9 @@ ISR(INT6_vect) {
 		case ((1 << IRQ_A1) | (1 << IRQ_B1)):
 			// Rechtsdrehung, Rad 1
 			irq_Position_W1--;
-			irq_tacho.right--;
+//			irq_tacho.right--;
 			irq_WheelDifference++;
-			irq_tacho.difference++;
+//			irq_tacho.difference++;
 			wheel_DelSpeed_W1();
 			break;
 
@@ -134,9 +139,9 @@ ISR(INT6_vect) {
 		case ((1 << IRQ_A1) | (0 << IRQ_B1)):
 			// Linksdrehung, Rad 1
 			irq_Position_W1++;
-			irq_tacho.right++;
+//			irq_tacho.right++;
 			irq_WheelDifference--;
-			irq_tacho.difference--;
+//			irq_tacho.difference--;
 			wheel_AddSpeed_W1();
 			break;
 	}
@@ -157,9 +162,9 @@ ISR(INT7_vect) {
 		case ((1 << IRQ_A1) | (1 << IRQ_B1)):
 			// Linksdrehung, Rad 1
 			irq_Position_W1++;
-			irq_tacho.right++;
+//			irq_tacho.right++;
 			irq_WheelDifference--;
-			irq_tacho.difference--;
+//			irq_tacho.difference--;
 			wheel_AddSpeed_W1();
 			break;
 
@@ -167,9 +172,9 @@ ISR(INT7_vect) {
 		case ((1 << IRQ_A1) | (0 << IRQ_B1)):
 			// Rechtsdrehung, Rad 1
 			irq_Position_W1--;
-			irq_tacho.right--;
+//			irq_tacho.right--;
 			irq_WheelDifference++;
-			irq_tacho.difference++;
+//			irq_tacho.difference++;
 			wheel_DelSpeed_W1();
 			break;
 	}
@@ -204,13 +209,13 @@ void irq_init(void) {
 int16_t	wheel_ReadPosition(uint8_t wheel) {
 	switch (wheel) {
 		case WHEEL_LEFT:
-			irq_t_i16 = irq_Position_W0;
+			return irq_Position_W0;
 			break;
 		case WHEEL_RIGHT:
-			irq_t_i16 = irq_Position_W1;
+			return irq_Position_W1;
 			break;
 	}
-	return irq_t_i16;
+	return 0;
 }
 
 /**
@@ -273,6 +278,7 @@ void wheel_ClearDifference(void) {
 	SREG = sreg;
 }
 
+/*
 void wheel_GetTacho(tacho_t * tacho) {
 	sreg = SREG;
 	cli();
@@ -288,3 +294,5 @@ void wheel_ClearTacho(void) {
 	irq_tacho.difference = 0;
 	SREG = sreg;
 }
+*/
+/*@}*/

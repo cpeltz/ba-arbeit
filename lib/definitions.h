@@ -38,23 +38,26 @@
 #define IRQ_B1                  PE7
 
 // Flags (0 - 31)
-#define TIMER_1MS               0
-#define TIMER_10MS              1
-#define TIMER_100MS             2
-#define TIMER_262MS             3
-#define UART_RX_OVERFLOW        5
-#define PARSE_COMMAND_COMPLETE  6
-
-#define T_TRIGGER_L             7
-#define T_TRIGGER_R             8
-#define P_TRIGGER_L             9
-#define P_TRIGGER_R             10
-
-#define INTERFACE_TWI           11
-#define DEBUG_ENABLE            12
-#define HALT_DRIVE              13
-#define LCD_PRESENT             14
-#define RESET_TWI               15
+/**
+ * Flag set every 100ms.
+ */
+#define TIMER_100MS             0
+/**
+ * Flag set every 262ms.
+ */
+#define TIMER_262MS             1
+/**
+ * If set, the I2C Bus is used, otherwise the UART.
+ */
+#define INTERFACE_TWI           2
+/**
+ * Triggers Debug-Messages.
+ */
+#define DEBUG_ENABLE            3
+/**
+ * Show if a LCD is pluged in.
+ */
+#define LCD_PRESENT             4
 
 
 // LEDs

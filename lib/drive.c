@@ -19,7 +19,13 @@
  */
 static pid_data_t drive_PID[2];
 
+/**
+ * External reference to the Position Variable of the left wheel.
+ */
 extern int16_t irq_Position_W0;
+/**
+ * External reference to the Position Variable of the right wheel.
+ */
 extern int16_t irq_Position_W1;
 
 /**
@@ -170,7 +176,7 @@ void drive_status(global_state_t *state) {
 }
 
 /**
- * Function used to handle active braking.
+ * Function used to handle active braking of both wheels at once.
  */
 void drive_brake_active(void) {
 	// Do active braking. Wheels shouldn't move from their position.
@@ -180,6 +186,8 @@ void drive_brake_active(void) {
 
 /**
  * Sets the current position as holding position used while doing active braking.
+ *
+ * Sets position for both wheels.
  */
 void drive_brake_active_set(void) {
 	// Set the Position of the wheels for use with active braking.
@@ -187,6 +195,11 @@ void drive_brake_active_set(void) {
 	drive_brake_active_set_right();
 }
 
+/**
+ * Handles active braking for the left wheel.
+ *
+ * Will only work if ACTIVE_BRAKE_ENABLE not 0.
+ */
 void drive_brake_active_left(void) {
 	if(!ACTIVE_BRAKE_ENABLE)
 		return;
@@ -199,10 +212,18 @@ void drive_brake_active_left(void) {
 	}
 }
 
+/**
+ * Sets the position for active braking for the left wheel.
+ */
 void drive_brake_active_set_left(void) {
 	drive_brake_position_left = irq_Position_W0;
 }
 
+/**
+ * Handles active braking for the right wheel.
+ *
+ * Will only work if ACTIVE_BRAKE_ENABLE not 0.
+ */
 void drive_brake_active_right(void) {
 	if(!ACTIVE_BRAKE_ENABLE)
 		return;
@@ -215,6 +236,9 @@ void drive_brake_active_right(void) {
 	}
 }
 
+/**
+ * Sets the position for active braking for the right wheel.
+ */
 void drive_brake_active_set_right(void) {
 	drive_brake_position_right = irq_Position_W1;
 }

@@ -2,7 +2,6 @@
 #define IO_H
 
 #include <inttypes.h>
-#include "types.h"
 
 void io_init(void);
 uint8_t io_get_available(void);
