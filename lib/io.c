@@ -1,6 +1,5 @@
 #include "io.h"
 #include "twi.h"
-#include "flags.h"
 #include "definitions.h"
 #include "uart.h"
 #include "options.h"
@@ -64,15 +63,14 @@ void io_init(void) {
  * Returns how much bytes are still available in the incoming buffer.
  *
  * @return <em>uint8_t</em> Returns the number of available bytes in the in_buffer.
- * @todo This Methode is wrong and has to be rewritten.
  */
 uint8_t io_get_available(void) {
-	if (inpos_end == 0)
-		return IO_INBUFFER_SIZE - inpos_begin;
-	if (inpos_begin > inpos_end)
-		return IO_INBUFFER_SIZE - (inpos_begin - (inpos_end - 1));
-	else
-		return (inpos_end - 1) - inpos_begin;
+	if (inpos_begin == inpos_end)
+		return 0;
+	else if (inpos_begin < inpos_end)
+		return IO_INBUFFER_SIZE - (inpos_end - 1 - inpos_begin);
+	else // begin > end
+		return inpos_begin - inpos_end - 1;
 }
 
 /**

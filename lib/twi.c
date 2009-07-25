@@ -3,11 +3,9 @@
 #include "options.h"
 #include "twi.h"
 #include "flags.h"
-#include "irq.h"
 #include "definitions.h"
 #include "io.h"
 #include "led.h"
-#include "lcd.h"
 
 /**
  * @defgroup TWI_Module I²C-Bus Module
@@ -28,11 +26,11 @@ ISR(TWI_vect) {
 	// Led the blue LED blink if we are in here
 	led_switch(LED_BLUE, SINGLE);
   
-  	// Mask the prescaler bit out of the status
-	uint8_t twi_status = TWSR & 0xf8;
+  	// temporarily save the last Byte on the bus
 	uint8_t twi_data = TWDR;
 
-	switch (twi_status) {
+  	// Mask the prescaler bit out of the status
+	switch (TWSR & 0xf8) {
 		// The following status codes refer to the Slave Reciever Mode (see Chip Documentation Page 260)
 		case 0x88:
 			// Previously addressed with own
@@ -53,20 +51,18 @@ ISR(TWI_vect) {
 			_io_push(twi_data);
 
 			if (io_get_available() <= 1)
-				TWCR = ~((1 << TWSTA) | (1 << TWSTO) | (1 << TWEA)) | (1 << TWEN) | (1 << TWIE) | (1 << TWINT);
+				TWCR = (1 << TWEN) | (1 << TWIE) | (1 << TWINT);
 			break;
 		case 0x60:
 			// Own SLA+W has been received;
 			// ACK has been returned
 			
 			led_switch(LED_GREEN, SINGLE);
-//			if (io_get_available() <= 1) {
-//				TWCR = ~((1 << TWSTA) | (1 << TWSTO) | (1 << TWEA)) | (1 << TWEN) | (1 << TWIE) | (1 << TWINT);
-//				lcd_puts("ONE");
-//			} else {
+			if (io_get_available() <= 1) {
+				TWCR = (1 << TWEN) | (1 << TWIE) | (1 << TWINT);
+			} else {
 				TWCR = (1 << TWEA) | (1 << TWINT) | (1 << TWEN) | (1 << TWIE);
-//				lcd_puts("TWO");
-//			}
+			}
 			break;
 
 		// From here on the status codes refer to the Slave Transmitter Mode (See Chip Documentation Page 263)
@@ -77,8 +73,6 @@ ISR(TWI_vect) {
 			// The missing break statement is wanted and right.
 
 			// We have to reset counting variable and remove the last obj before beginning a new transmission
-			// TODO Would be better if this was done after last byte is send but what is the status code
-			// TODO (cont.) for that?
 			if (transmission_underway) {
 				transmission_underway = 0;
 				io_obj_remove_current();
@@ -126,7 +120,7 @@ ISR(TWI_vect) {
 			transmission_underway = 0;
 			io_reset_transmission_status();
 			// Recover from Bus Error with TWSTA = 0, TWSTO = 1 and TWINT = 1. See Chip Documentation Page 264.
-			TWCR = ~(1 << TWSTA) | (1 << TWSTO) | (1 << TWEN) | (1 << TWINT);
+			TWCR = (1 << TWSTO) | (1 << TWEN) | (1 << TWINT);
 			break;
 	}
 }
