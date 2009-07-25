@@ -43,7 +43,7 @@ void order_array_init(void) {
 	order_array[3]  = &drive_instruction;
 	order_array[4]  = &advanced_drive_instruction;
 	order_array[5]  = &set_pid_instruction;
-	order_array[6]  = 0;
+	order_array[6]  = &option_instruction;
 	order_array[7]  = 0;
 	order_array[8]  = 0;
 	order_array[9]  = 0;

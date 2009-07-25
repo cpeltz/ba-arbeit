@@ -9,5 +9,6 @@ void drive_instruction(order_t *);
 void advanced_drive_instruction(order_t *);
 void pid_drive_instruction(order_t *);
 void set_pid_instruction(order_t *);
+void option_instruction(order_t *);
 
 #endif

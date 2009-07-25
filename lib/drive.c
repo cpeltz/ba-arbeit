@@ -188,12 +188,14 @@ void drive_brake_active_set(void) {
 }
 
 void drive_brake_active_left(void) {
+	if(!ACTIVE_BRAKE_ENABLE)
+		return;
 	if (drive_brake_position_left == irq_Position_W0) {
 		motor_SetSpeed(WHEEL_LEFT, 0);
 	} else if (drive_brake_position_left < irq_Position_W0) {
-		motor_SetSpeed(WHEEL_LEFT, -(DRIVE_ACTIVE_BRAKE_AMOUNT));
+		motor_SetSpeed(WHEEL_LEFT, -(ACTIVE_BRAKE_AMOUNT));
 	} else {
-		motor_SetSpeed(WHEEL_LEFT, DRIVE_ACTIVE_BRAKE_AMOUNT);
+		motor_SetSpeed(WHEEL_LEFT, ACTIVE_BRAKE_AMOUNT);
 	}
 }
 
@@ -202,12 +204,14 @@ void drive_brake_active_set_left(void) {
 }
 
 void drive_brake_active_right(void) {
+	if(!ACTIVE_BRAKE_ENABLE)
+		return;
 	if (drive_brake_position_right == irq_Position_W1) {
 		motor_SetSpeed(WHEEL_RIGHT, 0);
 	} else if (drive_brake_position_right < irq_Position_W1) {
-		motor_SetSpeed(WHEEL_RIGHT, -(DRIVE_ACTIVE_BRAKE_AMOUNT));
+		motor_SetSpeed(WHEEL_RIGHT, -(ACTIVE_BRAKE_AMOUNT));
 	} else {
-		motor_SetSpeed(WHEEL_RIGHT, DRIVE_ACTIVE_BRAKE_AMOUNT);
+		motor_SetSpeed(WHEEL_RIGHT, ACTIVE_BRAKE_AMOUNT);
 	}
 }
 

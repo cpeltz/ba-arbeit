@@ -300,10 +300,13 @@ void drive_instruction(order_t *order) {
 			drive_UsePID(WHEEL_BOTH, 0);
 		}
 	
-		if(order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED)
-			drive_brake_active_left();
-		else if(order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED)
-			drive_brake_active_right();
+		// When it is wanted, we will use active breaking on the wheel where the trigger has been reached
+		if(ACTIVE_BRAKE_WHEN_TRIGGER_REACHED) {
+			if(order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED)
+				drive_brake_active_left();
+			else if(order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED)
+				drive_brake_active_right();
+		}
 		// Use error-correction while driving every 100 ms
 		if(flag_local_read( &local_time_flags, TIMER_100MS)) {
 			if(trigger_type_left == 0x30) { // Use function for both wheels to use PID mode with D
@@ -372,11 +375,13 @@ void advanced_drive_instruction(order_t *order) {
 			// stop the wheels
 			drive_UsePID(WHEEL_BOTH, 0);
 		}
-	
-		if(order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED)
-			drive_brake_active_left();
-		else if(order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED)
-			drive_brake_active_right();
+
+		if(ACTIVE_BRAKE_WHEN_TRIGGER_REACHED) {
+			if(order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED)
+				drive_brake_active_left();
+			else if(order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED)
+				drive_brake_active_right();
+		}
 		// Use error-correction while driving every 100 ms
 		if(flag_local_read( &local_time_flags, TIMER_100MS)) {
 			if(!(order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED)) {
@@ -430,5 +435,29 @@ void set_pid_instruction(order_t *order) {
 	drive_SetPIDParameter(wheel, P, I, D, S);
 	order->status |= ORDER_STATUS_DONE;
 //	//debug_WriteString_P(PSTR("order_functions.c : set_pid_instruction() :  End execution\n"));
+}
+
+void option_instruction(order_t *order) {
+	switch(order->data[0] & 0xf0) {
+		case 0x00:
+			//reserved
+			break;
+		case 0x10:
+			if(order->data[1] > 127)
+				ACTIVE_BRAKE_AMOUNT = ACTIVE_BRAKE_AMOUNT_DEFAULT;
+			else
+				ACTIVE_BRAKE_AMOUNT = order->data[1];
+			break;
+		case 0x20:
+				ACTIVE_BRAKE_ENABLE = order->data[1];
+			break;
+		case 0x30:
+				ACTIVE_BRAKE_WHEN_TRIGGER_REACHED = order->data[1];
+			break;
+		case 0x40:
+				ACTIVE_BRAKE_WHEN_IDLE = order->data[1];
+			break;
+	}
+	order->status |= ORDER_STATUS_DONE;
 }
 /*@}*/

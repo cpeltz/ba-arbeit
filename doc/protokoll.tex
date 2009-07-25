@@ -319,7 +319,7 @@
 		\textbf{Bitmaske} & \textbf{Default} & \textbf{Wertebereich (Bytes)} & \textbf{Beschreibung} \\
 		\hline
 		\hline
-		0x10 & 40 & -128 bis +127 (1) & Der Geschwindigkeitswert, der beim aktiven Bremsen benutzt wird. \\
+		0x10 & 40 & 1 bis 127 (1) & Der Geschwindigkeitswert, der beim aktiven Bremsen benutzt wird. \\
 		\hline
 		0x20 & 1 & 0 oder 1 (1) & Switch zum aktivieren des aktiven Bremsen. Eine 1 bedeutet, dass das Bremsen aktiviert ist. \\
 		\hline
@@ -331,7 +331,8 @@
 
 	0x20 kann zum einfachen an- und ausschalten des Aktiven Bremsens verwendet werden,
 	die 0x30 und 0x40 Varianten sind für die Einschränkung des Aktiven Bremsens, wenn es
-	aktiviert ist, verantwortlich. Momentan sind alle Option-Befehle 2 Byte lang.
+	aktiviert ist, verantwortlich. 0x10 wird, wenn ein Wert außerhalb des Wertebereichs
+	angegeben wird, den default-Wert benutzen. Momentan sind alle Option-Befehle 2 Byte lang.
 	
 	\section{Verwendung der Befehls-Bibliothek}
 	\section{Befehlsbeispiele}

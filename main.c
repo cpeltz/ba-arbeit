@@ -222,7 +222,7 @@ void process_orders(void) {
 			queue_pop();
 			current_order = NULL;
 		}
-	} else {
+	} if else (ACTIVE_BRAKE_WHEN_IDLE) {
 		drive_brake_active();
 	}
 }

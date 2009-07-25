@@ -33,7 +33,11 @@
  * last known position. If it is deviated it will use it's wheels
  * with a speed equal to this constant to correct it.
  */
-#define DRIVE_ACTIVE_BRAKE_AMOUNT 40
+#define ACTIVE_BRAKE_AMOUNT_DEFAULT 40
+uint8_t ACTIVE_BRAKE_AMOUNT = ACTIVE_BRAKE_AMOUNT_DEFAULT;
+uint8_t ACTIVE_BRAKE_ENABLE = 1;
+uint8_t ACTIVE_BRAKE_WHEN_TRIGGER_REACHED = 1;
+uint8_t ACTIVE_BRAKE_WHEN_IDLE = 1;
 
 /**
  * Number of distinct orders the parser can buffer.

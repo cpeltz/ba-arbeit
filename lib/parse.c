@@ -93,7 +93,7 @@ uint8_t bytes_needed(uint8_t order) {
 	switch(order & 0x0f) {
 		case 1: //Control Instruction
 		case 2: //Register Query Instruction
-			debug_WriteInteger(PSTR(""), 1);
+			//debug_WriteInteger(PSTR(""), 1);
 			return 1; //These are all one byte Instructions
 		case 3: //Drive Instruction is a variable byte order
 			ret_value = 3; //min. three bytes are neccessary: one as order, two for speed (left and right)
@@ -114,15 +114,26 @@ uint8_t bytes_needed(uint8_t order) {
 					ret_value += 2;
 				}
 			}
-			debug_WriteInteger(PSTR(""), ret_value);
+			//debug_WriteInteger(PSTR(""), ret_value);
 			return ret_value;
-		case 4: //Set PID Parameters Instruction
-			debug_WriteInteger(PSTR(""), 9);
+		case 4:
+			ret_value = 3;
+			if(order & 0x30)
+				ret_value += 4;
+			if(order & 0xc0)
+				ret_value += 4;
+			return ret_value;
+		case 5: //Set PID Parameters Instruction
+			//debug_WriteInteger(PSTR(""), 9);
 			return 9;
+		case 6:
+			if((order & 0xf0) >= 1 && (order & 0xf0) <= 4)
+				return 2;
+			return 1;
 	}
-			debug_WriteInteger(PSTR("default  = "), 1);
+			//debug_WriteInteger(PSTR("default  = "), 1);
 	return 1;
-	debug_NewLine();
+	//debug_NewLine();
 }
 
 /**
