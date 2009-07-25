@@ -1,4 +1,3 @@
-/*#define __AVR_ATmega2561__*/
 #include <avr/io.h>
 #include <inttypes.h>
 #include <stdlib.h>

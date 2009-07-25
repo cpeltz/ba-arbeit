@@ -25,6 +25,16 @@
 #define IO_OUTBUFFER_SIZE 256
 
 /**
+ * Specifies the default value for ACTIVE_BRAKE_AMOUNT.
+ *
+ * See the Description there for more information. The default
+ * value will be used after a reset or simple when the device
+ * was started. Although it will be used, after a wrong value
+ * was set through the option_instruction function.
+ */
+#define ACTIVE_BRAKE_AMOUNT_DEFAULT 40
+
+/**
  * The speed with which position-correction during active braking will occur.
  *
  * Valid values are 1 to 127. NEVER use anything outside
@@ -33,10 +43,29 @@
  * last known position. If it is deviated it will use it's wheels
  * with a speed equal to this constant to correct it.
  */
-#define ACTIVE_BRAKE_AMOUNT_DEFAULT 40
 uint8_t ACTIVE_BRAKE_AMOUNT = ACTIVE_BRAKE_AMOUNT_DEFAULT;
+
+/**
+ * Enables or disables the entire active braking feature.
+ *
+ * May be set through the user with the option instruction.
+ * @todo maybe use the global flag storage 
+ */
 uint8_t ACTIVE_BRAKE_ENABLE = 1;
+
+/**
+ * Enables the active braking feature for single wheels, if a the trigger for
+ * it has been reached.
+ *
+ * Only has effect when ACTIVE_BRAKE_ENABLE is set to 1.
+ */
 uint8_t ACTIVE_BRAKE_WHEN_TRIGGER_REACHED = 1;
+
+/**
+ * Enables the active brake feature for both wheels, when no order is beeing processed.
+ *
+ * Only has effect when ACTIVE_BRAKE_ENABLE is set to 1.
+ */
 uint8_t ACTIVE_BRAKE_WHEN_IDLE = 1;
 
 /**
@@ -70,6 +99,11 @@ uint8_t ACTIVE_BRAKE_WHEN_IDLE = 1;
 
 /**
  * The I²C Bus Slave Address.
+ *
+ * Beware, that this is not the real Address. Because of how the Hardware
+ * handles the address register for the I2C-Bus, the real Address (42)
+ * has to be bitshifted to the left by 1. Thats the 84.
+ * THE REAL ADDRESS IS 42!
  */
 #define TWI_ADDRESS 84
 

@@ -1,5 +1,3 @@
-/*#define __AVR_ATmega2561__*/
-
 #include <inttypes.h>
 #include <stdlib.h>
 #include <avr/io.h>
@@ -15,30 +13,40 @@
  * @{
  */
 
+/**
+ * Speed of the left wheel in the last 100ms.
+ */
 static int8_t timer_Speed_W0 = 0;
+/**
+ * Speed of the right wheel in the last 100ms.
+ */
 static int8_t timer_Speed_W1 = 0;
+/**
+ * Used to store the speed during the 100ms. It gets incremented by irq.c.
+ */
 static int8_t timer_SpeedSum_W0 = 0;
+/**
+ * Used to store the speed during the 100ms. It gets incremented by irq.c.
+ */
 static int8_t timer_SpeedSum_W1 = 0;
+/**
+ * Stores the current value for the time triggers.
+ * 
+ * This Values will be decremented over time until they have reached 0.
+ */
 uint16_t timer_t_trigger_counter[2] = { 0, 0 };
+/**
+ * Stores the system uptime in seconds (at least until overflow.
+ */
 uint16_t timer_1s_counter = 0;
+/**
+ * Helper counter used to count timer_1s_counter up.
+ */
 uint8_t timer_100ms_counter = 0;
 
-/*ISR(TIMER1_COMPA_vect) {
-	// ISR wird jede Millisekunde ausgeführt
-	OCR1A = TCNT1 + 250;
-	// Neuen Wert für Compare Match A setzen
-	flag_set(TIMER_1MS);
-	// und TIMER_1MS Flag setzen
-}*/
-
-/*ISR(TIMER1_COMPB_vect) {
-	// IST wird alle 10 Millisekunden ausgeführt
-	OCR1B = TCNT1 + 2500;
-	// Neuen Wert für Compare Match B setzen
-	flag_set(TIMER_10MS);
-	// under TIMER_10MS Flag setzen
-}*/
-
+/**
+ * The interrupt which gets called every 100ms.
+ */
 ISR(TIMER1_COMPC_vect) {
 	// ISR wird alle 100 Millisekunden ausgeführt
 	OCR1C = TCNT1 + 25000;
@@ -64,6 +72,9 @@ ISR(TIMER1_COMPC_vect) {
 	timer_100ms_counter++;
 }
 
+/**
+ * Timer interrupt being called every 262ms.
+ */
 ISR(TIMER1_OVF_vect) {
 	// ISR wird alle 262 Millisekunden aufgerufen
 	flag_set(TIMER_262MS);
@@ -91,30 +102,48 @@ void timer_init(void) {
 	// Prescaler = clkIO/64 -> 250kHz -> 4µs
 }
 
+/**
+ * Increments the SpeedSum to measure the speed in a given timeframe.
+ */
 void wheel_AddSpeed_W0(void) {
 	if ((timer_SpeedSum_W0 < 127)) {
 		timer_SpeedSum_W0++;
 	}
 }
 
+/**
+ * Increments the SpeedSum to measure the speed in a given timeframe.
+ */
 void wheel_AddSpeed_W1(void) {
 	if ((timer_SpeedSum_W1 < 127)) {
 		timer_SpeedSum_W1++;
 	}
 }
 
+/**
+* Decrements the SpeedSum to measure the speed in a given timeframe.
+*/
 void wheel_DelSpeed_W0(void) {
 	if ((timer_SpeedSum_W0 > -127)) {
 		timer_SpeedSum_W0--;
 	}
 }
 
+/**
+ * Increments the SpeedSum to measure the speed in a given timeframe.
+ */
 void wheel_DelSpeed_W1(void) {
 	if ((timer_SpeedSum_W1 > -127)) {
 		timer_SpeedSum_W1--;
 	}
 }
 
+/**
+ * Reads the speed of the given wheel. (changes every 100ms)
+ *
+ * @param[in] wheel Either #WHEEL_LEFT or #WHEEL_RIGHT
+ * @return <em>int8_t</em> The Speed of the requested wheel.
+ */
 int8_t wheel_ReadSpeed(const uint8_t wheel) {
 	switch (wheel) {
 		case WHEEL_LEFT:

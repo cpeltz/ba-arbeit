@@ -194,9 +194,12 @@ void parser_add_byte(uint8_t byte) {
 	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 8\r\n"));
 }
 
+/**
+ * Simple query function to check for new orders.
+ *
+ * @return <em>uint8_t</em> 1 if there is a new order in the buffer, 0 otherwise.
+ */
 uint8_t parser_has_new_order() {
-	// Simple Query funtion
-	// return 1 if there is a new order waiting and 0 if there isn't
 	if (first_buffer_position != -1) {
 		return 1;
 	}

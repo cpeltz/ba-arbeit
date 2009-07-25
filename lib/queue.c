@@ -58,11 +58,8 @@ void queue_init(void) {
  * Puts a priority order in the queue.
  *
  * @param[in] order The order to be put in the queue.
- * @return <em>uint8_t</em> 1 (can be ignored for now).
- * @todo Either remove the return value or give it meaning.
  */
-uint8_t queue_push_priority(order_t * order) {
-	//priority_order = *order;
+void queue_push_priority(order_t * order) {
 	order_copy(order, &priority_order);
 	return 1;
 }
@@ -113,7 +110,6 @@ order_t * queue_get_current_normal_order(void) {
  * Priority orders will bypass normal orders even if they are
  * already in execution.
  * @return <em>const order_t *</em> The order to be worked with.
- * @todo Remove the const, it will hinder status setting.
  */
 order_t * queue_get_current_order(void) {
 	// Bypass normal Queue if we have a priority instruction

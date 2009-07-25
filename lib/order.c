@@ -114,6 +114,12 @@ void order_process(order_t * const order) {
 	}
 }
 
+/**
+ * Function to lookup the size of an order.
+ *
+ * @param[in] order The order, of which one needs the size.
+ * @return <em>uint8_t</em> The number of Bytes the order is long.
+ */
 uint8_t order_size(order_t *order) {
 	return bytes_needed(order->data[0]);
 }

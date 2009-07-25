@@ -23,9 +23,18 @@
  * @todo need more defines for constants so they are more readable
  * @todo Put references to the Protocol document in here.
  */
- 
+
+/**
+ * External reference to the local time flags.
+ */
 extern uint8_t local_time_flags;
+/**
+ * External reference to the time trigger variables.
+ */
 extern uint16_t timer_t_trigger_counter[2];
+/**
+ * External reference to the position trigger variables.
+ */
 extern int16_t irq_p_trigger_position[2];
 
 /**
@@ -40,7 +49,7 @@ extern int16_t irq_p_trigger_position[2];
 void extended_instruction(order_t *order) {
 	order->status |= ORDER_STATUS_DONE;
 }
-#include "lcd.h"
+
 /**
  * The control instruction handler function.
  *
@@ -122,8 +131,6 @@ void query_instruction(order_t *order) {
 			}
 			io_obj_start();
 			io_put(current_order_size);
-			lcd_data(current_order_size);
-			lcd_putc(' ');
 			io_obj_end();
 			if (current_order) {
 				uint8_t i = 0;
@@ -165,14 +172,12 @@ void query_instruction(order_t *order) {
  * To set for any wheel any trigger to a value, this function
  * should be used.
  * @param[in] trigger_type The type of the trigger, which should
- * be set. Valid values are 1 for time trigger and 2 for position
- * trigger.
+ * be set. Valid values are 0x10 or 0x40 for time trigger and 
+ * 0x20 or 0x80 for position trigger.
  * @param[in] wheel For which wheel the trigger should be set.
  * Valid values are #WHEEL_LEFT and #WHEEL_RIGHT.
  * @param[in] trigger_value The raw value to which the trigger
  * will be set.
- * @todo Create defines for the trigger_type parameter
- * @todo Fix the setting of the triggers through global variables
  */
 void setTrigger(uint8_t trigger_type, uint8_t wheel, int16_t trigger_value) {
 	switch(trigger_type) {
@@ -191,6 +196,15 @@ void setTrigger(uint8_t trigger_type, uint8_t wheel, int16_t trigger_value) {
 			break;
 	}
 }
+
+/**
+ * Sets the trigger for the advanced_drive_instruction.
+ *
+ * @param[in] wheel For which wheel the trigger should be set.
+ * Valid values are #WHEEL_LEFT and #WHEEL_RIGHT.
+ * @param[in] trigger_value_time The value for the time trigger.
+ * @param[in] trigger_value_position The value for the position trigger.
+ */
 void setAdvancedTrigger(uint8_t wheel, int16_t trigger_value_time, int16_t trigger_value_position) {
 	timer_t_trigger_counter[wheel] = trigger_value_time;
 	irq_p_trigger_position[wheel] = trigger_value_position;
@@ -200,16 +214,11 @@ void setAdvancedTrigger(uint8_t wheel, int16_t trigger_value_time, int16_t trigg
  * Checks the trigger on the given wheel.
  *
  * The trigger type of the wheel has to be known.
- * @param[in] trigger_type 1 for time trigger and 2 for position
- * trigger.
+ * @param[in] trigger_type 0x10 or 0x40 for time trigger and 
+ * 0x20 or 0x80 for position trigger.
  * @param[in] wheel The wheel which trigger we request. Valid
  * values are #WHEEL_LEFT and #WHEEL_RIGHT.
  * @return <em>int</em> Zero if trigger is reached.
- * @todo Make sure this function returns the right values
- * @todo Really used to check if triggers reached? looks more like
- * checking the values of the triggers
- * @todo Make some defines for the trigger_type parameter.
- * @todo Compare with the trigger function in order.c
  */
 int checkTrigger(uint8_t trigger_type, uint8_t wheel) {
 	switch(trigger_type) {
@@ -226,6 +235,16 @@ int checkTrigger(uint8_t trigger_type, uint8_t wheel) {
 	}
 }
 
+/**
+ * Checks the advanced trigger conditions for a given wheel.
+ *
+ * The trigger type of the wheel has to be known.
+ * @param[in] trigger_type 0x10 or 0x40 for time OR position
+ * trigger and 0x20 or 0x80 for time AND position trigger.
+ * @param[in] wheel The wheel which trigger we request. Valid
+ * values are #WHEEL_LEFT and #WHEEL_RIGHT.
+ * @return <em>int</em> Zero if trigger is reached.
+ */
 int checkAdvancedTrigger(uint8_t trigger_type, uint8_t wheel) {
 	switch(trigger_type) {
 		case 0x10:// (L: ZvP R: N  )
@@ -248,7 +267,6 @@ int checkAdvancedTrigger(uint8_t trigger_type, uint8_t wheel) {
  * (maybe not in 80 days).
  * @param[in,out] order The order which specifies what exactly
  * should be done.
- * @todo Implement the setting of the differential correction
  * @todo The function is partially really ugly. Refactor it.
  */
 void drive_instruction(order_t *order) {
@@ -347,7 +365,15 @@ void drive_instruction(order_t *order) {
 	}
 }
 
-
+/**
+ * The Handler function for the advanced drive order.
+ *
+ * @param[in,out] order The order which specifies what exactly
+ * should be done.
+ * @todo The function is partially really ugly. Refactor it.
+ * @todo The function shared many things with the drive_instruction,
+ * maybe a common function base for both is appropriate.
+ */
 void advanced_drive_instruction(order_t *order) {
 	uint8_t trigger_type_left = order->data[0] & 0x30;
 	uint8_t trigger_type_right = order->data[0] & 0xc0;
@@ -408,6 +434,7 @@ void advanced_drive_instruction(order_t *order) {
 		order->status |= ORDER_STATUS_STARTED;
 	}
 }
+
 /**
  * SetPID instruction handler function.
  *
@@ -437,6 +464,13 @@ void set_pid_instruction(order_t *order) {
 //	//debug_WriteString_P(PSTR("order_functions.c : set_pid_instruction() :  End execution\n"));
 }
 
+/**
+ * Option instruction handler function.
+ *
+ * Used to set behaviour variables, like how active braking should be done.
+ * @param[in,out] order The order which contains the new parameters.
+ * @todo maybe make it possible to only set one parameter at a time.
+ */
 void option_instruction(order_t *order) {
 	switch(order->data[0] & 0xf0) {
 		case 0x00:

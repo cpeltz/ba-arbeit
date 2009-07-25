@@ -1,4 +1,3 @@
-/*#define __AVR_ATmega2561__*/
 #include <avr/io.h>
 #include "led.h"
 #include "definitions.h"
@@ -12,6 +11,9 @@
  * @{
  */
 
+/**
+ * Storage for the state of the led's
+ */
 static uint16_t led_State = 0;
 
 /**
@@ -39,6 +41,7 @@ void led_init(void) {
  * #LED_RED2, #LED_ORANGE, #LED_GREEN and #LED_BLUE.
  * @param[in] state The state the LED should enter.
  * @todo Find out more about the valid values for state.
+ * @todo Broken, needs fixing.
  */
 void led_switch(uint8_t led, uint8_t state) {
 	switch(led) {
@@ -89,22 +92,8 @@ void led_test(void) {
 	led_switchoff();
 }
 
-void led_next_test(uint8_t arg) {
-	arg = arg % (31);
-	if ( arg % 2 )
-		led_switch(LED_RED1, ON);
-	if ( (arg % 2) == 0 )
-		led_switch(LED_RED2, ON);
-	if ( (arg % 4) == 0 )
-		led_switch(LED_ORANGE, ON);
-	if ( (arg % 8) == 0 )
-		led_switch(LED_GREEN, ON);
-	if ( (arg % 16) == 0 )
-		led_switch(LED_BLUE, ON);
-}
-
 /**
- * Reads the state of all(?) LED's.
+ * Reads the state of all LED's.
  *
  * @return <em>uint16_t</em> The state of the LED's.
  */
@@ -112,11 +101,20 @@ uint16_t led_GetState(void) {
 	return led_State;
 }
 
+/**
+ * Sets the "Toggle"-Bit (whatever that is).
+ * @todo Find out what the toggle bit is.
+ */
 void led_ToggleBit(void) {
 	led_State ^= (1<<15);
 	LED_DDR = led_State;
 }
 
+/**
+ * Reads the state of the toggle Bit.
+ *
+ * @return <em>uint8_t</em> 1 if the toggle bit is on, 0 otherwise.
+ */
 uint8_t led_ReadToggleBit(void) {
 	return (led_State>>15);
 }
