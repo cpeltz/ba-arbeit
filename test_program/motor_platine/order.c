@@ -12,80 +12,43 @@ void order_init(order_t *order) {
 		order->dat[i] = 0;
 	}
 	// Set the position to write to
-	order->pos = 0;
-}
-
-void intern_order_shift(order_t *order) {
-	unsigned char i = ORDER_TYPE_MAX_LENGTH;
-	for(; i > 1; i--) {
-		order[i] = order[i - 1];
-	}
-	order->dat[0] = 0;
-}
-
-void order_shift(order_t *order, unsigned char times) {
-	unsigned char i = 0;
-	for(; i < times; i++) {
-		intern_order_shift(order);
-	}
-}
-
-void intern_order_unshift(order_t *order) {
-	unsigned char i = 0;
-	for(; i < ORDER_TYPE_MAX_LENGTH - 1; i++) {
-		order[i] = order[i + 1];
-	}
-	order->dat[ORDER_TYPE_MAX_LENGTH - 1] = 0;
-}
-
-void order_unshift(order_t *order, unsigned char times) {
-	unsigned char i = 0;
-	for(; i < times; i++) {
-		intern_order_unshift(order);
-	}
+	order->dat[0] = TWI_ADDRESS;
+	order->pos = 1;
 }
 
 unsigned char order_send(order_t *order) {
-	unsigned char bytes_send = 0;
-	order_shift(order, 1);
-	order->dat[0] = TWI_ADDRESS;
-	bytes_send = i2c_send(order->dat, order->pos + 1);
-	order_unshift(order, 1);
-	return bytes_send;
-	//return i2c_send(order->data, order->pos + 1);
+	return i2c_send(order->dat, order->pos);
 }
 
-unsigned char order_send_and_recv_current_order(order_t *order) {
+unsigned char order_send_and_recv_co(order_t *order) {
 	order_send(order);
 	order_init(order);
-	order->dat[0] = TWI_ADDRESS;
 	i2c_receive(order->dat, 2);
 	return i2c_receive(order->dat, order->dat[1]);
 }
 
 unsigned char bytes_to_recv(order_t *order) {
 	switch(order->dat[0]) {
-		case 0x12:
-		case 0x22:
-		case 0x32:
+		case ORDER_REGISTER_LEFT_SPEED:
+		case ORDER_REGISTER_RIGHT_SPEED:
+		case ORDER_REGISTER_QUEUE_SIZE:
 			return 1;
 		default:
 			return 0;
 	}
 }
 
-void order_send_and_recv(order_t *order) {
-	order_shift(order, 1);
-	order->dat[0] = TWI_ADDRESS;
+unsigned char order_send_and_recv(order_t *order) {
+	if (order->dat[1] == 0x42) // for recv a current order one needs the other function.
+		return;
 	i2c_send(order->dat, order->pos + 1);
 	order_init(order);
-	order->dat[0] = TWI_ADDRESS;
-	i2c_receive(order->dat, bytes_to_recv(order));
+	return i2c_receive(order->dat, bytes_to_recv(order) + 1);
 }
 
 void order_set_type(order_t *order, unsigned char type) {
-	order->dat[0] = type;
-	order->pos = 1;
+	order->dat[1] = type;
+	order->pos = 2;
 }
 
 void order_add_params(order_t *order, char *format, ...) {

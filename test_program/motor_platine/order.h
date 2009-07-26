@@ -1,7 +1,28 @@
 #ifndef __MOTOR_PLATINE_H__
 #define __MOTOR_PLATINE_H__
 
-#include "options.h"
+/**
+ * Number of bytes for order-data.
+ *
+ * The real byte count for the order type is this constant + 1
+ * as there is one additional byte for status keeping.
+ * This number solely specifies how many bytes a order may have
+ * at most.
+ * Beware that this should _never_ be set to 0 or less.
+ * Best practice is to set it to the max value bytes_needed() in parser.c
+ * will return.
+ */
+#define ORDER_TYPE_MAX_LENGTH 15
+
+/**
+ * The I²C Bus Slave Address.
+ */
+#define TWI_ADDRESS 42
+
+/**
+ * The Baud rate for the UART Interface.
+ */
+#define UART_BAUD_RATE 57600L
 
 #define ORDER_CONTROL 0x01
 #define ORDER_CONTROL_RESET 0x11
@@ -31,21 +52,24 @@
 #define ORDER_DRIVE_T_P 0x93
 #define ORDER_DRIVE_P_P 0xa3
 #define ORDER_DRIVE_PID 0x33
-#define ORDER_DRIVE_SET_DIFF 0xf3
+#define ORDER_DRIVE_SET_DIFF 0xc3
 
-#define ORDER_SETPID 0x04
-#define ORDER_SETPID_BOTH_WHEELS 0x24
-#define ORDER_SETPID_LEFT_WHEEL 0x04
-#define ORDER_SETPID_RIGHT_WHEEL 0x14
+#define ORDER_SETPID 0x05
+#define ORDER_SETPID_BOTH_WHEELS 0x25
+#define ORDER_SETPID_LEFT_WHEEL 0x05
+#define ORDER_SETPID_RIGHT_WHEEL 0x15
 
 typedef struct ORDER {
 	 unsigned char dat[ORDER_TYPE_MAX_LENGTH];
 	 unsigned char pos;
 } order_t;
+
 void order_init(order_t *order);
 unsigned char order_send(order_t *order);
 void order_set_type(order_t *order, unsigned char type);
 void order_add_params(order_t *order, char *format, ...);
+unsigned char order_send_and_recv(order_t *order); 
+unsigned char order_send_and_recv_co(order_t *order);
 
 /*order_t order;
 order_init(&order);

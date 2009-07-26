@@ -97,9 +97,9 @@
 	Sie umgehen die Warteschlange und werden sogar während noch laufenden Befehlen ausgeführt. Sie erhalten den frühst
 	möglichen Zeitslot zur Ausführung.
 
-	\subsection{Register - 0x02}
+	\subsection{Queue - 0x02}
 
-	Durch diesen Befehl kann der Benutzer bestimmte virtuelle Register des Boards abfragen. Diese stellen dann Informationen
+	Durch diesen Befehl kann der Benutzer bestimmte Werte des Boards abfragen. Diese stellen dann Informationen
 	wie z.B. die aktuelle Geschwindigkeit oder den aktuellen Befehl zu Verfügung.
 
 	\subsection{Drive - 0x03}
@@ -149,7 +149,7 @@
 		\hline
 		Continue Queue	& 0x30				& Der nächste Befehl in der Queue wird ausgeführt. \\
 		\hline
-		Clear Queue		& 0x40				& Die Warteschlange wird gelöscht. Aktueller Befehl wird aber weiter ausgeführt. \\
+		Clear Queue		& 0x40				& Die Warteschlange wird gelöscht. \\
 		\hline
 		Stop Drive		& 0x50				& Befehl wird angehalten, Fahrzeug geht zum aktiven Bremsen über. \\
 		\hline
@@ -160,7 +160,7 @@
 	Der Control-Befehl hat keine Parameter und ist damit konstant 1 Byte lang. Außerdem umgehet dieser Befehl die Warteschlange,
 	wird also sofort ausgeführt, auch während noch ein anderer Befehl bearbeitet wird.
 
-	\subsection{Register - 0x02}
+	\subsection{Query - 0x02}
 
 	\begin{tabularx}{\linewidth}{|l|l|X|}
 		\hline
@@ -177,9 +177,9 @@
 		\hline
 	\end{tabularx}
 	
-	Der Register-Befehl ist immer nur ein Byte lang, in den oberen 4 bit wird spezifiziert welche Informationen man haben möchte.
+	Der Query-Befehl ist immer nur ein Byte lang, in den oberen 4 bit wird spezifiziert welche Informationen man haben möchte.
 	Welche zur Verfügung stehen und welche Bitmaske man dafür verwenden muss, wird aus der obigen Tabelle entnommen. Es kann immer
-	nur ein Register per Befehl abgefragt werden. Die Antwort auf solch eine Anfrage hat eine variable Länge, die ebenfalls aus
+	nur ein Wert per Befehl abgefragt werden. Die Antwort auf solch eine Anfrage hat eine variable Länge, die ebenfalls aus
 	der Tabelle entnommen werden kann (sie ist in Byte angegeben).
 	Bei der Antwort mit dem Aktuellen Befehl gilt zu beachten, dass zweimal von der Platine gelesen werden muss. Die erste
 	Antwort ist immer 1 Byte lang und gibt an wie lang die zweite Antwort sein wird. Diese hält dann den eigentlichen Befehl.
@@ -235,10 +235,9 @@
 	Folgend auf das Befehlsbyte tut dann ein Geschwindigkeitsbyte sowie, falls erforderlich, 2 Bytes für den ausgewählten
 	Trigger. Die Minimale Länge beläuft sich hier auf 2 Byte, die Maximale auf 4.
 
-	Wenn die Fahrt mit Differntialausgleich gewählt wurde (Bitmaske 0x30) und die Bitmaske 0xc0 auf dem Befehlsbyte
-	genutzt wird, kann der relative Differentialwert für die Fahrt eingestellt werden. Ein Wert gleich 0 setzt den Wert auf
-	0. Von 0 verschiedene Werte werden auf den aktuellen Differentialwert addiert. Der Differntialwert darf einen wert zwischen
-	-32768 bis 32767. Die Länge beträgt immer 3 Byte.
+	Wenn die Bitmaske 0xc0 auf dem Befehlsbyte genutzt wird, kann der relative Differentialwert für die Fahrt eingestellt
+	werden. Ein Wert gleich 0 setzt den Wert auf 0. Von 0 verschiedene Werte werden auf den aktuellen Differentialwert
+	addiert. Der Differntialwert darf einen wert zwischen -32768 bis 32767. Die Länge beträgt immer 3 Byte.
 
 	\subsection{Advanced Drive - 0x04}
 
@@ -335,5 +334,64 @@
 	angegeben wird, den default-Wert benutzen. Momentan sind alle Option-Befehle 2 Byte lang.
 	
 	\section{Verwendung der Befehls-Bibliothek}
+	
+	Die Befehls-Bibliothek ist optional und klein. Sie dient hauptsächlich dazu das Senden von Befehlen an
+	die Motorplatine zu vereinfachen. Ohne die Bibliothek muss der Benutzer selber alle Felder eines Arrays
+	korrekt setzen und sie selber senden. Die Bibliothek hingegen sellt eine große Menge an defines bereit,
+	die das spätere lesen des Codes vereinfachen, sowie einige Funktionen, die das füllen der Parameter
+	kurz und übersichtlich hält. Natürlich hat dies einen geringen Overhead zur Folge (mindestens wegen der
+	Funktionsaufrufe).
+	Um einen Befehl mit der Bibliothek zu erstellen und abzusenden sind folgende folgene Schritte durchzuführen:
+	\begin{enumerate}
+		\item Erstellen einer Variable vom Typ order\_t
+		\item Initialisieren dieser Variable mit order\_init(order\_t)
+		\item Einstellen des Befehlstypes mit order\_set\_type(order\_t, type) (Hierfür gibt es eine Menge an defines
+			um diesen Aufruf kurz und informativ zu halten)
+		\item Setzen, wenn nötig, der Parameter für den Befehl, mithilfe von order\_add\_params(order\_t, format, param1, ..., paramN)
+		\item Senden des Befehls an die Platine mithilfe von order\_send(order\_t), order\_send\_and\_recv(order\_t) oder
+			order\_send\_and\_recv\_co(order\_t).
+	\end{enumerate}
+	Wichtige Besonderheiten sind, dass der Typ order\_t, zwar größenteils identisch mit dem auf der Platine verwendete
+	Typ ist, statt einer status-Variablen jetzt eine pos-Variable hat, die {\em nur intern verwendet} werden darf.
+	Sie speichert die Schreibposition sowie die länge des Befehls. Das große data Array musste hier in dat umbenannt
+	werden, da data ein reserviertes Wort unter Keil ist. Das erste Feld in dem dat Array speichert die Adresse der
+	Platine und wird während order\_init(order\_t) gesetzt. Ab dem zweiten Feld des dat Array residieren hier nur die
+	Befehlsdaten.
+	Mit order\_set\_type(order\_t, type) wird der Typ des Befehls gesetzt, das bedeutet, das erste Byte des Befehls auch
+	Befehlsbyte genannt. Für jeden validen Typ, das schließt auch alle Optionen mit ein, gibt es ein define, welches man
+	hierfür verwenden kann.
+	Die Funktion order\_add\_params(order\_t, format, param1, .., paramN) hat eine variable Anzahl an Parametern. Die
+	Anzahl der Parameter und deren Typen wird durch den format-String festgelegt. Dieser besteht aus einer Kombination
+	aus 1en und 2en. Die 1en bedeuten ein 1-Byte Parameter (int8\_t oder äquivalent) wobei die 2en ein 2-Byte
+	Parameter bedeuten (int16\_t oder äquivalent). Sie werden in der Reihenfolge in der sie angegeben wurden auch erwartet
+	und eingefügt. Beispiel: "1121" würde aussagen, dass zwei 1-Byte Parameter, dann ein 2-Byte Parameter, gefolgt von
+	einem weiteren 1-Byte Parameter erwartet wird.
+	Wenn der Befehl nun zur Zufriedenheit konstruiert wurde, kann er mit einem der drei send-Funktionen gesendet werden.
+	Wichtig ist hier die Richtige auszuwählen. Dabei gilt, wird keine Antwort auf den Befehl erwartet (der Großteil der
+	Befehle), dann wird order\_send(order\_t) benutzt. Die Funktion gibt die Anzahl der gesendeten Bytes zurück.
+	Falls der Befehl eine Antwort provoziert (wie die query-Befehle), dann wird order\_send\_and\_recv(order\_t) benutzt.
+	Dieser wird den Befehl senden und an die Stelle der Alten Befehlsdaten (also ab dem zweiten Feld) die Antwort einlesen.
+	Außerdem gibt der Befehl die Anzahl der gelesenen Bytes zurück. (pos wird nicht korrekt gesetzt).
+	Es gibt noch einen Befehl zum Senden und Empfangen, das ist der order\_send\_and\_recv\_co(order\_t). Dieser muss
+	benutzt werden, wenn die Antwort der Platine eine variable Länge hat (so wie die Antwort auf den Query nach dem
+	aktuellen Befehl (current order) von dem der Befehl auch seinen Namen ableitet. Auch dieser Befehl gibt die Anzahl
+	der empfangenen Bytes zurück und speichert die empfangenen Daten ab dem zweiten Feld des dat-Arrays.
+
 	\section{Befehlsbeispiele}
+
+	\subsection{Control - 0x01}
+	
+	Reset: 0x01 OR 0x10 = 0x11\\
+	Stop Drive: 0x01 OR 0x50 = 0x51
+
+	\subsection{Query - 0x02}
+	Anzahl der Befehle: 0x02 OR 0x30 = 0x32\\
+	Antwort (unter der Annahme, dass 5 befehle in der Queue sind): 0x05
+
+	\subsection{Drive - 0x03}
+	Die Geschwindigkeit des linken Rades soll 100 sein, die des rechten -50. Das linke Rad soll einen Zeit- und das
+	rechte einen Positionstrigger verwenden. Die Zeit soll 500 betragen, die Position 10000.\\
+	Erstes Byte: 0x03 OR 0x10 OR 0x80 = 0x93\\
+	Gesamte Befehl: 0x93 0x64 0xce 0x01 0xf4 0x27 0x10
+
 \end{document}
