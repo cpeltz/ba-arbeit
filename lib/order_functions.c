@@ -100,7 +100,7 @@ void control_instruction(order_t *order) {
  *
  * Used to ask the system from the outside about interesting
  * information, like the current order or the current speed.
- * @param{in,out] order The order that specifies which register
+ * @param[in,out] order The order that specifies which register
  * (not real register) should be returned.
  */
 void query_instruction(order_t *order) {
