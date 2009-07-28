@@ -65,6 +65,8 @@ void led_switch(uint8_t led, uint8_t state) {
 			led_State |= (state<<LED_BLUE_BIT);
 			break;
 	}
+	LED_PORT |= (1 << led);
+	LED_PORT &= ~(state << led);
 }
 
 void wait_262ms(void) {
