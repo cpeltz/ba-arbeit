@@ -13,11 +13,13 @@
  * @{
  */
 
+extern uint8_t INTERFACE_TWI;
+extern uint8_t DEBUG_ENABLE;
 /**
  * The USART transmitter ISR.
  */
 ISR(USART1_UDRE_vect) {
-	if (flag_read(INTERFACE_TWI)) {
+	if (INTERFACE_TWI) {
 		UCSR1B &= ~(1 << UDRIE1);
 	} else {
 		if (io_obj_get_remaining_size() > 0) {
@@ -51,11 +53,9 @@ void uart_init(void) {
 	UBRR1H = UBRR_VAL >> 8;
 	UBRR1L = UBRR_VAL & 0xff;
 	// Aktiviere RX, TX und RX Complete IRQ
-	// FIXME if interface = TWI then we need the transmission Interrupt when debug is enabled
-	// FIXME the Interrupt has to be modified for that
-	if (!flag_read(INTERFACE_TWI)) {
+	if (!INTERFACE_TWI) {
 		UCSR1B = (1 << RXEN1) | (1 << TXEN1) | (1 << RXCIE1);
-	} else if(flag_read(DEBUG_ENABLE)) {
+	} else if(DEBUG_ENABLE) {
 		UCSR1B = (1 << TXEN1);
 	}
 	// Lösche IRQ Flags
@@ -79,7 +79,7 @@ void uart_start_transmission() {
  * @param[in] data The Character to be send per UART.
  */
 void uart_put_debug(const uint8_t data) {
-	if (!flag_read(INTERFACE_TWI) && !flag_read(DEBUG_ENABLE))
+	if (!INTERFACE_TWI && !DEBUG_ENABLE)
 		return;
 	UDR1 = data;
 	uart_start_transmission();

@@ -23,7 +23,8 @@ static char buffer[10];
  * @param[in] data The character to be printed.
  */
 void debug_PutChar(const uint8_t data) {
-	if (flag_read(DEBUG_ENABLE))
+	extern uint8_t DEBUG_ENABLE;
+	if (DEBUG_ENABLE)
 		uart_put_debug(data);
 }
 

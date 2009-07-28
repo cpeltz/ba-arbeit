@@ -6,6 +6,7 @@
 #include "lib/io.h"
 #include "lib/irq.h"
 #include "lib/lcd.h"
+#include "lib/lcd_addition.h"
 #include "lib/motor.h"
 #include "lib/order.h"
 #include "lib/parse.h"
@@ -93,10 +94,27 @@ int8_t reset_source = 0;
  *	in this bitfield will be set.
  */
 uint8_t local_time_flags = 0;
-
-void update_dip_flags(void);
+extern uint8_t LCD_PRESENT;
+extern uint8_t DEBUG_ENABLE;
+extern uint8_t INTERFACE_TWI;
 
 const char *version = "Ver. 2.9.20090727";
+
+/**
+ *	Used to read the settings given by the position of the dip switches.
+ *
+ *	With the dip switches, the user chooses which Interface he wants to use, if a LCD is plugged in or
+ *	to enable the debugging output.
+ */
+void update_dip_flags(void) 
+	// DIP1 = ON: Use TWI as communication methode
+	INTERFACE_TWI = dip_read(0);
+	// DIP2 = ON: Activate Debug Output
+	DEBUG_ENABLE = dip_read(1);
+	// DIP3 = ON: LCD is pluged in
+	LCD_PRESENT = dip_read(2);
+}
+
 /**
  *	The Main setup function; calls every needed *_init() function
  */
@@ -121,52 +139,29 @@ void initialize(void) {
 }
 
 /**
- *	Used to read the settings given by the position of the dip switches.
- *
- *	With the dip switches, the user chooses which Interface he wants to use, if a LCD is plugged in or
- *	to enable the debugging output.
- */
-void update_dip_flags(void) {
-	// clear all dip flags
-	flag_clear(DEBUG_ENABLE);
-	flag_clear(INTERFACE_TWI);
-	flag_clear(LCD_PRESENT);
-	if (dip_read(0))
-		// DIP1 = ON: Use TWI as communication methode
-		flag_set(INTERFACE_TWI);
-	if (dip_read(1))
-		// DIP2 = ON: Activate Debug Output
-		flag_set(DEBUG_ENABLE);
-	if (dip_read(2))
-		// DIP3 = ON: LCD is pluged in
-		flag_set(LCD_PRESENT);
-}
-
-void lcd_print_status(const order_t * const);
-
-/**
  * This function prints, on every system start, information about the System.
  * @todo Only to dip_update once on startup and use a temp variable here
  */
 void print_startup(void) {
+	uint8_t prev_DEBUG_ENABLE_value = DEBUG_ENABLE;
 	// Startup Debug Infos
-	if (flag_read(LCD_PRESENT)) {
+	if (LCD_PRESENT) {
 		lcd_print_status(NULL);
 	}
-	flag_set(DEBUG_ENABLE);
+	DEBUG_ENABLE = 1;
 	debug_WriteString_P(PSTR("Motorsteuerung "));
 	debug_PutString(version);
 	debug_WriteString_P(PSTR("\n----------------------------\n\n"));
 	debug_WriteString_P(PSTR("DIP-Schalter Einstellungen:\n"));
-	if (dip_read(0))
+	if (INTERFACE_TWI)
 		debug_WriteString_P(PSTR("DIP1: ON   Interface = TWI\n"));
 	else
 		debug_WriteString_P(PSTR("DIP1: OFF  Interface = UART\n"));
-	if (dip_read(1))
+	if (prev_DEBUG_ENABLE_value)
 		debug_WriteString_P(PSTR("DIP2: ON   Debug-Ausgaben aktiv\n"));
 	else
 		debug_WriteString_P(PSTR("DIP2: OFF  Debug-Ausgaben inaktiv\n"));
-	if (dip_read(2))
+	if (LCD_PRESENT)
 		debug_WriteString_P(PSTR("DIP3: ON   LCD aktiv\n"));
 	else
 		debug_WriteString_P(PSTR("DIP3: OFF  LCD inaktiv\n"));
@@ -187,7 +182,7 @@ void print_startup(void) {
 	if (reset_source & (1<<JTRF))
 		debug_WriteString_P(PSTR("JTAG"));
 	debug_WriteString_P(PSTR("\n"));
-	update_dip_flags();
+	DEBUG_ENABLE = prev_DEBUG_ENABLE_value;
 }
 
 /**
@@ -239,79 +234,6 @@ void process_orders(void) {
 	}
 }
 
-/**
- * Helper function to convert an integer to a string in hex notation.
- *
- * @param[in] value The integer, which should be converted.
- * @param[out] buffer The string in which the characters will be written, must be at least 3.
- * @param[in] size The size of the buffer, has to be at least 3 big, and more then
- * 3 won't be used.
- */
-void itoa_hex(uint8_t value, char *buffer, uint8_t size) {
-	uint8_t lower = value & 0x0f;
-	uint8_t upper = (value & 0xf0) >> 4;
-	if( size <= 2)
-		return;
-	buffer[0] = (upper < 10) ? ('0' + upper) : ('a' + (upper-10));
-	buffer[1] = (lower < 10) ? ('0' + lower) : ('a' + (lower-10));
-	buffer[2] = '\0';
-}
-
-/**
- * Prints current status informations on the LCD.
- *
- * Will only be updated if the current order changes.
- */
-void lcd_print_status(const order_t * const order) {
-	char buffer[3];
-	lcd_clrscr();
-	lcd_puts(version);
-	lcd_gotoxy(0,1);
-	if (dip_read(0)) {
-		lcd_puts("TWI ");
-	} else {
-		lcd_puts("twi ");
-	}
-	if (dip_read(1)) {
-		lcd_puts("DEBUG ");
-	} else {
-		lcd_puts("debug ");
-	}
-	if (ACTIVE_BRAKE_ENABLE)
-		lcd_puts("AB:E");
-	else
-		lcd_puts("AB:e");
-	if (ACTIVE_BRAKE_WHEN_IDLE)
-		lcd_puts("I");
-	else
-		lcd_puts("i ");
-	if( ACTIVE_BRAKE_WHEN_TRIGGER_REACHED)
-		lcd_puts("T");
-	else
-		lcd_puts("t");
-	if(order != NULL) {
-		lcd_gotoxy(0,2);
-		int length = bytes_needed(order->data[0]);
-		for(int i=0; i < length; i++) {
-			itoa_hex(order->data[i], buffer, 3);
-			lcd_puts(buffer);
-			if(i == 6)
-				lcd_gotoxy(0,3);
-			else
-				lcd_puts(" ");
-		}
-	}
-}
-
-void lcd_update_screen(void) {
-	static order_t *order = NULL;
-	order_t *current = queue_get_current_order();
-	if(order != current) {
-		lcd_print_status(current);
-		order = current;
-	}
-
-}
 int main(void) {
 	// Save the reset source of the last reset
 	reset_source = MCUSR;
@@ -327,10 +249,6 @@ int main(void) {
 	// Update Status for the first time
 	status_update();
 
-	// Set Global flags which are depending on the dip switches
-	// TODO remove, is done in init now
-	update_dip_flags();
-
 	// Print driver version etc pp to debug
 	print_startup();
 
@@ -345,7 +263,7 @@ int main(void) {
 		process_orders();		
 
 		// If a LCD is pluged in we get nice status messages on it
-		if (flag_read(LCD_PRESENT))
+		if (LCD_PRESENT)
 			lcd_update_screen();
 
 //		debug_WriteString_P(PSTR("main.c : main() :  parser_update()\n"));

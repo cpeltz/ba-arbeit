@@ -133,10 +133,10 @@ ISR(TWI_vect) {
 
 /**
  * Initializes the I²c Bus Module.
- * @todo remove the flag_read(int) call
  */
 void twi_init(void) {
-	if (flag_read(INTERFACE_TWI)) {
+	extern uint8_t INTERFACE_TWI;
+	if (INTERFACE_TWI) {
 		// Slave Address = 84
 		TWAR = TWI_ADDRESS;
 		// TWI aktivieren

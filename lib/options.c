@@ -33,3 +33,7 @@ uint8_t ACTIVE_BRAKE_WHEN_TRIGGER_REACHED = 1;
  * Only has effect when ACTIVE_BRAKE_ENABLE is set to 1.
  */
 uint8_t ACTIVE_BRAKE_WHEN_IDLE = 1;
+
+uint8_t DEBUG_ENABLE;
+uint8_t INTERFACE_TWI;
+uint8_t LCD_PRESENT;

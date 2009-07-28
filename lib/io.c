@@ -53,9 +53,9 @@ static uint8_t transmission_offset = 0;
  * Setup-Function for IO related subsystems
  */
 void io_init(void) {
+	led_init();
 	twi_init();
 	uart_init();
-	led_init();
 	led_switch(LED_RED1, ON);
 }
 
@@ -181,9 +181,10 @@ void io_obj_start(void) {
  * and after finishing using io_put(), io_obj_end() has to be called.
  */
 void io_obj_end(void) {
+	extern uint8_t INTERFACE_TWI;
 	obj_memory[objpos_end - 1] = outpos_end - 1;
 	objpos_end = (objpos_end + 1) % IO_OUTBUFFER_SIZE;
-	if (!flag_read(INTERFACE_TWI))
+	if (!INTERFACE_TWI)
 		uart_start_transmission();
 }
 
