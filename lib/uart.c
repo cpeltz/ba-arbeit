@@ -17,18 +17,18 @@
  * The USART transmitter ISR.
  */
 ISR(USART1_UDRE_vect) {
-	//if (flag_read(INTERFACE_TWI)) {
-	//	UCSR1B &= ~(1 << UDRIE1);
-	//}
-	
-	if (io_obj_get_remaining_size() > 0) {
-		UDR1 = io_get_next_transmission_byte();
+	if (flag_read(INTERFACE_TWI)) {
+		UCSR1B &= ~(1 << UDRIE1);
 	} else {
-		io_obj_remove_current();
-		if (io_obj_remaining() > 0) {
+		if (io_obj_get_remaining_size() > 0) {
 			UDR1 = io_get_next_transmission_byte();
 		} else {
-			UCSR1B &= ~(1 << UDRIE1);
+			io_obj_remove_current();
+			if (io_obj_remaining() > 0) {
+				UDR1 = io_get_next_transmission_byte();
+			} else {
+				UCSR1B &= ~(1 << UDRIE1);
+			}
 		}
 	}
 }
@@ -55,7 +55,9 @@ void uart_init(void) {
 	// FIXME the Interrupt has to be modified for that
 	if (!flag_read(INTERFACE_TWI)) {
 		UCSR1B = (1 << RXEN1) | (1 << TXEN1) | (1 << RXCIE1);
-	} 
+	} else if(flag_read(DEBUG_ENABLE)) {
+		UCSR1B = (1 << TXEN1);
+	}
 	// Lösche IRQ Flags
 	UCSR1A = (1 << RXC1) | (1 << TXC1);
 }
