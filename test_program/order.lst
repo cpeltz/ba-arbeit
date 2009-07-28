@@ -1,4 +1,4 @@
-C51 COMPILER V8.09   ORDER                                                                 07/23/2009 15:03:51 PAGE 1   
+C51 COMPILER V8.09   ORDER                                                                 07/27/2009 14:58:14 PAGE 1   
 
 
 C51 COMPILER V8.09, COMPILATION OF MODULE ORDER
@@ -22,116 +22,78 @@ line level    source
   12   2                      order->dat[i] = 0;
   13   2              }
   14   1              // Set the position to write to
-  15   1              order->pos = 0;
-  16   1      }
-  17          
-  18          void intern_order_shift(order_t *order) {
-  19   1              unsigned char i = ORDER_TYPE_MAX_LENGTH;
-  20   1              for(; i > 1; i--) {
-  21   2                      order[i] = order[i - 1];
-  22   2              }
-  23   1              order->dat[0] = 0;
-  24   1      }
-  25          
-  26          void order_shift(order_t *order, unsigned char times) {
-  27   1              unsigned char i = 0;
-  28   1              for(; i < times; i++) {
-  29   2                      intern_order_shift(order);
-  30   2              }
-  31   1      }
-  32          
-  33          void intern_order_unshift(order_t *order) {
-  34   1              unsigned char i = 0;
-  35   1              for(; i < ORDER_TYPE_MAX_LENGTH - 1; i++) {
-  36   2                      order[i] = order[i + 1];
-  37   2              }
-  38   1              order->dat[ORDER_TYPE_MAX_LENGTH - 1] = 0;
+  15   1              order->dat[0] = TWI_ADDRESS;
+  16   1              order->pos = 1;
+  17   1      }
+  18          
+  19          unsigned char order_send(order_t *order) {
+  20   1              return i2c_send(order->dat, order->pos);
+  21   1      }
+  22          
+  23          unsigned char order_send_and_recv_co(order_t *order) {
+  24   1              order_send(order);
+  25   1              order_init(order);
+  26   1              i2c_receive(order->dat, 2);
+  27   1              return i2c_receive(order->dat, order->dat[1]);
+  28   1      }
+  29          
+  30          unsigned char bytes_to_recv(order_t *order) {
+  31   1              switch(order->dat[0]) {
+  32   2                      case ORDER_REGISTER_LEFT_SPEED:
+  33   2                      case ORDER_REGISTER_RIGHT_SPEED:
+  34   2                      case ORDER_REGISTER_QUEUE_SIZE:
+  35   2                              return 1;
+  36   2                      default:
+  37   2                              return 0;
+  38   2              }
   39   1      }
   40          
-  41          void order_unshift(order_t *order, unsigned char times) {
-  42   1              unsigned char i = 0;
-  43   1              for(; i < times; i++) {
-  44   2                      intern_order_unshift(order);
-  45   2              }
-  46   1      }
-  47          
-  48          unsigned char order_send(order_t *order) {
-  49   1              unsigned char bytes_send = 0;
-  50   1              order_shift(order, 1);
-  51   1              order->dat[0] = TWI_ADDRESS;
-  52   1              bytes_send = i2c_send(order->dat, order->pos + 1);
-  53   1              order_unshift(order, 1);
-  54   1              return bytes_send;
-C51 COMPILER V8.09   ORDER                                                                 07/23/2009 15:03:51 PAGE 2   
+  41          unsigned char order_send_and_recv(order_t *order) {
+  42   1              if (order->dat[1] == 0x42) // for recv a current order one needs the other function.
+  43   1                      return;
+*** WARNING C173 IN LINE 43 OF MOTOR_PLATINE\ORDER.C: missing return-expression
+  44   1              i2c_send(order->dat, order->pos + 1);
+  45   1              order_init(order);
+  46   1              return i2c_receive(order->dat, bytes_to_recv(order) + 1);
+  47   1      }
+  48          
+  49          void order_set_type(order_t *order, unsigned char type) {
+  50   1              order->dat[1] = type;
+  51   1              order->pos = 2;
+  52   1      }
+  53          
+C51 COMPILER V8.09   ORDER                                                                 07/27/2009 14:58:14 PAGE 2   
 
-  55   1              //return i2c_send(order->data, order->pos + 1);
-  56   1      }
-  57          
-  58          unsigned char order_send_and_recv_current_order(order_t *order) {
-  59   1              order_send(order);
-  60   1              order_init(order);
-  61   1              order->dat[0] = TWI_ADDRESS;
-  62   1              i2c_receive(order->dat, 2);
-  63   1              return i2c_receive(order->dat, order->dat[1]);
-  64   1      }
-  65          
-  66          unsigned char bytes_to_recv(order_t *order) {
-  67   1              switch(order->dat[0]) {
-  68   2                      case 0x12:
-  69   2                      case 0x22:
-  70   2                      case 0x32:
-  71   2                              return 1;
-  72   2                      default:
-  73   2                              return 0;
-  74   2              }
-  75   1      }
-  76          
-  77          void order_send_and_recv(order_t *order) {
-  78   1              order_shift(order, 1);
-  79   1              order->dat[0] = TWI_ADDRESS;
-  80   1              i2c_send(order->dat, order->pos + 1);
-  81   1              order_init(order);
-  82   1              order->dat[0] = TWI_ADDRESS;
-  83   1              i2c_receive(order->dat, bytes_to_recv(order));
-  84   1      }
-  85          
-  86          void order_set_type(order_t *order, unsigned char type) {
-  87   1              order->dat[0] = type;
-  88   1              order->pos = 1;
-  89   1      }
-  90          
-  91          void order_add_params(order_t *order, char *format, ...) {
-  92   1              int num = strlen(format);
-  93   1              va_list arglist;
-  94   1              int i = 0;
-  95   1      
-  96   1              va_start(arglist, format);
-  97   1              for(; i < num; i++) {
-  98   2                      if(format[i] == '1') {
-  99   3                              order->dat[order->pos] = va_arg(arglist, unsigned char);
- 100   3                              order->pos += 1;
- 101   3                      } else if(format[i] == '2') {
- 102   3                              long arg = va_arg(arglist, long);
- 103   3                              order->dat[order->pos] = arg & 0xff00;
- 104   3                              order->dat[order->pos + 1] = arg & 0x00ff;
- 105   3                              order->pos += 2;
- 106   3                      }
- 107   2              }
- 108   1              va_end(arglist);
- 109   1      }
+  54          void order_add_params(order_t *order, char *format, ...) {
+  55   1              int num = strlen(format);
+  56   1              va_list arglist;
+  57   1              int i = 0;
+  58   1      
+  59   1              va_start(arglist, format);
+  60   1              for(; i < num; i++) {
+  61   2                      if(format[i] == '1') {
+  62   3                              order->dat[order->pos] = va_arg(arglist, unsigned char);
+  63   3                              order->pos += 1;
+  64   3                      } else if(format[i] == '2') {
+  65   3                              unsigned int arg = va_arg(arglist, unsigned int);
+  66   3                              order->dat[order->pos] = arg >> 8;
+  67   3                              order->dat[order->pos + 1] = arg & 0x00ff;
+  68   3                              order->pos += 2;
+  69   3                      }
+  70   2              }
+  71   1              va_end(arglist);
+  72   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =   1015    ----
+   CODE SIZE        =    604    ----
    CONSTANT SIZE    =   ----    ----
-   XDATA SIZE       =   ----      88
+   XDATA SIZE       =   ----      67
    PDATA SIZE       =   ----    ----
-C51 COMPILER V8.09   ORDER                                                                 07/23/2009 15:03:51 PAGE 3   
-
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 
 
-C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

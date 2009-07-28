@@ -62,8 +62,8 @@ void order_add_params(order_t *order, char *format, ...) {
 			order->dat[order->pos] = va_arg(arglist, unsigned char);
 			order->pos += 1;
 		} else if(format[i] == '2') {
-			long arg = va_arg(arglist, long);
-			order->dat[order->pos] = arg & 0xff00;
+			unsigned int arg = va_arg(arglist, unsigned int);
+			order->dat[order->pos] = arg >> 8;
 			order->dat[order->pos + 1] = arg & 0x00ff;
 			order->pos += 2;
 		}

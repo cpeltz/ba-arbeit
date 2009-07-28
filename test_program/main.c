@@ -58,7 +58,7 @@ void initSerial()
 }
 #endif
 
-byte xdata buf[5];
+byte xdata buf[10];
 
 void main() {
 	// Main-Funktion
@@ -75,21 +75,28 @@ void main() {
 	lcd_print_string("Ready");
 
 	while(1) {
-		//order_init(&order);
-		/*lcd_print_string("Test 1: 0x03 0x40 0x40");
-		order_set_type(&order, ORDER_DRIVE_N_N);
-		order_add_params(&order, "11", 0x40, 0x40);*/
-		//order->dat[0] = 0x11;
-		//send = order_send(&order);
-		buf[0]=42;
-		buf[1]=0x11;
-		send = i2c_send(buf,2);
+		order_init(&order);
+		/*lcd_print_string("Test 1: 0x03 0x40 0x40");*/
+		//order_set_type(&order, 0x16);
+		//order_add_params(&order, "1", (byte) 30);
+		//order_send(&order);
+		order_set_type(&order, ORDER_DRIVE_T_T);
+		order_add_params(&order, "1122", 0x40, 0x40, (unsigned int)0x0010, (unsigned int)0x0010);
+		send = order_send(&order);
+		order_set_type(&order, ORDER_DRIVE_P_P);
+		order_add_params(&order, "1122", 0x9c, 0x9c, (unsigned int)0x0100, (unsigned int)0x0100);
+		send = order_send(&order);
+	/*	buf[0]=42;
+		buf[1]=0x03;
+		buf[2]=100;
+		buf[3]= -50;
+		send = i2c_send(buf,4);*/
 		int2str(buf, send);
 		lcd_print_string(buf);
-		//wait_ms(20000);
-		//lcd_print_string("STOP");
-		//order_set_type(&order, ORDER_CONTROL_STOP_DRIVE);
-		//order_send(&order);
 		wait_ms(20000);
+		lcd_print_string("STOP");
+		order_set_type(&order, ORDER_CONTROL_RESET);
+		order_send(&order);
+		wait_ms(5000);
 	}
 }

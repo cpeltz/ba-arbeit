@@ -1,4 +1,4 @@
-C51 COMPILER V8.09   TIMING                                                                07/23/2009 15:03:50 PAGE 1   
+C51 COMPILER V8.09   TIMING                                                                07/27/2009 14:58:12 PAGE 1   
 
 
 C51 COMPILER V8.09, COMPILATION OF MODULE TIMING
@@ -62,7 +62,7 @@ line level    source
   52          
   53          void int_timer0() interrupt 1 {
   54   1              if ((++wait_ms_current) >= wait_ms_max) {
-C51 COMPILER V8.09   TIMING                                                                07/23/2009 15:03:50 PAGE 2   
+C51 COMPILER V8.09   TIMING                                                                07/27/2009 14:58:12 PAGE 2   
 
   55   2                      TR0 = 0;
   56   2                      ET0 = 0;
@@ -126,7 +126,7 @@ line level    source
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
    CODE SIZE        =    370    ----
-C51 COMPILER V8.09   TIMING                                                                07/23/2009 15:03:50 PAGE 3   
+C51 COMPILER V8.09   TIMING                                                                07/27/2009 14:58:12 PAGE 3   
 
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =      4       4

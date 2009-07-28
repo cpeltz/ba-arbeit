@@ -1,4 +1,4 @@
-C51 COMPILER V8.09   MAIN                                                                  07/23/2009 15:03:50 PAGE 1   
+C51 COMPILER V8.09   MAIN                                                                  07/27/2009 14:58:13 PAGE 1   
 
 
 C51 COMPILER V8.09, COMPILATION OF MODULE MAIN
@@ -62,14 +62,14 @@ line level    source
                  S0CON = 0x50;                // S0CON: mode 1, 8bit Uart 
                  TMOD  = 0x20;                // TMOD : timer 1, mode 2 => 8bit Auto-Reload 
                  TH1   = 0xfd;                // TH1  : reload value for 9600baud @ 11,0592 MHz 
-C51 COMPILER V8.09   MAIN                                                                  07/23/2009 15:03:50 PAGE 2   
+C51 COMPILER V8.09   MAIN                                                                  07/27/2009 14:58:13 PAGE 2   
 
                  TR1   = 1;                   // TR1  : timer 1 run (TR1 = TCON.6) 
                  TI    = 1;                   // TI   : set TI to send first char of UART (TI = SCON.1) 
               }
               #endif
   60          
-  61          byte xdata buf[5];
+  61          byte xdata buf[10];
   62          
   63          void main() {
   64   1              // Main-Funktion
@@ -86,31 +86,37 @@ line level    source
   75   1              lcd_print_string("Ready");
   76   1      
   77   1              while(1) {
-  78   2                      //order_init(&order);
-  79   2                      /*lcd_print_string("Test 1: 0x03 0x40 0x40");
-  80   2                      order_set_type(&order, ORDER_DRIVE_N_N);
-  81   2                      order_add_params(&order, "11", 0x40, 0x40);*/
-  82   2                      //order->dat[0] = 0x11;
-  83   2                      //send = order_send(&order);
-  84   2                      buf[0]=42;
-  85   2                      buf[1]=0x11;
-  86   2                      send = i2c_send(buf,2);
-  87   2                      int2str(buf, send);
-  88   2                      lcd_print_string(buf);
-  89   2                      //wait_ms(20000);
-  90   2                      //lcd_print_string("STOP");
-  91   2                      //order_set_type(&order, ORDER_CONTROL_STOP_DRIVE);
-  92   2                      //order_send(&order);
-  93   2                      wait_ms(20000);
-  94   2              }
-  95   1      }
-*** WARNING C280 IN LINE 66 OF MAIN.C: 'order': unreferenced local variable
+  78   2                      order_init(&order);
+  79   2                      /*lcd_print_string("Test 1: 0x03 0x40 0x40");*/
+  80   2                      //order_set_type(&order, 0x16);
+  81   2                      //order_add_params(&order, "1", (byte) 30);
+  82   2                      //order_send(&order);
+  83   2                      order_set_type(&order, ORDER_DRIVE_T_T);
+  84   2                      order_add_params(&order, "1122", 0x40, 0x40, (unsigned int)0x0010, (unsigned int)0x0010);
+  85   2                      send = order_send(&order);
+  86   2                      order_set_type(&order, ORDER_DRIVE_P_P);
+  87   2                      order_add_params(&order, "1122", 0x9c, 0x9c, (unsigned int)0x0100, (unsigned int)0x0100);
+  88   2                      send = order_send(&order);
+  89   2              /*      buf[0]=42;
+  90   2                      buf[1]=0x03;
+  91   2                      buf[2]=100;
+  92   2                      buf[3]= -50;
+  93   2                      send = i2c_send(buf,4);*/
+  94   2                      int2str(buf, send);
+  95   2                      lcd_print_string(buf);
+  96   2                      wait_ms(20000);
+  97   2                      lcd_print_string("STOP");
+  98   2                      order_set_type(&order, ORDER_CONTROL_RESET);
+  99   2                      order_send(&order);
+ 100   2                      wait_ms(5000);
+ 101   2              }
+ 102   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =     92    ----
-   CONSTANT SIZE    =     24    ----
-   XDATA SIZE       =      5      17
+   CODE SIZE        =    247    ----
+   CONSTANT SIZE    =     34    ----
+   XDATA SIZE       =     10      17
    PDATA SIZE       =   ----    ----
    DATA SIZE        =   ----    ----
    IDATA SIZE       =   ----    ----
@@ -118,4 +124,4 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
 END OF MODULE INFORMATION.
 
 
-C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
