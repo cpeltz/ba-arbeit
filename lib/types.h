@@ -11,16 +11,6 @@
  */
 
 /**
- * What is Tacho? I do not know.
- * @todo Flagged for DELETION
- */
-typedef struct TACHO {
-	int16_t left;
-	int16_t right;
-	int16_t difference;
-} tacho_t;
-
-/**
  * Storage for the PID parameters and state.
  */
 typedef struct PID_DATA {
