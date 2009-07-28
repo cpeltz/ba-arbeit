@@ -280,6 +280,7 @@ void drive_instruction(order_t *order) {
 	// Extract the type of triggers to be used
 	uint8_t trigger_type_left = order->data[0] & 0x30;
 	uint8_t trigger_type_right = order->data[0] & 0xc0;
+	extern uint8_t ACTIVE_BRAKE_WHEN_TRIGGER_REACHED;
 	//debug_WriteString_P(PSTR("order_functions.c : drive_instruction() :  Start execution\n"));
 	//debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  trigger_type_left = "), trigger_type_left);
 	//debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  trigger_type_right = "), trigger_type_right);
@@ -384,6 +385,7 @@ void drive_instruction(order_t *order) {
 void advanced_drive_instruction(order_t *order) {
 	uint8_t trigger_type_left = order->data[0] & 0x30;
 	uint8_t trigger_type_right = order->data[0] & 0xc0;
+	extern uint8_t ACTIVE_BRAKE_WHEN_TRIGGER_REACHED;
 
 	if(order->status & ORDER_STATUS_DONE)
 		return;

@@ -202,6 +202,8 @@ void drive_brake_active_set(void) {
  * Will only work if ACTIVE_BRAKE_ENABLE not 0.
  */
 void drive_brake_active_left(void) {
+	extern uint8_t ACTIVE_BRAKE_ENABLE;
+	extern uint8_t ACTIVE_BRAKE_AMOUNT;
 	if(!ACTIVE_BRAKE_ENABLE)
 		return;
 	if (drive_brake_position_left == irq_Position_W0) {
@@ -226,6 +228,8 @@ void drive_brake_active_set_left(void) {
  * Will only work if ACTIVE_BRAKE_ENABLE not 0.
  */
 void drive_brake_active_right(void) {
+	extern uint8_t ACTIVE_BRAKE_ENABLE;
+	extern uint8_t ACTIVE_BRAKE_AMOUNT;
 	if(!ACTIVE_BRAKE_ENABLE)
 		return;
 	if (drive_brake_position_right == irq_Position_W1) {

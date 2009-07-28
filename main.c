@@ -219,6 +219,7 @@ void copy_timer_flags(void) {
 void process_orders(void) {
 	// This function gets an order and lets it execute
 	order_t *current_order = NULL;
+	extern uint8_t ACTIVE_BRAKE_WHEN_IDLE;
 
 //	debug_WriteInteger(PSTR("main.c : process_orders() :  Avaialable Orders = "), queue_order_available());
 //	debug_NewLine();
