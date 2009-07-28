@@ -4,7 +4,7 @@
 #include <inttypes.h>
 
 void io_init(void);
-uint8_t io_get_available(void);
+uint8_t io_get_free_buffer_size(void);
 uint8_t io_get(uint8_t* value);
 uint8_t io_put(uint8_t value);
 void io_flush(void);

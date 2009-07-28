@@ -54,7 +54,7 @@ void parser_init(void) {
  * test function to check for more space.
  */
 void parser_update(void) {
-	uint8_t value = 0, times = IO_INBUFFER_SIZE - io_get_available();
+	uint8_t value = 0, times = IO_INBUFFER_SIZE - io_get_free_buffer_size();
 /*	if( times ) {
 		debug_WriteString_P(PSTR("parse.c : parser_update() : Begin\r\n"));
 		debug_WriteInteger(PSTR("parse.c : parser_update() : Times ="), times);

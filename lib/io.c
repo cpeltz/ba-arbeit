@@ -64,7 +64,7 @@ void io_init(void) {
  *
  * @return <em>uint8_t</em> Returns the number of available bytes in the in_buffer.
  */
-uint8_t io_get_available(void) {
+uint8_t io_get_free_buffer_size(void) {
 	if (inpos_begin == inpos_end)
 		return 0;
 	else if (inpos_begin < inpos_end)

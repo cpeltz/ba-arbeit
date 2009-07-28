@@ -50,7 +50,7 @@ ISR(TWI_vect) {
 
 			_io_push(twi_data);
 
-			if (io_get_available() <= 1) {
+			if (io_get_free_buffer_size() <= 1) {
 				TWCR = (1 << TWEN) | (1 << TWIE) | (1 << TWINT);
 			} else {
 				TWCR = (1 << TWEA) | (1 << TWINT) | (1 << TWEN) | (1 << TWIE);
@@ -61,7 +61,7 @@ ISR(TWI_vect) {
 			// ACK has been returned
 			
 			led_switch(LED_GREEN, SINGLE);
-			if (io_get_available() <= 1) {
+			if (io_get_free_buffer_size() <= 1) {
 				TWCR = (1 << TWEN) | (1 << TWIE) | (1 << TWINT);
 			} else {
 				TWCR = (1 << TWEA) | (1 << TWINT) | (1 << TWEN) | (1 << TWIE);
