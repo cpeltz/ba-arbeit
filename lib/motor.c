@@ -180,9 +180,4 @@ int8_t motor_ReadSpeed(uint8_t motor) {
 	return motor_speed[motor];
 }
 
-/**
- * Fills the given structure with avaiable data.
- * @todo Implement.
- */
-void motor_status(global_state_t *state) {}
 /*@}*/

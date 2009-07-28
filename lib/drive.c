@@ -161,22 +161,6 @@ void drive_UsePID(const uint8_t wheel, const int8_t speed) {
 }
 
 /**
- * Query's the status of the drive related parameters.
- *
- * @param [out] state A instance of the struct, which should be filled with values.
- * @todo Implementation not complete.
- */
-void drive_status(global_state_t *state) {
-	// Should fill the state parameter to reflect the current
-	// status of the driver. Useful for state requests from 
-	// outside.
-	state->speed_left = motor_ReadSpeed(WHEEL_LEFT);
-	state->speed_right = motor_ReadSpeed(WHEEL_RIGHT);
-	state->position_left = irq_Position_W0;
-	state->position_right = irq_Position_W1;
-}
-
-/**
  * Function used to handle active braking of both wheels at once.
  */
 void drive_brake_active(void) {

@@ -10,7 +10,6 @@
 #include "lib/order.h"
 #include "lib/parse.h"
 #include "lib/queue.h"
-#include "lib/status.h"
 #include "lib/timer.h"
 #include <inttypes.h>
 #include <stdlib.h>
@@ -132,7 +131,6 @@ void initialize(void) {
 	order_array_init();
 	irq_init();
 	queue_init();
-	status_init();
 
 	// set standard PID parameter
 	drive_SetPIDParameter(2, 80, 20, 10, 500);
@@ -239,12 +237,8 @@ int main(void) {
 	// Initialize all subsystems (DIP, Drive, etc pp)
 	initialize();
 	
-	// Update Status for the first time
-	status_update();
-
 	// Print driver version etc pp to debug
 	print_startup();
-
 
 	while(1) {
 //		debug_WriteString_P(PSTR("main.c : main() :  copy_timer_flags()\r\n"));
@@ -266,10 +260,6 @@ int main(void) {
 //		debug_WriteString_P(PSTR("main.c : main() :  queue_update()\n"));
 		// Housekeeping for the order queue
 		queue_update();
-		
-//		debug_WriteString_P(PSTR("main.c : main() :  status_update()\n"));
-		// Update the global status of the program
-		status_update();
 	}
 
 	// Should be never reached

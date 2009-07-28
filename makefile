@@ -83,7 +83,7 @@ OBJDIR = .
 SRC = $(TARGET).c   ./lib/motor.c ./lib/uart.c ./lib/led.c \
                     ./lib/timer.c ./lib/irq.c ./lib/lcd.c ./lib/parse.c \
                     ./lib/pid.c ./lib/drive.c ./lib/debug.c ./lib/io.c \
-                    ./lib/queue.c ./lib/twi.c ./lib/dip.c ./lib/status.c \
+                    ./lib/queue.c ./lib/twi.c ./lib/dip.c \
                     ./lib/order.c ./lib/order_functions.c ./lib/parse.c \
                     ./lib/timer.c ./lib/options.c ./lib/lcd_addition.c
 

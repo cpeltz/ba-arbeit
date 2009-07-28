@@ -23,20 +23,6 @@ typedef struct PID_DATA {
 } pid_data_t;
 
 /**
- * Storage for global state information.
- */
-typedef struct GLOBAL_STATE {
-	uint8_t state_left;     /**< Unused*/
-	uint8_t state_right;    /**< Unused*/
-	int8_t speed_left;      /**< Speed of the left wheel*/
-	int8_t speed_right;     /**< Speed of the right wheel*/
-	int16_t position_left;  /**< Position of the left wheel*/
-	int16_t position_right; /**< Position of the right wheel*/
-	int16_t difference;     /**< Unused*/
-	uint8_t flags;          /**< Unused*/
-} global_state_t;
-
-/**
  * The elemental order. Length may be adjusted through #ORDER_TYPE_MAX_LENGTH.
  */
 typedef struct ORDER {

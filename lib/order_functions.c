@@ -6,6 +6,7 @@
 #include "drive.h"
 #include "debug.h"
 #include "definitions.h"
+#include "motor.h"
 #include <avr/wdt.h>
 #include <avr/pgmspace.h>
 
@@ -104,17 +105,15 @@ void query_instruction(order_t *order) {
 	int instruction = (order->data[0] & 0xf0);
 	order_t *current_order = 0;
 	uint8_t current_order_size = 0;
-	global_state_t state;
-	drive_status(&state);
 	switch(instruction) {
 		case 0x10: // left wheel Speed
 			io_obj_start();
-			io_put(state.speed_left);
+			io_put(motor_ReadSpeed(WHEEL_LEFT));
 			io_obj_end();
 			break;
 		case 0x20: // right wheel Speed
 			io_obj_start();
-			io_put(state.speed_right);
+			io_put(motor_ReadSpeed(WHEEL_RIGHT));
 			io_obj_end();
 			break;
 		case 0x30: // number of Orders in the Queue
