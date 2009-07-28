@@ -45,19 +45,6 @@
  * Flag set every 262ms.
  */
 #define TIMER_262MS             2
-/**
- * If set, the I2C Bus is used, otherwise the UART.
- */
-#define INTERFACE_TWI           2
-/**
- * Triggers Debug-Messages.
- */
-#define DEBUG_ENABLE            3
-/**
- * Show if a LCD is pluged in.
- */
-#define LCD_PRESENT             4
-
 
 // LEDs
 #define LED_DDR                 DDRG
