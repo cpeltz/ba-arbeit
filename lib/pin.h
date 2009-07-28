@@ -1,12 +1,14 @@
 #ifndef PIN_H
 #define PIN_H
 
+#include <avr/io.h>
+
 void pin_init(void);
-void pin_set_A(uint8_t pin);
-void pin_set_C(uint8_t pin);
-void pin_clear_A(uint8_t pin);
-void pin_clear_C(uint8_t pin);
-void pin_toggle_A(uint8_t pin);
-void pin_toggle_C(uint8_t pin);
+#define pin_set_A(pin) (PORTA |= (1 << pin))
+#define pin_set_C(pin) (PORTC |= (1 << pin))
+#define pin_clear_A(pin) (PORTA &= ~(1 << pin))
+#define pin_clear_C(pin) (PORTC &= ~(1 << pin))
+#define pin_toggle_A(pin) (PORTA ^= (1 << pin))
+#define pin_toggle_C(pin) (PORTC ^= (1 << pin))
 
 #endif
