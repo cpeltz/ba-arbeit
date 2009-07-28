@@ -1,6 +1,5 @@
 #include "order.h"
 #include "parse.h"
-#include "flags.h"
 #include "order_functions.h"
 #include "debug.h"
 #include <avr/pgmspace.h>

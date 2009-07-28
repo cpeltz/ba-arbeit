@@ -3,7 +3,6 @@
 #include <avr/interrupt.h>
 #include "uart.h"
 #include "io.h"
-#include "flags.h"
 #include "definitions.h"
 #include "led.h"
 

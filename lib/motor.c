@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include "definitions.h"
 #include "motor.h"
-#include "flags.h"
 
 /**
  * @defgroup MOTOR_Module Motor Module

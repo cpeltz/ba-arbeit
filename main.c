@@ -2,7 +2,6 @@
 #include "lib/debug.h"
 #include "lib/dip.h"
 #include "lib/drive.h"
-#include "lib/flags.h"
 #include "lib/io.h"
 #include "lib/irq.h"
 #include "lib/lcd.h"
@@ -97,6 +96,7 @@ uint8_t local_time_flags = 0;
 extern uint8_t LCD_PRESENT;
 extern uint8_t DEBUG_ENABLE;
 extern uint8_t INTERFACE_TWI;
+extern uint8_t timer_global_flags;
 
 const char *version = "Ver. 2.9.20090727";
 
@@ -194,15 +194,8 @@ void print_startup(void) {
 void copy_timer_flags(void) {
 	// Copy global timer flags to a local copy, which will be used throughout the program.
 	// This is done to not miss a timer tick.
-	local_time_flags = 0;
-//	if (flag_read_and_clear(TIMER_1MS))
-//		flag_local_set( &local_time_flags, TIMER_1MS );
-//	if (flag_read_and_clear(TIMER_10MS))
-//		flag_local_set( &local_time_flags, TIMER_10MS );
-	if (flag_read_and_clear(TIMER_100MS))
-		flag_local_set( &local_time_flags, TIMER_100MS );
-	if (flag_read_and_clear(TIMER_262MS))
-		flag_local_set( &local_time_flags, TIMER_262MS );
+	local_time_flags = timer_global_flags;
+	timer_global_flags = 0;
 }
 
 /**

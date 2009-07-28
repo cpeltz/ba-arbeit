@@ -5,7 +5,6 @@
 #include "irq.h"
 #include "drive.h"
 #include "debug.h"
-#include "flags.h"
 #include "definitions.h"
 #include <avr/wdt.h>
 #include <avr/pgmspace.h>
@@ -334,7 +333,7 @@ void drive_instruction(order_t *order) {
 				drive_brake_active_right();
 		}
 		// Use error-correction while driving every 100 ms
-		if(flag_local_read( &local_time_flags, TIMER_100MS)) {
+		if(local_time_flags & TIMER_100MS) {
 			if(trigger_type_left == 0x30) { // Use function for both wheels to use PID mode with D
 				drive_UsePID(WHEEL_BOTH, order->data[1]);
 			} else {
@@ -418,7 +417,7 @@ void advanced_drive_instruction(order_t *order) {
 				drive_brake_active_right();
 		}
 		// Use error-correction while driving every 100 ms
-		if(flag_local_read( &local_time_flags, TIMER_100MS)) {
+		if(local_time_flags & TIMER_100MS) {
 			if(!(order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED)) {
 				drive_UsePID(WHEEL_LEFT, order->data[1]);
 			}

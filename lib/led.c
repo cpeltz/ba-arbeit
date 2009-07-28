@@ -1,7 +1,6 @@
 #include <avr/io.h>
 #include "led.h"
 #include "definitions.h"
-#include "flags.h"
 #include "debug.h"
 
 /**
@@ -68,27 +67,32 @@ void led_switch(uint8_t led, uint8_t state) {
 	}
 }
 
+void wait_262ms(void) {
+	extern uint8_t timer_global_flags;
+
+	while(!(timer_global_flags & TIMER_262MS));
+	timer_global_flags = 0;
+}
+
 /**
  * Runs a simple test for the LED's.
  */
 void led_test(void) {
-	debug_WriteString_P(("\nTeste Leuchtdioden...\r\n"));
-	while(!(flag_read_and_clear(TIMER_262MS)));
 	led_switch(LED_RED1, ON);
-	debug_WriteString_P(("RED1"));
-	while(!(flag_read_and_clear(TIMER_262MS)));
+	wait_262ms();
+
 	led_switch(LED_RED2, ON);
-	debug_WriteString_P((", RED2"));
-	while(!(flag_read_and_clear(TIMER_262MS)));
+	wait_262ms();
+
 	led_switch(LED_ORANGE, ON);
-	debug_WriteString_P((", ORANGE"));
-	while(!(flag_read_and_clear(TIMER_262MS)));
+	wait_262ms();
+
 	led_switch(LED_GREEN, ON);
-	debug_WriteString_P((", GREEN"));
-	while(!(flag_read_and_clear(TIMER_262MS)));
+	wait_262ms();
+
 	led_switch(LED_BLUE, ON);
-	debug_WriteString_P((", BLUE\r\n"));
-	while(!(flag_read_and_clear(TIMER_262MS)));
+	wait_262ms();
+
 	led_switchoff();
 }
 

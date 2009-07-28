@@ -4,7 +4,6 @@
 #include <avr/interrupt.h>
 #include "timer.h"
 #include "definitions.h"
-#include "flags.h"
 #include "led.h"
 
 /**
@@ -43,6 +42,7 @@ uint16_t timer_1s_counter = 0;
  * Helper counter used to count timer_1s_counter up.
  */
 uint8_t timer_100ms_counter = 0;
+uint8_t timer_global_flags = 0;
 
 /**
  * The interrupt which gets called every 100ms.
@@ -51,7 +51,7 @@ ISR(TIMER1_COMPC_vect) {
 	// ISR wird alle 100 Millisekunden ausgeführt
 	OCR1C = TCNT1 + 25000;
 	// Neuen Wert für Compare Match C setzen
-	flag_set(TIMER_100MS);
+	timer_global_flags |= TIMER_100MS;
 	// und TIMER_100MS Flag setzen
 
 	// linker T_Trigger aktiv
@@ -77,7 +77,7 @@ ISR(TIMER1_COMPC_vect) {
  */
 ISR(TIMER1_OVF_vect) {
 	// ISR wird alle 262 Millisekunden aufgerufen
-	flag_set(TIMER_262MS);
+	timer_global_flags |= TIMER_262MS;
 	// TIMER_262MS Flag setzen
 	if( timer_100ms_counter > 10 ) {
 		timer_1s_counter += timer_100ms_counter / 10;

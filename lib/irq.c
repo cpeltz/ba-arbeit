@@ -3,7 +3,6 @@
 #include <avr/interrupt.h>
 #include "irq.h"
 #include "definitions.h"
-#include "flags.h"
 #include "timer.h"
 #include "motor.h"
 

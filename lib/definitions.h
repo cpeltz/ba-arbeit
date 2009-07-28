@@ -37,15 +37,14 @@
 #define IRQ_A1                  PE6
 #define IRQ_B1                  PE7
 
-// Flags (0 - 31)
 /**
  * Flag set every 100ms.
  */
-#define TIMER_100MS             0
+#define TIMER_100MS             1
 /**
  * Flag set every 262ms.
  */
-#define TIMER_262MS             1
+#define TIMER_262MS             2
 /**
  * If set, the I2C Bus is used, otherwise the UART.
  */

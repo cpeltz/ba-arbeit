@@ -2,7 +2,6 @@
 #include <inttypes.h>
 #include "options.h"
 #include "twi.h"
-#include "flags.h"
 #include "definitions.h"
 #include "io.h"
 #include "led.h"

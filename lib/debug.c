@@ -2,7 +2,6 @@
 #include <avr/pgmspace.h>
 #include "uart.h"
 #include "debug.h"
-#include "flags.h"
 #include "definitions.h"
 
 /**

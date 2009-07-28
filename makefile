@@ -80,7 +80,7 @@ OBJDIR = .
 
 
 # List C source files here. (C dependencies are automatically generated.)
-SRC = $(TARGET).c   ./lib/motor.c ./lib/flags.c ./lib/uart.c ./lib/led.c \
+SRC = $(TARGET).c   ./lib/motor.c ./lib/uart.c ./lib/led.c \
                     ./lib/timer.c ./lib/irq.c ./lib/lcd.c ./lib/parse.c \
                     ./lib/pid.c ./lib/drive.c ./lib/debug.c ./lib/io.c \
                     ./lib/queue.c ./lib/twi.c ./lib/dip.c ./lib/status.c \
