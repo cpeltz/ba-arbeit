@@ -137,7 +137,6 @@ void query_instruction(order_t *order) {
 				io_obj_start();
 				for (;i < current_order_size;i++) {
 					io_put(current_order->data[i]);
-					lcd_data(current_order->data[i]);
 				}
 				io_obj_end();
 			}
@@ -218,9 +217,9 @@ void setAdvancedTrigger(uint8_t wheel, int16_t trigger_value_time, int16_t trigg
  * 0x20 or 0x80 for position trigger.
  * @param[in] wheel The wheel which trigger we request. Valid
  * values are #WHEEL_LEFT and #WHEEL_RIGHT.
- * @return <em>int</em> Zero if trigger is reached.
+ * @return <em>uint16_t</em> Zero if trigger is reached.
  */
-int checkTrigger(uint8_t trigger_type, uint8_t wheel) {
+uint16_t checkTrigger(uint8_t trigger_type, uint8_t wheel) {
 	switch(trigger_type) {
 		case 0x10:
 		case 0x40:
@@ -243,9 +242,9 @@ int checkTrigger(uint8_t trigger_type, uint8_t wheel) {
  * trigger and 0x20 or 0x80 for time AND position trigger.
  * @param[in] wheel The wheel which trigger we request. Valid
  * values are #WHEEL_LEFT and #WHEEL_RIGHT.
- * @return <em>int</em> Zero if trigger is reached.
+ * @return <em>uint16_t</em> Zero if trigger is reached.
  */
-int checkAdvancedTrigger(uint8_t trigger_type, uint8_t wheel) {
+uint16_t checkAdvancedTrigger(uint8_t trigger_type, uint8_t wheel) {
 	switch(trigger_type) {
 		case 0x10:// (L: ZvP R: N  )
 		case 0x40:// (L: N   R: ZVP)

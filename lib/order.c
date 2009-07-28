@@ -81,7 +81,7 @@ void order_init(order_t *order) {
  * @param[in] from The source order.
  * @param[out] to The destination order.
  */
-void order_copy(order_t *from, order_t *to) {
+void order_copy(const order_t * const from, order_t *to) {
 	// Used to copy the order data from one to another
 	uint8_t i = 0;
 	for(; i < ORDER_TYPE_MAX_LENGTH; i++)

@@ -37,14 +37,14 @@ int16_t irq_p_trigger_position[2] = { 0, 0 };
  *
  * \todo Needs refactoring
  */
-static uint8_t irq_p_trigger = 0;
+//static uint8_t irq_p_trigger = 0;
 /**
  * Holds the tacho value (whatever that is)
  *
  * @todo Marked for removal
  * @todo find out what a tacho is
  */
-static tacho_t irq_tacho;
+//static tacho_t irq_tacho;
 
 /**
  * Temp register

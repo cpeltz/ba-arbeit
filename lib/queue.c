@@ -61,7 +61,6 @@ void queue_init(void) {
  */
 void queue_push_priority(order_t * order) {
 	order_copy(order, &priority_order);
-	return 1;
 }
 
 /**
@@ -72,21 +71,20 @@ void queue_push_priority(order_t * order) {
  */
 uint8_t queue_push(const order_t * const order) {
 	// Add Order to the Queue if Queue not full
-	debug_WriteString_P(PSTR("queue.c : queue_push() : Begin\n"));
+//	debug_WriteString_P(PSTR("queue.c : queue_push() : Begin\n"));
 	if (queue_entries == QUEUE_SIZE) {
-		debug_WriteString_P(PSTR("queue.c : queue_push() : Check 1\n"));
+//		debug_WriteString_P(PSTR("queue.c : queue_push() : Check 1\n"));
 		return 0;
 	}
-	debug_WriteString_P(PSTR("queue.c : queue_push() : Check 2\n"));
-//	order_queue[queue_writeposition] = *order;
+//	debug_WriteString_P(PSTR("queue.c : queue_push() : Check 2\n"));
 	order_copy(order, &order_queue[queue_writeposition]);
-	debug_WriteString_P(PSTR("queue.c : queue_push() : Check 3\n"));
+//	debug_WriteString_P(PSTR("queue.c : queue_push() : Check 3\n"));
 	queue_entries++;
-	debug_WriteString_P(PSTR("queue.c : queue_push() : Check 4\n"));
+//	debug_WriteString_P(PSTR("queue.c : queue_push() : Check 4\n"));
 	queue_writeposition++;
-	debug_WriteString_P(PSTR("queue.c : queue_push() : Check 5\n"));
+//	debug_WriteString_P(PSTR("queue.c : queue_push() : Check 5\n"));
 	queue_writeposition %= QUEUE_SIZE;
-	debug_WriteString_P(PSTR("queue.c : queue_push() : End\n"));
+//	debug_WriteString_P(PSTR("queue.c : queue_push() : End\n"));
 	return 1;
 }
 
@@ -155,19 +153,19 @@ uint8_t queue_order_available(void) {
 void queue_update(void) {
 	order_t local_order;
 	if (parser_has_new_order()) {
-		debug_WriteString_P(PSTR("queue.c : queue_update() : We have a new order\n\r"));
+//		debug_WriteString_P(PSTR("queue.c : queue_update() : We have a new order\n\r"));
 		order_init(&local_order);
-		debug_WriteString_P(PSTR("queue.c : queue_update() : Order structure initialized\n"));
+//		debug_WriteString_P(PSTR("queue.c : queue_update() : Order structure initialized\n"));
 		parser_get_new_order(&local_order);
-		debug_WriteString_P(PSTR("queue.c : queue_update() : Got New Order to local var\n\r"));
+//		debug_WriteString_P(PSTR("queue.c : queue_update() : Got New Order to local var\n\r"));
 		if (local_order.status & ORDER_STATUS_PRIORITY) {
-			debug_WriteString_P(PSTR("queue.c : queue_update() : PRIORITY\n\r"));
+//			debug_WriteString_P(PSTR("queue.c : queue_update() : PRIORITY\n\r"));
 			queue_push_priority(&local_order);
 		} else {
-			debug_WriteString_P(PSTR("queue.c : queue_update() : NO PRIORITY\n\r"));
+//			debug_WriteString_P(PSTR("queue.c : queue_update() : NO PRIORITY\n\r"));
 			queue_push(&local_order);
 		}
-		debug_WriteString_P(PSTR("queue.c : queue_update() : End\n\r"));
+//		debug_WriteString_P(PSTR("queue.c : queue_update() : End\n\r"));
 	}
 }
 

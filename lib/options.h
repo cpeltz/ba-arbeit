@@ -14,7 +14,7 @@
  * The size is measured in bytes and defines how big
  * the buffer for incoming data is.
  */
-#define IO_INBUFFER_SIZE 256
+#define IO_INBUFFER_SIZE 255
 /**
  * Defines the size of the out_buffer and obj_buffer Arrays.
  *
@@ -22,7 +22,7 @@
  * the buffer for outgoing data is. The same number
  * of bytes is also used as size for the obj_buffer.
  */
-#define IO_OUTBUFFER_SIZE 256
+#define IO_OUTBUFFER_SIZE 255
 
 /**
  * Specifies the default value for ACTIVE_BRAKE_AMOUNT.
@@ -43,7 +43,7 @@
  * last known position. If it is deviated it will use it's wheels
  * with a speed equal to this constant to correct it.
  */
-uint8_t ACTIVE_BRAKE_AMOUNT = ACTIVE_BRAKE_AMOUNT_DEFAULT;
+static uint8_t ACTIVE_BRAKE_AMOUNT = ACTIVE_BRAKE_AMOUNT_DEFAULT;
 
 /**
  * Enables or disables the entire active braking feature.
@@ -51,7 +51,7 @@ uint8_t ACTIVE_BRAKE_AMOUNT = ACTIVE_BRAKE_AMOUNT_DEFAULT;
  * May be set through the user with the option instruction.
  * @todo maybe use the global flag storage 
  */
-uint8_t ACTIVE_BRAKE_ENABLE = 1;
+static uint8_t ACTIVE_BRAKE_ENABLE = 1;
 
 /**
  * Enables the active braking feature for single wheels, if a the trigger for
@@ -59,14 +59,14 @@ uint8_t ACTIVE_BRAKE_ENABLE = 1;
  *
  * Only has effect when ACTIVE_BRAKE_ENABLE is set to 1.
  */
-uint8_t ACTIVE_BRAKE_WHEN_TRIGGER_REACHED = 1;
+static uint8_t ACTIVE_BRAKE_WHEN_TRIGGER_REACHED = 1;
 
 /**
  * Enables the active brake feature for both wheels, when no order is beeing processed.
  *
  * Only has effect when ACTIVE_BRAKE_ENABLE is set to 1.
  */
-uint8_t ACTIVE_BRAKE_WHEN_IDLE = 1;
+static uint8_t ACTIVE_BRAKE_WHEN_IDLE = 1;
 
 /**
  * Number of distinct orders the parser can buffer.

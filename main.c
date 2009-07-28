@@ -96,6 +96,7 @@ uint8_t local_time_flags = 0;
 
 void update_dip_flags(void);
 
+const char *version = "Ver. 2.9.20090727";
 /**
  *	The Main setup function; calls every needed *_init() function
  */
@@ -141,6 +142,8 @@ void update_dip_flags(void) {
 		flag_set(LCD_PRESENT);
 }
 
+void lcd_print_status(const order_t * const);
+
 /**
  * This function prints, on every system start, information about the System.
  * @todo Only to dip_update once on startup and use a temp variable here
@@ -148,24 +151,12 @@ void update_dip_flags(void) {
 void print_startup(void) {
 	// Startup Debug Infos
 	if (flag_read(LCD_PRESENT)) {
-		lcd_clrscr();
-		lcd_puts("Ver. 2.9.20090725");
-		lcd_gotoxy(0,1);
-		if (dip_read(0)) {
-			lcd_puts("TWI ");
-		} else {
-			lcd_puts("twi ");
-		}
-		if (dip_read(1)) {
-			lcd_puts("DEBUG");
-		} else {
-			lcd_puts("debug");
-		}
+		lcd_print_status(NULL);
 	}
 	flag_set(DEBUG_ENABLE);
-	debug_ResetTerminal();
-	debug_WriteString_P(PSTR("Motorsteuerung V2.9.20090725\n"));
-	debug_WriteString_P(PSTR("----------------------------\n\n"));
+	debug_WriteString_P(PSTR("Motorsteuerung "));
+	debug_PutString(version);
+	debug_WriteString_P(PSTR("\n----------------------------\n\n"));
 	debug_WriteString_P(PSTR("DIP-Schalter Einstellungen:\n"));
 	if (dip_read(0))
 		debug_WriteString_P(PSTR("DIP1: ON   Interface = TWI\n"));
@@ -195,7 +186,7 @@ void print_startup(void) {
 		debug_WriteString_P(PSTR("Watchdog "));
 	if (reset_source & (1<<JTRF))
 		debug_WriteString_P(PSTR("JTAG"));
-	debug_NewLine();
+	debug_WriteString_P(PSTR("\n"));
 	update_dip_flags();
 }
 
@@ -242,7 +233,7 @@ void process_orders(void) {
 			queue_pop();
 			current_order = NULL;
 		}
-	} if else (ACTIVE_BRAKE_WHEN_IDLE) {
+	} else if (ACTIVE_BRAKE_WHEN_IDLE) {
 		drive_brake_active();
 	}
 }
@@ -270,40 +261,56 @@ void itoa_hex(uint8_t value, char *buffer, uint8_t size) {
  *
  * Will only be updated if the current order changes.
  */
-void lcd_print_status(void) {
-	static order_t *order = NULL;
-	order_t *current = queue_get_current_order();
+void lcd_print_status(const order_t * const order) {
 	char buffer[3];
-	if(order != current) {
-		order = current;
-		lcd_clrscr();
-		lcd_puts("Ver. 2.9.20090725");
-		lcd_gotoxy(0,1);
-		if (dip_read(0)) {
-			lcd_puts("TWI ");
-		} else {
-			lcd_puts("twi ");
-		}
-		if (dip_read(1)) {
-			lcd_puts("DEBUG");
-		} else {
-			lcd_puts("debug");
-		}
-		if(order != NULL) {
-			lcd_gotoxy(0,2);
-			int length = bytes_needed(order->data[0]);
-			for(int i=0; i < length; i++) {
-				itoa_hex(order->data[i], buffer, 3);
-				lcd_puts(buffer);
-				if(i == 6)
-					lcd_gotoxy(0,3);
-				else
-					lcd_puts(" ");
-			}
+	lcd_clrscr();
+	lcd_puts(version);
+	lcd_gotoxy(0,1);
+	if (dip_read(0)) {
+		lcd_puts("TWI ");
+	} else {
+		lcd_puts("twi ");
+	}
+	if (dip_read(1)) {
+		lcd_puts("DEBUG ");
+	} else {
+		lcd_puts("debug ");
+	}
+	if (ACTIVE_BRAKE_ENABLE)
+		lcd_puts("AB:E");
+	else
+		lcd_puts("AB:e");
+	if (ACTIVE_BRAKE_WHEN_IDLE)
+		lcd_puts("I");
+	else
+		lcd_puts("i ");
+	if( ACTIVE_BRAKE_WHEN_TRIGGER_REACHED)
+		lcd_puts("T");
+	else
+		lcd_puts("t");
+	if(order != NULL) {
+		lcd_gotoxy(0,2);
+		int length = bytes_needed(order->data[0]);
+		for(int i=0; i < length; i++) {
+			itoa_hex(order->data[i], buffer, 3);
+			lcd_puts(buffer);
+			if(i == 6)
+				lcd_gotoxy(0,3);
+			else
+				lcd_puts(" ");
 		}
 	}
 }
 
+void lcd_update_screen(void) {
+	static order_t *order = NULL;
+	order_t *current = queue_get_current_order();
+	if(order != current) {
+		lcd_print_status(current);
+		order = current;
+	}
+
+}
 int main(void) {
 	// Save the reset source of the last reset
 	reset_source = MCUSR;
@@ -338,7 +345,7 @@ int main(void) {
 
 		// If a LCD is pluged in we get nice status messages on it
 		if (flag_read(LCD_PRESENT))
-			lcd_print_status();
+			lcd_update_screen();
 
 //		debug_WriteString_P(PSTR("main.c : main() :  parser_update()\n"));
 		// Update the order parser

@@ -3,6 +3,7 @@
 #include "uart.h"
 #include "debug.h"
 #include "flags.h"
+#include "definitions.h"
 
 /**
  * @defgroup DEBUG_MODULE Debug Module
@@ -48,7 +49,7 @@ void debug_WriteString_P(const char *progmem_string) {
 	uint8_t character;
 
 	while ((character = pgm_read_byte(progmem_string++))) {
-		debug_PutChar(*character);
+		debug_PutChar(character);
 	}
 }
 
@@ -58,7 +59,7 @@ void debug_WriteString_P(const char *progmem_string) {
  * @param[in] sequence The Sequence which should be transmitted.
  */
 void debug_SendESCSequence(const char *sequence) {
-	debug_SendESC();
+	debug_PutChar(27);
 	debug_PutChar('[');
 	debug_PutString(sequence);
 }

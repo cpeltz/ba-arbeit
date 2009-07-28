@@ -54,15 +54,15 @@ void parser_init(void) {
  * test function to check for more space.
  */
 void parser_update(void) {
-	uint8_t value = 0, times = io_get_available();
-	if( times ) {
+	uint8_t value = 0, times = IO_INBUFFER_SIZE - io_get_available();
+/*	if( times ) {
 		debug_WriteString_P(PSTR("parse.c : parser_update() : Begin\r\n"));
 		debug_WriteInteger(PSTR("parse.c : parser_update() : Times ="), times);
-	}
+	}*/
 	for (; 0 < times; times--) {
 		io_get(&value);
 //		uart_put_debug(value);
-		debug_WriteInteger(PSTR("parse.c : parser_update() : Value ="), value);
+//		debug_WriteInteger(PSTR("parse.c : parser_update() : Value ="), value);
 		parser_add_byte(value);
 	}
 }
@@ -88,8 +88,8 @@ int parser_extended_order_complete(const order_t* order, uint8_t num_bytes) {
  */
 uint8_t bytes_needed(uint8_t order) {
 	uint8_t ret_value = 0;
-	debug_WriteInteger(PSTR("Bytes needed for "), order);
-	debug_WriteString_P(PSTR(" = "));
+//	debug_WriteInteger(PSTR("Bytes needed for "), order);
+//	debug_WriteString_P(PSTR(" = "));
 	switch(order & 0x0f) {
 		case 1: //Control Instruction
 		case 2: //Register Query Instruction
@@ -166,32 +166,32 @@ void parser_add_byte(uint8_t byte) {
 	// This function simple adds another byte to the current order
 	// or discards the byte if the buffer is full.
 	
-	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Begin\r\n"));
+//	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Begin\r\n"));
 	if( current_buffer_position == first_buffer_position ) {
 		debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Buffer full\r\n"));
 		return; // Discard, buffer full
 	}
 	// Put the byte at its position and increment
-	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 1\r\n"));
+//	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 1\r\n"));
 	parser_order_buffer[current_buffer_position].data[current_order_position] = byte;
-	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 2\r\n"));
+//	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 2\r\n"));
 	current_order_position++;
-	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 3\r\n"));
+//	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 3\r\n"));
 	if (current_order_position >= ORDER_TYPE_MAX_LENGTH || parser_order_complete(&parser_order_buffer[current_buffer_position], current_order_position)) {
 		// if the order is full (bad sign) or the order is complete
 		// go on to the next order structure
-		debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 4\r\n"));
+//		debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 4\r\n"));
 		if (first_buffer_position == -1 ) {
 			// This trick is needed to acknowledge a full buffer
 			first_buffer_position = current_buffer_position;
-			debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 5\r\n"));
+//			debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 5\r\n"));
 		}
-		debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 6\r\n"));
+//		debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 6\r\n"));
 		current_buffer_position = (current_buffer_position + 1) % PARSER_ORDER_BUFFER_SIZE;
-		debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 7\r\n"));
+//		debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 7\r\n"));
 		current_order_position = 0;
 	}
-	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 8\r\n"));
+//	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 8\r\n"));
 }
 
 /**
@@ -217,7 +217,7 @@ void parser_check_order(order_t* order) {
 	order->status |= ORDER_STATUS_VALID;
 	cmd = order->data[0] & 0x0f;
 	if (cmd - ORDER_TYPE_CONTROL  == 0 ||
-		cmd - ORDER_TYPE_REGISTER == 0)
+		cmd - ORDER_TYPE_QUERY == 0)
 		order->status |= ORDER_STATUS_PRIORITY;
 }
 

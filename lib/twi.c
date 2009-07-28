@@ -39,7 +39,7 @@ ISR(TWI_vect) {
 
 			// The missing break statement is correct and wanted
 
-			// Buffer is full and with the TWCR statement in the 0x60 case
+			// Buffer is full and with the TWCR statement in the 0x80 case
 			// we will no longer hear on our own Address until buffer is freed
 			// but the just recieved byte will still be taken
 		case 0x80:
@@ -50,8 +50,11 @@ ISR(TWI_vect) {
 
 			_io_push(twi_data);
 
-			if (io_get_available() <= 1)
+			if (io_get_available() <= 1) {
 				TWCR = (1 << TWEN) | (1 << TWIE) | (1 << TWINT);
+			} else {
+				TWCR = (1 << TWEA) | (1 << TWINT) | (1 << TWEN) | (1 << TWIE);
+			}
 			break;
 		case 0x60:
 			// Own SLA+W has been received;
@@ -63,6 +66,9 @@ ISR(TWI_vect) {
 			} else {
 				TWCR = (1 << TWEA) | (1 << TWINT) | (1 << TWEN) | (1 << TWIE);
 			}
+			break;
+		case 0xa0:
+			TWCR = (1 << TWEA) | (1 << TWINT) | (1 << TWEN) | (1 << TWIE);
 			break;
 
 		// From here on the status codes refer to the Slave Transmitter Mode (See Chip Documentation Page 263)
