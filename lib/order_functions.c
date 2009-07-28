@@ -36,6 +36,10 @@ extern uint16_t timer_t_trigger_counter[2];
  * External reference to the position trigger variables.
  */
 extern int16_t irq_p_trigger_position[2];
+/**
+ * External reference to the running time in seconds.
+ */
+extern uint16_t timer_1s_counter;
 
 /**
  * Extended Instruction Format Handler Function.
@@ -62,37 +66,31 @@ void extended_instruction(order_t *order) {
 void control_instruction(order_t *order) {
 	// Extract the specific Control Instruction we should carry out
 	int instruction = order->data[0] & 0xf0;
-//	//debug_WriteString_P(PSTR("order_functions.c : control_instruction() :  Start execution\n"));
-//	//debug_WriteInteger(PSTR("order_functions.c : control_instruction() :  Instruction = "), instruction);
-//	//debug_NewLine();
 	switch(instruction) {
 		case 0x10: // Reset Instruction
-//			//debug_WriteString_P(PSTR("order_functions.c : control_instruction() :  Reset Instruction, starting wdt\n"));
 			wdt_reset();
 			wdt_enable(4);
 			while(1) {} // Wait for the watchdog to reset the board
 			break;
 		case 0x20: // Stop Queue execution and abaddon current order
-//			//debug_WriteString_P(PSTR("order_functions.c : control_instruction() :  Stop Queue\n"));
 			queue_pause();
 			queue_pop();
 			break;
 		case 0x30: // Continue Queue execution
-//			//debug_WriteString_P(PSTR("order_functions.c : control_instruction() :  Continue Queue\n"));
 			queue_unpause();
 			break;
 		case 0x40: // Clear the Queue
-//			//debug_WriteString_P(PSTR("order_functions.c : control_instruction() :  Clear Queue\n"));
 			queue_clear();
 			break;
 		case 0x50: // Stop current Order and go over to active braking
-//			//debug_WriteString_P(PSTR("order_functions.c : control_instruction() :  Stop Order\n"));
 			queue_pause();
+			break;
+		case 0x60: // Reset running time timer
+			timer_1s_counter = 0;
 			break;
 	}
 	queue_clear_priority();
 	drive_brake_active_set();
-//	//debug_WriteString_P(PSTR("order_functions.c : control_instruction() :  Exiting function\n"));
 }
 
 /**
@@ -143,22 +141,32 @@ void query_instruction(order_t *order) {
 			break;
 		case 0x50: // left wheel time trigger value
 			io_obj_start();
-			io_put(timer_t_trigger_counter[WHEEL_LEFT]);
+			io_put(timer_t_trigger_counter[WHEEL_LEFT] >> 8);
+			io_put(timer_t_trigger_counter[WHEEL_LEFT] & 0x00ff);
 			io_obj_end();
 			break;
 		case 0x60: // left wheel position trigger value
 			io_obj_start();
-			io_put(irq_p_trigger_position[WHEEL_LEFT]);
+			io_put(irq_p_trigger_position[WHEEL_LEFT] >> 8);
+			io_put(irq_p_trigger_position[WHEEL_LEFT] & 0x00ff);
 			io_obj_end();
 			break;
 		case 0x70: // right wheel time trigger value
 			io_obj_start();
-			io_put(timer_t_trigger_counter[WHEEL_RIGHT]);
+			io_put(timer_t_trigger_counter[WHEEL_RIGHT] >> 8);
+			io_put(timer_t_trigger_counter[WHEEL_RIGHT] & 0x00ff);
 			io_obj_end();
 			break;
 		case 0x80: // right wheel position trigger value
 			io_obj_start();
-			io_put(irq_p_trigger_position[WHEEL_RIGHT]);
+			io_put(irq_p_trigger_position[WHEEL_RIGHT] >> 8);
+			io_put(irq_p_trigger_position[WHEEL_RIGHT] & 0x00ff);
+			io_obj_end();
+			break;
+		case 0x90: // running time
+			io_obj_start();
+			io_put(timer_1s_counter >> 8);
+			io_put(timer_1s_counter & 0x00ff);
 			io_obj_end();
 			break;
 	}
