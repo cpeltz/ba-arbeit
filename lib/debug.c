@@ -54,24 +54,6 @@ void debug_WriteString_P(const char *progmem_string) {
 }
 
 /**
- * Helper function used by debug_ClearEOL() to send escape sequences.
- *
- * @param[in] sequence The Sequence which should be transmitted.
- */
-void debug_SendESCSequence(const char *sequence) {
-	debug_PutChar(27);
-	debug_PutChar('[');
-	debug_PutString(sequence);
-}
-
-/**
- * Helper function for debug_WriteInteger(). Sends an end-of-line.
- */
-void debug_ClearEOL(void) {
-	debug_SendESCSequence("K");
-}
-
-/**
  * Helper function for debug_WriteInteger(). Sends an new-line.
  */
 void debug_NewLine(void) {
@@ -88,7 +70,6 @@ void debug_WriteInteger(const char *progmem_message, const int16_t integer) {
 	itoa(integer, buffer, 10);
 	debug_WriteString_P(progmem_message);
 	debug_PutString(buffer);
-	debug_ClearEOL();
 	debug_NewLine();
 }
 /*@}*/
