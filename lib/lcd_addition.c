@@ -2,6 +2,8 @@
 #include "lcd.h"
 #include "order.h"
 #include "queue.h"
+#include <inttypes.h>
+#include <stdlib.h>
 
 /**
  * Helper function to convert an integer to a string in hex notation.
@@ -37,7 +39,7 @@ void lcd_print_status(const order_t * const order) {
 	lcd_puts(version);
 	lcd_gotoxy(0,1);
 	INTERFACE_TWI ? lcd_puts("TWI ") : lcd_puts("twi ");
-	DEBUG_ENABLE ? lcd_puts("DEBUG ") : lcd_puts("debug");
+	DEBUG_ENABLE ? lcd_puts("DEBUG ") : lcd_puts("debug ");
 	ACTIVE_BRAKE_ENABLE ? lcd_puts("AB:E") : lcd_puts("AB:e");
 	ACTIVE_BRAKE_WHEN_IDLE ? lcd_puts("I") : lcd_puts("i ");
 	ACTIVE_BRAKE_WHEN_TRIGGER_REACHED ? lcd_puts("T") : lcd_puts("t");
