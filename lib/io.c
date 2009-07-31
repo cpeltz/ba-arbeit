@@ -125,8 +125,7 @@ uint8_t io_get_next_transmission_byte(void) {
 		return 0xff;
 	if (transmission_offset >= io_obj_get_current_size())
 		return 0xff;
-	transmission_offset++;
-	return out_buffer[outpos_begin + (transmission_offset - 1)];
+	return out_buffer[outpos_begin + transmission_offset++];
 }
 
 /**
@@ -158,7 +157,8 @@ uint8_t io_obj_get_remaining_size() {
 void io_obj_remove_current(void) {
 	if ((objpos_begin + 1) % IO_OUTBUFFER_SIZE == objpos_end)
 		return;
-	objpos_begin++;
+	outpos_begin = obj_memory[objpos_begin];
+	objpos_begin = (objpos_begin + 1) % IO_OUTBUFFER_SIZE;
 	transmission_offset = 0;
 }
 
@@ -201,10 +201,8 @@ void io_reset_transmission_status(void) {
  * @return <em>uint8_t</em> The count of the Objects still in the Buffer.
  */
 uint8_t io_obj_remaining(void) {
-	if (objpos_end == 0)
-		return IO_OUTBUFFER_SIZE - objpos_begin;
 	if (objpos_begin > objpos_end)
-		return IO_OUTBUFFER_SIZE - (objpos_begin - (objpos_end - 1));
+		return IO_OUTBUFFER_SIZE - (objpos_begin - objpos_end) - 1;
 	else
 		return (objpos_end - 1) - objpos_begin;
 }
