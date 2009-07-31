@@ -25,6 +25,8 @@ void itoa_hex(uint8_t value, char *buffer, uint8_t size) {
 	buffer[2] = '\0';
 }
 
+#include "io.h"
+
 /**
  * Prints current status informations on the LCD.
  *
@@ -57,6 +59,11 @@ void lcd_print_status(const order_t * const order) {
 				lcd_puts(" ");
 		}
 	}
+/*	lcd_gotoxy(0,2);
+	itoa_hex(io_obj_remaining(), buffer, 3);
+	lcd_puts(buffer);
+	lcd_puts(" Objects");
+*/
 }
 
 void lcd_update_screen(void) {
