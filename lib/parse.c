@@ -125,7 +125,7 @@ uint8_t bytes_needed(uint8_t order) {
 			//debug_WriteInteger(PSTR(""), 9);
 			return 9;
 		case 6:
-			if((order & 0xf0) >= 1 && (order & 0xf0) <= 4)
+			if((order & 0xf0) >= 0x10 && (order & 0xf0) <= 0x40)
 				return 2;
 			return 1;
 	}
@@ -170,26 +170,18 @@ void parser_add_byte(uint8_t byte) {
 		return; // Discard, buffer full
 	}
 	// Put the byte at its position and increment
-//	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 1\r\n"));
 	parser_order_buffer[current_buffer_position].data[current_order_position] = byte;
-//	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 2\r\n"));
 	current_order_position++;
-//	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 3\r\n"));
 	if (current_order_position >= ORDER_TYPE_MAX_LENGTH || parser_order_complete(&parser_order_buffer[current_buffer_position], current_order_position)) {
 		// if the order is full (bad sign) or the order is complete
 		// go on to the next order structure
-//		debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 4\r\n"));
 		if (first_buffer_position == -1 ) {
 			// This trick is needed to acknowledge a full buffer
 			first_buffer_position = current_buffer_position;
-//			debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 5\r\n"));
 		}
-//		debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 6\r\n"));
 		current_buffer_position = (current_buffer_position + 1) % PARSER_ORDER_BUFFER_SIZE;
-//		debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 7\r\n"));
 		current_order_position = 0;
 	}
-//	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Check 8\r\n"));
 }
 
 /**
@@ -229,6 +221,7 @@ void parser_get_new_order(order_t* order) {
 	// but will do a check on it first. if the Order isn't flagged valid
 	// the caller must discard it.
 	parser_check_order(&parser_order_buffer[first_buffer_position]);
+	debug_WriteInteger(PSTR("parse.c : parser_get_new_order() : status = "), parser_order_buffer[first_buffer_position].status);
 	order_copy(&parser_order_buffer[first_buffer_position], order);
 	order_init(&parser_order_buffer[first_buffer_position]);
 	first_buffer_position = (first_buffer_position + 1) % PARSER_ORDER_BUFFER_SIZE;

@@ -5,6 +5,8 @@
 #include <inttypes.h>
 #include <stdlib.h>
 
+const char *version = "Ver. 2.9.20090731";
+
 /**
  * Helper function to convert an integer to a string in hex notation.
  *
@@ -41,7 +43,7 @@ void lcd_print_status(const order_t * const order) {
 	INTERFACE_TWI ? lcd_puts("TWI ") : lcd_puts("twi ");
 	DEBUG_ENABLE ? lcd_puts("DEBUG ") : lcd_puts("debug ");
 	ACTIVE_BRAKE_ENABLE ? lcd_puts("AB:E") : lcd_puts("AB:e");
-	ACTIVE_BRAKE_WHEN_IDLE ? lcd_puts("I") : lcd_puts("i ");
+	ACTIVE_BRAKE_WHEN_IDLE ? lcd_puts("I") : lcd_puts("i");
 	ACTIVE_BRAKE_WHEN_TRIGGER_REACHED ? lcd_puts("T") : lcd_puts("t");
 	if(order != NULL) {
 		lcd_gotoxy(0,2);

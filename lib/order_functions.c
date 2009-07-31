@@ -7,6 +7,7 @@
 #include "debug.h"
 #include "definitions.h"
 #include "motor.h"
+#include "lcd_addition.h"
 #include <avr/wdt.h>
 #include <avr/pgmspace.h>
 
@@ -470,14 +471,13 @@ void set_pid_instruction(order_t *order) {
 	I = ((order->data[3] << 8) + order->data[4]);
 	D = ((order->data[5] << 8) + order->data[6]);
 	S = ((order->data[7] << 8) + order->data[8]);
-//	//debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  wheel = "), wheel);
-//	//debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  P = "), P);
-//	//debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  I = "), I);
-//	//debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  D = "), D);
-//	//debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  S = "), S);
+	debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  wheel = "), wheel);
+	debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  P = "), P);
+	debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  I = "), I);
+	debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  D = "), D);
+	debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  S = "), S);
 	drive_SetPIDParameter(wheel, P, I, D, S);
 	order->status |= ORDER_STATUS_DONE;
-//	//debug_WriteString_P(PSTR("order_functions.c : set_pid_instruction() :  End execution\n"));
 }
 
 /**
@@ -492,7 +492,9 @@ void option_instruction(order_t *order) {
 	extern uint8_t ACTIVE_BRAKE_ENABLE;
 	extern uint8_t ACTIVE_BRAKE_WHEN_IDLE;
 	extern uint8_t ACTIVE_BRAKE_WHEN_TRIGGER_REACHED;
+	extern uint8_t LCD_PRESENT;
 	debug_WriteString_P(PSTR("order_functions.c : option_instruction() :  Start execution\n"));
+	debug_WriteInteger(PSTR("order_functions.c : option_instruction() : action = "), order->data[0] & 0xf0);
 	switch(order->data[0] & 0xf0) {
 		case 0x00:
 			//reserved
@@ -513,6 +515,8 @@ void option_instruction(order_t *order) {
 				ACTIVE_BRAKE_WHEN_IDLE = order->data[1];
 			break;
 	}
+	if (LCD_PRESENT)
+		lcd_update_screen();
 	order->status |= ORDER_STATUS_DONE;
 }
 /*@}*/

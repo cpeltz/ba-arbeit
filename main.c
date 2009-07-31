@@ -129,6 +129,7 @@ void initialize(void) {
 	order_array_init();
 	irq_init();
 	queue_init();
+	parser_init();
 
 	// set standard PID parameter
 	drive_SetPIDParameter(2, 80, 20, 10, 500);
@@ -140,6 +141,7 @@ void initialize(void) {
  */
 void print_startup(void) {
 	uint8_t prev_DEBUG_ENABLE_value = DEBUG_ENABLE;
+	extern const char *version;
 	// Startup Debug Infos
 	if (LCD_PRESENT) {
 		lcd_print_status(NULL);
