@@ -1,4 +1,5 @@
 #include "options.h"
+#include <inttypes.h>
 
 /**
  * The speed with which position-correction during active braking will occur.

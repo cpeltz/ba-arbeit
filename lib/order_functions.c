@@ -66,6 +66,7 @@ void extended_instruction(order_t *order) {
 void control_instruction(order_t *order) {
 	// Extract the specific Control Instruction we should carry out
 	int instruction = order->data[0] & 0xf0;
+	debug_WriteInteger(PSTR("order_functions.c : control_instruction()\n"), instruction);
 	switch(instruction) {
 		case 0x10: // Reset Instruction
 			wdt_reset();
@@ -105,6 +106,7 @@ void query_instruction(order_t *order) {
 	int instruction = (order->data[0] & 0xf0);
 	order_t *current_order = 0;
 	uint8_t current_order_size = 0;
+	debug_WriteString_P(PSTR("order_functions.c : query_instruction()\n"));
 	switch(instruction) {
 		case 0x10: // left wheel Speed
 			io_obj_start();
@@ -128,11 +130,13 @@ void query_instruction(order_t *order) {
 			io_obj_start();
 			io_put(current_order_size);
 			io_obj_end();
+			debug_WriteInteger(PSTR("order_functions.c : query_instruction() : current_order_size = "), current_order_size);
 			if (current_order) {
 				uint8_t i = 0;
 				io_obj_start();
 				for (;i < current_order_size;i++) {
 					io_put(current_order->data[i]);
+					debug_WriteInteger(PSTR("order_functions.c : query_instruction() : put = "), current_order->data[i]);
 				}
 				io_obj_end();
 			}
@@ -279,7 +283,6 @@ void drive_instruction(order_t *order) {
 	uint8_t trigger_type_left = order->data[0] & 0x30;
 	uint8_t trigger_type_right = order->data[0] & 0xc0;
 	extern uint8_t ACTIVE_BRAKE_WHEN_TRIGGER_REACHED;
-	//debug_WriteString_P(PSTR("order_functions.c : drive_instruction() :  Start execution\n"));
 	//debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  trigger_type_left = "), trigger_type_left);
 	//debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  trigger_type_right = "), trigger_type_right);
 
@@ -322,6 +325,7 @@ void drive_instruction(order_t *order) {
 			order->status |= ORDER_STATUS_DONE;	
 			// stop the wheels
 			drive_UsePID(WHEEL_BOTH, 0);
+			wheel_ClearDifference();
 		}
 	
 		// When it is wanted, we will use active breaking on the wheel where the trigger has been reached
@@ -348,6 +352,9 @@ void drive_instruction(order_t *order) {
 		// Build the values for the specified triggers, even if there aren't any triggers present
 		int16_t trigger_value_left = 0;
 		int16_t trigger_value_right = 0;
+		debug_WriteString_P(PSTR("order_functions.c : drive_instruction() :  Start execution\n"));
+		debug_WriteInteger(PSTR("order_functions.c : drive_instruction() : speed_left = "), order->data[1]);
+		debug_WriteInteger(PSTR("order_functions.c : drive_instruction() : speed_right = "), order->data[2]);
 		//debug_WriteString_P(PSTR("order_functions.c : drive_instruction() :  Not running\n"));
 
 		trigger_value_left = ((order->data[3] << 8) + order->data[4]);
@@ -384,6 +391,7 @@ void advanced_drive_instruction(order_t *order) {
 	uint8_t trigger_type_left = order->data[0] & 0x30;
 	uint8_t trigger_type_right = order->data[0] & 0xc0;
 	extern uint8_t ACTIVE_BRAKE_WHEN_TRIGGER_REACHED;
+	debug_WriteString_P(PSTR("order_functions.c : advanced_drive_instruction() :  Start execution\n"));
 
 	if(order->status & ORDER_STATUS_DONE)
 		return;
@@ -407,6 +415,7 @@ void advanced_drive_instruction(order_t *order) {
 			order->status |= ORDER_STATUS_DONE;	
 			// stop the wheels
 			drive_UsePID(WHEEL_BOTH, 0);
+			wheel_ClearDifference();
 		}
 
 		if(ACTIVE_BRAKE_WHEN_TRIGGER_REACHED) {
@@ -452,7 +461,7 @@ void advanced_drive_instruction(order_t *order) {
 void set_pid_instruction(order_t *order) {
 	uint8_t wheel = order->data[0] >> 4;
 	int16_t P, I, D, S;
-//	//debug_WriteString_P(PSTR("order_functions.c : set_pid_instruction() :  Start execution\n"));
+	debug_WriteString_P(PSTR("order_functions.c : set_pid_instruction() :  Start execution\n"));
 
 	if(order->status & ORDER_STATUS_DONE)
 		return;
@@ -479,6 +488,11 @@ void set_pid_instruction(order_t *order) {
  * @todo maybe make it possible to only set one parameter at a time.
  */
 void option_instruction(order_t *order) {
+	extern uint8_t ACTIVE_BRAKE_AMOUNT;
+	extern uint8_t ACTIVE_BRAKE_ENABLE;
+	extern uint8_t ACTIVE_BRAKE_WHEN_IDLE;
+	extern uint8_t ACTIVE_BRAKE_WHEN_TRIGGER_REACHED;
+	debug_WriteString_P(PSTR("order_functions.c : option_instruction() :  Start execution\n"));
 	switch(order->data[0] & 0xf0) {
 		case 0x00:
 			//reserved

@@ -97,15 +97,13 @@ extern uint8_t DEBUG_ENABLE;
 extern uint8_t INTERFACE_TWI;
 extern uint8_t timer_global_flags;
 
-const char *version = "Ver. 2.9.20090727";
-
 /**
  *	Used to read the settings given by the position of the dip switches.
  *
  *	With the dip switches, the user chooses which Interface he wants to use, if a LCD is plugged in or
  *	to enable the debugging output.
  */
-void update_dip_flags(void) 
+void update_dip_flags(void) {
 	// DIP1 = ON: Use TWI as communication methode
 	INTERFACE_TWI = dip_read(0);
 	// DIP2 = ON: Activate Debug Output
@@ -123,11 +121,11 @@ void initialize(void) {
 
 	// init all subsystems
 	dip_init();
+	timer_init();
 	update_dip_flags();
 	lcd_init(LCD_DISP_ON);
 	io_init();
 	motor_init();
-	timer_init();
 	order_array_init();
 	irq_init();
 	queue_init();

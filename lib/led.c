@@ -21,7 +21,7 @@ static uint16_t led_State = 0;
 void led_switchoff(void) {
 	// Alle LEDs ausschalten
 	led_State &= (1<<15);
-	LED_DDR = led_State;
+	LED_PORT = led_State;
 }
 
 /**
@@ -67,6 +67,7 @@ void led_switch(uint8_t led, uint8_t state) {
 	}
 	LED_PORT |= (1 << led);
 	LED_PORT &= ~(state << led);
+	//LED_DDR = led_State;
 }
 
 void wait_262ms(void) {
