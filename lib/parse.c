@@ -39,7 +39,7 @@ void parser_init(void) {
 	// Initialize the Ringbuffer
 	uint8_t i = 0;
 	for(; i < PARSER_ORDER_BUFFER_SIZE; i++) {
-		order_init(&parser_order_buffer[0]);
+		order_init(&parser_order_buffer[i]);
 	}
 }
 
@@ -99,13 +99,11 @@ uint8_t bytes_needed(uint8_t order) {
 			ret_value = 3; //min. three bytes are neccessary: one as order, two for speed (left and right)
 			if((order & 0x30) == 0x30) { // Drive Instruction with differntial correction
 				ret_value = 2;
-				if((order & 0xc0) == 0xc0) { // Set differential correction value flag
-					ret_value = 3;
-				} else {
-					if(order & 0x40 || order & 0x80) { // Time/Position Trigger, needs two extra bytes
-						ret_value += 2;
-					}
+				if(order & 0x40 || order & 0x80) { // Time/Position Trigger, needs two extra bytes
+					ret_value += 2;
 				}
+			} else if((order & 0xc0) == 0xc0) {
+				ret_value = 3;
 			} else { // Normal drive command
 				if(order & 0x10 || order & 0x20) { //left Wheel Time/Position Trigger, needs two extra bytes
 					ret_value += 2;
@@ -232,6 +230,7 @@ void parser_get_new_order(order_t* order) {
 	// the caller must discard it.
 	parser_check_order(&parser_order_buffer[first_buffer_position]);
 	order_copy(&parser_order_buffer[first_buffer_position], order);
+	order_init(&parser_order_buffer[first_buffer_position]);
 	first_buffer_position = (first_buffer_position + 1) % PARSER_ORDER_BUFFER_SIZE;
 	if( first_buffer_position == current_buffer_position ) {
 		first_buffer_position = -1;
