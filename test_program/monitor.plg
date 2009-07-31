@@ -14,265 +14,6 @@ compiling lcd.c...
 compiling i2c_master.c...
 compiling servo.c...
 compiling main.c...
-MAIN.C(66): warning C280: 'order': unreferenced local variable
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SET_TYPE?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_ADD_PARAMS?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2805H
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 29F5H
-Program Size: data=10.1 xdata=118 code=2722
-"monitor" - 0 Error(s), 11 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-MAIN.C(66): warning C280: 'order': unreferenced local variable
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SET_TYPE?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_ADD_PARAMS?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 280DH
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 29FDH
-Program Size: data=10.1 xdata=118 code=2730
-"monitor" - 0 Error(s), 11 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-MAIN.C(66): warning C280: 'order': unreferenced local variable
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SET_TYPE?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_ADD_PARAMS?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 280DH
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 29FDH
-Program Size: data=10.1 xdata=118 code=2730
-"monitor" - 0 Error(s), 11 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-MAIN.C(66): warning C280: 'order': unreferenced local variable
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SET_TYPE?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_ADD_PARAMS?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 280DH
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 29FDH
-Program Size: data=10.1 xdata=118 code=2730
-"monitor" - 0 Error(s), 11 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-MAIN.C(66): warning C280: 'order': unreferenced local variable
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SET_TYPE?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_ADD_PARAMS?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 280DH
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 29FDH
-Program Size: data=10.1 xdata=123 code=2730
-"monitor" - 0 Error(s), 11 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-MAIN.C(66): warning C280: 'order': unreferenced local variable
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SET_TYPE?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_ADD_PARAMS?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 280DH
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 29FDH
-Program Size: data=10.1 xdata=123 code=2730
-"monitor" - 0 Error(s), 11 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-MAIN.C(66): warning C280: 'order': unreferenced local variable
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SET_TYPE?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_ADD_PARAMS?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 280DH
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 29FDH
-Program Size: data=10.1 xdata=123 code=2730
-"monitor" - 0 Error(s), 11 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
 compiling helper.c...
 compiling order.c...
 MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
@@ -291,12 +32,12 @@ linking...
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 2821H
+    ADDRESS: 2820H
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A11H
-Program Size: data=10.1 xdata=111 code=2753
+    ADDRESS: 2A19H
+Program Size: data=10.1 xdata=106 code=2757
 "monitor" - 0 Error(s), 8 Warning(s).
 Build target 'Monitor'
 assembling Startup.a51...
@@ -307,7 +48,6 @@ compiling servo.c...
 compiling main.c...
 compiling helper.c...
 compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
@@ -323,13 +63,13 @@ linking...
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 282AH
+    ADDRESS: 2822H
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A1AH
-Program Size: data=10.1 xdata=108 code=2762
-"monitor" - 0 Error(s), 8 Warning(s).
+    ADDRESS: 2A1BH
+Program Size: data=10.1 xdata=106 code=2759
+"monitor" - 0 Error(s), 7 Warning(s).
 Build target 'Monitor'
 assembling Startup.a51...
 compiling timing.c...
@@ -339,7 +79,6 @@ compiling servo.c...
 compiling main.c...
 compiling helper.c...
 compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
@@ -355,13 +94,13 @@ linking...
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 283AH
+    ADDRESS: 283CH
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A2AH
-Program Size: data=10.1 xdata=108 code=2780
-"monitor" - 0 Error(s), 8 Warning(s).
+    ADDRESS: 2A39H
+Program Size: data=10.1 xdata=106 code=2789
+"monitor" - 0 Error(s), 7 Warning(s).
 Build target 'Monitor'
 assembling Startup.a51...
 compiling timing.c...
@@ -371,7 +110,6 @@ compiling servo.c...
 compiling main.c...
 compiling helper.c...
 compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
@@ -387,13 +125,13 @@ linking...
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 285FH
+    ADDRESS: 283CH
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A5AH
-Program Size: data=10.1 xdata=108 code=2822
-"monitor" - 0 Error(s), 8 Warning(s).
+    ADDRESS: 2A39H
+Program Size: data=10.1 xdata=106 code=2789
+"monitor" - 0 Error(s), 7 Warning(s).
 Build target 'Monitor'
 assembling Startup.a51...
 compiling timing.c...
@@ -403,7 +141,6 @@ compiling servo.c...
 compiling main.c...
 compiling helper.c...
 compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
@@ -419,12 +156,161 @@ linking...
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 2857H
+    ADDRESS: 283CH
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A52H
-Program Size: data=10.1 xdata=108 code=2814
+    ADDRESS: 2A39H
+Program Size: data=10.1 xdata=106 code=2789
+"monitor" - 0 Error(s), 7 Warning(s).
+Build target 'Monitor'
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+    ADDRESS: 283CH
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+    ADDRESS: 2A39H
+Program Size: data=10.1 xdata=106 code=2789
+"monitor" - 0 Error(s), 7 Warning(s).
+Build target 'Monitor'
+assembling Startup.a51...
+compiling timing.c...
+compiling lcd.c...
+compiling i2c_master.c...
+compiling servo.c...
+compiling main.c...
+compiling helper.c...
+compiling order.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_ADD_PARAMS?ORDER
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+    ADDRESS: 2804H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+    ADDRESS: 29F4H
+Program Size: data=10.1 xdata=112 code=2726
+"monitor" - 0 Error(s), 7 Warning(s).
+Build target 'Monitor'
+assembling Startup.a51...
+compiling timing.c...
+compiling lcd.c...
+compiling i2c_master.c...
+compiling servo.c...
+compiling main.c...
+compiling helper.c...
+compiling order.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_ADD_PARAMS?ORDER
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+    ADDRESS: 2803H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+    ADDRESS: 29F3H
+Program Size: data=10.1 xdata=112 code=2725
+"monitor" - 0 Error(s), 7 Warning(s).
+Build target 'Monitor'
+assembling Startup.a51...
+compiling timing.c...
+compiling lcd.c...
+compiling i2c_master.c...
+compiling servo.c...
+compiling main.c...
+compiling helper.c...
+compiling order.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_ADD_PARAMS?ORDER
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+    ADDRESS: 2803H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+    ADDRESS: 29F3H
+Program Size: data=10.1 xdata=112 code=2725
+"monitor" - 0 Error(s), 7 Warning(s).
+Build target 'Monitor'
+assembling Startup.a51...
+compiling timing.c...
+compiling lcd.c...
+compiling i2c_master.c...
+compiling servo.c...
+compiling main.c...
+compiling helper.c...
+compiling order.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_ADD_PARAMS?ORDER
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+    ADDRESS: 2803H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+    ADDRESS: 29F3H
+Program Size: data=10.1 xdata=115 code=2725
 "monitor" - 0 Error(s), 8 Warning(s).
 Build target 'Monitor'
 assembling Startup.a51...
@@ -435,11 +321,60 @@ compiling servo.c...
 compiling main.c...
 compiling helper.c...
 compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-MOTOR_PLATINE\ORDER.C(65): error C202: 'unsinged': undefined identifier
-MOTOR_PLATINE\ORDER.C(65): error C141: syntax error near 'long'
-MOTOR_PLATINE\ORDER.C(66): error C202: 'arg': undefined identifier
-MOTOR_PLATINE\ORDER.C(67): error C202: 'arg': undefined identifier
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_ADD_PARAMS?ORDER
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+    ADDRESS: 2803H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+    ADDRESS: 29F3H
+Program Size: data=10.1 xdata=112 code=2725
+"monitor" - 0 Error(s), 7 Warning(s).
+Build target 'Monitor'
+assembling Startup.a51...
+compiling timing.c...
+compiling lcd.c...
+compiling i2c_master.c...
+compiling servo.c...
+compiling main.c...
+MAIN.C(98): error C200: left side of '->' requires struct/union pointer
+compiling helper.c...
+compiling order.c...
+Target not created
+Build target 'Monitor'
+assembling Startup.a51...
+compiling timing.c...
+compiling lcd.c...
+compiling i2c_master.c...
+compiling servo.c...
+compiling main.c...
+MAIN.C(98): error C200: left side of '->' requires struct/union pointer
+compiling helper.c...
+compiling order.c...
+Target not created
+Build target 'Monitor'
+assembling Startup.a51...
+compiling timing.c...
+compiling lcd.c...
+compiling i2c_master.c...
+compiling servo.c...
+compiling main.c...
+MAIN.C(98): error C200: left side of '->' requires struct/union pointer
+compiling helper.c...
+compiling order.c...
 Target not created
 Build target 'Monitor'
 assembling Startup.a51...
@@ -450,22 +385,6 @@ compiling servo.c...
 compiling main.c...
 compiling helper.c...
 compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-MOTOR_PLATINE\ORDER.C(65): error C202: 'unsinged': undefined identifier
-MOTOR_PLATINE\ORDER.C(65): error C141: syntax error near 'long'
-MOTOR_PLATINE\ORDER.C(66): error C202: 'arg': undefined identifier
-MOTOR_PLATINE\ORDER.C(67): error C202: 'arg': undefined identifier
-Target not created
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
@@ -475,18 +394,20 @@ linking...
     SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_ADD_PARAMS?ORDER
 *** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 2857H
+    ADDRESS: 2824H
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A52H
-Program Size: data=10.1 xdata=108 code=2814
+    ADDRESS: 2A14H
+Program Size: data=10.1 xdata=115 code=2758
 "monitor" - 0 Error(s), 8 Warning(s).
 Build target 'Monitor'
 assembling Startup.a51...
@@ -497,7 +418,6 @@ compiling servo.c...
 compiling main.c...
 compiling helper.c...
 compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
@@ -507,18 +427,20 @@ linking...
     SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_ADD_PARAMS?ORDER
 *** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 288EH
+    ADDRESS: 282CH
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A89H
-Program Size: data=10.1 xdata=108 code=2869
+    ADDRESS: 2A1CH
+Program Size: data=10.1 xdata=115 code=2766
 "monitor" - 0 Error(s), 8 Warning(s).
 Build target 'Monitor'
 assembling Startup.a51...
@@ -529,7 +451,6 @@ compiling servo.c...
 compiling main.c...
 compiling helper.c...
 compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
@@ -539,540 +460,18 @@ linking...
     SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_ADD_PARAMS?ORDER
 *** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 2892H
+    ADDRESS: 280FH
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A8DH
-Program Size: data=10.1 xdata=108 code=2873
-"monitor" - 0 Error(s), 8 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 28C1H
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2ABEH
-Program Size: data=10.1 xdata=108 code=2922
-"monitor" - 0 Error(s), 8 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 28C1H
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2ABEH
-Program Size: data=10.1 xdata=108 code=2922
-"monitor" - 0 Error(s), 8 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 289BH
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A96H
-Program Size: data=10.1 xdata=108 code=2882
-"monitor" - 0 Error(s), 8 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2865H
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A60H
-Program Size: data=10.1 xdata=108 code=2828
-"monitor" - 0 Error(s), 8 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-MAIN.C(66): error C141: syntax error near 'long'
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-Target not created
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2884H
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A7FH
-Program Size: data=10.1 xdata=110 code=2859
-"monitor" - 0 Error(s), 8 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2885H
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A80H
-Program Size: data=10.1 xdata=110 code=2860
-"monitor" - 0 Error(s), 8 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2885H
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A80H
-Program Size: data=10.1 xdata=110 code=2860
-"monitor" - 0 Error(s), 8 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2832H
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A2DH
-Program Size: data=10.1 xdata=106 code=2777
-"monitor" - 0 Error(s), 8 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2835H
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A30H
-Program Size: data=10.1 xdata=106 code=2780
-"monitor" - 0 Error(s), 8 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2833H
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A2EH
-Program Size: data=10.1 xdata=106 code=2778
-"monitor" - 0 Error(s), 8 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2841H
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A3CH
-Program Size: data=10.1 xdata=106 code=2792
-"monitor" - 0 Error(s), 8 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2837H
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A32H
-Program Size: data=10.1 xdata=106 code=2782
-"monitor" - 0 Error(s), 8 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2871H
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A6CH
-Program Size: data=10.1 xdata=106 code=2840
-"monitor" - 0 Error(s), 8 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2869H
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A64H
-Program Size: data=10.1 xdata=106 code=2832
-"monitor" - 0 Error(s), 8 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2871H
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A6CH
-Program Size: data=10.1 xdata=106 code=2840
-"monitor" - 0 Error(s), 8 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(43): warning C173: missing return-expression
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2871H
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A6CH
-Program Size: data=10.1 xdata=106 code=2840
+    ADDRESS: 29FFH
+Program Size: data=10.1 xdata=115 code=2737
 "monitor" - 0 Error(s), 8 Warning(s).

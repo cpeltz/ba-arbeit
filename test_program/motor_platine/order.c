@@ -40,8 +40,8 @@ unsigned char bytes_to_recv(order_t *order) {
 
 unsigned char order_send_and_recv(order_t *order) {
 	if (order->dat[1] == 0x42) // for recv a current order one needs the other function.
-		return;
-	i2c_send(order->dat, order->pos + 1);
+		return 0;
+	i2c_send(order->dat, order->pos);
 	order_init(order);
 	return i2c_receive(order->dat, bytes_to_recv(order) + 1);
 }

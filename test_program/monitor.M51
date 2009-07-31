@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.05                                                        07/27/2009  14:58:14  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.05                                                        07/31/2009  15:37:33  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.05, INVOKED BY:
@@ -50,18 +50,19 @@ LINK MAP OF MODULE:  monitor (?C_STARTUP)
 
             * * * * * * *  X D A T A   M E M O R Y  * * * * * * *
                     0000H     8000H                  *** GAP ***
-            XDATA   8000H     0048H     UNIT         _XDATA_GROUP_
-            XDATA   8048H     000AH     UNIT         ?XD?MAIN
-            XDATA   8052H     0008H     UNIT         ?XD?LCD
-            XDATA   805AH     0006H     UNIT         ?XD?I2C_MASTER
-            XDATA   8060H     0004H     UNIT         ?XD?TIMING
-            XDATA   8064H     0003H     UNIT         ?XD?_ORDER_SEND_AND_RECV_CO?ORDER
-            XDATA   8067H     0003H     UNIT         ?XD?_ORDER_SEND_AND_RECV?ORDER
+            XDATA   8000H     0037H     UNIT         ?XD?_ORDER_ADD_PARAMS?ORDER
+            XDATA   8037H     001AH     UNIT         _XDATA_GROUP_
+            XDATA   8051H     000AH     UNIT         ?XD?MAIN
+            XDATA   805BH     0008H     UNIT         ?XD?LCD
+            XDATA   8063H     0006H     UNIT         ?XD?I2C_MASTER
+            XDATA   8069H     0004H     UNIT         ?XD?TIMING
+            XDATA   806DH     0003H     UNIT         ?XD?_ORDER_SEND_AND_RECV_CO?ORDER
+            XDATA   8070H     0003H     UNIT         ?XD?_ORDER_SEND_AND_RECV?ORDER
+
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/31/2009  15:37:33  PAGE 2
+
 
             * * * * * * *   C O D E   M E M O R Y   * * * * * * *
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/27/2009  14:58:14  PAGE 2
-
-
                     0000H     0023H                  *** GAP ***
             CODE    0023H     0003H     ABSOLUTE     
                     0026H     1FDAH                  *** GAP ***
@@ -69,40 +70,39 @@ LINK MAP OF MODULE:  monitor (?C_STARTUP)
             CODE    2003H     0007H     UNIT         ?PR?LCD_COMM_WAIT?LCD
                     200AH     0001H                  *** GAP ***
             CODE    200BH     0003H     ABSOLUTE     
-            CODE    200EH     0017H     UNIT         ?PR?INIT_TIMER0?TIMING
-            CODE    2025H     0005H     UNIT         ?PR?LCD_CLEAR?LCD
-                    202AH     0001H                  *** GAP ***
+            CODE    200EH     001DH     UNIT         ?CO?MAIN
             CODE    202BH     0003H     ABSOLUTE     
             CODE    202EH     01B5H     UNIT         ?C?LIB_CODE
             CODE    21E3H     011AH     UNIT         ?PR?_INT2STR?HELPER
             CODE    22FDH     010DH     UNIT         ?PR?_ORDER_ADD_PARAMS?ORDER
-            CODE    240AH     00F7H     UNIT         ?PR?MAIN?MAIN
-            CODE    2501H     00B1H     UNIT         ?PR?_CHECKSTATUS?I2C_MASTER
-            CODE    25B2H     008FH     UNIT         ?C_C51STARTUP
-            CODE    2641H     006DH     UNIT         ?PR?_WAIT_MS?TIMING
-            CODE    26AEH     006BH     UNIT         ?PR?_LCD_PRINT_STRING?LCD
-            CODE    2719H     0068H     UNIT         ?PR?_ORDER_SEND_AND_RECV?ORDER
-            CODE    2781H     0062H     UNIT         ?PR?_WAIT_100US?TIMING
-            CODE    27E3H     0058H     UNIT         ?PR?LCD_INIT?LCD
-            CODE    283BH     0056H     UNIT         ?PR?INT_TIMER0?TIMING
-            CODE    2891H     0051H     UNIT         ?PR?_ORDER_INIT?ORDER
-            CODE    28E2H     004BH     UNIT         ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-            CODE    292DH     0041H     UNIT         ?PR?_I2C_RECEIVE?I2C_MASTER
-            CODE    296EH     003DH     UNIT         ?PR?I2C_INTERRUPT?I2C_MASTER
-            CODE    29ABH     0036H     UNIT         ?PR?_I2C_SEND?I2C_MASTER
-            CODE    29E1H     0027H     UNIT         ?PR?_ORDER_SEND?ORDER
-            CODE    2A08H     0022H     UNIT         ?CO?MAIN
-            CODE    2A2AH     001FH     UNIT         ?PR?USLEEP100?TIMING
-            CODE    2A49H     001FH     UNIT         ?C_INITSEG
-            CODE    2A68H     0017H     UNIT         ?PR?_WAIT_WITH_TIMER?TIMING
-            CODE    2A7FH     0016H     UNIT         ?PR?_SERVO_SET_POS?SERVO
-            CODE    2A95H     0015H     UNIT         ?PR?_BYTES_TO_RECV?ORDER
-            CODE    2AAAH     0015H     UNIT         ?PR?_STRLEN?STRLEN
-            CODE    2ABFH     0013H     UNIT         ?PR?_LCD_COMMAND?LCD
-            CODE    2AD2H     0013H     UNIT         ?PR?_LCD_DATA?LCD
-            CODE    2AE5H     0013H     UNIT         ?PR?I2C_INIT?I2C_MASTER
-            CODE    2AF8H     0010H     UNIT         ?PR?LCD_BUSY?LCD
-            CODE    2B08H     000FH     UNIT         ?PR?_ORDER_SET_TYPE?ORDER
+            CODE    240AH     00B1H     UNIT         ?PR?_CHECKSTATUS?I2C_MASTER
+            CODE    24BBH     0094H     UNIT         ?PR?MAIN?MAIN
+            CODE    254FH     008FH     UNIT         ?C_C51STARTUP
+            CODE    25DEH     006DH     UNIT         ?PR?_WAIT_MS?TIMING
+            CODE    264BH     006BH     UNIT         ?PR?_LCD_PRINT_STRING?LCD
+            CODE    26B6H     0069H     UNIT         ?PR?_ORDER_SEND_AND_RECV?ORDER
+            CODE    271FH     0062H     UNIT         ?PR?_WAIT_100US?TIMING
+            CODE    2781H     0058H     UNIT         ?PR?LCD_INIT?LCD
+            CODE    27D9H     0056H     UNIT         ?PR?INT_TIMER0?TIMING
+            CODE    282FH     0051H     UNIT         ?PR?_ORDER_INIT?ORDER
+            CODE    2880H     004BH     UNIT         ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
+            CODE    28CBH     0041H     UNIT         ?PR?_I2C_RECEIVE?I2C_MASTER
+            CODE    290CH     003DH     UNIT         ?PR?I2C_INTERRUPT?I2C_MASTER
+            CODE    2949H     0036H     UNIT         ?PR?_I2C_SEND?I2C_MASTER
+            CODE    297FH     0027H     UNIT         ?PR?_ORDER_SEND?ORDER
+            CODE    29A6H     001FH     UNIT         ?PR?USLEEP100?TIMING
+            CODE    29C5H     001FH     UNIT         ?C_INITSEG
+            CODE    29E4H     0017H     UNIT         ?PR?INIT_TIMER0?TIMING
+            CODE    29FBH     0017H     UNIT         ?PR?_WAIT_WITH_TIMER?TIMING
+            CODE    2A12H     0016H     UNIT         ?PR?_SERVO_SET_POS?SERVO
+            CODE    2A28H     0015H     UNIT         ?PR?_BYTES_TO_RECV?ORDER
+            CODE    2A3DH     0015H     UNIT         ?PR?_STRLEN?STRLEN
+            CODE    2A52H     0013H     UNIT         ?PR?_LCD_COMMAND?LCD
+            CODE    2A65H     0013H     UNIT         ?PR?_LCD_DATA?LCD
+            CODE    2A78H     0013H     UNIT         ?PR?I2C_INIT?I2C_MASTER
+            CODE    2A8BH     0010H     UNIT         ?PR?LCD_BUSY?LCD
+            CODE    2A9BH     000FH     UNIT         ?PR?_ORDER_SET_TYPE?ORDER
+            CODE    2AAAH     0005H     UNIT         ?PR?LCD_CLEAR?LCD
 
 
 
@@ -116,10 +116,10 @@ SEGMENT                                     XDATA_GROUP
   +--> ?PR?MAIN?MAIN
   +--> ?C_INITSEG
 
-?PR?MAIN?MAIN                             8000H    0011H
+?PR?MAIN?MAIN                             8037H    0011H
   +--> ?PR?I2C_INIT?I2C_MASTER
   +--> ?PR?LCD_INIT?LCD
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/27/2009  14:58:14  PAGE 3
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/31/2009  15:37:33  PAGE 3
 
 
   +--> ?CO?MAIN
@@ -127,8 +127,8 @@ SEGMENT                                     XDATA_GROUP
   +--> ?PR?_WAIT_MS?TIMING
   +--> ?PR?_ORDER_INIT?ORDER
   +--> ?PR?_ORDER_SET_TYPE?ORDER
-  +--> ?PR?_ORDER_ADD_PARAMS?ORDER
   +--> ?PR?_ORDER_SEND?ORDER
+  +--> ?PR?_I2C_RECEIVE?I2C_MASTER
   +--> ?PR?_INT2STR?HELPER
 
 ?PR?LCD_INIT?LCD                          -----    -----
@@ -136,10 +136,10 @@ SEGMENT                                     XDATA_GROUP
   +--> ?PR?_WAIT_100US?TIMING
   +--> ?PR?_LCD_COMMAND?LCD
 
-?PR?_WAIT_MS?TIMING                       8011H    0002H
+?PR?_WAIT_MS?TIMING                       8048H    0002H
   +--> ?PR?USLEEP100?TIMING
 
-?PR?_WAIT_100US?TIMING                    8011H    0002H
+?PR?_WAIT_100US?TIMING                    8048H    0002H
 
 ?PR?_LCD_COMMAND?LCD                      -----    -----
   +--> ?PR?LCD_COMM_WAIT?LCD
@@ -147,7 +147,7 @@ SEGMENT                                     XDATA_GROUP
 ?PR?LCD_COMM_WAIT?LCD                     -----    -----
   +--> ?PR?LCD_BUSY?LCD
 
-?PR?_LCD_PRINT_STRING?LCD                 8011H    0006H
+?PR?_LCD_PRINT_STRING?LCD                 8048H    0006H
   +--> ?PR?LCD_CLEAR?LCD
   +--> ?PR?_LCD_DATA?LCD
   +--> ?PR?_LCD_COMMAND?LCD
@@ -158,15 +158,12 @@ SEGMENT                                     XDATA_GROUP
 ?PR?_LCD_DATA?LCD                         -----    -----
   +--> ?PR?LCD_COMM_WAIT?LCD
 
-?PR?_ORDER_INIT?ORDER                     8011H    0003H
+?PR?_ORDER_INIT?ORDER                     8048H    0003H
 
-?PR?_ORDER_ADD_PARAMS?ORDER               8011H    0037H
-  +--> ?PR?_STRLEN?STRLEN
-
-?PR?_ORDER_SEND?ORDER                     8011H    0003H
+?PR?_ORDER_SEND?ORDER                     8048H    0003H
   +--> ?PR?_I2C_SEND?I2C_MASTER
 
-?PR?_INT2STR?HELPER                       8011H    0009H
+?PR?_INT2STR?HELPER                       8048H    0009H
 
 *** NEW ROOT ***************************************************
 
@@ -179,23 +176,23 @@ UNRESOLVED EXTERNAL SYMBOLS:
    CONDTIMERSTATUS
 
 
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/27/2009  14:58:14  PAGE 4
-
-
 
 SYMBOL TABLE OF MODULE:  monitor (?C_STARTUP)
+
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/31/2009  15:37:33  PAGE 4
+
 
   VALUE           TYPE          NAME
   ----------------------------------
 
   -------         MODULE        ?C_STARTUP
-  C:25B2H         SEGMENT       ?C_C51STARTUP
+  C:254FH         SEGMENT       ?C_C51STARTUP
   I:0021H         SEGMENT       ?STACK
   C:2000H         PUBLIC        ?C_STARTUP
   N:0001H         SYMBOL        IBPSTACK
   N:0100H         SYMBOL        IBPSTACKTOP
   N:0100H         SYMBOL        IDATALEN
-  C:25B5H         SYMBOL        IDATALOOP
+  C:2552H         SYMBOL        IDATALOOP
   N:0000H         SYMBOL        PBPSTACK
   N:0000H         SYMBOL        PBPSTACKTOP
   N:0000H         SYMBOL        PDATALEN
@@ -203,143 +200,143 @@ SYMBOL TABLE OF MODULE:  monitor (?C_STARTUP)
   N:0000H         SYMBOL        PPAGE
   N:0000H         SYMBOL        PPAGEENABLE
   D:0081H         SYMBOL        SP
-  C:25B2H         SYMBOL        STARTUP1
+  C:254FH         SYMBOL        STARTUP1
   N:0000H         SYMBOL        XBPSTACK
   N:0000H         SYMBOL        XBPSTACKTOP
   N:0000H         SYMBOL        XDATALEN
   N:0000H         SYMBOL        XDATASTART
   C:2000H         LINE#         80
-  C:25B2H         LINE#         87
-  C:25B4H         LINE#         88
-  C:25B5H         LINE#         89
-  C:25B6H         LINE#         90
-  C:25B8H         LINE#         124
-  C:25BBH         LINE#         139
-  C:25BEH         LINE#         140
+  C:254FH         LINE#         87
+  C:2551H         LINE#         88
+  C:2552H         LINE#         89
+  C:2553H         LINE#         90
+  C:2555H         LINE#         124
+  C:2558H         LINE#         139
+  C:255BH         LINE#         140
   -------         ENDMOD        ?C_STARTUP
 
   -------         MODULE        TIMING
   C:0000H         SYMBOL        _ICE_DUMMY_
-  C:283BH         PUBLIC        int_timer0
+  C:27D9H         PUBLIC        int_timer0
   B:00A8H.7       PUBLIC        EA
-  C:2781H         PUBLIC        _wait_100us
-  X:8060H         PUBLIC        wait_ms_max
-  C:2A2AH         PUBLIC        usleep100
+  C:271FH         PUBLIC        _wait_100us
+  X:8069H         PUBLIC        wait_ms_max
+  C:29A6H         PUBLIC        usleep100
   D:0089H         PUBLIC        TMOD
   B:00A8H.1       PUBLIC        ET0
   D:008CH         PUBLIC        TH0
   D:008AH         PUBLIC        TL0
   B:0088H.4       PUBLIC        TR0
-  C:2A68H         PUBLIC        _wait_with_timer
-  X:8062H         PUBLIC        wait_ms_current
-  C:200EH         PUBLIC        init_timer0
-  C:2641H         PUBLIC        _wait_ms
+  C:29FBH         PUBLIC        _wait_with_timer
+  X:806BH         PUBLIC        wait_ms_current
+  C:29E4H         PUBLIC        init_timer0
+  C:25DEH         PUBLIC        _wait_ms
   -------         PROC          INIT_TIMER0
-  C:200EH         LINE#         43
-  C:200EH         LINE#         44
-  C:2010H         LINE#         45
-  C:2012H         LINE#         46
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/27/2009  14:58:14  PAGE 5
+  C:29E4H         LINE#         43
+  C:29E4H         LINE#         44
+  C:29E6H         LINE#         45
+  C:29E8H         LINE#         46
+  C:29EAH         LINE#         47
+  C:29F2H         LINE#         48
+  C:29F5H         LINE#         49
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/31/2009  15:37:33  PAGE 5
 
 
-  C:2014H         LINE#         47
-  C:201CH         LINE#         48
-  C:201FH         LINE#         49
-  C:2022H         LINE#         50
-  C:2024H         LINE#         51
+  C:29F8H         LINE#         50
+  C:29FAH         LINE#         51
   -------         ENDPROC       INIT_TIMER0
   -------         PROC          INT_TIMER0
-  C:283BH         LINE#         53
-  C:284CH         LINE#         54
-  C:2865H         LINE#         55
-  C:2867H         LINE#         56
-  C:2869H         LINE#         57
-  C:2870H         LINE#         58
-  C:2876H         LINE#         60
-  C:2878H         LINE#         61
-  C:2878H         LINE#         62
-  C:287AH         LINE#         63
-  C:287DH         LINE#         64
-  C:2880H         LINE#         65
-  C:2882H         LINE#         66
-  C:2882H         LINE#         67
+  C:27D9H         LINE#         53
+  C:27EAH         LINE#         54
+  C:2803H         LINE#         55
+  C:2805H         LINE#         56
+  C:2807H         LINE#         57
+  C:280EH         LINE#         58
+  C:2814H         LINE#         60
+  C:2816H         LINE#         61
+  C:2816H         LINE#         62
+  C:2818H         LINE#         63
+  C:281BH         LINE#         64
+  C:281EH         LINE#         65
+  C:2820H         LINE#         66
+  C:2820H         LINE#         67
   -------         ENDPROC       INT_TIMER0
   -------         PROC          _WAIT_WITH_TIMER
   D:0006H         SYMBOL        ms
-  C:2A68H         LINE#         69
-  C:2A68H         LINE#         70
-  C:2A6BH         LINE#         71
-  C:2A71H         LINE#         72
-  C:2A79H         LINE#         73
-  C:2A7EH         LINE#         74
+  C:29FBH         LINE#         69
+  C:29FBH         LINE#         70
+  C:29FEH         LINE#         71
+  C:2A04H         LINE#         72
+  C:2A0CH         LINE#         73
+  C:2A11H         LINE#         74
   -------         ENDPROC       _WAIT_WITH_TIMER
   -------         PROC          USLEEP100
   -------         DO            
   D:0006H         SYMBOL        i
   -------         ENDDO         
-  C:2A2AH         LINE#         76
-  C:2A2AH         LINE#         79
-  C:2A2DH         LINE#         80
-  C:2A2DH         LINE#         81
-  C:2A38H         LINE#         82
-  C:2A3CH         LINE#         83
-  C:2A40H         LINE#         84
-  C:2A44H         LINE#         85
-  C:2A48H         LINE#         86
+  C:29A6H         LINE#         76
+  C:29A6H         LINE#         79
+  C:29A9H         LINE#         80
+  C:29A9H         LINE#         81
+  C:29B4H         LINE#         82
+  C:29B8H         LINE#         83
+  C:29BCH         LINE#         84
+  C:29C0H         LINE#         85
+  C:29C4H         LINE#         86
   -------         ENDPROC       USLEEP100
   -------         PROC          _WAIT_100US
   D:0007H         SYMBOL        us
   -------         DO            
-  X:8011H         SYMBOL        i
+  X:8048H         SYMBOL        i
   -------         ENDDO         
-  C:2781H         LINE#         88
-  C:2781H         LINE#         91
-  C:2787H         LINE#         92
-  C:278EH         LINE#         93
-  C:278EH         LINE#         94
-  C:27A8H         LINE#         95
-  C:27B6H         LINE#         96
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/27/2009  14:58:14  PAGE 6
+  C:271FH         LINE#         88
+  C:271FH         LINE#         91
+  C:2725H         LINE#         92
+  C:272CH         LINE#         93
+  C:272CH         LINE#         94
+  C:2746H         LINE#         95
+  C:2754H         LINE#         96
+  C:2762H         LINE#         97
+  C:2770H         LINE#         98
+  C:277EH         LINE#         99
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/31/2009  15:37:33  PAGE 6
 
 
-  C:27C4H         LINE#         97
-  C:27D2H         LINE#         98
-  C:27E0H         LINE#         99
-  C:27E2H         LINE#         100
+  C:2780H         LINE#         100
   -------         ENDPROC       _WAIT_100US
   -------         PROC          _WAIT_MS
   D:0004H         SYMBOL        ms
   -------         DO            
-  X:8011H         SYMBOL        i
+  X:8048H         SYMBOL        i
   -------         ENDDO         
-  C:2641H         LINE#         102
-  C:2645H         LINE#         105
-  C:264EH         LINE#         107
-  C:2655H         LINE#         108
-  C:2677H         LINE#         109
-  C:2698H         LINE#         110
-  C:26A6H         LINE#         111
-  C:26ADH         LINE#         112
+  C:25DEH         LINE#         102
+  C:25E2H         LINE#         105
+  C:25EBH         LINE#         107
+  C:25F2H         LINE#         108
+  C:2614H         LINE#         109
+  C:2635H         LINE#         110
+  C:2643H         LINE#         111
+  C:264AH         LINE#         112
   -------         ENDPROC       _WAIT_MS
   -------         ENDMOD        TIMING
 
   -------         MODULE        LCD
   C:0000H         SYMBOL        _ICE_DUMMY_
-  X:8052H         PUBLIC        RD_DAT_REG
-  X:8054H         PUBLIC        RD_COM_REG
-  C:2025H         PUBLIC        lcd_clear
-  X:8056H         PUBLIC        WR_DAT_REG
-  X:8058H         PUBLIC        WR_COM_REG
-  C:2AD2H         PUBLIC        _lcd_data
-  C:26AEH         PUBLIC        _lcd_print_string
-  C:27E3H         PUBLIC        lcd_init
-  C:2AF8H         PUBLIC        lcd_busy
+  X:805BH         PUBLIC        RD_DAT_REG
+  X:805DH         PUBLIC        RD_COM_REG
+  C:2AAAH         PUBLIC        lcd_clear
+  X:805FH         PUBLIC        WR_DAT_REG
+  X:8061H         PUBLIC        WR_COM_REG
+  C:2A65H         PUBLIC        _lcd_data
+  C:264BH         PUBLIC        _lcd_print_string
+  C:2781H         PUBLIC        lcd_init
+  C:2A8BH         PUBLIC        lcd_busy
   C:2003H         PUBLIC        lcd_comm_wait
-  C:2ABFH         PUBLIC        _lcd_command
+  C:2A52H         PUBLIC        _lcd_command
   -------         PROC          LCD_BUSY
-  C:2AF8H         LINE#         20
-  C:2AF8H         LINE#         21
-  C:2B07H         LINE#         22
+  C:2A8BH         LINE#         20
+  C:2A8BH         LINE#         21
+  C:2A9AH         LINE#         22
   -------         ENDPROC       LCD_BUSY
   -------         PROC          LCD_COMM_WAIT
   C:2003H         LINE#         27
@@ -348,85 +345,85 @@ SYMBOL TABLE OF MODULE:  monitor (?C_STARTUP)
   -------         ENDPROC       LCD_COMM_WAIT
   -------         PROC          _LCD_COMMAND
   D:0005H         SYMBOL        command
-  C:2ABFH         LINE#         37
-  C:2AC1H         LINE#         38
-  C:2AC4H         LINE#         39
-  C:2AD1H         LINE#         40
+  C:2A52H         LINE#         37
+  C:2A54H         LINE#         38
+  C:2A57H         LINE#         39
+  C:2A64H         LINE#         40
   -------         ENDPROC       _LCD_COMMAND
   -------         PROC          _LCD_DATA
   D:0005H         SYMBOL        c
-  C:2AD2H         LINE#         48
-  C:2AD4H         LINE#         49
-  C:2AD7H         LINE#         50
-  C:2AE4H         LINE#         51
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/27/2009  14:58:14  PAGE 7
-
-
+  C:2A65H         LINE#         48
+  C:2A67H         LINE#         49
+  C:2A6AH         LINE#         50
+  C:2A77H         LINE#         51
   -------         ENDPROC       _LCD_DATA
   -------         PROC          LCD_INIT
-  C:27E3H         LINE#         56
-  C:27E3H         LINE#         57
-  C:27EAH         LINE#         58
-  C:27F8H         LINE#         59
-  C:27FFH         LINE#         60
-  C:280DH         LINE#         61
-  C:2812H         LINE#         62
-  C:2820H         LINE#         63
-  C:2827H         LINE#         65
-  C:282CH         LINE#         66
-  C:2831H         LINE#         67
-  C:2836H         LINE#         68
+  C:2781H         LINE#         56
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/31/2009  15:37:33  PAGE 7
+
+
+  C:2781H         LINE#         57
+  C:2788H         LINE#         58
+  C:2796H         LINE#         59
+  C:279DH         LINE#         60
+  C:27ABH         LINE#         61
+  C:27B0H         LINE#         62
+  C:27BEH         LINE#         63
+  C:27C5H         LINE#         65
+  C:27CAH         LINE#         66
+  C:27CFH         LINE#         67
+  C:27D4H         LINE#         68
   -------         ENDPROC       LCD_INIT
   -------         PROC          LCD_CLEAR
-  C:2025H         LINE#         74
-  C:2025H         LINE#         75
+  C:2AAAH         LINE#         74
+  C:2AAAH         LINE#         75
   -------         ENDPROC       LCD_CLEAR
   -------         PROC          _LCD_PRINT_STRING
-  X:8011H         SYMBOL        buffer
+  X:8048H         SYMBOL        buffer
   -------         DO            
-  X:8014H         SYMBOL        cur
+  X:804BH         SYMBOL        cur
   -------         ENDDO         
-  C:26AEH         LINE#         124
-  C:26B9H         LINE#         125
-  C:26C2H         LINE#         126
-  C:26C5H         LINE#         127
-  C:26D6H         LINE#         128
-  C:26D9H         LINE#         129
-  C:26E3H         LINE#         130
-  C:2709H         LINE#         131
-  C:2709H         LINE#         132
-  C:270BH         LINE#         133
-  C:270DH         LINE#         134
-  C:270DH         LINE#         135
-  C:270FH         LINE#         136
-  C:2711H         LINE#         137
-  C:2711H         LINE#         138
-  C:2716H         LINE#         139
-  C:2718H         LINE#         140
-  C:2718H         LINE#         141
-  C:2718H         LINE#         142
+  C:264BH         LINE#         124
+  C:2656H         LINE#         125
+  C:265FH         LINE#         126
+  C:2662H         LINE#         127
+  C:2673H         LINE#         128
+  C:2676H         LINE#         129
+  C:2680H         LINE#         130
+  C:26A6H         LINE#         131
+  C:26A6H         LINE#         132
+  C:26A8H         LINE#         133
+  C:26AAH         LINE#         134
+  C:26AAH         LINE#         135
+  C:26ACH         LINE#         136
+  C:26AEH         LINE#         137
+  C:26AEH         LINE#         138
+  C:26B3H         LINE#         139
+  C:26B5H         LINE#         140
+  C:26B5H         LINE#         141
+  C:26B5H         LINE#         142
   -------         ENDPROC       _LCD_PRINT_STRING
   -------         ENDMOD        LCD
 
   -------         MODULE        I2C_MASTER
   C:0000H         SYMBOL        _ICE_DUMMY_
   B:00A8H.7       PUBLIC        EA
-  C:2501H         PUBLIC        _checkStatus
-  C:29ABH         PUBLIC        _i2c_send
-  C:2AE5H         PUBLIC        i2c_init
+  C:240AH         PUBLIC        _checkStatus
+  C:2949H         PUBLIC        _i2c_send
+  C:2A78H         PUBLIC        i2c_init
   B:00D8H.6       PUBLIC        ENS1
-  X:805AH         PUBLIC        i2cBufIndex
-  X:805BH         PUBLIC        i2cBuf
+  X:8063H         PUBLIC        i2cBufIndex
+  X:8064H         PUBLIC        i2cBuf
   B:0020H.0       PUBLIC        i2cBusy
-  X:805DH         PUBLIC        i2cStartByte
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/27/2009  14:58:14  PAGE 8
-
-
-  X:805EH         PUBLIC        i2cBufSize
-  C:292DH         PUBLIC        _i2c_receive
+  X:8066H         PUBLIC        i2cStartByte
+  X:8067H         PUBLIC        i2cBufSize
+  C:28CBH         PUBLIC        _i2c_receive
   B:00A8H.5       PUBLIC        ES1
-  C:296EH         PUBLIC        i2c_interrupt
-  X:805FH         PUBLIC        i2cAttempts
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/31/2009  15:37:33  PAGE 8
+
+
+  C:290CH         PUBLIC        i2c_interrupt
+  X:8068H         PUBLIC        i2cAttempts
   B:0090H.7       PUBLIC        SDA
   D:00DBH         PUBLIC        S1ADR
   D:00DAH         PUBLIC        S1DAT
@@ -438,188 +435,185 @@ SYMBOL TABLE OF MODULE:  monitor (?C_STARTUP)
   -------         DO            
   D:0007H         SYMBOL        i2cStatus
   -------         ENDDO         
-  C:296EH         LINE#         50
-  C:298BH         LINE#         51
-  C:298DH         LINE#         52
-  C:2990H         LINE#         53
+  C:290CH         LINE#         50
+  C:2929H         LINE#         51
+  C:292BH         LINE#         52
+  C:292EH         LINE#         53
   -------         ENDPROC       I2C_INTERRUPT
   -------         PROC          _CHECKSTATUS
   D:0007H         SYMBOL        i2cStatus
-  C:2501H         LINE#         57
-  C:2501H         LINE#         58
-  C:2524H         LINE#         59
-  C:2524H         LINE#         60
-  C:2524H         LINE#         64
-  C:2524H         LINE#         68
-  C:2527H         LINE#         69
-  C:2527H         LINE#         70
-  C:2529H         LINE#         72
-  C:2529H         LINE#         76
-  C:2529H         LINE#         80
-  C:252FH         LINE#         81
-  C:253CH         LINE#         82
-  C:253CH         LINE#         84
-  C:253CH         LINE#         85
-  C:253CH         LINE#         86
-  C:253EH         LINE#         88
-  C:253EH         LINE#         90
-  C:254FH         LINE#         91
-  C:254FH         LINE#         92
-  C:254FH         LINE#         93
-  C:2551H         LINE#         95
-  C:2551H         LINE#         99
-  C:2551H         LINE#         103
-  C:255AH         LINE#         104
-  C:255AH         LINE#         105
-  C:255DH         LINE#         106
-  C:2560H         LINE#         107
-  C:2561H         LINE#         109
-  C:2561H         LINE#         110
-  C:2561H         LINE#         111
-  C:2561H         LINE#         112
-  C:2561H         LINE#         113
-  C:2563H         LINE#         115
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/27/2009  14:58:14  PAGE 9
+  C:240AH         LINE#         57
+  C:240AH         LINE#         58
+  C:242DH         LINE#         59
+  C:242DH         LINE#         60
+  C:242DH         LINE#         64
+  C:242DH         LINE#         68
+  C:2430H         LINE#         69
+  C:2430H         LINE#         70
+  C:2432H         LINE#         72
+  C:2432H         LINE#         76
+  C:2432H         LINE#         80
+  C:2438H         LINE#         81
+  C:2445H         LINE#         82
+  C:2445H         LINE#         84
+  C:2445H         LINE#         85
+  C:2445H         LINE#         86
+  C:2447H         LINE#         88
+  C:2447H         LINE#         90
+  C:2458H         LINE#         91
+  C:2458H         LINE#         92
+  C:2458H         LINE#         93
+  C:245AH         LINE#         95
+  C:245AH         LINE#         99
+  C:245AH         LINE#         103
+  C:2463H         LINE#         104
+  C:2463H         LINE#         105
+  C:2466H         LINE#         106
+  C:2469H         LINE#         107
+  C:246AH         LINE#         109
+  C:246AH         LINE#         110
+  C:246AH         LINE#         111
+  C:246AH         LINE#         112
+  C:246AH         LINE#         113
+  C:246CH         LINE#         115
+  C:246CH         LINE#         119
+  C:2480H         LINE#         120
+  C:2480H         LINE#         124
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/31/2009  15:37:33  PAGE 9
 
 
-  C:2563H         LINE#         119
-  C:2577H         LINE#         120
-  C:2577H         LINE#         124
-  C:257DH         LINE#         126
-  C:258AH         LINE#         127
-  C:258AH         LINE#         128
-  C:258DH         LINE#         129
-  C:258EH         LINE#         131
-  C:258EH         LINE#         132
-  C:2591H         LINE#         133
-  C:2591H         LINE#         134
-  C:2592H         LINE#         136
-  C:2592H         LINE#         140
-  C:25A6H         LINE#         141
-  C:25ACH         LINE#         142
-  C:25ACH         LINE#         144
-  C:25AFH         LINE#         145
-  C:25B1H         LINE#         146
-  C:25B1H         LINE#         147
-  C:25B1H         LINE#         148
+  C:2486H         LINE#         126
+  C:2493H         LINE#         127
+  C:2493H         LINE#         128
+  C:2496H         LINE#         129
+  C:2497H         LINE#         131
+  C:2497H         LINE#         132
+  C:249AH         LINE#         133
+  C:249AH         LINE#         134
+  C:249BH         LINE#         136
+  C:249BH         LINE#         140
+  C:24AFH         LINE#         141
+  C:24B5H         LINE#         142
+  C:24B5H         LINE#         144
+  C:24B8H         LINE#         145
+  C:24BAH         LINE#         146
+  C:24BAH         LINE#         147
+  C:24BAH         LINE#         148
   -------         ENDPROC       _CHECKSTATUS
   -------         PROC          _I2C_SEND
   D:0001H         SYMBOL        buffer
   D:0005H         SYMBOL        size
-  C:29ABH         LINE#         156
-  C:29ABH         LINE#         157
-  C:29ABH         LINE#         158
-  C:29B5H         LINE#         159
-  C:29BAH         LINE#         160
-  C:29BDH         LINE#         162
-  C:29CFH         LINE#         164
-  C:29D1H         LINE#         165
-  C:29D3H         LINE#         166
-  C:29D8H         LINE#         168
-  C:29DBH         LINE#         169
-  C:29E0H         LINE#         170
+  C:2949H         LINE#         156
+  C:2949H         LINE#         157
+  C:2949H         LINE#         158
+  C:2953H         LINE#         159
+  C:2958H         LINE#         160
+  C:295BH         LINE#         162
+  C:296DH         LINE#         164
+  C:296FH         LINE#         165
+  C:2971H         LINE#         166
+  C:2976H         LINE#         168
+  C:2979H         LINE#         169
+  C:297EH         LINE#         170
   -------         ENDPROC       _I2C_SEND
   -------         PROC          _I2C_RECEIVE
   D:0001H         SYMBOL        buffer
   D:0005H         SYMBOL        size
-  C:292DH         LINE#         178
-  C:292DH         LINE#         179
-  C:292DH         LINE#         180
-  C:2936H         LINE#         182
-  C:2940H         LINE#         183
-  C:2945H         LINE#         184
-  C:2948H         LINE#         186
-  C:295CH         LINE#         187
-  C:295EH         LINE#         188
-  C:2960H         LINE#         189
-  C:2965H         LINE#         191
-  C:2968H         LINE#         192
-  C:296DH         LINE#         193
+  C:28CBH         LINE#         178
+  C:28CBH         LINE#         179
+  C:28CBH         LINE#         180
+  C:28D4H         LINE#         182
+  C:28DEH         LINE#         183
+  C:28E3H         LINE#         184
+  C:28E6H         LINE#         186
+  C:28FAH         LINE#         187
+  C:28FCH         LINE#         188
+  C:28FEH         LINE#         189
+  C:2903H         LINE#         191
+  C:2906H         LINE#         192
+  C:290BH         LINE#         193
   -------         ENDPROC       _I2C_RECEIVE
   -------         PROC          I2C_INIT
-  C:2AE5H         LINE#         197
-  C:2AE5H         LINE#         198
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/27/2009  14:58:14  PAGE 10
+  C:2A78H         LINE#         197
+  C:2A78H         LINE#         198
+  C:2A78H         LINE#         199
+  C:2A7AH         LINE#         200
+  C:2A7DH         LINE#         202
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/31/2009  15:37:33  PAGE 10
 
 
-  C:2AE5H         LINE#         199
-  C:2AE7H         LINE#         200
-  C:2AEAH         LINE#         202
-  C:2AEDH         LINE#         204
-  C:2AEFH         LINE#         205
-  C:2AF1H         LINE#         207
-  C:2AF3H         LINE#         208
-  C:2AF5H         LINE#         209
-  C:2AF7H         LINE#         210
+  C:2A80H         LINE#         204
+  C:2A82H         LINE#         205
+  C:2A84H         LINE#         207
+  C:2A86H         LINE#         208
+  C:2A88H         LINE#         209
+  C:2A8AH         LINE#         210
   -------         ENDPROC       I2C_INIT
   -------         ENDMOD        I2C_MASTER
 
   -------         MODULE        SERVO
   C:0000H         SYMBOL        _ICE_DUMMY_
-  C:2A7FH         PUBLIC        _servo_set_pos
+  C:2A12H         PUBLIC        _servo_set_pos
   D:00FDH         PUBLIC        PWM1
   D:00FEH         PUBLIC        PWMP
   -------         PROC          _SERVO_SET_POS
   D:0007H         SYMBOL        pos
-  C:2A7FH         LINE#         14
-  C:2A7FH         LINE#         15
-  C:2A85H         LINE#         16
-  C:2A87H         LINE#         17
-  C:2A87H         LINE#         18
-  C:2A8AH         LINE#         19
-  C:2A94H         LINE#         20
+  C:2A12H         LINE#         14
+  C:2A12H         LINE#         15
+  C:2A18H         LINE#         16
+  C:2A1AH         LINE#         17
+  C:2A1AH         LINE#         18
+  C:2A1DH         LINE#         19
+  C:2A27H         LINE#         20
   -------         ENDPROC       _SERVO_SET_POS
   -------         ENDMOD        SERVO
 
   -------         MODULE        MAIN
   C:0000H         SYMBOL        _ICE_DUMMY_
   C:0023H         PUBLIC        reserve
-  C:240AH         PUBLIC        main
-  X:8048H         PUBLIC        buf
+  C:24BBH         PUBLIC        main
+  X:8051H         PUBLIC        buf
   -------         PROC          MAIN
   -------         DO            
-  X:8000H         SYMBOL        send
-  X:8001H         SYMBOL        order
+  X:8037H         SYMBOL        send
+  X:8038H         SYMBOL        order
   -------         ENDDO         
-  C:240AH         LINE#         63
-  C:240AH         LINE#         65
-  C:240FH         LINE#         71
-  C:2412H         LINE#         72
-  C:2415H         LINE#         73
-  C:241EH         LINE#         74
-  C:2425H         LINE#         75
-  C:242EH         LINE#         77
-  C:242EH         LINE#         78
-  C:2437H         LINE#         83
-  C:2442H         LINE#         84
-  C:246DH         LINE#         85
-  C:247BH         LINE#         86
-  C:2486H         LINE#         87
-  C:24B0H         LINE#         88
-  C:24BEH         LINE#         94
-  C:24CAH         LINE#         95
-  C:24D3H         LINE#         96
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/27/2009  14:58:14  PAGE 11
-
-
-  C:24DAH         LINE#         97
-  C:24E3H         LINE#         98
-  C:24EEH         LINE#         99
-  C:24F7H         LINE#         100
-  C:24FEH         LINE#         101
+  C:24BBH         LINE#         63
+  C:24BBH         LINE#         65
+  C:24C0H         LINE#         71
+  C:24C3H         LINE#         72
+  C:24C6H         LINE#         73
+  C:24CFH         LINE#         74
+  C:24D6H         LINE#         75
+  C:24DFH         LINE#         77
+  C:24DFH         LINE#         78
+  C:24E8H         LINE#         93
+  C:24F3H         LINE#         95
+  C:2501H         LINE#         96
+  C:250AH         LINE#         97
+  C:2511H         LINE#         98
+  C:2521H         LINE#         105
+  C:252DH         LINE#         106
+  C:2536H         LINE#         107
+  C:253DH         LINE#         108
+  C:2546H         LINE#         111
+  C:254DH         LINE#         112
   -------         ENDPROC       MAIN
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/31/2009  15:37:33  PAGE 11
+
+
   -------         ENDMOD        MAIN
 
   -------         MODULE        HELPER
   C:0000H         SYMBOL        _ICE_DUMMY_
   C:21E3H         PUBLIC        _int2str
   -------         PROC          _INT2STR
-  X:8011H         SYMBOL        str
-  X:8014H         SYMBOL        i
+  X:8048H         SYMBOL        str
+  X:804BH         SYMBOL        i
   -------         DO            
-  X:8016H         SYMBOL        a
-  X:8018H         SYMBOL        j
-  X:8019H         SYMBOL        n
+  X:804DH         SYMBOL        a
+  X:804FH         SYMBOL        j
+  X:8050H         SYMBOL        n
   -------         ENDDO         
   C:21E3H         LINE#         3
   C:21F4H         LINE#         7
@@ -642,91 +636,92 @@ SYMBOL TABLE OF MODULE:  monitor (?C_STARTUP)
 
   -------         MODULE        ORDER
   C:0000H         SYMBOL        _ICE_DUMMY_
-  C:2A95H         PUBLIC        _bytes_to_recv
-  C:28E2H         PUBLIC        _order_send_and_recv_co
+  C:2A28H         PUBLIC        _bytes_to_recv
+  C:2880H         PUBLIC        _order_send_and_recv_co
   C:22FDH         PUBLIC        _order_add_params
-  C:29E1H         PUBLIC        _order_send
-  C:2899H         PUBLIC        _order_init
-  C:2719H         PUBLIC        _order_send_and_recv
-  C:2B08H         PUBLIC        _order_set_type
+  C:297FH         PUBLIC        _order_send
+  C:2837H         PUBLIC        _order_init
+  C:26B6H         PUBLIC        _order_send_and_recv
+  C:2A9BH         PUBLIC        _order_set_type
   -------         PROC          L?0025
   -------         ENDPROC       L?0025
   -------         PROC          _ORDER_INIT
-  X:8011H         SYMBOL        order
+  X:8048H         SYMBOL        order
   -------         DO            
   D:0007H         SYMBOL        i
   -------         ENDDO         
-  C:2899H         LINE#         6
-  C:28A4H         LINE#         8
-  C:28A6H         LINE#         11
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/27/2009  14:58:14  PAGE 12
-
-
-  C:28A6H         LINE#         12
-  C:28BAH         LINE#         13
-  C:28BFH         LINE#         15
-  C:28CFH         LINE#         16
+  C:2837H         LINE#         6
+  C:2842H         LINE#         8
+  C:2844H         LINE#         11
+  C:2844H         LINE#         12
+  C:2858H         LINE#         13
+  C:285DH         LINE#         15
+  C:286DH         LINE#         16
   -------         ENDPROC       _ORDER_INIT
   -------         PROC          _ORDER_SEND
-  X:8011H         SYMBOL        order
-  C:29E1H         LINE#         19
-  C:29ECH         LINE#         20
-  C:2A07H         LINE#         21
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/31/2009  15:37:33  PAGE 12
+
+
+  X:8048H         SYMBOL        order
+  C:297FH         LINE#         19
+  C:298AH         LINE#         20
+  C:29A5H         LINE#         21
   -------         ENDPROC       _ORDER_SEND
   -------         PROC          _ORDER_SEND_AND_RECV_CO
-  X:8064H         SYMBOL        order
-  C:28E2H         LINE#         23
-  C:28EDH         LINE#         24
-  C:28FBH         LINE#         25
-  C:2901H         LINE#         26
-  C:2911H         LINE#         27
-  C:292CH         LINE#         28
+  X:806DH         SYMBOL        order
+  C:2880H         LINE#         23
+  C:288BH         LINE#         24
+  C:2899H         LINE#         25
+  C:289FH         LINE#         26
+  C:28AFH         LINE#         27
+  C:28CAH         LINE#         28
   -------         ENDPROC       _ORDER_SEND_AND_RECV_CO
   -------         PROC          _BYTES_TO_RECV
   D:0001H         SYMBOL        order
-  C:2A95H         LINE#         30
-  C:2A95H         LINE#         31
-  C:2AA4H         LINE#         32
-  C:2AA4H         LINE#         33
-  C:2AA4H         LINE#         34
-  C:2AA4H         LINE#         35
-  C:2AA7H         LINE#         36
-  C:2AA7H         LINE#         37
-  C:2AA9H         LINE#         38
-  C:2AA9H         LINE#         39
+  C:2A28H         LINE#         30
+  C:2A28H         LINE#         31
+  C:2A37H         LINE#         32
+  C:2A37H         LINE#         33
+  C:2A37H         LINE#         34
+  C:2A37H         LINE#         35
+  C:2A3AH         LINE#         36
+  C:2A3AH         LINE#         37
+  C:2A3CH         LINE#         38
+  C:2A3CH         LINE#         39
   -------         ENDPROC       _BYTES_TO_RECV
   -------         PROC          _ORDER_SEND_AND_RECV
-  X:8067H         SYMBOL        order
-  C:2719H         LINE#         41
-  C:2724H         LINE#         42
-  C:2739H         LINE#         44
-  C:275BH         LINE#         45
-  C:2761H         LINE#         46
-  C:2780H         LINE#         47
+  X:8070H         SYMBOL        order
+  C:26B6H         LINE#         41
+  C:26C1H         LINE#         42
+  C:26D5H         LINE#         43
+  C:26D8H         LINE#         44
+  C:26F9H         LINE#         45
+  C:26FFH         LINE#         46
+  C:271EH         LINE#         47
   -------         ENDPROC       _ORDER_SEND_AND_RECV
   -------         PROC          _ORDER_SET_TYPE
   D:0001H         SYMBOL        order
   D:0005H         SYMBOL        type
-  C:2B08H         LINE#         49
-  C:2B08H         LINE#         50
-  C:2B0FH         LINE#         51
+  C:2A9BH         LINE#         49
+  C:2A9BH         LINE#         50
+  C:2AA2H         LINE#         51
   -------         ENDPROC       _ORDER_SET_TYPE
   -------         PROC          _ORDER_ADD_PARAMS
-  X:8011H         SYMBOL        order
-  X:8014H         SYMBOL        format
+  X:8000H         SYMBOL        order
+  X:8003H         SYMBOL        format
   -------         DO            
-  X:8017H         SYMBOL        ellipsis_40
-  X:803FH         SYMBOL        num
-  X:8041H         SYMBOL        arglist
-  X:8044H         SYMBOL        i
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/27/2009  14:58:14  PAGE 13
-
-
+  X:8006H         SYMBOL        ellipsis_40
+  X:802EH         SYMBOL        num
+  X:8030H         SYMBOL        arglist
+  X:8033H         SYMBOL        i
   -------         DO            
-  X:8046H         SYMBOL        arg
+  X:8035H         SYMBOL        arg
   -------         ENDDO         
   -------         ENDDO         
   C:22FDH         LINE#         54
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/31/2009  15:37:33  PAGE 13
+
+
   C:2308H         LINE#         55
   C:231CH         LINE#         57
   C:2323H         LINE#         59
@@ -779,21 +774,21 @@ SYMBOL TABLE OF MODULE:  monitor (?C_STARTUP)
 
   -------         MODULE        ?C?ILDPTR
   C:213DH         PUBLIC        ?C?ILDPTR
-BL51 BANKED LINKER/LOCATER V6.05                                                      07/27/2009  14:58:14  PAGE 14
-
-
   -------         ENDMOD        ?C?ILDPTR
 
   -------         MODULE        ?C?CCASE
   C:2168H         PUBLIC        ?C?CCASE
   -------         ENDMOD        ?C?CCASE
+BL51 BANKED LINKER/LOCATER V6.05                                                      07/31/2009  15:37:33  PAGE 14
+
+
 
   -------         MODULE        ?C_IBP
   D:0008H         PUBLIC        ?C_IBP
   -------         ENDMOD        ?C_IBP
 
   -------         MODULE        STRLEN
-  C:2AAAH         PUBLIC        _STRLEN
+  C:2A3DH         PUBLIC        _STRLEN
   -------         ENDMOD        STRLEN
 
   -------         MODULE        ?C?UIDIV
@@ -812,6 +807,9 @@ SYMBOL TABLE OF MODULE:  monitor (?C_STARTUP)
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
 
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_ADD_PARAMS?ORDER
+
 *** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
@@ -819,12 +817,12 @@ SYMBOL TABLE OF MODULE:  monitor (?C_STARTUP)
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 2871H
+    ADDRESS: 280FH
 
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A6CH
+    ADDRESS: 29FFH
 
-Program Size: data=10.1 xdata=106 code=2840
-LINK/LOCATE RUN COMPLETE.  7 WARNING(S),  0 ERROR(S)
+Program Size: data=10.1 xdata=115 code=2737
+LINK/LOCATE RUN COMPLETE.  8 WARNING(S),  0 ERROR(S)
