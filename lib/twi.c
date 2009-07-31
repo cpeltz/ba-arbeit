@@ -23,7 +23,7 @@ uint8_t transmission_underway = 0;
  */
 ISR(TWI_vect) {
 	// Led the blue LED blink if we are in here
-	led_switch(LED_BLUE, SINGLE);
+	
   
   	// temporarily save the last Byte on the bus
 	uint8_t twi_data = TWDR;
@@ -59,7 +59,7 @@ ISR(TWI_vect) {
 			// Own SLA+W has been received;
 			// ACK has been returned
 			
-			led_switch(LED_GREEN, SINGLE);
+			//led_switch(LED_GREEN, SINGLE);
 			if (io_get_free_buffer_size() <= 1) {
 				TWCR = (1 << TWEN) | (1 << TWIE) | (1 << TWINT);
 			} else {
@@ -78,10 +78,12 @@ ISR(TWI_vect) {
 			// The missing break statement is wanted and right.
 
 			// We have to reset counting variable and remove the last obj before beginning a new transmission
+			led_switch(LED_ORANGE, SINGLE);
 			if (transmission_underway) {
 				transmission_underway = 0;
 				io_obj_remove_current();
 			}
+			transmission_underway = 1;
 
 		case 0xb8:
 			// Data byte in TWDR has been
@@ -90,11 +92,10 @@ ISR(TWI_vect) {
 
 			// Put the next byte in the data register
 			TWDR = io_get_next_transmission_byte();
-			transmission_underway = 1;
 			// Set the correct control bits: if there is more then 1 byte remaining to send, then
 			// we have to await an ACK, otherwise we await a NOT ACK (thats what io_get_remaining_obj_size()
 			// is for). The TWSTA and TWSTO get always set to 0 and TWINT is always set to 1;
-			TWCR = ~((1 << TWSTA) | (1 << TWSTO)) | ((io_obj_get_remaining_size() > 1) << TWEA) | (1 << TWIE) | (1 << TWINT);
+			TWCR = ((io_obj_get_remaining_size() > 1) << TWEA) | (1 << TWIE) | (1 << TWINT) | (1 << TWEN);
 			break;
 
 		case 0xc8:
@@ -104,9 +105,8 @@ ISR(TWI_vect) {
 
 			// The missing break is wanted and right.
 
-			// Sending was succesful, but we got an unwanted ack, but still remove the obj from the
-			// internal buffer.
-			io_obj_remove_current();
+			// Sending was successful, but we got an unwanted ack, but still remove the obj from the
+			// internal buffer.			
 		case 0xc0:
 			// Data byte in TWDR has been
 			// transmitted; NOT ACK has been
@@ -115,6 +115,9 @@ ISR(TWI_vect) {
 			// Only reset the status bit to retry the send the next time, as we couldn't complete
 			transmission_underway = 0;
 			io_reset_transmission_status();
+			io_obj_remove_current();
+			led_switch(LED_BLUE, SINGLE);
+			TWCR = (1 << TWEA) | (1 << TWINT) | (1 << TWIE) | (1 << TWEN);
 			break;
 
 		case 0x00:
