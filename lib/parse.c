@@ -164,9 +164,9 @@ void parser_add_byte(uint8_t byte) {
 	// This function simple adds another byte to the current order
 	// or discards the byte if the buffer is full.
 	
-//	debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Begin\r\n"));
+	debug_WriteInteger(PSTR("parse.c : parser_add_byte() : Add byte = "), byte);
 	if( current_buffer_position == first_buffer_position ) {
-		debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Buffer full\r\n"));
+		debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Buffer full\n"));
 		return; // Discard, buffer full
 	}
 	// Put the byte at its position and increment

@@ -392,7 +392,6 @@ void advanced_drive_instruction(order_t *order) {
 	uint8_t trigger_type_left = order->data[0] & 0x30;
 	uint8_t trigger_type_right = order->data[0] & 0xc0;
 	extern uint8_t ACTIVE_BRAKE_WHEN_TRIGGER_REACHED;
-	debug_WriteString_P(PSTR("order_functions.c : advanced_drive_instruction() :  Start execution\n"));
 
 	if(order->status & ORDER_STATUS_DONE)
 		return;
@@ -439,6 +438,7 @@ void advanced_drive_instruction(order_t *order) {
 		int16_t trigger_value_left_position = 0;
 		int16_t trigger_value_right_time = 0;
 		int16_t trigger_value_right_position = 0;
+		debug_WriteString_P(PSTR("order_functions.c : advanced_drive_instruction() :  Start execution\n"));
 
 		trigger_value_left_time = ((order->data[3] << 8) + order->data[4]);
 		trigger_value_left_position = ((order->data[5] << 8) + order->data[6]);
