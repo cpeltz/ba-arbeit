@@ -51,6 +51,6 @@ void order_copy(const order_t * const from, order_t *to);
 void order_process(order_t *order);
 void order_check_triggers(order_t *order);
 void order_array_init(void);
-uint8_t order_size(order_t *order);
+uint8_t order_size(const order_t * const order);
 
 #endif
