@@ -5,6 +5,7 @@
 #include "definitions.h"
 #include "io.h"
 #include "led.h"
+#include "pin.h"
 
 /**
  * @defgroup TWI_Module I²C-Bus Module
@@ -27,6 +28,7 @@ ISR(TWI_vect) {
   
   	// temporarily save the last Byte on the bus
 	uint8_t twi_data = TWDR;
+	pin_set_A(1);
 
   	// Mask the prescaler bit out of the status
 	switch (TWSR & 0xf8) {
@@ -131,6 +133,7 @@ ISR(TWI_vect) {
 			TWCR = (1 << TWSTO) | (1 << TWEN) | (1 << TWINT);
 			break;
 	}
+	pin_clear_A(1);
 }
 
 /**

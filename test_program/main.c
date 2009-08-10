@@ -80,9 +80,9 @@ void main() {
 		//order_set_type(&order, 0x16);
 		//order_add_params(&order, "1", (byte) 30);
 		//order_send(&order);
-	/*	order_set_type(&order, ORDER_DRIVE_T_T);
-		order_add_params(&order, "1122", 0x40, 0x40, (unsigned int)0x0010, (unsigned int)0x0010);
-		send = order_send(&order);*/
+		order_set_type(&order, ORDER_DRIVE_N_N);
+		order_add_params(&order, "11", 0x40, 0x40);
+		send = order_send(&order);
 		/*order_set_type(&order, ORDER_DRIVE_P_P);
 		order_add_params(&order, "1122", 0x9c, 0x9c, (unsigned int)0x0100, (unsigned int)0x0100);
 		send = order_send(&order);*/
@@ -90,12 +90,12 @@ void main() {
 		//order_add_params(&order, "11", 0x64, 0x64);
 	//	order_set_type(&order, 0xa4);
 	//	order_add_params(&order, "112222", 0x64, 0x64, (unsigned int)0x0010, (unsigned int)0x0100, (unsigned int)0x0100, (unsigned int)0x0010);
-		order_set_type(&order, 0x32);
+		//order_set_type(&order, 0x32);
 		//send = order_send_and_recv(&order);
-		send = order_send(&order);
-		order_init(&order);
-		wait_ms(1000);
-		send = i2c_receive(order.dat, 2);
+	//	send = order_send(&order);
+	//	order_init(&order);
+		//wait_ms(1000);
+		//send = i2c_receive(order.dat, 2);
 		//send = order.dat[1];
 	/*	buf[0]=42;
 		buf[1]=0x03;

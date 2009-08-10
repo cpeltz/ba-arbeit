@@ -5,7 +5,7 @@
 #include <inttypes.h>
 #include <stdlib.h>
 
-const char *version = "Ver. 2.9.20090731";
+const char *version = "Ver. 2.9.20090810";
 
 /**
  * Helper function to convert an integer to a string in hex notation.

@@ -11,6 +11,7 @@
 #include "lib/parse.h"
 #include "lib/queue.h"
 #include "lib/timer.h"
+#include "lib/pin.h"
 #include <inttypes.h>
 #include <stdlib.h>
 #include <avr/io.h>
@@ -212,7 +213,9 @@ void process_orders(void) {
 	current_order = queue_get_current_order();
 	if (current_order != NULL) {
 //		debug_WriteString_P(PSTR("main.c : process_orders() :  Ack new Order, starting processing\n"));
+		pin_set_A(2);
 		order_process(current_order);
+		pin_clear_A(2);
 //		debug_WriteString_P(PSTR("main.c : process_orders() :  Processing done\n"));
 		if (current_order->status & ORDER_STATUS_DONE) {
 //			debug_WriteString_P(PSTR("main.c : process_orders() :  Order has status = DONE\n"));
@@ -241,6 +244,7 @@ int main(void) {
 	print_startup();
 
 	while(1) {
+		pin_toggle_A(0);
 //		debug_WriteString_P(PSTR("main.c : main() :  copy_timer_flags()\r\n"));
 		// Copy the global timer flags to a local variable (but global for this file)
 		copy_timer_flags();
