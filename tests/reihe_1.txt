@@ -3,6 +3,7 @@ Version: 2.9.20090810
 pin_set_?(): 2 Ticks : 125 ns
 pin_clear_?(): 2 Ticks : 125 ns
 pin_toggle_?(): 4 Ticks : 250 ns
+Compiliert ohne -g und mit -O2
 
 Port-Belegung:
 A0: main-loop (toggle)
