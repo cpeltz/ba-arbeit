@@ -1,0 +1,129 @@
+Version: 2.9.20090810
+1 Tick = 1/16 MHz = 62,5 ns
+pin_set_?(): 2 Ticks : 125 ns
+pin_clear_?(): 2 Ticks : 125 ns
+pin_toggle_?(): 4 Ticks : 250 ns
+
+Port-Belegung:
+A0: main-loop (toggle)
+A1: I2C Int
+A2: process_orders()
+A3: Sensor A Left Wheel
+A4: Sensor B Left Wheel
+A5: Sensor A Right Wheel
+A6: Sensor B Right Wheel
+A7: 100ms timer Int
+C0: 262ms timer Int
+C1: uart TX int
+C2: uart RX int
+C3: lcd_update_screen()
+C4: parser_update()
+C5: queue_update
+C6: nicht belegt
+C7: nicht belegt
+
+Messung 1:
+A7 untersucht.
+100ms Interrupt tritt mit 0,3 us varianz alle 100 ms ein.
+Dauer: 4,7 us (gemessen) (~2,7 us geschätzt wirklich)
+
+Messung 2:
+C0 untersucht.
+Intervall nicht kontrolliert.
+Dauer: 16 us (gemessen) (~14 us geschätzt wirklich)
+
+Messung 3:
+A0, A2, C3, C4, C5 untersucht.
+LCD an; AB:EIT; DEBUG aus; I2C an; alle Werte gelten als (gemessen)
+Angaben in Klammern sind zwiter Datensatz
+A0     27,916 us (27,916 us)
+ |- A2 11,964 us (15,952 us)
+ |- C3  3,988 us ( 7,976 us)
+ |- C4  3,988 us ( 7,976 us)
+ |- C5  3,988 us ( 7,976 us)
+
+Messung 4:
+A0, A2, C3, C4, C5 untersucht.
+LCD an; AB:EIT; DEBUG aus; I2C an; alle Werte gelten als (gemessen)
+AB:I aktiv
+A0     47,856 us
+ |- A2 31,904 us
+ |- C4  3,988 us
+ |- C5  3,988 us
+ |- C6  3,988 us
+
+Messung 5:
+A0, A1, A7, C3, C4, C5 untersucht.
+LCD an; AB:EIT; DEBUG aus; I2C an; alle Werte gelten als (gemessen)
+AB:I aktiv. 100ms int während Messung.
+A0          51,944 us
+ |- A2 + A7 35,992 us
+ |   |- A2  27,916 us
+ |   |- A7   8,076 us
+ |- C4       3,988 us
+ |- C5       3,988 us
+ |- C6       3,988 us
+
+Messung 6:
+A0, A1, A2, C3, C4, C5 untersucht.
+LCD an; AB:EIT; DEBUG aus; I2C an; alle Werte gelten als (gemessen)
+Adresse auf I2C-Bus empfangen.
+A0          35,494 us
+ |- A1 + A2 22,333 us
+ |   |- A1   4,586 us
+ |   |- A2  17,747 us
+ |- C4       5,783 us
+ |- C5       5,783 us
+ |- C6       5,484 us
+
+Messung 7:
+A0, A1, A2, C3, C4, C5 untersucht.
+LCD aus; AB:EIT; DEBUG aus; I2C an; alle Werte gelten als (gemessen)
+Daten auf I2C-Bus empfangen.
+A0          180,459 us
+ |- A1 + A2  38,883 us
+ |   |- A1   21,934 us
+ |   |- A2   16,949 us
+ |- C4        1,113 us
+ |- C5      137,587 us
+ |- C6        5,583 us
+Intervall der I2C-Bus übertragung: 270,189 us (Ende bis Anfang der Übertragung)
+
+Messung 8:
+A0, A1, A2, C3, C4, C5 untersucht.
+LCD aus; AB:EIT; DEBUG aus; I2C an; alle Werte gelten als (gemessen)
+Daten auf I2C-Bus empfangen. queue_update (C6) wird ausgeführt. Befehl
+vollständig, daher auch parser_update (C5) interessant.
+A0          718,843 us
+ |- A1 + A2  39,880 us
+ |   |- A1   21,934 us
+ |   |- A2   17,946 us
+ |- C4      997,009 ns
+ |- C5      175,474 us
+ |- C6      505,484 us
+
+Messung 9:
+A0, A2, C3, C4, C5 untersucht.
+LCD aus; AB:EIT; DEBUG aus; I2C an; alle Werte gelten als (gemessen)
+order bereits in queue, aber nicht gestartet.
+A0          360,917 us (0-Flanke, dadurch kürzer, ~+2 us)
+ |- A2      355,434 us
+ |- C4      997,009 ns (398,804 ns)
+ |- C5        5,982 us (3,988 us)
+ |- C6        5,484 us (4,397 us)
+Die in Klammern geschriebene Werte wurden durch messund von Steigener
+Flanke bis Steigener Flanke des nächsten Pins gemessen (was genauer sein
+sollte).
+
+Messung 10:
+A0, A2, C3, C4, C5 untersucht.
+LCD an; AB:EIT; DEBUG aus; I2C an; alle Werte gelten als (gemessen)
+order bereits in queue, aber nicht gestartet.
+A0            3,614 ms
+ |- A2      358,923 us
+ |- C4        3,250 ms
+ |- C5        6,032 us (4,038 us)
+ |- C6        5,583 us (4,786 us)
+Die in Klammern geschriebene Werte wurden durch messund von Steigener
+Flanke bis Steigener Flanke des nächsten Pins gemessen (was genauer sein
+sollte).
