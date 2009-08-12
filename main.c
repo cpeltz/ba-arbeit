@@ -213,9 +213,7 @@ void process_orders(void) {
 	current_order = queue_get_current_order();
 	if (current_order != NULL) {
 //		debug_WriteString_P(PSTR("main.c : process_orders() :  Ack new Order, starting processing\n"));
-		pin_set_A(2);
 		order_process(current_order);
-		pin_clear_A(2);
 //		debug_WriteString_P(PSTR("main.c : process_orders() :  Processing done\n"));
 		if (current_order->status & ORDER_STATUS_DONE) {
 //			debug_WriteString_P(PSTR("main.c : process_orders() :  Order has status = DONE\n"));
@@ -251,19 +249,27 @@ int main(void) {
 
 //		debug_WriteString_P(PSTR("main.c : main() :  process_orders()\r\n"));
 		// Processes the next or current order
-		process_orders();		
+		pin_set_A(2);
+		process_orders();
+		pin_clear_A(2);
 
 		// If a LCD is pluged in we get nice status messages on it
+		pin_set_C(3);
 		if (LCD_PRESENT)
 			lcd_update_screen();
+		pin_clear_C(3);
 
 //		debug_WriteString_P(PSTR("main.c : main() :  parser_update()\n"));
 		// Update the order parser
+		pin_set_C(4);
 		parser_update();
+		pin_clear_C(4);
 
 //		debug_WriteString_P(PSTR("main.c : main() :  queue_update()\n"));
 		// Housekeeping for the order queue
+		pin_set_C(5);
 		queue_update();
+		pin_clear_C(5);
 	}
 
 	// Should be never reached

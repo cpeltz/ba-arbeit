@@ -12,10 +12,8 @@ File 2,2,<.\Startup.a51><Startup.a51>
 File 3,1,<.\timing.c><timing.c>
 File 3,1,<.\lcd.c><lcd.c>
 File 3,1,<.\i2c_master.c><i2c_master.c>
-File 3,1,<.\sharp_sensor.c><sharp_sensor.c>
 File 3,1,<.\servo.c><servo.c>
 File 3,1,<.\main.c><main.c>
-File 3,1,<.\driver.c><driver.c>
 File 3,1,<.\helper.c><helper.c>
 File 3,1,<.\motor_platine\order.c><order.c>
 
@@ -128,9 +126,9 @@ Options 1,0,0  // Target 'Simulator'
  LX51IDS ()
   OPTDL (S8051.DLL)()(DP51.DLL)(-p552)(S8051.DLL)()(TP51.DLL)(-p552)
   OPTDBG 509,0,()()()()()()()()()() (BIN\MON51.DLL)()()()
- FLASH1 { 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
- FLASH2 ()
- FLASH3 ()
+ FLASH1 { 1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 }
+ FLASH2 (BIN\LPC2EMP.DLL)
+ FLASH3 ("" ())
  FLASH4 ()
 EndOpt
 

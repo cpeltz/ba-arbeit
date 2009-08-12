@@ -240,7 +240,7 @@ Options 2,0,0  // Target 'Monitor'
  LX51IDS ()
   OPTDL (S8051.DLL)()(DP51.DLL)(-p552)(S8051.DLL)()(TP51.DLL)(-p552)
   OPTDBG 48126,0,()()()()()()()()()() (BIN\MON51.DLL)()()()
- FLASH1 { 1,0,0,0,1,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0 }
+ FLASH1 { 1,0,0,0,1,0,0,0,3,16,0,0,0,0,0,0,0,0,0,0 }
  FLASH2 (BIN\MONADI.DLL)
  FLASH3 ("" ())
  FLASH4 ()

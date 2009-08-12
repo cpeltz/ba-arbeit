@@ -106,8 +106,8 @@ void main() {
 		lcd_print_string(buf);
 		wait_ms(20000);
 		lcd_print_string("STOP");
-		//order_set_type(&order, ORDER_CONTROL_RESET);
-		//order_send(&order);
+		order_set_type(&order, ORDER_CONTROL_RESET);
+		order_send(&order);
 		wait_ms(5000);
 	}
 }

@@ -3,7 +3,6 @@
 
 #include <avr/io.h>
 
-void pin_init(void);
 #define pin_set_A(pin) (PORTA |= (1 << pin))
 #define pin_set_C(pin) (PORTC |= (1 << pin))
 #define pin_clear_A(pin) (PORTA &= ~(1 << pin))

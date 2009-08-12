@@ -113,7 +113,7 @@ OPT = 2
 #     Native formats for AVR-GCC's -g are dwarf-2 [default] or stabs.
 #     AVR Studio 4.10 requires dwarf-2.
 #     AVR [Extended] COFF format requires stabs, plus an avr-objcopy run.
-DEBUG = dwarf-2
+#DEBUG = dwarf-2
 
 
 # List any extra directories to look for include files here.
@@ -153,8 +153,8 @@ CPPDEFS = -DF_CPU=$(F_CPU)UL
 #  -Wall...:     warning level
 #  -Wa,...:      tell GCC to pass this to the assembler.
 #    -adhlns...: create assembler listing
-CFLAGS = -g$(DEBUG)
-CFLAGS += $(CDEFS)
+#CFLAGS = -g$(DEBUG)
+CFLAGS = $(CDEFS)
 CFLAGS += -O$(OPT)
 CFLAGS += -funsigned-char
 CFLAGS += -funsigned-bitfields

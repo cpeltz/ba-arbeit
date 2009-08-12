@@ -5,6 +5,7 @@
 #include "io.h"
 #include "definitions.h"
 #include "led.h"
+#include "pin.h"
 
 /**
  * @defgroup UART_Module USART Module
@@ -18,6 +19,7 @@ extern uint8_t DEBUG_ENABLE;
  * The USART transmitter ISR.
  */
 ISR(USART1_UDRE_vect) {
+	pin_set_C(1);
 	if (INTERFACE_TWI) {
 		UCSR1B &= ~(1 << UDRIE1);
 	} else {
@@ -32,16 +34,19 @@ ISR(USART1_UDRE_vect) {
 			}
 		}
 	}
+	pin_clear_C(1);
 }
 
 /**
  * The USART reciever ISR.
  */
 ISR(USART1_RX_vect) {
+	pin_set_C(2);
 	uint8_t value = UDR1;
 
 	led_switch(LED_BLUE, SINGLE);
 	_io_push(value);
+	pin_clear_C(2);
 }
 
 /**

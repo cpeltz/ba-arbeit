@@ -4,7 +4,7 @@
 <h1>µVision3 Build Log</h1>
 <h2>Project:</h2>
 Z:\Projects\ba-arbeit\test_program\Rufus.uv2
-Project File Date:  07/07/2009
+Project File Date:  08/11/2009
 
 <h2>Output:</h2>
 Build target 'Monitor'
@@ -31,41 +31,10 @@ linking...
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 2824H
+    ADDRESS: 2821H
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A1DH
-Program Size: data=10.1 xdata=106 code=2761
-"monitor" - 0 Error(s), 7 Warning(s).
-Build target 'Monitor'
-assembling Startup.a51...
-compiling timing.c...
-compiling lcd.c...
-compiling i2c_master.c...
-compiling servo.c...
-compiling main.c...
-compiling helper.c...
-compiling order.c...
-linking...
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV_CO?ORDER
-*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_ORDER_SEND_AND_RECV?ORDER
-*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 280CH
-*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
-    SYMBOL:  CONDTIMERSTATUS
-    MODULE:  timing.obj (TIMING)
-    ADDRESS: 2A05H
-Program Size: data=10.1 xdata=106 code=2737
+    ADDRESS: 2A1AH
+Program Size: data=10.1 xdata=106 code=2758
 "monitor" - 0 Error(s), 7 Warning(s).
