@@ -1,0 +1,24 @@
+	.file	"pin_test.c"
+__SREG__ = 0x3f
+__SP_H__ = 0x3e
+__SP_L__ = 0x3d
+__CCP__  = 0x34
+__tmp_reg__ = 0
+__zero_reg__ = 1
+	.text
+.global	main
+	.type	main, @function
+main:
+/* prologue: function */
+/* frame size = 0 */
+	sbi 34-32,0
+	cbi 34-32,0
+	in r24,34-32
+	ldi r25,lo8(1)
+	eor r24,r25
+	out 34-32,r24
+	ldi r24,lo8(0)
+	ldi r25,hi8(0)
+/* epilogue start */
+	ret
+	.size	main, .-main
