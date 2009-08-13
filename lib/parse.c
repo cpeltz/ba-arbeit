@@ -57,17 +57,11 @@ void parser_update(void) {
 	pin_set_A(3);
 	uint8_t value = 0, times = IO_INBUFFER_SIZE - io_get_free_buffer_size();
 	pin_clear_A(3);
-/*	if( times ) {
-		debug_WriteString_P(PSTR("parse.c : parser_update() : Begin\r\n"));
-		debug_WriteInteger(PSTR("parse.c : parser_update() : Times ="), times);
-	}*/
 	pin_set_A(4);
 	for (; 0 < times; times--) {
 		pin_set_A(5);
 		io_get(&value);
 		pin_clear_A(5);
-//		uart_put_debug(value);
-//		debug_WriteInteger(PSTR("parse.c : parser_update() : Value ="), value);
 		pin_set_A(6);
 		parser_add_byte(value);
 		pin_clear_A(6);

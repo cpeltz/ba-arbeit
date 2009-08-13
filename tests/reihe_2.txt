@@ -1,0 +1,235 @@
+Datum: 2009-08-13
+Version: 2.9.20090810 -> 2.9.20090813
+
+Compiliert ohne -g und mit -O2
+LCD: an
+
+Port-Belegung:
+A0: main-loop (toggle)
+A1: I2C Int
+A2: process_orders()
+A3: parser_update() (1/4)
+A4: parser_update() (2/4)
+A5: parser_update() (3/4)
+A6: parser_update() (4/4)
+A7: 100ms timer Int
+C0: 262ms timer Int
+C1: io_get() (3/3) & [parser_add_byte() [Messungen 1 bis 3]]
+C2: nicht belegt
+C3: lcd_update_screen()
+C4: parser_update()
+C5: queue_update
+C6: io_get() (1/3)
+C7: io_get() (2/3)
+
+------------------------------
+void parser_update(void) {
+	pin_set_A(3);
+	uint8_t value = 0, times = IO_INBUFFER_SIZE - io_get_free_buffer_size();
+	pin_clear_A(3);
+	pin_set_A(4);
+	for (; 0 < times; times--) {
+		pin_set_A(5);
+		io_get(&value);
+		pin_clear_A(5);
+		pin_set_A(6);
+		parser_add_byte(value);
+		pin_clear_A(6);
+	}
+	pin_clear_A(4);
+}
+------------------------------
+void parser_add_byte(uint8_t byte) { 
+	extern uint8_t DEBUG_ENABLE;
+	pin_set_C(6);
+	debug_WriteInteger(PSTR("parse.c : parser_add_byte() : Add byte = "), byte);
+	pin_clear_C(6);
+	if( current_buffer_position == first_buffer_position ) {
+		debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Buffer full\n"));
+		return; // Discard, buffer full
+	}
+	parser_order_buffer[current_buffer_position].data[current_order_position] = byte;
+	current_order_position++;
+	if (current_order_position >= ORDER_TYPE_MAX_LENGTH || parser_order_complete(&parser_order_buffer[current_buffer_position], current_order_position)) {
+		if (first_buffer_position == -1 ) {
+			first_buffer_position = current_buffer_position;
+		}
+		current_buffer_position = (current_buffer_position + 1) % PARSER_ORDER_BUFFER_SIZE;
+		current_order_position = 0;
+	}
+}
+------------------------------
+uint8_t io_get(uint8_t* value) {
+	pin_set_C(6);
+	if ((inpos_begin + 1) % IO_INBUFFER_SIZE == inpos_end)
+		return 0;
+	pin_clear_C(6);
+	pin_set_C(7);
+	*value = in_buffer[inpos_begin];
+	pin_clear_C(7);
+	pin_set_C(1);
+	inpos_begin = (inpos_begin + 1) % IO_INBUFFER_SIZE;
+	pin_clear_C(1);
+	return 1;
+}
+------------------------------
+
+Messung 1:
+A0            184,945 us
+ |- A1 + A2    39,382 us
+ |   |- A1     21,436 us
+ |   |- A2     17,946 us
+ |- C3          5,982 us (  4,487 us)
+ |- C4        138,086 us (136,790 us)
+     |- Call    1,196 us
+	 |- A3      3,190 us (  1,595 us)
+	 |- A4    134,397 us (133,988 us)
+	    |- A5  35,095 us ( 33,101 us)
+		|- A6 100,499 us
+
+Messung 2:
+A0               182,054 us (183,649 us)
+ |- A1 + A2       39,681 us ( 38,086 us)
+ |   |- A1        21,934 us
+ |   |- A2        17,747 us
+ |- C3             5,583 us (  3,988 us)
+ |- C4           139,132 us (137,188 us)
+     |- Call       1,196 us
+	 |- A3         3,589 us (  1,994 us)
+	 |- A4       134,397 us (133,998 us)
+	    |- A5     34,696 us ( 33,101 us)
+		|- A6    100,499 us
+		   |- C6  90,528 us
+
+Messung 3:
+debug-Ausgabe mit einer if-Anweisung
+umgeben.:
+-debug_WriteInteger(PSTR("parse.c : parser_add_byte() : Add byte = "), byte);
++if(DEBUG_ENABLE)
++	debug_WriteInteger(PSTR("parse.c : parser_add_byte() : Add byte = "), byte);
+
+A0                97,206 us
+ |- A1 + A2       39,721 us ( 38,124 us)
+ |   |- A1        21,956 us
+ |   |- A2        17,765 us
+ |- C3             3,393 us (  1,796 us)
+ |- C4            50,699 us ( 48,703 us)
+     |- Call       1,597 us
+	 |- A3         3,393 us (  1,796 us)
+	 |- A4        45,908 us ( 45,509 us)
+	    |- A5     34,731 us ( 33,134 us)
+		|- A6     11,976 us
+		   |- C6 399,202 ns
+Es wurde geschätzt, dass eine simple if-Anweisung ungefähr 9 Ticks
+benötigt. Das sind 562,5 ns, gemessen wurden allerdings bereits ca
+2 Ticks kürzere Zeiten. Dies hängt vermutlich mit den Optimierungs-
+Möglichkeiten des Compilers zusammen.
+
+Messung 4:
+Nun wurde genaueres Augenmerk auf io_get gelegt.
+A0                  94,012 us ( 95,409 us)
+ |- A1 + A2         39,521 us ( 37,725 us)
+ |   |- A1          21,756 us
+ |   |- A2          17,765 us
+ |- C3               5,988 us (  4,192 us)
+ |- C4              51,098 us ( 49,501 us)
+     |- Call         1,397 us
+	 |- A3           3,393 us (  1,597 us)
+	 |- A4          46,707 us ( 46,507 us)
+	    |- A5       35,729 us ( 33,932 us)
+		|  |- Call 998,004 ns
+		|  |- C6    17,565 us ( 15,968 us)
+		|  |- C7   798,463 ns (598,802 ns)
+		|  |- C1    17,166 us ( 16,367 us)
+		|- A6       12,176 us
+Offensichtlich ist die Modulo-Rechnung für die hohen Zeiten in C6
+und C1 verantwortlich, was mit einer Kontrolle des Assembler-Codes
+bestätigt werden konnte.
+
+Messung 5:
+Die io_get()-Methode wurde hier umgeschrieben, anstatt zweimal die
+Modulo-Rechnung durchzuführen wird sie einmal am Anfang in eine
+temporäre Variable zwischen gespeichert.
+A0                  57,285 us ( 55,888 us)
+ |- A2              14,271 us ( 12,475 us)
+ |- C3               5,888 us (  4,192 us)
+ |- C4              35,729 us ( 34,132 us)
+ |   |- Call         1,397 us
+ |   |- A3           3,393 us (  1,697 us)
+ |   |- A4          31,238 us ( 31,038 us)
+ |      |- A5       20,259 us ( 18,563 us)
+ |  	|  |- Call 798,403 ns
+ |  	|  |- C6    17,665 us ( 16,068 us)
+ |  	|  |- C7   798,403 ns
+ |  	|  |- C1   nicht messbar 
+ |  	|- A6       12,076 us
+ |- C5               5,489 us (  4,591 us) 
+=> 65,44 % Verbessrung zu Messung 4
+
+Messung 6:
+Die io_get()-Methode wurde weiter vereinfacht, die Buffergröße wird
+jetzt als Konstrant 255 (256 Elemente) gewertet, dadurch kann der
+Variablen Overflow als interner Modulo-Operator verwendet werden.
+A0                  41,517 us ( 40,120 us)
+ |- A2              14,271 us ( 12,575 us)
+ |- C3               5,888 us (  4,192 us)
+ |- C4              20,060 us ( 18,363 us)
+ |   |- Call         1,297 us
+ |   |- A3           3,393 us (  1,697 us)
+ |   |- A4          15,669 us ( 15,369 us)
+ |      |- A5        4,691 us (  2,994 us)
+ |  	|  |- Call 598,802 ns
+ |  	|  |- C6     1,597 us (798,403 ns)
+ |  	|  |- C7     1,198 us
+ |  	|  |- C1   nicht messbar 
+ |  	|- A6       11,976 us
+ |- C5               5,489 us (  4,591 us) 
+=> 75,19 % Verbessrung zu Messung 4
+=> 28,21 % Verbessrung zu Messung 5
+Hierfür muss allerdings das IO-Framework umgeschrieben werden und
+die optionen IO_INBUFFER_SIZE und IO_OUTBUFFER_SIZE eleminiert
+werden.
+
+Nun die geänderten Methoden:
+------------------------------
+uint8_t io_get(uint8_t* value) {
+	pin_set_C(6);
+	uint8_t temp = (inpos_begin + 1);
+	if (temp == inpos_end)
+		return 0;
+	pin_clear_C(6);
+	pin_set_C(7);
+	*value = in_buffer[inpos_begin];
+	pin_clear_C(7);
+	pin_set_C(1);
+	inpos_begin = temp;
+	pin_clear_C(1);
+	return 1;
+}
+------------------------------
+void parser_add_byte(uint8_t byte) { 
+	// This function simple adds another byte to the current order
+	// or discards the byte if the buffer is full.
+	extern uint8_t DEBUG_ENABLE;
+	if(DEBUG_ENABLE)
+		debug_WriteInteger(PSTR("parse.c : parser_add_byte() : Add byte = "), byte);
+	if( current_buffer_position == first_buffer_position ) {
+		if(DEBUG_ENABLE)
+			debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Buffer full\n"));
+		return; // Discard, buffer full
+	}
+	// Put the byte at its position and increment
+	parser_order_buffer[current_buffer_position].data[current_order_position] = byte;
+	current_order_position++;
+	if (current_order_position >= ORDER_TYPE_MAX_LENGTH || parser_order_complete(&parser_order_buffer[current_buffer_position], current_order_position)) {
+		// if the order is full (bad sign) or the order is complete
+		// go on to the next order structure
+		if (first_buffer_position == -1 ) {
+			// This trick is needed to acknowledge a full buffer
+			first_buffer_position = current_buffer_position;
+		}
+		current_buffer_position = (current_buffer_position + 1) % PARSER_ORDER_BUFFER_SIZE;
+		current_order_position = 0;
+	}
+}
+------------------------------
