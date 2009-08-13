@@ -4,6 +4,7 @@
 #include "uart.h"
 #include "options.h"
 #include "led.h"
+#include "pin.h"
 #include <avr/pgmspace.h>
 
 /**
@@ -80,10 +81,17 @@ uint8_t io_get_free_buffer_size(void) {
  * @return <em>uint8_t</em> Returns either 1, on success, or 0 otherwise.
  */
 uint8_t io_get(uint8_t* value) {
-	if ((inpos_begin + 1) % IO_INBUFFER_SIZE == inpos_end)
+	pin_set_C(6);
+	uint8_t temp = (inpos_begin + 1);
+	if (temp == inpos_end)
 		return 0;
+	pin_clear_C(6);
+	pin_set_C(7);
 	*value = in_buffer[inpos_begin];
-	inpos_begin = (inpos_begin + 1) % IO_INBUFFER_SIZE;
+	pin_clear_C(7);
+	pin_set_C(1);
+	inpos_begin = temp;
+	pin_clear_C(1);
 	return 1;
 }
 

@@ -1,7 +1,7 @@
 #include "parse.h"
 #include "io.h"
 #include "order.h"
-
+#include "pin.h"
 #include <avr/pgmspace.h>
 /**
  * @defgroup PARSER_Module Parser
@@ -54,17 +54,25 @@ void parser_init(void) {
  * test function to check for more space.
  */
 void parser_update(void) {
+	pin_set_A(3);
 	uint8_t value = 0, times = IO_INBUFFER_SIZE - io_get_free_buffer_size();
+	pin_clear_A(3);
 /*	if( times ) {
 		debug_WriteString_P(PSTR("parse.c : parser_update() : Begin\r\n"));
 		debug_WriteInteger(PSTR("parse.c : parser_update() : Times ="), times);
 	}*/
+	pin_set_A(4);
 	for (; 0 < times; times--) {
+		pin_set_A(5);
 		io_get(&value);
+		pin_clear_A(5);
 //		uart_put_debug(value);
 //		debug_WriteInteger(PSTR("parse.c : parser_update() : Value ="), value);
+		pin_set_A(6);
 		parser_add_byte(value);
+		pin_clear_A(6);
 	}
+	pin_clear_A(4);
 }
 
 /**
@@ -163,10 +171,12 @@ int parser_order_complete(const order_t* order, uint8_t num_bytes) {
 void parser_add_byte(uint8_t byte) { 
 	// This function simple adds another byte to the current order
 	// or discards the byte if the buffer is full.
-	
-	debug_WriteInteger(PSTR("parse.c : parser_add_byte() : Add byte = "), byte);
+	extern uint8_t DEBUG_ENABLE;
+	if(DEBUG_ENABLE)
+		debug_WriteInteger(PSTR("parse.c : parser_add_byte() : Add byte = "), byte);
 	if( current_buffer_position == first_buffer_position ) {
-		debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Buffer full\n"));
+		if(DEBUG_ENABLE)
+			debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Buffer full\n"));
 		return; // Discard, buffer full
 	}
 	// Put the byte at its position and increment

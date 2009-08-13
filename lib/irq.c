@@ -43,7 +43,7 @@ static uint8_t sreg = 0;
  */
 ISR(INT4_vect) {
 	// Interrupt Service Routine für Drehgeber A-0
-	pin_set_A(3);
+	//pin_set_A(3);
 
 	switch (IRQ_PIN & 0x30) {
 		case ((0 << IRQ_A0) | (0 << IRQ_B0)):
@@ -67,7 +67,7 @@ ISR(INT4_vect) {
 	if (irq_p_trigger_position[0] != 0) {
 		irq_p_trigger_position[0]--;
 	}
-	pin_clear_A(3);
+	//pin_clear_A(3);
 }
 
 /**
@@ -75,7 +75,7 @@ ISR(INT4_vect) {
  */
 ISR(INT5_vect) {
 	// Interrupt Service Routine für Drehgeber B-0
-	pin_set_A(4);
+	//pin_set_A(4);
 
 	switch (IRQ_PIN & 0x30) {
 		case ((0 << IRQ_A0) | (0 << IRQ_B0)):
@@ -98,7 +98,7 @@ ISR(INT5_vect) {
 	if (irq_p_trigger_position[0] != 0) {
 		irq_p_trigger_position[0]--;
 	}
-	pin_clear_A(4);
+	//pin_clear_A(4);
 }
 
 /**
@@ -106,7 +106,7 @@ ISR(INT5_vect) {
  */
 ISR(INT6_vect) {
 	// Interrupt Service Routine für Drehgeber A-1
-	pin_set_A(5);
+	//pin_set_A(5);
 	
 	switch (IRQ_PIN & 0xc0) {
 		case ((0 << IRQ_A1) | (0 << IRQ_B1)):
@@ -129,7 +129,7 @@ ISR(INT6_vect) {
 	if (irq_p_trigger_position[1] != 0) {
 		irq_p_trigger_position[1]--;
 	}
-	pin_clear_A(5);
+	//pin_clear_A(5);
 }
 
 /**
@@ -137,7 +137,7 @@ ISR(INT6_vect) {
  */
 ISR(INT7_vect) {
 	// Interrupt Service Routine für Drehgeber B-1
-	pin_set_A(6);
+	//pin_set_A(6);
 
 	switch (IRQ_PIN & 0xc0) {
 		case ((0 << IRQ_A1) | (0 << IRQ_B1)):
@@ -160,7 +160,7 @@ ISR(INT7_vect) {
 	if (irq_p_trigger_position[1] != 0) {
 		irq_p_trigger_position[1]--;
 	}
-	pin_clear_A(6);
+	//pin_clear_A(6);
 }
 
 /**

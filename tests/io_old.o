@@ -1,0 +1,606 @@
+	.file	"io.c"
+__SREG__ = 0x3f
+__SP_H__ = 0x3e
+__SP_L__ = 0x3d
+__CCP__  = 0x34
+__tmp_reg__ = 0
+__zero_reg__ = 1
+.global	inpos_begin
+.global	inpos_begin
+	.section .bss
+	.type	inpos_begin, @object
+	.size	inpos_begin, 1
+inpos_begin:
+	.skip 1,0
+.global	inpos_end
+	.data
+	.type	inpos_end, @object
+	.size	inpos_end, 1
+inpos_end:
+	.byte	1
+.global	outpos_begin
+.global	outpos_begin
+	.section .bss
+	.type	outpos_begin, @object
+	.size	outpos_begin, 1
+outpos_begin:
+	.skip 1,0
+.global	outpos_end
+	.data
+	.type	outpos_end, @object
+	.size	outpos_end, 1
+outpos_end:
+	.byte	1
+.global	objpos_begin
+.global	objpos_begin
+	.section .bss
+	.type	objpos_begin, @object
+	.size	objpos_begin, 1
+objpos_begin:
+	.skip 1,0
+.global	objpos_end
+	.data
+	.type	objpos_end, @object
+	.size	objpos_end, 1
+objpos_end:
+	.byte	1
+	.lcomm transmission_offset,1
+	.text
+.global	io_init
+	.type	io_init, @function
+io_init:
+	push r29
+	push r28
+	in r28,__SP_L__
+	in r29,__SP_H__
+/* prologue: function */
+/* frame size = 0 */
+	call led_init
+	call twi_init
+	call uart_init
+	ldi r24,lo8(0)
+	ldi r22,lo8(1)
+	call led_switch
+/* epilogue start */
+	pop r28
+	pop r29
+	ret
+	.size	io_init, .-io_init
+.global	io_get_free_buffer_size
+	.type	io_get_free_buffer_size, @function
+io_get_free_buffer_size:
+	push r29
+	push r28
+	push __tmp_reg__
+	in r28,__SP_L__
+	in r29,__SP_H__
+/* prologue: function */
+/* frame size = 1 */
+	lds r25,inpos_begin
+	lds r24,inpos_end
+	cp r25,r24
+	brne .L4
+	std Y+1,__zero_reg__
+	rjmp .L5
+.L4:
+	lds r25,inpos_begin
+	lds r24,inpos_end
+	cp r25,r24
+	brsh .L6
+	lds r25,inpos_begin
+	lds r24,inpos_end
+	mov r18,r25
+	sub r18,r24
+	std Y+1,r18
+	rjmp .L5
+.L6:
+	lds r24,inpos_begin
+	lds r25,inpos_end
+	sub r24,r25
+	mov r25,r24
+	subi r25,lo8(-(-1))
+	std Y+1,r25
+.L5:
+	ldd r24,Y+1
+/* epilogue start */
+	pop __tmp_reg__
+	pop r28
+	pop r29
+	ret
+	.size	io_get_free_buffer_size, .-io_get_free_buffer_size
+.global	io_get
+	.type	io_get, @function
+io_get:
+	push r29
+	push r28
+	rcall .
+	in r28,__SP_L__
+	in r29,__SP_H__
+/* prologue: function */
+/* frame size = 3 */
+	std Y+2,r25
+	std Y+1,r24
+	ldi r26,lo8(40)
+	ldi r27,hi8(40)
+	ldi r30,lo8(40)
+	ldi r31,hi8(40)
+	ld r24,Z
+	ori r24,lo8(64)
+	st X,r24
+	lds r24,inpos_begin
+	mov r24,r24
+	ldi r25,lo8(0)
+	adiw r24,1
+	ldi r18,lo8(255)
+	ldi r19,hi8(255)
+	movw r22,r18
+	call __divmodhi4
+	movw r18,r24
+	lds r24,inpos_end
+	mov r24,r24
+	ldi r25,lo8(0)
+	cp r18,r24
+	cpc r19,r25
+	brne .L9
+	std Y+3,__zero_reg__
+	rjmp .L10
+.L9:
+	ldi r26,lo8(40)
+	ldi r27,hi8(40)
+	ldi r30,lo8(40)
+	ldi r31,hi8(40)
+	ld r24,Z
+	andi r24,lo8(-65)
+	st X,r24
+	ldi r26,lo8(40)
+	ldi r27,hi8(40)
+	ldi r30,lo8(40)
+	ldi r31,hi8(40)
+	ld r24,Z
+	ori r24,lo8(-128)
+	st X,r24
+	lds r24,inpos_begin
+	mov r24,r24
+	ldi r25,lo8(0)
+	movw r30,r24
+	subi r30,lo8(-(in_buffer))
+	sbci r31,hi8(-(in_buffer))
+	ld r24,Z
+	ldd r30,Y+1
+	ldd r31,Y+2
+	st Z,r24
+	ldi r26,lo8(40)
+	ldi r27,hi8(40)
+	ldi r30,lo8(40)
+	ldi r31,hi8(40)
+	ld r24,Z
+	andi r24,lo8(127)
+	st X,r24
+	ldi r26,lo8(40)
+	ldi r27,hi8(40)
+	ldi r30,lo8(40)
+	ldi r31,hi8(40)
+	ld r24,Z
+	ori r24,lo8(2)
+	st X,r24
+	lds r24,inpos_begin
+	mov r24,r24
+	ldi r25,lo8(0)
+	adiw r24,1
+	ldi r18,lo8(255)
+	ldi r19,hi8(255)
+	movw r22,r18
+	call __divmodhi4
+	sts inpos_begin,r24
+	ldi r26,lo8(40)
+	ldi r27,hi8(40)
+	ldi r30,lo8(40)
+	ldi r31,hi8(40)
+	ld r24,Z
+	andi r24,lo8(-3)
+	st X,r24
+	ldi r24,lo8(1)
+	std Y+3,r24
+.L10:
+	ldd r24,Y+3
+/* epilogue start */
+	pop __tmp_reg__
+	pop __tmp_reg__
+	pop __tmp_reg__
+	pop r28
+	pop r29
+	ret
+	.size	io_get, .-io_get
+.global	io_put
+	.type	io_put, @function
+io_put:
+	push r29
+	push r28
+	push __tmp_reg__
+	push __tmp_reg__
+	in r28,__SP_L__
+	in r29,__SP_H__
+/* prologue: function */
+/* frame size = 2 */
+	std Y+1,r24
+	lds r25,outpos_end
+	lds r24,outpos_begin
+	cp r25,r24
+	brne .L13
+	std Y+2,__zero_reg__
+	rjmp .L14
+.L13:
+	lds r24,outpos_end
+	mov r24,r24
+	ldi r25,lo8(0)
+	sbiw r24,1
+	movw r30,r24
+	subi r30,lo8(-(out_buffer))
+	sbci r31,hi8(-(out_buffer))
+	ldd r24,Y+1
+	st Z,r24
+	lds r24,outpos_end
+	mov r24,r24
+	ldi r25,lo8(0)
+	adiw r24,1
+	ldi r18,lo8(255)
+	ldi r19,hi8(255)
+	movw r22,r18
+	call __divmodhi4
+	sts outpos_end,r24
+	ldi r24,lo8(1)
+	std Y+2,r24
+.L14:
+	ldd r24,Y+2
+/* epilogue start */
+	pop __tmp_reg__
+	pop __tmp_reg__
+	pop r28
+	pop r29
+	ret
+	.size	io_put, .-io_put
+.global	_io_push
+	.type	_io_push, @function
+_io_push:
+	push r29
+	push r28
+	push __tmp_reg__
+	in r28,__SP_L__
+	in r29,__SP_H__
+/* prologue: function */
+/* frame size = 1 */
+	std Y+1,r24
+	lds r25,inpos_end
+	lds r24,inpos_begin
+	cp r25,r24
+	breq .L18
+	lds r24,inpos_end
+	mov r24,r24
+	ldi r25,lo8(0)
+	sbiw r24,1
+	movw r30,r24
+	subi r30,lo8(-(in_buffer))
+	sbci r31,hi8(-(in_buffer))
+	ldd r24,Y+1
+	st Z,r24
+	lds r24,inpos_end
+	mov r24,r24
+	ldi r25,lo8(0)
+	adiw r24,1
+	ldi r18,lo8(255)
+	ldi r19,hi8(255)
+	movw r22,r18
+	call __divmodhi4
+	sts inpos_end,r24
+.L18:
+/* epilogue start */
+	pop __tmp_reg__
+	pop r28
+	pop r29
+	ret
+	.size	_io_push, .-_io_push
+.global	io_get_next_transmission_byte
+	.type	io_get_next_transmission_byte, @function
+io_get_next_transmission_byte:
+	push r29
+	push r28
+	push __tmp_reg__
+	in r28,__SP_L__
+	in r29,__SP_H__
+/* prologue: function */
+/* frame size = 1 */
+	lds r24,outpos_begin
+	mov r24,r24
+	ldi r25,lo8(0)
+	adiw r24,1
+	ldi r18,lo8(255)
+	ldi r19,hi8(255)
+	movw r22,r18
+	call __divmodhi4
+	movw r18,r24
+	lds r24,outpos_end
+	mov r24,r24
+	ldi r25,lo8(0)
+	cp r18,r24
+	cpc r19,r25
+	brne .L20
+	ldi r24,lo8(-1)
+	std Y+1,r24
+	rjmp .L21
+.L20:
+	call io_obj_get_current_size
+	mov r25,r24
+	lds r24,transmission_offset
+	cp r24,r25
+	brlo .L22
+	ldi r24,lo8(-1)
+	std Y+1,r24
+	rjmp .L21
+.L22:
+	lds r24,outpos_begin
+	mov r18,r24
+	ldi r19,lo8(0)
+	lds r20,transmission_offset
+	mov r24,r20
+	ldi r25,lo8(0)
+	add r24,r18
+	adc r25,r19
+	movw r30,r24
+	subi r30,lo8(-(out_buffer))
+	sbci r31,hi8(-(out_buffer))
+	ld r24,Z
+	std Y+1,r24
+	mov r24,r20
+	subi r24,lo8(-(1))
+	sts transmission_offset,r24
+.L21:
+	ldd r24,Y+1
+/* epilogue start */
+	pop __tmp_reg__
+	pop r28
+	pop r29
+	ret
+	.size	io_get_next_transmission_byte, .-io_get_next_transmission_byte
+.global	io_obj_get_current_size
+	.type	io_obj_get_current_size, @function
+io_obj_get_current_size:
+	push r29
+	push r28
+	push __tmp_reg__
+	push __tmp_reg__
+	in r28,__SP_L__
+	in r29,__SP_H__
+/* prologue: function */
+/* frame size = 2 */
+	lds r24,objpos_begin
+	mov r24,r24
+	ldi r25,lo8(0)
+	movw r30,r24
+	subi r30,lo8(-(obj_memory))
+	sbci r31,hi8(-(obj_memory))
+	ld r24,Z
+	std Y+1,r24
+	lds r24,objpos_begin
+	mov r24,r24
+	ldi r25,lo8(0)
+	adiw r24,1
+	ldi r18,lo8(255)
+	ldi r19,hi8(255)
+	movw r22,r18
+	call __divmodhi4
+	movw r18,r24
+	lds r24,objpos_end
+	mov r24,r24
+	ldi r25,lo8(0)
+	cp r18,r24
+	cpc r19,r25
+	brne .L25
+	std Y+2,__zero_reg__
+	rjmp .L26
+.L25:
+	lds r25,outpos_begin
+	ldd r24,Y+1
+	cp r25,r24
+	brsh .L27
+	lds r25,outpos_begin
+	ldd r24,Y+1
+	mov r18,r24
+	sub r18,r25
+	std Y+2,r18
+	rjmp .L26
+.L27:
+	lds r24,outpos_begin
+	ldd r25,Y+1
+	mov r18,r25
+	sub r18,r24
+	mov r24,r18
+	mov r25,r24
+	subi r25,lo8(-(-1))
+	std Y+2,r25
+.L26:
+	ldd r24,Y+2
+/* epilogue start */
+	pop __tmp_reg__
+	pop __tmp_reg__
+	pop r28
+	pop r29
+	ret
+	.size	io_obj_get_current_size, .-io_obj_get_current_size
+.global	io_obj_get_remaining_size
+	.type	io_obj_get_remaining_size, @function
+io_obj_get_remaining_size:
+	push r29
+	push r28
+	in r28,__SP_L__
+	in r29,__SP_H__
+/* prologue: function */
+/* frame size = 0 */
+	call io_obj_get_current_size
+	mov r25,r24
+	lds r24,transmission_offset
+	mov r18,r25
+	sub r18,r24
+	mov r24,r18
+/* epilogue start */
+	pop r28
+	pop r29
+	ret
+	.size	io_obj_get_remaining_size, .-io_obj_get_remaining_size
+.global	io_obj_remove_current
+	.type	io_obj_remove_current, @function
+io_obj_remove_current:
+	push r29
+	push r28
+	in r28,__SP_L__
+	in r29,__SP_H__
+/* prologue: function */
+/* frame size = 0 */
+	lds r24,objpos_begin
+	mov r24,r24
+	ldi r25,lo8(0)
+	adiw r24,1
+	ldi r18,lo8(255)
+	ldi r19,hi8(255)
+	movw r22,r18
+	call __divmodhi4
+	movw r18,r24
+	lds r24,objpos_end
+	mov r24,r24
+	ldi r25,lo8(0)
+	cp r18,r24
+	cpc r19,r25
+	breq .L33
+	lds r24,objpos_begin
+	mov r24,r24
+	ldi r25,lo8(0)
+	movw r30,r24
+	subi r30,lo8(-(obj_memory))
+	sbci r31,hi8(-(obj_memory))
+	ld r24,Z
+	sts outpos_begin,r24
+	lds r24,objpos_begin
+	mov r24,r24
+	ldi r25,lo8(0)
+	adiw r24,1
+	ldi r18,lo8(255)
+	ldi r19,hi8(255)
+	movw r22,r18
+	call __divmodhi4
+	sts objpos_begin,r24
+	sts transmission_offset,__zero_reg__
+.L33:
+/* epilogue start */
+	pop r28
+	pop r29
+	ret
+	.size	io_obj_remove_current, .-io_obj_remove_current
+.global	io_obj_start
+	.type	io_obj_start, @function
+io_obj_start:
+	push r29
+	push r28
+	in r28,__SP_L__
+	in r29,__SP_H__
+/* prologue: function */
+/* frame size = 0 */
+/* epilogue start */
+	pop r28
+	pop r29
+	ret
+	.size	io_obj_start, .-io_obj_start
+.global	io_obj_end
+	.type	io_obj_end, @function
+io_obj_end:
+	push r29
+	push r28
+	in r28,__SP_L__
+	in r29,__SP_H__
+/* prologue: function */
+/* frame size = 0 */
+	lds r24,objpos_end
+	mov r24,r24
+	ldi r25,lo8(0)
+	movw r18,r24
+	subi r18,lo8(-(-1))
+	sbci r19,hi8(-(-1))
+	lds r24,outpos_end
+	subi r24,lo8(-(-1))
+	movw r30,r18
+	subi r30,lo8(-(obj_memory))
+	sbci r31,hi8(-(obj_memory))
+	st Z,r24
+	lds r24,objpos_end
+	mov r24,r24
+	ldi r25,lo8(0)
+	adiw r24,1
+	ldi r18,lo8(255)
+	ldi r19,hi8(255)
+	movw r22,r18
+	call __divmodhi4
+	sts objpos_end,r24
+	lds r24,INTERFACE_TWI
+	tst r24
+	brne .L38
+	call uart_start_transmission
+.L38:
+/* epilogue start */
+	pop r28
+	pop r29
+	ret
+	.size	io_obj_end, .-io_obj_end
+.global	io_reset_transmission_status
+	.type	io_reset_transmission_status, @function
+io_reset_transmission_status:
+	push r29
+	push r28
+	in r28,__SP_L__
+	in r29,__SP_H__
+/* prologue: function */
+/* frame size = 0 */
+	sts transmission_offset,__zero_reg__
+/* epilogue start */
+	pop r28
+	pop r29
+	ret
+	.size	io_reset_transmission_status, .-io_reset_transmission_status
+.global	io_obj_remaining
+	.type	io_obj_remaining, @function
+io_obj_remaining:
+	push r29
+	push r28
+	push __tmp_reg__
+	in r28,__SP_L__
+	in r29,__SP_H__
+/* prologue: function */
+/* frame size = 1 */
+	lds r25,objpos_begin
+	lds r24,objpos_end
+	cp r24,r25
+	brsh .L42
+	lds r24,objpos_end
+	lds r25,objpos_begin
+	sub r24,r25
+	mov r25,r24
+	subi r25,lo8(-(-2))
+	std Y+1,r25
+	rjmp .L43
+.L42:
+	lds r24,objpos_end
+	lds r25,objpos_begin
+	sub r24,r25
+	mov r25,r24
+	subi r25,lo8(-(-1))
+	std Y+1,r25
+.L43:
+	ldd r24,Y+1
+/* epilogue start */
+	pop __tmp_reg__
+	pop r28
+	pop r29
+	ret
+	.size	io_obj_remaining, .-io_obj_remaining
+	.lcomm in_buffer,255
+	.lcomm out_buffer,255
+	.lcomm obj_memory,255
+.global __do_copy_data
+.global __do_clear_bss
