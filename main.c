@@ -145,7 +145,7 @@ void print_startup(void) {
 	extern const char *version;
 	// Startup Debug Infos
 	if (LCD_PRESENT) {
-		lcd_print_status(NULL);
+		lcd_update_info(NULL);
 	}
 	DEBUG_ENABLE = 1;
 	debug_WriteString_P(PSTR("Motorsteuerung "));
