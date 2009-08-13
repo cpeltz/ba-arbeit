@@ -111,7 +111,6 @@ order_t * queue_get_current_order(void) {
 	if (paused)
 		return 0;
 	// Return the current Order
-	// TODO Maybe exchange with "return queue_get_current_normal_order();"
 	if (queue_entries != 0) {
 		return &order_queue[queue_readposition];
 	}

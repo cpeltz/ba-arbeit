@@ -185,19 +185,6 @@ void print_startup(void) {
 }
 
 /**
- *	Fills the local variable with time tick flags.
- *
- *	To show how much time has passed since last execution and to
- *	be able to do order maintainace time based, this is used.
- */
-void copy_timer_flags(void) {
-	// Copy global timer flags to a local copy, which will be used throughout the program.
-	// This is done to not miss a timer tick.
-	local_time_flags = timer_global_flags;
-	timer_global_flags = 0;
-}
-
-/**
  *	Main process for orders.
  *
  *	This function simply maintains an order, gets a new one from the queue
@@ -244,8 +231,10 @@ int main(void) {
 	while(1) {
 		pin_toggle_A(0);
 //		debug_WriteString_P(PSTR("main.c : main() :  copy_timer_flags()\r\n"));
-		// Copy the global timer flags to a local variable (but global for this file)
-		copy_timer_flags();
+		// Copy global timer flags to a local copy, which will be used throughout the program.
+		// This is done to not miss a timer tick.
+		local_time_flags = timer_global_flags;
+		timer_global_flags = 0;
 
 //		debug_WriteString_P(PSTR("main.c : main() :  process_orders()\r\n"));
 		// Processes the next or current order
