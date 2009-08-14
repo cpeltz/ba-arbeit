@@ -1,0 +1,24 @@
+- Einführung
+  |- Grobe Ideen
+  |- Aufgabe
+  |- Vorheriger Status
+- Hardware
+  |- Übersicht über die Hardware-Konfiguration
+  |- Verbindung mit Aufgabe Herstellen
+- Einsatz/System/Environment
+  |- Einsatz im Praktikum
+  |- Art der Benutzung
+  |- Ganzes System im Schaubild
+- Design/Designentscheidungen
+  |- Altes- vs Neues-Design
+  |- Detailiert über das Neue Design (Trade-offs, Module, Beziehungen)
+  |- Protokoll vorstellen
+- Implementierung
+  |- Interessante Stellen der Implementierung auswählen und vorstellen
+  |- Library auf der Praktikumsplatine
+- Messungen
+  |- Old vs New
+  |- Wie schnell, wie verändert unter bestimmten Bedingungen
+  |- AB in Int/out of Int
+- Ende
+  |- Weiterführende Ideen
