@@ -25,14 +25,11 @@ void itoa_hex(uint8_t value, char *buffer, uint8_t size) {
 	buffer[2] = '\0';
 }
 
-#include "io.h"
+#include <string.h>
 
-/**
- * Prints current status informations on the LCD.
- *
- * Will only be updated if the current order changes.
- */
-void lcd_print_status(const order_t * const order) {
+char info[4][21];
+uint8_t info_col = 0, info_row = 0;
+void lcd_update_info(const order_t * const order) {
 	extern uint8_t ACTIVE_BRAKE_ENABLE;
 	extern uint8_t ACTIVE_BRAKE_WHEN_IDLE;
 	extern uint8_t ACTIVE_BRAKE_WHEN_TRIGGER_REACHED;
@@ -40,38 +37,51 @@ void lcd_print_status(const order_t * const order) {
 	extern uint8_t DEBUG_ENABLE;
 	char buffer[3];
 	lcd_clrscr();
-	lcd_puts(version);
-	lcd_gotoxy(0,1);
-	INTERFACE_TWI ? lcd_puts("TWI ") : lcd_puts("twi ");
-	DEBUG_ENABLE ? lcd_puts("DEBUG ") : lcd_puts("debug ");
-	ACTIVE_BRAKE_ENABLE ? lcd_puts("AB:E") : lcd_puts("AB:e");
-	ACTIVE_BRAKE_WHEN_IDLE ? lcd_puts("I") : lcd_puts("i");
-	ACTIVE_BRAKE_WHEN_TRIGGER_REACHED ? lcd_puts("T") : lcd_puts("t");
+	info[0][0] = '\0';
+	info[0] = strcat(info[0], version);
+	INTERFACE_TWI ? info[1] = strcat(info[1], "TWI ") : info[1] = strcat(info[1], "twi ");
+	DEBUG_ENABLE ? info[1] = strcat(info[1], "DEBUG ") : info[1] = strcat(info[1], "debug ");
+	ACTIVE_BRAKE_ENABLE ?  info[1] = strcat(info[1], "AB:E") : info[1] = strcat(info[1], "AB:e");
+	ACTIVE_BRAKE_WHEN_IDLE ?  info[1] = strcat(info[1], "I") : info[1] = strcat(info[1], "i");
+	ACTIVE_BRAKE_WHEN_TRIGGER_REACHED ?  info[1] = strcat(info[1], "T") : info[1] = strcat(info[1], "t");
 	if(order != NULL) {
-		lcd_gotoxy(0,2);
-		int length = order_size(order);
-		for(int i=0; i < length; i++) {
+		uint8_t length = order_size(order);
+		uint8_t row = 2;
+		length = (length > 13) ? 13 : length;
+		for(uint8_t i=0; i < length; i++) {
 			itoa_hex(order->data[i], buffer, 3);
+			info[row] = strcat(info[2], buffer);
 			lcd_puts(buffer);
-			if(i == 6)
-				lcd_gotoxy(0,3);
+			if(i == 6 || i == 13)
+				row = 3;
 			else
-				lcd_puts(" ");
+				info[row] = strcat(info[2], " ");
 		}
 	}
-/*	lcd_gotoxy(0,2);
-	itoa_hex(io_obj_remaining(), buffer, 3);
-	lcd_puts(buffer);
-	lcd_puts(" Objects");
-*/
+	info_col = info_row = 0;
 }
 
 void lcd_update_screen(void) {
 	static order_t *order = NULL;
 	order_t *current = queue_get_current_order();
 	if(order != current) {
-		lcd_print_status(current);
+		lcd_update_info(current);
 		order = current;
 	}
-
+	if(info_col != 20 && info_row != 3) {
+		if(lcd_read(0) & (1 << LCD_BUSY)) {
+			return;
+		} else {
+			if(info[info_row][info_col])
+				lcd_write(info[info_row][info_col], 1);
+			else
+				info_col = 20;
+			if(info_col < 20)
+				info_col++;
+			else if (info_row < 3) {
+				info_row++;
+				info_col = 0;
+			}
+		}
+	}
 }
