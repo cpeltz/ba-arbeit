@@ -49,9 +49,9 @@ LCD an; AB:EIT; DEBUG aus; I2C an; alle Werte gelten als (gemessen)
 AB:I aktiv
 A0     47,856 us
  |- A2 31,904 us
+ |- C3  3,988 us
  |- C4  3,988 us
  |- C5  3,988 us
- |- C6  3,988 us
 
 Messung 5:
 A0, A1, A7, C3, C4, C5 untersucht.
@@ -61,9 +61,9 @@ A0          51,944 us
  |- A2 + A7 35,992 us
  |   |- A2  27,916 us
  |   |- A7   8,076 us
+ |- C3       3,988 us
  |- C4       3,988 us
  |- C5       3,988 us
- |- C6       3,988 us
 
 Messung 6:
 A0, A1, A2, C3, C4, C5 untersucht.
@@ -73,9 +73,9 @@ A0          35,494 us
  |- A1 + A2 22,333 us
  |   |- A1   4,586 us
  |   |- A2  17,747 us
+ |- C3       5,783 us
  |- C4       5,783 us
- |- C5       5,783 us
- |- C6       5,484 us
+ |- C5       5,484 us
 
 Messung 7:
 A0, A1, A2, C3, C4, C5 untersucht.
@@ -85,9 +85,9 @@ A0          180,459 us
  |- A1 + A2  38,883 us
  |   |- A1   21,934 us
  |   |- A2   16,949 us
- |- C4        1,113 us
- |- C5      137,587 us
- |- C6        5,583 us
+ |- C3        1,113 us
+ |- C4      137,587 us
+ |- C5        5,583 us
 Intervall der I2C-Bus übertragung: 270,189 us (Ende bis Anfang der Übertragung)
 
 Messung 8:
@@ -99,9 +99,9 @@ A0          718,843 us
  |- A1 + A2  39,880 us
  |   |- A1   21,934 us
  |   |- A2   17,946 us
- |- C4      997,009 ns
- |- C5      175,474 us
- |- C6      505,484 us
+ |- C3      997,009 ns
+ |- C4      175,474 us
+ |- C5      505,484 us
 
 Messung 9:
 A0, A2, C3, C4, C5 untersucht.
@@ -109,9 +109,9 @@ LCD aus; AB:EIT; DEBUG aus; I2C an; alle Werte gelten als (gemessen)
 order bereits in queue, aber nicht gestartet.
 A0          360,917 us (0-Flanke, dadurch kürzer, ~+2 us)
  |- A2      355,434 us
- |- C4      997,009 ns (398,804 ns)
- |- C5        5,982 us (3,988 us)
- |- C6        5,484 us (4,397 us)
+ |- C3      997,009 ns (398,804 ns)
+ |- C4        5,982 us (3,988 us)
+ |- C5        5,484 us (4,397 us)
 Die in Klammern geschriebene Werte wurden durch messund von Steigener
 Flanke bis Steigener Flanke des nächsten Pins gemessen (was genauer sein
 sollte).
@@ -122,9 +122,9 @@ LCD an; AB:EIT; DEBUG aus; I2C an; alle Werte gelten als (gemessen)
 order bereits in queue, aber nicht gestartet.
 A0            3,614 ms
  |- A2      358,923 us
- |- C4        3,250 ms
- |- C5        6,032 us (4,038 us)
- |- C6        5,583 us (4,786 us)
+ |- C3        3,250 ms
+ |- C4        6,032 us (4,038 us)
+ |- C5        5,583 us (4,786 us)
 Die in Klammern geschriebene Werte wurden durch messund von Steigener
 Flanke bis Steigener Flanke des nächsten Pins gemessen (was genauer sein
 sollte).
