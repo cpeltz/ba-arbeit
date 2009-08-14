@@ -54,19 +54,11 @@ void parser_init(void) {
  * test function to check for more space.
  */
 void parser_update(void) {
-	pin_set_A(3);
 	uint8_t value = 0, times = IO_INBUFFER_SIZE - io_get_free_buffer_size();
-	pin_clear_A(3);
-	pin_set_A(4);
 	for (; 0 < times; times--) {
-		pin_set_A(5);
 		io_get(&value);
-		pin_clear_A(5);
-		pin_set_A(6);
 		parser_add_byte(value);
-		pin_clear_A(6);
 	}
-	pin_clear_A(4);
 }
 
 /**

@@ -61,6 +61,8 @@
 
 #define LCD_IO_MODE      1         /**< 0: memory mapped mode, 1: IO port mode */
 #if LCD_IO_MODE
+void lcd_write(uint8_t data, uint8_t rs);
+uint8_t lcd_read(uint8_t rs);
 /**
  *  @name Definitions for 4-bit IO mode
  *  Change LCD_PORT if you want to use a different port for the LCD pins.

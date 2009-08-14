@@ -116,7 +116,7 @@ Input:    data   byte to write to LCD
 Returns:  none
 *************************************************************************/
 #if LCD_IO_MODE
-static void
+void
 lcd_write(uint8_t data, uint8_t rs)
 {
   unsigned char dataBits;
@@ -208,7 +208,7 @@ Input:    rs     1: read data
 Returns:  byte read from LCD controller
 *************************************************************************/
 #if LCD_IO_MODE
-static uint8_t
+uint8_t
 lcd_read(uint8_t rs)
 {
   uint8_t data;
