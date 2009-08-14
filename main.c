@@ -142,14 +142,13 @@ void initialize(void) {
  */
 void print_startup(void) {
 	uint8_t prev_DEBUG_ENABLE_value = DEBUG_ENABLE;
-	extern const char *version;
 	// Startup Debug Infos
 	if (LCD_PRESENT) {
 		lcd_update_info(NULL);
 	}
 	DEBUG_ENABLE = 1;
 	debug_WriteString_P(PSTR("Motorsteuerung "));
-	debug_PutString(version);
+	debug_PutString(VERSION);
 	debug_WriteString_P(PSTR("\n----------------------------\n\n"));
 	debug_WriteString_P(PSTR("DIP-Schalter Einstellungen:\n"));
 	if (INTERFACE_TWI)
@@ -195,22 +194,38 @@ void process_orders(void) {
 	order_t *current_order = NULL;
 	extern uint8_t ACTIVE_BRAKE_WHEN_IDLE;
 
+	pin_set_A(3);
 //	debug_WriteInteger(PSTR("main.c : process_orders() :  Avaialable Orders = "), queue_order_available());
 //	debug_NewLine();
 	current_order = queue_get_current_order();
+	pin_clear_A(3);
+	pin_set_A(4);
 	if (current_order != NULL) {
 //		debug_WriteString_P(PSTR("main.c : process_orders() :  Ack new Order, starting processing\n"));
+		pin_set_A(5);
 		order_process(current_order);
+		pin_clear_A(5);
 //		debug_WriteString_P(PSTR("main.c : process_orders() :  Processing done\n"));
+		pin_set_A(6);
 		if (current_order->status & ORDER_STATUS_DONE) {
 //			debug_WriteString_P(PSTR("main.c : process_orders() :  Order has status = DONE\n"));
+			pin_set_C(1);
 			drive_brake_active_set();
+			pin_clear_C(1);
+			pin_set_C(2);
 			queue_pop();
+			pin_clear_C(2);
+			pin_set_C(6);
 			current_order = NULL;
+			pin_clear_C(6);
 		}
+		pin_clear_A(6);
 	} else if (ACTIVE_BRAKE_WHEN_IDLE) {
+		pin_set_C(7);
 		drive_brake_active();
+		pin_clear_C(7);
 	}
+	pin_clear_A(4);
 }
 
 int main(void) {

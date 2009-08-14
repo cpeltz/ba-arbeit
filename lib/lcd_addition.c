@@ -5,30 +5,10 @@
 #include <inttypes.h>
 #include <stdlib.h>
 #include "pin.h"
+#include "definitions.h"
 
-const char *version = "Ver. 2.9.20090813";
-
-/**
- * Helper function to convert an integer to a string in hex notation.
- *
- * @param[in] value The integer, which should be converted.
- * @param[out] buffer The string in which the characters will be written, must be at least 3.
- * @param[in] size The size of the buffer, has to be at least 3 big, and more then
- * 3 won't be used.
- */
-void itoa_hex(uint8_t value, char *buffer, uint8_t size) {
-	uint8_t lower = value & 0x0f;
-	uint8_t upper = (value & 0xf0) >> 4;
-	if( size <= 2)
-		return;
-	buffer[0] = (upper < 10) ? ('0' + upper) : ('a' + (upper-10));
-	buffer[1] = (lower < 10) ? ('0' + lower) : ('a' + (lower-10));
-	buffer[2] = '\0';
-}
-
-#include <string.h>
-
-char info[4][21]={"Ver. 3.0.0.0000","","",""};
+const char *version = VERSION;
+char info[4][21]={VERSION,"","",""};
 uint8_t info_col = 0, info_row = 0;
 uint8_t lcd_update_underway = 0;
 
@@ -95,20 +75,14 @@ void lcd_update_info(const order_t * const order) {
 }
 
 void lcd_update_screen(void) {
-	pin_set_A(3);
 	static order_t *order = NULL;
 	order_t *current = queue_get_current_order();
-	pin_clear_A(3);
-	pin_set_A(4);
 	if(order != current) {
 		lcd_update_info(current);
 		order = current;
 	}
-	pin_clear_A(4);
-	pin_set_A(5);
 	if(lcd_update_underway) {
 		if(lcd_read(0) & (1 << LCD_BUSY)) {
-			pin_clear_A(5);
 			return;
 		} else {
 			if(info[info_row][info_col])
@@ -125,5 +99,4 @@ void lcd_update_screen(void) {
 				lcd_update_underway = 0;
 		}
 	}
-	pin_clear_A(5);
 }
