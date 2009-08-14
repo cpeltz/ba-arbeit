@@ -34,11 +34,6 @@ static int16_t irq_WheelDifference = 0;
 int16_t irq_p_trigger_position[2] = { 0, 0 };
 
 /**
- * Temp register
- */
-static uint8_t sreg = 0;
-
-/**
  * Interrupt Service Routine for wheel 0 (left) sensor A.
  */
 ISR(INT4_vect) {
@@ -204,7 +199,6 @@ int16_t	wheel_ReadPosition(uint8_t wheel) {
  * #WHEEL_LEFT, #WHEEL_RIGHT and #WHEEL_BOTH.
  */
 void wheel_ClearPosition(uint8_t wheel) {
-	sreg = SREG;
 	cli();
 	switch (wheel) {
 		case WHEEL_LEFT:
@@ -218,7 +212,7 @@ void wheel_ClearPosition(uint8_t wheel) {
 			irq_Position_W1 = 0;
 			break;
 	}
-	SREG = sreg;
+	sei();
 }
 
 /**
@@ -236,24 +230,19 @@ int16_t wheel_ReadDifference(void) {
  *
  * @param[in] difference The difference of the left and right wheel.
  * @todo Find out what negative and positive values mean.
- * @todo Why is cli() here?
  */
 void wheel_WriteDifference(int16_t difference) {
-	sreg = SREG;
 	cli();
 	irq_WheelDifference = difference;
-	SREG = sreg;
+	sei();
 }
 
 /**
  * Resets the difference between the wheels.
- *
- * @todo Why is cli() here?
  */
 void wheel_ClearDifference(void) {
-	sreg = SREG;
 	cli();
 	irq_WheelDifference = 0;
-	SREG = sreg;
+	sei();
 }
 /*@}*/
