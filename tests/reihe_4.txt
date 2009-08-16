@@ -1,0 +1,127 @@
+Datum: 2009-08-14
+Version: 3.0.0.0001
+
+Compiliert ohne -g und mit -O2
+LCD: an
+
+Port-Belegung:
+A0: main-loop (toggle)
+A1: I2C Int
+A2: process_orders()
+A3: process_orders() (1/8)
+A4: process_orders() (2/8)
+A5: process_orders() (3/8)
+A6: process_orders() (4/8)
+A7: 100ms timer Int
+C0: 262ms timer Int
+C1: process_orders() (5/8)
+C2: process_orders() (6/8)
+C3: lcd_update_screen()
+C4: parser_update()
+C5: queue_update
+C6: process_orders() (7/8)
+C7: process_orders() (8/8)
+
+Messung 1:
+Bed.: LCD an, Idle
+Sampling Rate: 4 ns
+A0                  28,387 us ( 26,990 us)
+ |- A2              14,970 us ( 13,273 us)
+     |- A3           3,942 us (  2,196 us)
+     |- A4          11,277 us ( 10,429 us)
+         |- A5     nicht erreicht
+         |- A6     nicht erreicht
+         |   |- C1 nicht erreicht
+         |   |- C2 nicht erreicht
+         |   |- C6 nicht erreicht
+         |- C7      10,379 us (  9,780 us)
+
+Messung 2:
+Bed.: LCD an, Befehl in Queue, !STARTED
+Sampling Rate: 8 ns
+A0                 419,162 us (420,659 us)
+ |- A2             356,786 us (355,289 us)
+     |- A3           4,571 us (  2,745 us)
+     |- A4         352,156 us (351,657 us)
+         |- A5     352,016 us (351,870 us)
+         |- A6     197,433 ns
+         |   |- C1 nicht erreicht
+         |   |- C2 nicht erreicht
+         |   |- C6 nicht erreicht
+         |- C7     nicht erreicht 
+
+Messung 3:
+Bed.: LCD an, Befehl in Queue, STARTED == true
+Sampling Rate: 8 ns
+A0                  31,984 us ( 30,503 us)
+ |- A2              13,722 us ( 12,043 us)
+ |   |- A3           4,541 us (  2,764 us)
+ |   |- A4           9,279 us (  8,588 us)
+ |       |- A5       8,391 us (  6,910 us)
+ |       |- A6     197,433 ns
+ |       |   |- C1 nicht erreicht
+ |       |   |- C2 nicht erreicht
+ |       |   |- C6 nicht erreicht
+ |       |- C7     nicht erreicht 
+ |- C3              10,958 us (  9,279 us)
+ |- C4               5,923 us (  4,146 us)
+ |- C5               5,528 us (  4,640 us)
+
+=> Ab jetzt mit -finline-functions Compiliert (Vergelichsmessungen)
+
+Messung 4:
+Bed.: LCD an, Idle
+Sampling Rate: 4 ns
+A0                  26,620 us ( 25,224 us)
+ |- A2              11,964 us ( 10,269 us)
+ |   |- A3           3,982 us (  2,193 us)
+ |   |- A4           8,275 us (  7,478 us)
+ |       |- A5     nicht erreicht
+ |       |- A6     nicht erreicht
+ |       |   |- C1 nicht erreicht
+ |       |   |- C2 nicht erreicht
+ |       |   |- C6 nicht erreicht
+ |       |- C7       7,378 us (  6,780 us)
+ |- C3               5,982 us (  4,387 us)
+ |- C4               7,178 us (  5,484 us)
+ |- C5               5,484 us (  4,586 us)
+
+Messung 5:
+Bed.: LCD an, Order in Queue, !STARTED 
+Sampling Rate: 8 ns
+A0                 284,148 us (285,643 us)
+ |- A2             226,820 us (224,826 us)
+ |   |- A3           4,487 us (  2,732 us)
+ |   |- A4         221,834 us (221,336 us)
+ |       |- A5     221,336 us (219,840 us)
+ |       |- A6     199,462 ns
+ |       |   |- C1 nicht erreicht
+ |       |   |- C2 nicht erreicht
+ |       |   |- C6 nicht erreicht
+ |       |- C7     nicht erreicht
+ |- C3              52,642 us ( 51,647 us)
+ |- C4               7,178 us (  5,384 us)
+ |- C5               5,583 us (  4,187 us)
+
+Messung 6:
+Bed.: LCD an, Order in Queue, STARTED == true 
+Sampling Rate: 8 ns
+A0                  33,300 us ( 31,904 us)
+ |- A2              13,659 us ( 11,964 us)
+ |   |- A3           4,536 us (  2,742 us)
+ |   |- A4           9,272 us (  8,574 us)
+ |       |- A5       8,375 us (  6,979 us)
+ |       |- A6     199,402 ns
+ |       |   |- C1 nicht erreicht
+ |       |   |- C2 nicht erreicht
+ |       |   |- C6 nicht erreicht
+ |       |- C7     nicht erreicht
+ |- C3              10,967 us (  9,372 us)
+ |- C4               7,178 us (  5,434 us)
+ |- C5               5,533 us (  4,636 us)
+
+=> Alleine durch das Anschalten der Compiler-Optimierung
+zum inlinen von funktionen konnte die Allgemeine Laufzeit
+zum Teil stark reduziert werden.
+Messung 2 vs Messung 5
+A0 421 us gegen 286 us (-135 us)
