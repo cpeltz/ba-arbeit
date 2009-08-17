@@ -107,7 +107,9 @@ void update_dip_flags(void) {
 	// DIP1 = ON: Use TWI as communication methode
 	INTERFACE_TWI = dip_read(0);
 	// DIP2 = ON: Activate Debug Output
+#ifdef DEBUG
 	DEBUG_ENABLE = dip_read(1);
+#endif
 	// DIP3 = ON: LCD is pluged in
 	LCD_PRESENT = dip_read(2);
 }
@@ -149,7 +151,7 @@ void print_startup(void) {
 		debug_WriteString_P(PSTR("DIP1: ON   Interface = TWI\n"));
 	else
 		debug_WriteString_P(PSTR("DIP1: OFF  Interface = UART\n"));
-	if (prev_DEBUG_ENABLE_value)
+	if (DEBUG_ENABLE)
 		debug_WriteString_P(PSTR("DIP2: ON   Debug-Ausgaben aktiv\n"));
 	else
 		debug_WriteString_P(PSTR("DIP2: OFF  Debug-Ausgaben inaktiv\n"));

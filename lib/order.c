@@ -30,6 +30,7 @@ typedef void (*order_function)(order_t *);
  */
 order_function order_array[16];
 
+#include <string.h>
 /**
  * Setup the order function call table.
  */
@@ -64,12 +65,9 @@ void order_array_init(void) {
  */
 void order_init(order_t *order) {
 	// Function to Initialize a order_t structure
-	uint8_t i = 0;
 	// Overwrite every piece of memory with 0
 	// Have to do it that way because no memset available
-	for(; i < ORDER_TYPE_MAX_LENGTH; i++) {
-		order->data[i] = 0;
-	}
+	memset(order->data, 0, ORDER_TYPE_MAX_LENGTH);
 	// Set the Status of the order to Initialized
 	order->status = ORDER_STATUS_INITIALIZED;
 }
@@ -82,9 +80,10 @@ void order_init(order_t *order) {
  */
 void order_copy(const order_t * const from, order_t *to) {
 	// Used to copy the order data from one to another
-	uint8_t i = 0;
-	for(; i < ORDER_TYPE_MAX_LENGTH; i++)
-		to->data[i] = from->data[i];
+	//uint8_t i = 0;
+	//for(; i < ORDER_TYPE_MAX_LENGTH; i++)
+	//	to->data[i] = from->data[i];
+	memcpy(to->data, from->data, ORDER_TYPE_MAX_LENGTH);
 	to->status = from->status;
 }
 

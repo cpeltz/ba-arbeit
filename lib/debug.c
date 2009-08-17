@@ -37,7 +37,7 @@ void debug_WriteString_P(const char *progmem_string) {
 	uint8_t character;
 
 	while ((character = pgm_read_byte(progmem_string++))) {
-		debug_put_debug_char(character);
+		uart_put_debug_char(character);
 	}
 }
 

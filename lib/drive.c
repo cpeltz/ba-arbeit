@@ -7,6 +7,7 @@
 #include "irq.h"
 #include "timer.h" /**< @todo move the wheel function out of this file */
 #include "lcd.h"
+#include "debug.h"
 
 /**
  * @defgroup DRIVE_Module Drive Module

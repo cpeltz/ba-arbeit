@@ -10,6 +10,7 @@
 #include "lcd_addition.h"
 #include <avr/wdt.h>
 #include <avr/pgmspace.h>
+#include <stdlib.h>
 
 /**
  * @addtogroup ORDER_Module
@@ -538,7 +539,7 @@ void option_instruction(order_t *order) {
 			break;
 	}
 	if (LCD_PRESENT)
-		lcd_update_info();
+		lcd_update_info(NULL);
 	order->status |= ORDER_STATUS_DONE;
 }
 /*@}*/

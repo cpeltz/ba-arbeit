@@ -2,6 +2,7 @@
 #include "parse.h"
 #include "order.h"
 #include "debug.h"
+#include "pin.h"
 #include <avr/pgmspace.h>
 
 /**
@@ -77,7 +78,8 @@ uint8_t queue_push(const order_t * const order) {
 	order_copy(order, &order_queue[queue_writeposition]);
 	queue_entries++;
 	queue_writeposition++;
-	queue_writeposition %= QUEUE_SIZE;
+//	queue_writeposition %= QUEUE_SIZE;
+	queue_writeposition -= (queue_writeposition / QUEUE_SIZE) * QUEUE_SIZE;
 	return 1;
 }
 
@@ -147,8 +149,12 @@ void queue_update(void) {
 	if (parser_has_new_order()) {
 		if (DEBUG_ENABLE)
 			debug_WriteString_P(PSTR("queue.c : queue_update() : We have a new order\n"));
+		pin_set_C(5);
 		order_init(&local_order);
+		pin_clear_C(5);
+		pin_set_C(6);
 		parser_get_new_order(&local_order);
+		pin_clear_C(6);
 		if (DEBUG_ENABLE) {
 			debug_WriteInteger(PSTR("queue.c : queue_update() : order opcode is = "), local_order.data[0]);
 			debug_WriteInteger(PSTR("queue.c : queue_update() : order status is = "), local_order.status);
@@ -160,7 +166,9 @@ void queue_update(void) {
 		} else {
 			if (DEBUG_ENABLE)
 				debug_WriteString_P(PSTR("queue.c : queue_update() : NO PRIORITY\n"));
+			pin_set_C(7);
 			queue_push(&local_order);
+			pin_clear_C(7);
 		}
 	}
 }

@@ -69,7 +69,7 @@ uint8_t io_get_free_buffer_size(void) {
 	if (inpos_begin == inpos_end)
 		return 0;
 	else if (inpos_begin < inpos_end)
-		return IO_BUFFER_SIZE - (inpos_end - 1 - inpos_begin);
+		return 255 - (inpos_end - 1 - inpos_begin);
 	else // begin > end
 		return inpos_begin - inpos_end - 1;
 }
@@ -141,7 +141,7 @@ uint8_t io_obj_get_current_size() {
 		return 0;
 	if(obj_end > outpos_begin)
 		return obj_end - outpos_begin;
-	return IO_BUFFER_SIZE - (outpos_begin - obj_end);
+	return (IO_BUFFER_SIZE - 1) - (outpos_begin - obj_end);
 }
 
 /**
@@ -204,7 +204,7 @@ void io_reset_transmission_status(void) {
  */
 uint8_t io_obj_remaining(void) {
 	if (objpos_begin > objpos_end)
-		return IO_BUFFER_SIZE - (objpos_begin - objpos_end) - 1;
+		return (IO_BUFFER_SIZE - 1) - (objpos_begin - objpos_end) - 1;
 	else
 		return (objpos_end - 1) - objpos_begin;
 }

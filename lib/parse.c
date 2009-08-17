@@ -54,7 +54,7 @@ void parser_init(void) {
  * test function to check for more space.
  */
 void parser_update(void) {
-	uint8_t value = 0, times = IO_BUFFER_SIZE - io_get_free_buffer_size();
+	uint8_t value = 0, times = 255 - io_get_free_buffer_size();
 	for (; 0 < times; times--) {
 		io_get(&value);
 		parser_add_byte(value);
@@ -185,7 +185,9 @@ void parser_add_byte(uint8_t byte) {
 			// This trick is needed to acknowledge a full buffer
 			first_buffer_position = current_buffer_position;
 		}
-		current_buffer_position = (current_buffer_position + 1) % PARSER_ORDER_BUFFER_SIZE;
+//		current_buffer_position = (current_buffer_position + 1) % PARSER_ORDER_BUFFER_SIZE;
+		current_buffer_position++;
+		current_buffer_position -= (current_buffer_position / PARSER_ORDER_BUFFER_SIZE) * PARSER_ORDER_BUFFER_SIZE;
 		current_order_position = 0;
 	}
 }
