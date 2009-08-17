@@ -28,7 +28,7 @@ ISR(TWI_vect) {
   
   	// temporarily save the last Byte on the bus
 	uint8_t twi_data = TWDR;
-	pin_set_A(1);
+	pin_set_A(5);
 
   	// Mask the prescaler bit out of the status
 	switch (TWSR & 0xf8) {
@@ -80,7 +80,6 @@ ISR(TWI_vect) {
 			// The missing break statement is wanted and right.
 
 			// We have to reset counting variable and remove the last obj before beginning a new transmission
-			led_switch(LED_ORANGE, SINGLE);
 			if (transmission_underway) {
 				transmission_underway = 0;
 				io_obj_remove_current();
@@ -118,7 +117,6 @@ ISR(TWI_vect) {
 			transmission_underway = 0;
 			io_reset_transmission_status();
 			io_obj_remove_current();
-			led_switch(LED_BLUE, SINGLE);
 			TWCR = (1 << TWEA) | (1 << TWINT) | (1 << TWIE) | (1 << TWEN);
 			break;
 
@@ -133,7 +131,7 @@ ISR(TWI_vect) {
 			TWCR = (1 << TWSTO) | (1 << TWEN) | (1 << TWINT);
 			break;
 	}
-	pin_clear_A(1);
+	pin_clear_A(5);
 }
 
 /**

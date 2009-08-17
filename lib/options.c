@@ -35,6 +35,8 @@ uint8_t ACTIVE_BRAKE_WHEN_TRIGGER_REACHED = 1;
  */
 uint8_t ACTIVE_BRAKE_WHEN_IDLE = 1;
 
+#ifdef DEBUG
 uint8_t DEBUG_ENABLE;
+#endif
 uint8_t INTERFACE_TWI;
 uint8_t LCD_PRESENT;

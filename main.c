@@ -94,7 +94,6 @@ int8_t reset_source = 0;
  */
 uint8_t local_time_flags = 0;
 extern uint8_t LCD_PRESENT;
-extern uint8_t DEBUG_ENABLE;
 extern uint8_t INTERFACE_TWI;
 extern uint8_t timer_global_flags;
 
@@ -141,12 +140,7 @@ void initialize(void) {
  * @todo Only to dip_update once on startup and use a temp variable here
  */
 void print_startup(void) {
-	uint8_t prev_DEBUG_ENABLE_value = DEBUG_ENABLE;
 	// Startup Debug Infos
-	if (LCD_PRESENT) {
-		lcd_update_info(NULL);
-	}
-	DEBUG_ENABLE = 1;
 	debug_WriteString_P(PSTR("Motorsteuerung "));
 	debug_PutString(VERSION);
 	debug_WriteString_P(PSTR("\n----------------------------\n\n"));
@@ -180,7 +174,6 @@ void print_startup(void) {
 	if (reset_source & (1<<JTRF))
 		debug_WriteString_P(PSTR("JTAG"));
 	debug_WriteString_P(PSTR("\n"));
-	DEBUG_ENABLE = prev_DEBUG_ENABLE_value;
 }
 
 /**
@@ -194,38 +187,35 @@ void process_orders(void) {
 	order_t *current_order = NULL;
 	extern uint8_t ACTIVE_BRAKE_WHEN_IDLE;
 
-	pin_set_A(3);
-//	debug_WriteInteger(PSTR("main.c : process_orders() :  Avaialable Orders = "), queue_order_available());
-//	debug_NewLine();
+	if (DEBUG_ENABLE)
+		debug_WriteInteger(PSTR("main.c : process_orders() :  Avaialable Orders = "), queue_order_available());
+	pin_set_C(0);
 	current_order = queue_get_current_order();
-	pin_clear_A(3);
-	pin_set_A(4);
+	pin_clear_C(0);
+	pin_set_C(1);
 	if (current_order != NULL) {
-//		debug_WriteString_P(PSTR("main.c : process_orders() :  Ack new Order, starting processing\n"));
-		pin_set_A(5);
+		if (DEBUG_ENABLE)
+			debug_WriteString_P(PSTR("main.c : process_orders() :  Ack new Order, starting processing\n"));
+		pin_set_C(2);
 		order_process(current_order);
-		pin_clear_A(5);
-//		debug_WriteString_P(PSTR("main.c : process_orders() :  Processing done\n"));
-		pin_set_A(6);
+		pin_clear_C(2);
+		if (DEBUG_ENABLE)
+			debug_WriteString_P(PSTR("main.c : process_orders() :  Processing done\n"));
+		pin_set_C(3);
 		if (current_order->status & ORDER_STATUS_DONE) {
-//			debug_WriteString_P(PSTR("main.c : process_orders() :  Order has status = DONE\n"));
-			pin_set_C(1);
+			if (DEBUG_ENABLE)
+				debug_WriteString_P(PSTR("main.c : process_orders() :  Order has status = DONE\n"));
 			drive_brake_active_set();
-			pin_clear_C(1);
-			pin_set_C(2);
 			queue_pop();
-			pin_clear_C(2);
-			pin_set_C(6);
 			current_order = NULL;
-			pin_clear_C(6);
 		}
-		pin_clear_A(6);
+		pin_clear_C(3);
 	} else if (ACTIVE_BRAKE_WHEN_IDLE) {
-		pin_set_C(7);
+		pin_set_C(4);
 		drive_brake_active();
-		pin_clear_C(7);
+		pin_clear_C(4);
 	}
-	pin_clear_A(4);
+	pin_clear_C(1);
 }
 
 int main(void) {
@@ -240,40 +230,47 @@ int main(void) {
 	// Initialize all subsystems (DIP, Drive, etc pp)
 	initialize();
 	
+	// Update the LC-Display for the first time
+	if (LCD_PRESENT)
+		lcd_update_info(NULL);
+
 	// Print driver version etc pp to debug
-	print_startup();
+	if (DEBUG_ENABLE)
+		print_startup();
 
 	while(1) {
 		pin_toggle_A(0);
-//		debug_WriteString_P(PSTR("main.c : main() :  copy_timer_flags()\r\n"));
 		// Copy global timer flags to a local copy, which will be used throughout the program.
 		// This is done to not miss a timer tick.
 		local_time_flags = timer_global_flags;
 		timer_global_flags = 0;
 
-//		debug_WriteString_P(PSTR("main.c : main() :  process_orders()\r\n"));
 		// Processes the next or current order
-		pin_set_A(2);
+		if (DEBUG_ENABLE)
+			debug_WriteString_P(PSTR("main.c : main() :  process_orders()\r\n"));
+		pin_set_A(1);
 		process_orders();
-		pin_clear_A(2);
+		pin_clear_A(1);
 
 		// If a LCD is pluged in we get nice status messages on it
-		pin_set_C(3);
+		pin_set_A(2);
 		if (LCD_PRESENT)
 			lcd_update_screen();
-		pin_clear_C(3);
+		pin_clear_A(2);
 
-//		debug_WriteString_P(PSTR("main.c : main() :  parser_update()\n"));
 		// Update the order parser
-		pin_set_C(4);
+		if (DEBUG_ENABLE)
+			debug_WriteString_P(PSTR("main.c : main() :  parser_update()\n"));
+		pin_set_A(3);
 		parser_update();
-		pin_clear_C(4);
+		pin_clear_A(3);
 
-//		debug_WriteString_P(PSTR("main.c : main() :  queue_update()\n"));
 		// Housekeeping for the order queue
-		pin_set_C(5);
+		if (DEBUG_ENABLE)
+			debug_WriteString_P(PSTR("main.c : main() :  queue_update()\n"));
+		pin_set_A(4);
 		queue_update();
-		pin_clear_C(5);
+		pin_clear_A(4);
 	}
 
 	// Should be never reached

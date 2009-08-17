@@ -3,6 +3,11 @@
 
 #include <inttypes.h>
 
+/**
+ * Do _NOT_ change this define, it will break the IO Framework.
+ */
+#define IO_BUFFER_SIZE 256
+
 void io_init(void);
 uint8_t io_get_free_buffer_size(void);
 uint8_t io_get(uint8_t* value);

@@ -18,17 +18,17 @@
 /**
  * Stores every byte recieved, until it gets fetched.
  */
-static uint8_t in_buffer[IO_INBUFFER_SIZE];
+static uint8_t in_buffer[IO_BUFFER_SIZE];
 /**
  * Stores every byte ment for transmission.
  */
-static uint8_t out_buffer[IO_OUTBUFFER_SIZE];
+static uint8_t out_buffer[IO_BUFFER_SIZE];
 /**
  * Holds the Object boundaries.
  *
  * An Object is always a unit transmitted at once. Object may be as long as 1 byte or IO_OUTBUFFER_SIZE.
  */
-static uint8_t obj_memory[IO_OUTBUFFER_SIZE];
+static uint8_t obj_memory[IO_BUFFER_SIZE];
 /**
  * Used for maintaining the in_buffer ring buffer.
  */
@@ -69,7 +69,7 @@ uint8_t io_get_free_buffer_size(void) {
 	if (inpos_begin == inpos_end)
 		return 0;
 	else if (inpos_begin < inpos_end)
-		return IO_INBUFFER_SIZE - (inpos_end - 1 - inpos_begin);
+		return IO_BUFFER_SIZE - (inpos_end - 1 - inpos_begin);
 	else // begin > end
 		return inpos_begin - inpos_end - 1;
 }
@@ -99,7 +99,7 @@ uint8_t io_put(uint8_t value) {
 	if (outpos_end == outpos_begin)
 		return 0;
 	out_buffer[outpos_end - 1] = value;
-	outpos_end = (outpos_end + 1) % IO_OUTBUFFER_SIZE;
+	outpos_end = (outpos_end + 1);
 	return 1;
 }
 
@@ -112,7 +112,7 @@ void _io_push(uint8_t value) {
 	if (inpos_end == inpos_begin)
 		return;
 	in_buffer[inpos_end - 1] = value;
-	inpos_end = (inpos_end + 1) % IO_INBUFFER_SIZE;
+	inpos_end = (inpos_end + 1);
 }
 
 /**
@@ -123,7 +123,7 @@ void _io_push(uint8_t value) {
  *		a valid byte).
  */
 uint8_t io_get_next_transmission_byte(void) {
-	if ((outpos_begin + 1) % IO_OUTBUFFER_SIZE == outpos_end)
+	if ((outpos_begin + 1) == outpos_end)
 		return 0xff;
 	if (transmission_offset >= io_obj_get_current_size())
 		return 0xff;
@@ -137,11 +137,11 @@ uint8_t io_get_next_transmission_byte(void) {
  */
 uint8_t io_obj_get_current_size() {
 	uint8_t obj_end = obj_memory[objpos_begin];
-	if((objpos_begin + 1) % IO_OUTBUFFER_SIZE == objpos_end)
+	if((objpos_begin + 1) == objpos_end)
 		return 0;
 	if(obj_end > outpos_begin)
 		return obj_end - outpos_begin;
-	return IO_OUTBUFFER_SIZE - (outpos_begin - obj_end);
+	return IO_BUFFER_SIZE - (outpos_begin - obj_end);
 }
 
 /**
@@ -157,10 +157,10 @@ uint8_t io_obj_get_remaining_size() {
  * Removes the current object from the buffers.
  */
 void io_obj_remove_current(void) {
-	if ((objpos_begin + 1) % IO_OUTBUFFER_SIZE == objpos_end)
+	if ((objpos_begin + 1) == objpos_end)
 		return;
 	outpos_begin = obj_memory[objpos_begin];
-	objpos_begin = (objpos_begin + 1) % IO_OUTBUFFER_SIZE;
+	objpos_begin = (objpos_begin + 1);
 	transmission_offset = 0;
 }
 
@@ -185,7 +185,7 @@ void io_obj_start(void) {
 void io_obj_end(void) {
 	extern uint8_t INTERFACE_TWI;
 	obj_memory[objpos_end - 1] = outpos_end - 1;
-	objpos_end = (objpos_end + 1) % IO_OUTBUFFER_SIZE;
+	objpos_end = (objpos_end + 1);
 	if (!INTERFACE_TWI)
 		uart_start_transmission();
 }
@@ -204,7 +204,7 @@ void io_reset_transmission_status(void) {
  */
 uint8_t io_obj_remaining(void) {
 	if (objpos_begin > objpos_end)
-		return IO_OUTBUFFER_SIZE - (objpos_begin - objpos_end) - 1;
+		return IO_BUFFER_SIZE - (objpos_begin - objpos_end) - 1;
 	else
 		return (objpos_end - 1) - objpos_begin;
 }

@@ -24,11 +24,11 @@ static int8_t timer_Speed_W1 = 0;
 /**
  * Used to store the speed during the 100ms. It gets incremented by irq.c.
  */
-static int8_t timer_SpeedSum_W0 = 0;
+int8_t timer_SpeedSum_W0 = 0;
 /**
  * Used to store the speed during the 100ms. It gets incremented by irq.c.
  */
-static int8_t timer_SpeedSum_W1 = 0;
+int8_t timer_SpeedSum_W1 = 0;
 /**
  * Stores the current value for the time triggers.
  * 
@@ -49,7 +49,7 @@ uint8_t timer_global_flags = 0;
  * The interrupt which gets called every 100ms.
  */
 ISR(TIMER1_COMPC_vect) {
-	pin_set_A(7);
+	pin_set_A(6);
 	// ISR wird alle 100 Millisekunden ausgeführt
 	OCR1C = TCNT1 + 25000;
 	// Neuen Wert für Compare Match C setzen
@@ -72,22 +72,23 @@ ISR(TIMER1_COMPC_vect) {
 
 	// Increase counter
 	timer_100ms_counter++;
-	pin_clear_A(7);
+	pin_clear_A(6);
 }
 
 /**
  * Timer interrupt being called every 262ms.
  */
 ISR(TIMER1_OVF_vect) {
-	pin_set_C(0);
+	pin_set_A(7);
 	// ISR wird alle 262 Millisekunden aufgerufen
 	timer_global_flags |= TIMER_262MS;
 	// TIMER_262MS Flag setzen
 	if( timer_100ms_counter > 10 ) {
 		timer_1s_counter += timer_100ms_counter / 10;
-		timer_100ms_counter %= 10;
+		//timer_100ms_counter %= 10;
+		timer_100ms_counter -= (timer_100ms_counter / 10) * 10;
 	}
-	pin_clear_C(0);
+	pin_clear_A(7);
 }
 
 /**
@@ -105,42 +106,6 @@ void timer_init(void) {
 	// Aktiviere Compare Match A+B+C IRQ und Overflow IRQ
 	TCCR1B = (3 << CS10);
 	// Prescaler = clkIO/64 -> 250kHz -> 4µs
-}
-
-/**
- * Increments the SpeedSum to measure the speed in a given timeframe.
- */
-void wheel_AddSpeed_W0(void) {
-	if ((timer_SpeedSum_W0 < 127)) {
-		timer_SpeedSum_W0++;
-	}
-}
-
-/**
- * Increments the SpeedSum to measure the speed in a given timeframe.
- */
-void wheel_AddSpeed_W1(void) {
-	if ((timer_SpeedSum_W1 < 127)) {
-		timer_SpeedSum_W1++;
-	}
-}
-
-/**
-* Decrements the SpeedSum to measure the speed in a given timeframe.
-*/
-void wheel_DelSpeed_W0(void) {
-	if ((timer_SpeedSum_W0 > -127)) {
-		timer_SpeedSum_W0--;
-	}
-}
-
-/**
- * Increments the SpeedSum to measure the speed in a given timeframe.
- */
-void wheel_DelSpeed_W1(void) {
-	if ((timer_SpeedSum_W1 > -127)) {
-		timer_SpeedSum_W1--;
-	}
 }
 
 /**

@@ -34,6 +34,15 @@ static int16_t irq_WheelDifference = 0;
 int16_t irq_p_trigger_position[2] = { 0, 0 };
 
 /**
+ * Used to store the speed during the 100ms. It gets incremented by irq.c.
+ */
+extern int8_t timer_SpeedSum_W0;
+/**
+ * Used to store the speed during the 100ms. It gets incremented by irq.c.
+ */
+extern int8_t timer_SpeedSum_W1;
+
+/**
  * Interrupt Service Routine for wheel 0 (left) sensor A.
  */
 ISR(INT4_vect) {
@@ -46,7 +55,10 @@ ISR(INT4_vect) {
 			// Linksdrehung, Rad 0
 			irq_Position_W0++;
 			irq_WheelDifference++;
-			wheel_AddSpeed_W0();
+			// Increment the speed for the wheel
+			// needed for the PID-Controller
+			if ((timer_SpeedSum_W0 < 127))
+				timer_SpeedSum_W0++;
 			break;
 
 		case ((0 << IRQ_A0) | (1 << IRQ_B0)):
@@ -54,7 +66,10 @@ ISR(INT4_vect) {
 			// Rechtsdrehung, Rad 0
 			irq_Position_W0--;
 			irq_WheelDifference--;
-			wheel_DelSpeed_W0();
+			// Decrement the speed for the wheel
+			// needed for the PID_Controller
+			if ((timer_SpeedSum_W0 > -127))
+				timer_SpeedSum_W0--;
 			break;
 	}
 
@@ -78,7 +93,10 @@ ISR(INT5_vect) {
 			// Rechtsdrehung, Rad 0
 			irq_Position_W0--;
 			irq_WheelDifference--;
-			wheel_DelSpeed_W0();
+			// Decrement the speed for the wheel
+			// needed for the PID_Controller
+			if ((timer_SpeedSum_W0 > -127))
+				timer_SpeedSum_W0--;
 			break;
 
 		case ((0 << IRQ_A0) | (1 << IRQ_B0)):
@@ -86,7 +104,10 @@ ISR(INT5_vect) {
 			// Linksdrehung, Rad 0
 			irq_Position_W0++;
 			irq_WheelDifference++;
-			wheel_AddSpeed_W0();
+			// Increment the speed for the wheel
+			// needed for the PID-Controller
+			if ((timer_SpeedSum_W0 < 127))
+				timer_SpeedSum_W0++;
 			break;
 	}
 
@@ -109,7 +130,10 @@ ISR(INT6_vect) {
 			// Rechtsdrehung, Rad 1
 			irq_Position_W1--;
 			irq_WheelDifference++;
-			wheel_DelSpeed_W1();
+			// Decrement the speed for the wheel
+			// needed for the PID_Controller
+			if ((timer_SpeedSum_W1 > -127))
+				timer_SpeedSum_W1--;
 			break;
 
 		case ((0 << IRQ_A1) | (1 << IRQ_B1)):
@@ -117,7 +141,10 @@ ISR(INT6_vect) {
 			// Linksdrehung, Rad 1
 			irq_Position_W1++;
 			irq_WheelDifference--;
-			wheel_AddSpeed_W1();
+			// Increment the speed for the wheel
+			// needed for the PID-Controller
+			if ((timer_SpeedSum_W1 < 127))
+				timer_SpeedSum_W1++;
 			break;
 	}
 
@@ -140,7 +167,10 @@ ISR(INT7_vect) {
 			// Linksdrehung, Rad 1
 			irq_Position_W1++;
 			irq_WheelDifference--;
-			wheel_AddSpeed_W1();
+			// Increment the speed for the wheel
+			// needed for the PID-Controller
+			if ((timer_SpeedSum_W1 < 127))
+				timer_SpeedSum_W1++;
 			break;
 
 		case ((0 << IRQ_A1) | (1 << IRQ_B1)):
@@ -148,7 +178,10 @@ ISR(INT7_vect) {
 			// Rechtsdrehung, Rad 1
 			irq_Position_W1--;
 			irq_WheelDifference++;
-			wheel_DelSpeed_W1();
+			// Decrement the speed for the wheel
+			// needed for the PID_Controller
+			if ((timer_SpeedSum_W1 > -127))
+				timer_SpeedSum_W1--;
 			break;
 	}
 

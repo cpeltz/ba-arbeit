@@ -13,6 +13,6 @@
 
 void uart_init(void);
 void uart_start_transmission(void);
-void uart_put_debug(const uint8_t data);
+void uart_put_debug_char(const uint8_t data);
 
 #endif

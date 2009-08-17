@@ -54,7 +54,7 @@ void parser_init(void) {
  * test function to check for more space.
  */
 void parser_update(void) {
-	uint8_t value = 0, times = IO_INBUFFER_SIZE - io_get_free_buffer_size();
+	uint8_t value = 0, times = IO_BUFFER_SIZE - io_get_free_buffer_size();
 	for (; 0 < times; times--) {
 		io_get(&value);
 		parser_add_byte(value);
@@ -82,12 +82,14 @@ int parser_extended_order_complete(const order_t* order, uint8_t num_bytes) {
  */
 uint8_t bytes_needed(uint8_t order) {
 	uint8_t ret_value = 0;
-//	debug_WriteInteger(PSTR("Bytes needed for "), order);
-//	debug_WriteString_P(PSTR(" = "));
+	if (DEBUG_ENABLE)
+		debug_WriteInteger(PSTR("Bytes needed for "), order);
+		debug_WriteString_P(PSTR(" = "));
 	switch(order & 0x0f) {
 		case 1: //Control Instruction
 		case 2: //Register Query Instruction
-			//debug_WriteInteger(PSTR(""), 1);
+			if (DEBUG_ENABLE);
+				debug_WriteInteger(PSTR(""), 1);
 			return 1; //These are all one byte Instructions
 		case 3: //Drive Instruction is a variable byte order
 			ret_value = 3; //min. three bytes are neccessary: one as order, two for speed (left and right)
@@ -106,26 +108,35 @@ uint8_t bytes_needed(uint8_t order) {
 					ret_value += 2;
 				}
 			}
-			//debug_WriteInteger(PSTR(""), ret_value);
+			if (DEBUG_ENABLE)
+				debug_WriteInteger(PSTR(""), ret_value);
 			return ret_value;
 		case 4:
 			ret_value = 3;
-			if(order & 0x30)
+			if (order & 0x30)
 				ret_value += 4;
-			if(order & 0xc0)
+			if (order & 0xc0)
 				ret_value += 4;
+			if (DEBUG_ENABLE)
+				debug_WriteInteger(PSTR(""), ret_value);
 			return ret_value;
 		case 5: //Set PID Parameters Instruction
-			//debug_WriteInteger(PSTR(""), 9);
+			if (DEBUG_ENABLE)
+				debug_WriteInteger(PSTR(""), 9);
 			return 9;
 		case 6:
-			if((order & 0xf0) >= 0x10 && (order & 0xf0) <= 0x40)
+			if ((order & 0xf0) >= 0x10 && (order & 0xf0) <= 0x40) {
+				if (DEBUG_ENABLE)
+					debug_WriteInteger(PSTR(""), 2);
 				return 2;
+			}
+			if (DEBUG_ENABLE)
+				debug_WriteInteger(PSTR(""), 1);
 			return 1;
 	}
-			//debug_WriteInteger(PSTR("default  = "), 1);
+	if (DEBUG_ENABLE)
+		debug_WriteInteger(PSTR("default  = "), 1);
 	return 1;
-	//debug_NewLine();
 }
 
 /**
@@ -136,13 +147,13 @@ uint8_t bytes_needed(uint8_t order) {
  * @return <em>int</em> 1 if the order is complete, otherwise 0.
  */
 int parser_order_complete(const order_t* order, uint8_t num_bytes) { 
-	if( (order->data[0] & 0x0f) == 0 )
+	if ((order->data[0] & 0x0f) == 0 )
 		return parser_extended_order_complete(order, num_bytes);
-	else if( (order->data[0] & 0x0f) <= 8 ) {
+	else if ((order->data[0] & 0x0f) <= 8 ) {
 		// Call "bytes_needed()", a simple helper function
 		// to determine whether or not the order has the right
 		// amount of parameters and therefor bytes.
-		if(num_bytes >= bytes_needed(order->data[0]))
+		if (num_bytes >= bytes_needed(order->data[0]))
 			return 1;
 	}
 	return 0;
@@ -157,11 +168,10 @@ int parser_order_complete(const order_t* order, uint8_t num_bytes) {
 void parser_add_byte(uint8_t byte) { 
 	// This function simple adds another byte to the current order
 	// or discards the byte if the buffer is full.
-	extern uint8_t DEBUG_ENABLE;
-	if(DEBUG_ENABLE)
+	if (DEBUG_ENABLE)
 		debug_WriteInteger(PSTR("parse.c : parser_add_byte() : Add byte = "), byte);
-	if( current_buffer_position == first_buffer_position ) {
-		if(DEBUG_ENABLE)
+	if (current_buffer_position == first_buffer_position) {
+		if (DEBUG_ENABLE)
 			debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Buffer full\n"));
 		return; // Discard, buffer full
 	}
@@ -217,7 +227,8 @@ void parser_get_new_order(order_t* order) {
 	// but will do a check on it first. if the Order isn't flagged valid
 	// the caller must discard it.
 	parser_check_order(&parser_order_buffer[first_buffer_position]);
-	debug_WriteInteger(PSTR("parse.c : parser_get_new_order() : status = "), parser_order_buffer[first_buffer_position].status);
+	if (DEBUG_ENABLE)
+		debug_WriteInteger(PSTR("parse.c : parser_get_new_order() : status = "), parser_order_buffer[first_buffer_position].status);
 	order_copy(&parser_order_buffer[first_buffer_position], order);
 	order_init(&parser_order_buffer[first_buffer_position]);
 	first_buffer_position = (first_buffer_position + 1) % PARSER_ORDER_BUFFER_SIZE;

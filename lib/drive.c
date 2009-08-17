@@ -50,14 +50,16 @@ int16_t drive_brake_position_right;
 void drive_SetPIDParameter(	const uint8_t wheel, const int16_t Pfactor, const int16_t Ifactor,
 							const int16_t Dfactor, const int16_t SErrorMAX) {
 	// Sets the parameter for a PID enabled movement
+	if (DEBUG_ENABLE)
+		debug_WriteString_P(PSTR("drive.c : drive_SetPID_Parameter()\n"));
 	switch (wheel) {
 		case WHEEL_LEFT:
 		case WHEEL_RIGHT:
 			pid_Init(Pfactor, Ifactor, Dfactor, SErrorMAX, &drive_PID[wheel]);
 			break;
 		case WHEEL_BOTH:
-			drive_SetPIDParameter(WHEEL_LEFT,  Pfactor, Ifactor, Dfactor, SErrorMAX);
-			drive_SetPIDParameter(WHEEL_RIGHT, Pfactor, Ifactor, Dfactor, SErrorMAX);
+			pid_Init(Pfactor, Ifactor, Dfactor, SErrorMAX, &drive_PID[WHEEL_LEFT]);
+			pid_Init(Pfactor, Ifactor, Dfactor, SErrorMAX, &drive_PID[WHEEL_RIGHT]);
 			break;
     }
 }
@@ -72,6 +74,8 @@ void drive_SetPIDParameter(	const uint8_t wheel, const int16_t Pfactor, const in
 
 void drive_SetPIDSumError(const uint8_t wheel, const int16_t sumError) {
 	// Used to set the SumError for a PID enabled movement
+	if (DEBUG_ENABLE)
+		debug_WriteString_P(PSTR("drive.c : drive_SetPIDSumError()\n"));
 	switch (wheel) {
 		case WHEEL_LEFT:
 		case WHEEL_RIGHT:
@@ -96,6 +100,8 @@ void drive_UsePID(const uint8_t wheel, const int8_t speed) {
 	int16_t wheel_ModSpeed[2];
 	int16_t wheel_Difference;
 
+	if (DEBUG_ENABLE)
+		debug_WriteString_P(PSTR("drive.c : drive_UsePID()\n"));
 	switch (wheel) {
 		case WHEEL_LEFT:
 			// PID Fahrt für linkes Rad
@@ -173,11 +179,30 @@ void drive_brake_active(void) {
  * Sets the current position as holding position used while doing active braking.
  *
  * Sets position for both wheels.
+ * @todo This version is only for testing!
  */
 void drive_brake_active_set(void) {
 	// Set the Position of the wheels for use with active braking.
-	drive_brake_active_set_left();
-	drive_brake_active_set_right();
+//	drive_brake_active_set_left();
+//	drive_brake_active_set_right();
+	extern uint8_t ACTIVE_BRAKE_ENABLE;
+	extern uint8_t ACTIVE_BRAKE_AMOUNT;
+	if(!ACTIVE_BRAKE_ENABLE)
+		return;
+	if (drive_brake_position_left == irq_Position_W0) {
+		motor_SetSpeed(WHEEL_LEFT, 0);
+	} else if (drive_brake_position_left < irq_Position_W0) {
+		motor_SetSpeed(WHEEL_LEFT, -(ACTIVE_BRAKE_AMOUNT));
+	} else {
+		motor_SetSpeed(WHEEL_LEFT, ACTIVE_BRAKE_AMOUNT);
+	}
+	if (drive_brake_position_right == irq_Position_W1) {
+		motor_SetSpeed(WHEEL_RIGHT, 0);
+	} else if (drive_brake_position_right < irq_Position_W1) {
+		motor_SetSpeed(WHEEL_RIGHT, -(ACTIVE_BRAKE_AMOUNT));
+	} else {
+		motor_SetSpeed(WHEEL_RIGHT, ACTIVE_BRAKE_AMOUNT);
+	}
 }
 
 /**

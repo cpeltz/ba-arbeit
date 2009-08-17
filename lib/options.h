@@ -9,22 +9,6 @@
  */
 
 /**
- * Defines the size of the incoming Buffer.
- *
- * The size is measured in bytes and defines how big
- * the buffer for incoming data is.
- */
-#define IO_INBUFFER_SIZE 255
-/**
- * Defines the size of the out_buffer and obj_buffer Arrays.
- *
- * The size is measured in bytes and defines how big
- * the buffer for outgoing data is. The same number
- * of bytes is also used as size for the obj_buffer.
- */
-#define IO_OUTBUFFER_SIZE 255
-
-/**
  * Specifies the default value for ACTIVE_BRAKE_AMOUNT.
  *
  * See the Description there for more information. The default
@@ -77,6 +61,10 @@
  * The Baud rate for the UART Interface.
  */
 #define UART_BAUD_RATE 57600L
+
+#ifndef DEBUG
+	#define DEBUG_ENABLE 0
+#endif
 
 /*@}*/
 #endif

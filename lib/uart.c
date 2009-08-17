@@ -6,6 +6,7 @@
 #include "definitions.h"
 #include "led.h"
 #include "pin.h"
+#include "debug.h"
 
 /**
  * @defgroup UART_Module USART Module
@@ -14,7 +15,6 @@
  */
 
 extern uint8_t INTERFACE_TWI;
-extern uint8_t DEBUG_ENABLE;
 /**
  * The USART transmitter ISR.
  */
@@ -82,7 +82,7 @@ void uart_start_transmission() {
  *
  * @param[in] data The Character to be send per UART.
  */
-void uart_put_debug(const uint8_t data) {
+void uart_put_debug_char(const uint8_t data) {
 	if (!INTERFACE_TWI && !DEBUG_ENABLE)
 		return;
 	UDR1 = data;

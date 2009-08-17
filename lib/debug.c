@@ -16,18 +16,6 @@
 static char buffer[10];
 
 /**
- * Prints one character of a debug string.
- *
- * Prints only if DEBUG_ENABLE flag is asserted.
- * @param[in] data The character to be printed.
- */
-void debug_PutChar(const uint8_t data) {
-	extern uint8_t DEBUG_ENABLE;
-	if (DEBUG_ENABLE)
-		uart_put_debug(data);
-}
-
-/**
  * Prints a String for debugging purposes.
  *
  * @param[in] data The String to be printed
@@ -36,7 +24,7 @@ void debug_PutString(const char *data) {
 	uint8_t character;
 
 	while ((character = *data++)) {
-		debug_PutChar(character);
+		uart_put_debug_char(character);
 	}
 }
 
@@ -49,15 +37,8 @@ void debug_WriteString_P(const char *progmem_string) {
 	uint8_t character;
 
 	while ((character = pgm_read_byte(progmem_string++))) {
-		debug_PutChar(character);
+		debug_put_debug_char(character);
 	}
-}
-
-/**
- * Helper function for debug_WriteInteger(). Sends an new-line.
- */
-void debug_NewLine(void) {
-	debug_WriteString_P(PSTR("\n"));
 }
 
 /**
@@ -70,6 +51,6 @@ void debug_WriteInteger(const char *progmem_message, const int16_t integer) {
 	itoa(integer, buffer, 10);
 	debug_WriteString_P(progmem_message);
 	debug_PutString(buffer);
-	debug_NewLine();
+	debug_WriteString_P(PSTR("\n"));
 }
 /*@}*/
