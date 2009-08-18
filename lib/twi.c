@@ -28,7 +28,7 @@ ISR(TWI_vect) {
   
   	// temporarily save the last Byte on the bus
 	uint8_t twi_data = TWDR;
-	pin_set_A(5);
+//	pin_set_A(5);
 
   	// Mask the prescaler bit out of the status
 	switch (TWSR & 0xf8) {
@@ -131,7 +131,7 @@ ISR(TWI_vect) {
 			TWCR = (1 << TWSTO) | (1 << TWEN) | (1 << TWINT);
 			break;
 	}
-	pin_clear_A(5);
+//	pin_clear_A(5);
 }
 
 /**

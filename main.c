@@ -191,19 +191,19 @@ void process_orders(void) {
 
 	if (DEBUG_ENABLE)
 		debug_WriteInteger(PSTR("main.c : process_orders() :  Avaialable Orders = "), queue_order_available());
-	pin_set_C(0);
+//	pin_set_C(0);
 	current_order = queue_get_current_order();
-	pin_clear_C(0);
-	pin_set_C(1);
+//	pin_clear_C(0);
+//	pin_set_C(1);
 	if (current_order != NULL) {
 		if (DEBUG_ENABLE)
 			debug_WriteString_P(PSTR("main.c : process_orders() :  Ack new Order, starting processing\n"));
-		pin_set_C(2);
+//		pin_set_C(2);
 		order_process(current_order);
-		pin_clear_C(2);
+//		pin_clear_C(2);
 		if (DEBUG_ENABLE)
 			debug_WriteString_P(PSTR("main.c : process_orders() :  Processing done\n"));
-		pin_set_C(3);
+//		pin_set_C(3);
 		if (current_order->status & ORDER_STATUS_DONE) {
 			if (DEBUG_ENABLE)
 				debug_WriteString_P(PSTR("main.c : process_orders() :  Order has status = DONE\n"));
@@ -211,13 +211,13 @@ void process_orders(void) {
 			queue_pop();
 			current_order = NULL;
 		}
-		pin_clear_C(3);
+//		pin_clear_C(3);
 	} else if (ACTIVE_BRAKE_WHEN_IDLE) {
-		pin_set_C(4);
+//		pin_set_C(4);
 		drive_brake_active();
-		pin_clear_C(4);
+//		pin_clear_C(4);
 	}
-	pin_clear_C(1);
+//	pin_clear_C(1);
 }
 
 int main(void) {
@@ -250,29 +250,29 @@ int main(void) {
 		// Processes the next or current order
 		if (DEBUG_ENABLE)
 			debug_WriteString_P(PSTR("main.c : main() :  process_orders()\r\n"));
-		pin_set_A(1);
+//		pin_set_A(1);
 		process_orders();
-		pin_clear_A(1);
+//		pin_clear_A(1);
 
 		// If a LCD is pluged in we get nice status messages on it
-		pin_set_A(2);
+//		pin_set_A(2);
 		if (LCD_PRESENT)
 			lcd_update_screen();
-		pin_clear_A(2);
+//		pin_clear_A(2);
 
 		// Update the order parser
 		if (DEBUG_ENABLE)
 			debug_WriteString_P(PSTR("main.c : main() :  parser_update()\n"));
-		pin_set_A(3);
+//		pin_set_A(3);
 		parser_update();
-		pin_clear_A(3);
+//		pin_clear_A(3);
 
 		// Housekeeping for the order queue
 		if (DEBUG_ENABLE)
 			debug_WriteString_P(PSTR("main.c : main() :  queue_update()\n"));
-		pin_set_A(4);
+//		pin_set_A(4);
 		queue_update();
-		pin_clear_A(4);
+//		pin_clear_A(4);
 	}
 
 	// Should be never reached
