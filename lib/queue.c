@@ -149,12 +149,12 @@ void queue_update(void) {
 	if (parser_has_new_order()) {
 		if (DEBUG_ENABLE)
 			debug_WriteString_P(PSTR("queue.c : queue_update() : We have a new order\n"));
-		pin_set_C(5);
+//		pin_set_C(5);
 		order_init(&local_order);
-		pin_clear_C(5);
-		pin_set_C(6);
+//		pin_clear_C(5);
+//		pin_set_C(6);
 		parser_get_new_order(&local_order);
-		pin_clear_C(6);
+//		pin_clear_C(6);
 		if (DEBUG_ENABLE) {
 			debug_WriteInteger(PSTR("queue.c : queue_update() : order opcode is = "), local_order.data[0]);
 			debug_WriteInteger(PSTR("queue.c : queue_update() : order status is = "), local_order.status);
@@ -166,9 +166,9 @@ void queue_update(void) {
 		} else {
 			if (DEBUG_ENABLE)
 				debug_WriteString_P(PSTR("queue.c : queue_update() : NO PRIORITY\n"));
-			pin_set_C(7);
+//			pin_set_C(7);
 			queue_push(&local_order);
-			pin_clear_C(7);
+//			pin_clear_C(7);
 		}
 	}
 }
