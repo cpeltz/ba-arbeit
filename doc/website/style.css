@@ -1,0 +1,29 @@
+body {
+	background-color: #2d21cc;
+	color: #7ccc21;
+	font-weight: 600;
+	font-size: 1.2em;
+	text-align: justify;
+}
+
+a {
+	color: #7ccc21;
+	text-decoration: none;
+}
+
+div#menu {
+	margin-left: 0em;
+	margin-top: -1.3em;
+	float: left;
+	width: 16em;
+}
+
+div#content {
+	margin-left: 16em;
+	margin-top: -1em;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	border: 0px dashed black;
+	border-left-width: 1px;
+	height: 100%;
+}
