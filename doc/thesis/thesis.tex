@@ -1,0 +1,154 @@
+\documentclass[11pt,twoside]{scrbook}
+
+\usepackage{a4}
+\usepackage{german}
+\usepackage{times}
+\usepackage{graphicx}
+\usepackage{verbatimfiles}
+
+\usepackage[outline,light]{draftcopy}
+
+% So wird's gemacht, wenn in den Text EPS-Bilder eingefuegt werden sollen!
+% \begin{figure}[htb]
+% \centerline{\includegraphics[width=\textwidth]{bild1.eps}}
+% \caption{\label{bild1}Title of the picture.}
+% \end{figure}
+
+
+\begin{document}
+
+%Deckblatt erzeugen
+\thispagestyle{headings}
+\title{Implementierung einer Betriebssoftware unter Berücksichtigung des Echtzeitverhaltens}
+\author{Christoph Peltz}
+
+\maketitle
+\setcounter{page}{1}
+\pagenumbering{roman}
+
+\thispagestyle{headings}
+\begin{titlepage}
+	\let\footnotesize\small
+	\let\footnoterule\relax
+	\null
+	\vfil
+	\vskip 60pt
+	\begin{center}
+		{\LARGE
+			{\Large Technische Universit"at Braunschweig}\\
+			Institut f"ur Betriebssysteme und
+				Rechnerverbund\\[2cm]
+			{\Large Bachelorarbeit}\\ [2cm]
+			Implementierung einer Betriebssoftware unter Berücksichtigung des Echtzeitverhaltens
+			\par}%
+		\vskip 6em
+		{\large \lineskip .75em
+		\begin{tabular}[t]{c}
+			{\Large von}\\[.5em]
+			{\Large cand. inform.\ Christoph Peltz}\\[7em]
+			{\bf Aufgabenstellung und Betreuung:}\\[.5em]
+			Dipl.-Inform. Dieter Brökelmann und
+			Prof.\ Dr.\ L.\ Wolf.\\
+		\end{tabular}
+		\par}%
+		\vfill 
+		{\large
+			Braunschweig, den \today
+			\par}%
+	\end{center}
+	\par
+	% thanks
+	\vfil
+	\null
+\end{titlepage}
+
+~\newpage
+
+% Erklaerung
+\vspace*{7cm}
+\centerline{\bf Erkl"arung}
+
+\vspace*{1cm}
+Ich versichere, die vorliegende Arbeit selbstst"andig und nur unter Benutzung
+der angegebenen Hilfsmittel angefertigt zu haben.
+
+\vspace*{3cm}
+%\centerline{Braunschweig, den \today \hfil \hfil Unterschrift}
+Braunschweig, den \today 
+
+\pagestyle{headings}
+\cleardoublepage
+
+% Kurzfassung und Abstract
+
+\centerline{\bf Kurzfassung}
+
+Diese Beispiel-Kurzfassung ist ziemlich kurz.
+
+%
+\vskip 3cm
+%
+
+\centerline{\bf Abstract}
+
+This example abstract is indeed very abstract.
+
+\cleardoublepage
+
+\vspace*{7cm}
+\centerline{[Hier wird sp"ater die Aufgabenstellung eingef"ugt.]}
+
+
+
+
+\tableofcontents		% Inhaltsverzeichnis erzeugen
+\cleardoublepage
+\listoffigures			% Bilderverzeichnis erzeugen
+\cleardoublepage
+\listoftables			% Tabellenverzeichnis erzeugen
+\cleardoublepage
+
+
+%\parindent=0pt                   % erzeugt bei einem Absatz eine
+%\parskip=6pt plus 3pt            % Leerzeile (kein Einruecken)
+
+\setcounter{page}{0}
+
+\pagestyle{headings}
+\pagenumbering{arabic}
+
+\include{einleitung}		% Einleitung
+
+\cleardoublepage
+
+\include{hardware}	        % 2. Kapitel
+\cleardoublepage
+
+\include{einsatz}		% 3. Kapitel
+\cleardoublepage
+
+\include{design}		% 3. Kapitel
+\cleardoublepage
+                                % usw.
+\include{implementierung}		% 3. Kapitel
+\cleardoublepage
+
+\include{untersuchung}		% 3. Kapitel
+\cleardoublepage
+
+\include{ausblick}		% Zusammenfassung und Ausblick
+\cleardoublepage
+
+\addcontentsline{toc}{chapter}{Literaturverzeichnis}
+\bibliographystyle{unsrt}
+\bibliography{thesis}
+
+\begin{appendix}
+
+%\include{anhang1}		% Anhang A
+%\cleardoublepage
+                                % usw.
+
+\end{appendix}
+
+\end{document}

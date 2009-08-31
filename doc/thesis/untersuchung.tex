@@ -1,0 +1,20 @@
+\chapter{Untersuchung des Laufzeitverhaltens}
+Die Untersuchung der Laufzeitverhaltens wurde mithilfe eines Logik-
+Analysers durchgeführt. Ein Logikanalyser misst wie lange und wann
+ein Pin 1 und/oder 0 ist. Die Pins, die nötig sind um diese Messungen
+durchzuführen, dürfen noch nicht belegt sein. Vorteilhafterweise
+besitzt die Platine zwei Ports, die noch nicht belegt sind aber
+trotzdem nach draußen gelegt wurden, somit konnte der Logik-
+Analyser an die Platine angeschlossen und ein kleines Modul
+geschrieben werden, um diese Pins setzen und wieder löschen zu
+können. Diese Operationen wurden als Makros implementiert um den
+Messungsoverhead so gering wie möglich zu halten.
+\begin{center}
+\begin{tabular}{|c||c|c|}
+\hline
+\textbf{Makro} & \textbf{benötigte Takte} & \textbf{benötigte Zeit bei 16 MHz} \\ \hline \hline
+pin\_set() & 2 & 125 ns \\ \hline
+pin\_clear() & 2 & 125 ns \\ \hline
+pin\_toggle() & 4 & 250 ns \\ \hline
+\end{tabular}
+\end{center}

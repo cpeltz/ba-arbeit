@@ -1,0 +1,112 @@
+Datum: 2009-08-17
+Version: 3.2.1.0001
+
+Compiliert ohne -g und mit -O2 -finline-functions
+LCD: an
+
+Port-Belegung:
+A0: main-loop (toggle)
+A1: process_orders()
+A2: lcd_update_screen()
+A3: parser_update()
+A4: queue_update()
+A5: I2C Interrupt
+A6: 100ms Interrupt
+A7: 262ms Interrupt
+C0: process_orders (1/5)
+C1: process_orders (2/5)
+C2: process_orders (3/5)
+C3: process_orders (4/5)
+C4: process_orders (5/5)
+C5: queue_update (1/3)
+C6: queue_update (2/3)
+C7: queue_update (3/3)
+
+Einzelne Messungen:
+	A5 (Adresse empfangen): 4,746 us (4 ns sampling)
+	A5 (Daten empfangen): 4,367 us (8 ns sampling)
+	A2 (lcd_update_info wird ausgeführt): 18,893 us (16,949 us) (4 ns sampling)
+	A7: 1,675 us (4 ns sampling)
+	A6: 4,736 us (8 ns sampling)
+
+Messung 1: (3.2.2.0004)
+Bed.: Befehl in Queue, !STARTED, 4 ns sampling
+A0           166,500 us (168,295 us)
+ |- A1       153,739 us (151,944 us)
+ |  |- C0      4,387 us (  2,792 us)
+ |  |- C1    150,150 us (149,153 us)
+ |     |- C2 149,352 us (147,956 us)
+ |     |- C3 199,402 ns
+ |- A2         8,375 us (  6,381 us)
+ |- A3         7,577 us (  5,783 us)
+ |- A4         5,384 us (  4,187 us)
+
+Messung 2:
+Bed.: STARTED == true, neuer Befehl kommt in die Queue, 8 ns sampling
+A0           196,909 us (194,915 us)
+ |- A1        12,463 us ( 10,967 us)
+ |  |- C0      4,437 us (  2,742 us)
+ |  |- C1      9,172 us (  8,126 us)
+ |     |- C2   8,375 us (  6,979 us)
+ |     |- C3 299,103 ns
+ |- A2         8,375 us (  6,381 us)
+ |- A3        91,675 us ( 89,681 us)
+ |- A4        88,235 us ( 87,737 us)
+    |- A5      1,994 us
+Vgl.: mit reihe_1 Messung 8
+
+Messung 3:
+Bed.: Idle, ABS, I2C Int, LCD an, 8 ns sampling
+A0            35,785 us
+ |- A1        11,007 us (  9,232 us)
+ |  |- C0      3,809 us (  2,193 us)
+ |  |- C1      8,116 us (  6,959 us)
+ |     |- C4   7,388 us
+ |- A2        15,952 us ( 14,058 us)
+ |  |- A5      4,287 us
+ |- A3         7,378 us (  5,583 us)
+ |- A4         5,583 us (  4,786 us)
+
+Messung 4: (3.2.3.0003)
+Bed.: memset anstatt for-schleife verwendet, Befehl nicht in queue, parser
+update liefert letztes zeichen für Befehl, 8 ns sampling
+
+A0           137,089 us (139,083 us)
+ |- A1        10,967 us (  9,472 us)
+ |- A2         7,478 us (  5,484 us)
+ |- A3        48,853 us ( 47,358 us)
+ |- A4        77,767 us ( 76,770 us)
+    |- C5      7,976 us (  5,982 us)
+    |- C6     43,370 us ( 41,874 us)
+    |- C7     25,922 us
+order_init() von 13,968 us (for-schleife) auf 7,976 us (memset)
+
+Messung 5:
+Bed.: zustäzlich zu Messung 4 wurde die for-schleife in order_copy durch memcpy
+ersetzt, Befehl nicht in queue, parser update liefert letztes zeichen für Befehl
+8 ns sampling, I2C Int verlängert die schleife
+
+A0           132,104 us (134,098 us)
+ |- A1        10,967 us (  9,472 us)
+ |- A2         7,478 us (  5,484 us)
+ |- A3        59,322 us ( 57,328 us)
+ |  |- A5      6,481 us
+ |- A4        62,812 us ( 61,815 us)
+    |- C5      8,475 us (  6,481 us)
+    |- C6     35,892 us ( 34,397 us)
+    |- C7     17,448 us
+
+C0 bis C3: irq Interrupt
+Messung 6: (3.2.4.0001)
+Die Interrupts sind paarweise und wechselseitig verschieden lang. Dies hängt mit
+der Drehrichtung des Rades zusammen und damit welcher Pfad in der if-Anweisung
+gefolgt wird.
+C0: 5,035 us 4,995 us
+C1: 4,487 us 4,506 us 4,516 us 4,536 us 4,486 us
+C2: 4,895 us 4,865 us
+C3: 5,035 us 5,034 us
+
+(3.2.4.0002) (main-loop only, keine anderen pins, !DEBUG)
+Idle: 25,335 us (1-Flanke)\
+                           -> 23,535 us (durschnitt)
+      21,735 us (0-Flanke)/

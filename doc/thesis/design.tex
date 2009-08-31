@@ -1,0 +1,20 @@
+\chapter{Design und Designentscheidungen}
+Die Betriebssoftware wurde in Module aufgeteilt, wobei eine Code-Datei einem
+Modul zugeordnet ist und ein Module mehrere Code-Dateien umfassen kann.
+Es wurde besonderer Wert darauf gelegt, dass Module so wenig wie möglich andere
+Module aufrufen und dies auch nur durch Funktionen und nicht durch Variablen.
+Dieses Prinzip musste allerdings während der Optimierungs- und Testphase
+geringfügig aufgeweicht werden, da entweder der Code dadurch unleserlich wurde
+oder der Preis für einen Funktionsaufruf zu hoch war in Relation zu dem
+Nutzen, der dadurch erzielt wurde.
+Somit gibt es nun vier bis fünf globale Variablen, die sich während der Laufzeit
+ändern können und in unterschiedlichen Modulen direkt referenziert werden.
+Geändert werden diese allerdings nur in sehr wenigen Funktionen, in denen dies
+auch explizit Kommentiert wurde. Außerdem wurde in den Coding-Guidelines extra
+auf den Umstand hingewiesen wenn möglich keine Funktionen zu schreiben, die die
+globalen Variablen verändern und wenn doch dies explizit zu dokumentieren.
+Neben diesen maximal fünf Verhaltensverändernden globalen Variablen gibt es vier
+weitere Variablen in zwei verschiedenen Modulen, die jeweils aus einem anderen
+Modul explizit gesetzt werden. Dies sind die Trigger-Werte für die Position und
+die Zeit. Diese werden nur durch den Drive, bzw den Advanced Drive Befehl
+gesetzt und während der Motor Interrupts nach und nach dekrementiert.
