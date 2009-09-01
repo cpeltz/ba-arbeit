@@ -10,11 +10,27 @@ geschrieben werden, um diese Pins setzen und wieder löschen zu
 können. Diese Operationen wurden als Makros implementiert um den
 Messungsoverhead so gering wie möglich zu halten.
 \begin{center}
-\begin{tabular}{|c||c|c|}
-\hline
-\textbf{Makro} & \textbf{benötigte Takte} & \textbf{benötigte Zeit bei 16 MHz} \\ \hline \hline
-pin\_set() & 2 & 125 ns \\ \hline
-pin\_clear() & 2 & 125 ns \\ \hline
-pin\_toggle() & 4 & 250 ns \\ \hline
-\end{tabular}
+	\begin{tabular}{|c||c|c|}
+		\hline
+		\textbf{Makro} & \textbf{benötigte Takte} & \textbf{benötigte Zeit bei 16 MHz} \\ \hline \hline
+		pin\_set() & 2 & 125 ns \\ \hline
+		pin\_clear() & 2 & 125 ns \\ \hline
+		pin\_toggle() & 4 & 250 ns \\ \hline
+	\end{tabular}
 \end{center}
+Wie hier beschrieben sind die Zeiten für das Ausführen der Instruktion
+zum setzen, löschen und umschalten von einzelnen Pins ziemlich gering.
+Doch bei den Messungen insbesondere mit einem Leistungsfähigen und
+sehr genauen Oszilloskop konnte herausgefunden werden, dass das eigentliche
+wechsel des Stroms am Pin verhältnissmäßig langsam durchgeführt wird,
+insbesondere das Abfallen des Stromes, also bei einer fallenden Flanke
+benötigt ungefähr 2 us von denen allerdings, und hier liegt das Problem,
+zwischen 0.5 und 1 us falschlicherweise als "high" gemessen wird.
+D.h. der Logikanalyser misst eine gewisse Zeitspanne einen "falschen" Wert.
+(Er ist nicht physikalisch falsch nur logisch). Denn wenn der Strom abfällt
+ist der bin schon nicht mehr gesetzt, der Logikanalyser allerdings betrachtet
+dies teilweise immernoch als gesetzt.
+Aufgrund dieses Umstandes als auch der Tatsache, dass das System nicht untersucht
+werden kann ohne einen geringen Fußabdruck zu hinterlassen, sind die Messungen mit
+einem abschätzbaren aber nicht genau vorhersagbaren Fehler im Vergleich zur
+Wirklichkeit behaftet.
