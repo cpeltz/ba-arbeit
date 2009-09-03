@@ -11,11 +11,11 @@ er In-System Programming (ISP), was bei der Entwicklung der Betriebssoftware von
 Nutzen war, da hierdurch schnell und relativ unkompliziert neue Versionen auf die Platine
 überspielt werden konnten.
 \section{Ein-/Ausgabemöglichkeiten zur Praktikumsplatine}
-Die Motorplatine verfügt sowohl über einen UART-Port, als auch einen I²C-Bus, über die
+Die Motorplatine verfügt sowohl über einen UART-Port, als auch einen I2C-Bus, über die
 die Praktikumsplatine mit der Motorplatine kommunizieren kann. Der UART-Port wird außerdem
 für die Ausgabe von Debug-Informationen benutzt, falls dies aktiviert wird. Im allgemeinen
-Fall wird allerdings nur der I²C-Bus zur Kommunikation zwischen den beiden Platinen verwendet.
-Da der Microcontroller über eingebaute Hardwarelogiken sowohl für den I²C-Bus als auch für
+Fall wird allerdings nur der I2C-Bus zur Kommunikation zwischen den beiden Platinen verwendet.
+Da der Microcontroller über eingebaute Hardwarelogiken sowohl für den I2C-Bus als auch für
 den UART-Port verfügt, hält sich der administrative Aufwand für die Kommunikation sehr in
 Grenzen. Es können lediglich Interrupt Service Routinen (ISR) für diese zur Verfügung gestellt
 werden, die es dann ermöglichen schnell auf Situationen zu reagieren und ohne, dass
