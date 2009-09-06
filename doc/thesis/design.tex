@@ -1,4 +1,5 @@
 \chapter{Design und Designentscheidungen}
+%Modul Überblick-bild
 Die Betriebssoftware wurde in Module aufgeteilt, wobei eine Code-Datei einem
 Modul zugeordnet ist und ein Module mehrere Code-Dateien umfassen kann.
 Es wurde besonderer Wert darauf gelegt, dass Module so wenig wie möglich andere
@@ -74,5 +75,15 @@ gelten kann, wird die entsprechende Order Funktion mit dem korrespondierenden Be
 Iteration der Hauptschleife aufgerufen. Diese kann dann eventuell Wartungsarbeiten an dem
 Befehl durchführen und überprüfen, ob dieser beendet ist und entsprechend seinen Status ändern.
 Durch diesen Aufbau ist eine Hauptschleifeniteration sehr kurz, aber auch komplizierte Befehle
-oder solche deren Parameter und Durchführung überwacht werden müssen sind hierdurch möglich.
+oder solche deren Parameter und Durchführung überwacht werden müssen sind hierdurch möglich.\\
+Durch das Queue Modul ist es möglich der Motorplatine mehrere Befehle direkt hintereinander
+zu übermitteln, die dann einer nach dem anderen ausgeführt werden, außerdem kümmert die
+Queue sich darum, das Prioritäts-Befehle nicht eingereiht werden sondern bei der nächsten
+Hauptschleifeniteration ausgeführt werden.
 \section{Timer, Parser und Options}
+Diese drei Module haben hauptsächlich eine unterstützende Funktion, so bringt das Timer Modul
+die Möglichkeit mit in bestimmten zeitlichen Intervallen Befehle auszuführen. Der Parser
+fasst einzelne Bytes logisch zu Befehlen zusammen und übergibt diese der Queue. Das Options
+Modul beinhaltet die Einstellungen, die das Verhalten des gesamten Systems beeinflussen, wie
+z.B. ob Debugging Ausgaben aktiviert sind, mit was für einer Geschwindigkeit das ABS bremst
+und einiges mehr.

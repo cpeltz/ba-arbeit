@@ -9,6 +9,7 @@ Analyser an die Platine angeschlossen und ein kleines Modul
 geschrieben werden, um diese Pins setzen und wieder löschen zu
 können. Diese Operationen wurden als Makros implementiert um den
 Messungsoverhead so gering wie möglich zu halten.
+\begin{table}[htb]
 \begin{center}
 	\begin{tabular}{|c||c|c|}
 		\hline
@@ -17,7 +18,9 @@ Messungsoverhead so gering wie möglich zu halten.
 		pin\_clear() & 2 & 125 ns \\ \hline
 		pin\_toggle() & 4 & 250 ns \\ \hline
 	\end{tabular}
+	\caption{\label{pin_takte} Benötigte Takte/Zeit für Pin-Operationen}
 \end{center}
+\end{table}
 Wie hier beschrieben sind die Zeiten für das Ausführen der Instruktion
 zum setzen, löschen und umschalten von einzelnen Pins ziemlich gering.
 Doch bei den Messungen insbesondere mit einem Leistungsfähigen und
@@ -25,12 +28,33 @@ sehr genauen Oszilloskop konnte herausgefunden werden, dass das eigentliche
 wechsel des Stroms am Pin verhältnissmäßig langsam durchgeführt wird,
 insbesondere das Abfallen des Stromes, also bei einer fallenden Flanke
 benötigt ungefähr 2 us von denen allerdings, und hier liegt das Problem,
-zwischen 0.5 und 1 us fälschlicherweise als \"high\" gemessen wird.
-D.h. der Logikanalyser misst eine gewisse Zeitspanne einen \"falschen\" Wert.
+zwischen 0.5 und 1 us fälschlicherweise als ''high'' gemessen wird.
+D.h. der Logikanalyser misst eine gewisse Zeitspanne einen ''falschen'' Wert.
 (Er ist nicht physikalisch falsch nur logisch). Denn wenn der Strom abfällt
 ist der bin schon nicht mehr gesetzt, der Logikanalyser allerdings betrachtet
-dies teilweise immernoch als gesetzt.
+dies teilweise immer noch als gesetzt.
 Aufgrund dieses Umstandes als auch der Tatsache, dass das System nicht untersucht
 werden kann ohne einen geringen Fußabdruck zu hinterlassen, sind die Messungen mit
 einem abschätzbaren aber nicht genau vorhersagbaren Fehler im Vergleich zur
 Wirklichkeit behaftet.
+\section{Erste Messungen}
+% Tabelle mit wichtigen Zeiten
+% LCD update 3,250 ms
+Durch die ersten Messungen wurde der Startpunkt für die Untersuchung der Software
+festgelegt. Dafür wurde in der Hauptschleife (siehe Abb. \ref{main_loop_full}) zum einen
+ein pin\_toggle() eingebaut, um die Länge einer Schleifeniteration zu messen, zum anderen
+wurde die einzelen Funktionsaufrufe in der Hauptschleife mit pin\_set() und pin\_clear()
+umgeben.
+\begin{figure}[htb]
+ \centering
+ \scalebox{0.5}{\includegraphics{pictures/main_loop_full.png}}
+ \caption{\label{main_loop_full}Die Hauptschleife mit Debugausgaben und Pin-Operationen}
+\end{figure}
+
+\section{Das LCD-Problem}
+\section{Optimierung}
+\subsection{Inlining von Funktionen}
+\subsection{Eleminierung von Modulo-Operatoren}
+\subsection{Effizienteres Initialisieren des Speichers}
+\subsection{Bedingtes Kompilieren von Debugausgaben}
+\section{Vergleich mit der Orginal-Software}
