@@ -23,15 +23,22 @@ haben 16-Bit, was bei dem gegebenen Takt von 16 MHz einen maximalen Timer-Interv
 entspricht. Zustäzlich kann der Controller sechs Puls-Weiten-Modulationen betreiben, von
 denen zwei für die Benutzung der Servomotoren, die die Räder antreiben, benutzt werden.
 \section{Ein-/Ausgabemöglichkeiten zur Praktikumsplatine}
-Die Motorplatine verfügt sowohl über einen UART-Port, als auch einen I2C-Bus, über die
+Die Motorplatine verfügt sowohl über einen USART-Port, als auch einen I2C-Bus, über die
 die Praktikumsplatine mit der Motorplatine kommunizieren kann. Der UART-Port wird außerdem
 für die Ausgabe von Debug-Informationen benutzt, falls dies aktiviert wird. Im allgemeinen
 Fall wird allerdings nur der I2C-Bus zur Kommunikation zwischen den beiden Platinen verwendet.
 Da der Microcontroller über eingebaute Hardwarelogiken sowohl für den I2C-Bus als auch für
-den UART-Port verfügt, hält sich der administrative Aufwand für die Kommunikation sehr in
+den USART-Port verfügt, hält sich der administrative Aufwand für die Kommunikation sehr in
 Grenzen. Es können lediglich Interrupt Service Routinen (ISR) für diese zur Verfügung gestellt
-werden, die es dann ermöglichen schnell auf Situationen zu reagieren und ohne, dass
-Informationen verloren gehen könnten.
+werden, die es dann ermöglichen schnell auf Situationen zu reagieren und ohne die Gefahr
+einzugehen Informationen zu verlieren.
 \section{Interne Ein-/Ausgabe Ports}
 Zusätzlich zu den externen Kommunikationsmöglichkeiten, besitzt der ATMEGA2561 54
-programmierbare IO Kanäle, die in Ports mit je 8 Kanälen zusammgefasst werden.
+programmierbare IO Kanäle, die in Ports mit je 8 Kanälen zusammgefasst werden. 16 von diesen
+Kanälen sind für die Steuerung der Servomotoren zuständig, die die Räder antreiben, sowie bieten
+Rückmeldung von den Hall-Sensoren, die an den Motoren befestigt sind, um bei Bewegung der Räder
+Interrupts auslösen zu können und aus den Informationen der Sensoren schließen zu können, in welche
+Richtung die Räder sich drehen, was wiederum notwendig ist um nur eine bestimmte Strecke zu fahren.
+Für jede Umdrehung eines Rades werden 360, also für jedes Grad einer, Interrupts ausgelöst, je
+nachdem wie groß der Druchmesser des Rades ist, ist eine Steckenauflösung  von wenigen Millimetern
+möglich.
