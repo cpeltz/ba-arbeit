@@ -36,7 +36,17 @@ uint8_t ACTIVE_BRAKE_WHEN_TRIGGER_REACHED = 1;
 uint8_t ACTIVE_BRAKE_WHEN_IDLE = 1;
 
 #ifdef DEBUG
+/**
+ * If DEBUG is defined (by -DDEBUG on the compiler line), then this variable is used to switch
+ * debug messages on and off.
+ */
 uint8_t DEBUG_ENABLE;
 #endif
+/**
+ * Switches between TWI IO-Interface and UART IO-Interface. (0 = UART, !0 = TWI).
+ */
 uint8_t INTERFACE_TWI;
+/**
+ * Indicates whether or not a LCD is present.
+ */
 uint8_t LCD_PRESENT;

@@ -4,7 +4,7 @@
 #include <inttypes.h>
 
 /**
- * Do _NOT_ change this define, it will break the IO Framework.
+ * Do _NOT_ change this define, it _will_ break the IO Framework.
  */
 #define IO_BUFFER_SIZE 256
 

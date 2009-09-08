@@ -186,6 +186,7 @@ void io_obj_end(void) {
 	extern uint8_t INTERFACE_TWI;
 	obj_memory[objpos_end - 1] = outpos_end - 1;
 	objpos_end = (objpos_end + 1);
+	// If output goes over UART, we have to manualy start the transmission
 	if (!INTERFACE_TWI)
 		uart_start_transmission();
 }

@@ -149,6 +149,7 @@ static void motor_SetSpeed_M1(int8_t speed) {
  * @param[in] motor The motor. Valid values are #WHEEL_LEFT,
  * #WHEEL_RIGHT and #WHEEL_BOTH.
  * @param[in] speed The desired speed of motor 0.
+ * @todo Remove this bulk and use a dispatch table instead.
  */
 void motor_SetSpeed(uint8_t motor, int8_t speed) {
 	switch (motor) {

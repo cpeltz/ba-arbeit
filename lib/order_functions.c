@@ -64,6 +64,11 @@ void extended_instruction(order_t *order) {
  * outside.
  * @param[in,out] order The order data that specifies what exactly
  * should be done.
+ * @todo Shouldn't be the order set to ORDER_STATUS_DONE and not directly cleared?
+ * @todo A Priority Order may be lost in the case, that three prioritys are send
+ * right after each other, one is being excetued, second is in Parser, third comes
+ * in. next update priority will get overwritten twice and second is lost.
+ * @todo if the STATUS_DONE todo is implemented, remove the setting of ABS Position
  */
 void control_instruction(order_t *order) {
 	// Extract the specific Control Instruction we should carry out
@@ -93,7 +98,9 @@ void control_instruction(order_t *order) {
 			timer_1s_counter = 0;
 			break;
 	}
+	// Remove the priority Order from Queue
 	queue_clear_priority();
+	// Set Position for the ABS
 	drive_brake_active_set();
 }
 
@@ -106,6 +113,7 @@ void control_instruction(order_t *order) {
  * (not real register) should be returned.
  */
 void query_instruction(order_t *order) {
+	// Extract the instrution code
 	int instruction = (order->data[0] & 0xf0);
 	order_t *current_order = 0;
 	uint8_t current_order_size = 0;
@@ -128,14 +136,18 @@ void query_instruction(order_t *order) {
 			io_obj_end();
 			break;
 		case 0x40: // current Order
+			// Get the normal order (just get_current_order() would return this priority order)
 			if ((current_order = queue_get_current_normal_order())) {
+				// Find out how long this order is
 				current_order_size = order_size(current_order);
 			}
+			// Put the Size of the order as own object
 			io_obj_start();
 			io_put(current_order_size);
 			io_obj_end();
 			if (DEBUG_ENABLE)
 				debug_WriteInteger(PSTR("order_functions.c : query_instruction() : current_order_size = "), current_order_size);
+			// send the Order data
 			if (current_order) {
 				uint8_t i = 0;
 				io_obj_start();
@@ -178,6 +190,7 @@ void query_instruction(order_t *order) {
 			io_obj_end();
 			break;
 	}
+	// Remove the priority order from the Queue
 	queue_clear_priority();
 }
 
@@ -193,6 +206,7 @@ void query_instruction(order_t *order) {
  * Valid values are #WHEEL_LEFT and #WHEEL_RIGHT.
  * @param[in] trigger_value The raw value to which the trigger
  * will be set.
+ * @todo Unify setTrigger and setAdvancedTrigger
  */
 void setTrigger(uint8_t trigger_type, uint8_t wheel, int16_t trigger_value) {
 	switch(trigger_type) {
@@ -288,29 +302,36 @@ void drive_instruction(order_t *order) {
 	// Extract the type of triggers to be used
 	uint8_t trigger_type_left = order->data[0] & 0x30;
 	uint8_t trigger_type_right = order->data[0] & 0xc0;
+	// Import the option for ABS
 	extern uint8_t ACTIVE_BRAKE_WHEN_TRIGGER_REACHED;
 	if (DEBUG_ENABLE) {
 		debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  trigger_type_left = "), trigger_type_left);
 		debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  trigger_type_right = "), trigger_type_right);
 	}
 
+	// This if shouldn't be taken, just to make sure
 	if (order->status & ORDER_STATUS_DONE) {
 		if (DEBUG_ENABLE)
 			debug_WriteString_P(PSTR("order_functions.c : drive_instruction() :  status = ORDER_STATUS_DONE\n"));
 		return;
 	}
 
-	if (order->status & ORDER_STATUS_STARTED) { //Instruction is already running
+	// Instruciton is already running
+	if (order->status & ORDER_STATUS_STARTED) {
+		// Local variable to save the checkTrigger return value for debug output
 		uint16_t result = 0;
 		if (DEBUG_ENABLE)
 			debug_WriteString_P(PSTR("order_functions.c : drive_instruction() :  status = ORDER_STATUS_STARTED\n"));
-		// Left trigger reached
+		// Check Left trigger
 		result = checkTrigger(trigger_type_left, WHEEL_LEFT);
 		if (DEBUG_ENABLE)
 			debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  checkTrigger(LEFT) = "), result);
+		// Left Trigger reached in this Iteration?
 		if (!(order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED) &&
-				checkTrigger(trigger_type_left, WHEEL_LEFT) == 0) {
+				result == 0) {
+			// Set the Trigger reached flag
 			order->status |= ORDER_STATUS_TRIGGER_LEFT_REACHED;
+			// set the ABS ref position
 			drive_brake_active_set_left();
 			if (DEBUG_ENABLE)
 				debug_WriteString_P(PSTR("order_functions.c : drive_instruction() :  status = ORDER_STATUS_TRIGGER_LEFT_REACHED\n"));
@@ -319,9 +340,12 @@ void drive_instruction(order_t *order) {
 		result = checkTrigger(trigger_type_right, WHEEL_RIGHT);
 		if (DEBUG_ENABLE)
 			debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  checkTrigger(RIGHT) = "), result);
+		// Right Trigger reached in this Iteration?
 		if (!(order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED) &&
-				checkTrigger(trigger_type_right, WHEEL_RIGHT) == 0 ) {
+				result == 0 ) {
+			// Set the Trigger reached flag
 			order->status |= ORDER_STATUS_TRIGGER_RIGHT_REACHED;
+			// set the ABS ref position
 			drive_brake_active_set_right();
 			if (DEBUG_ENABLE)
 				debug_WriteString_P(PSTR("order_functions.c : drive_instruction() :  status = ORDER_STATUS_TRIGGER_RIGHT_REACHED\n"));
@@ -355,6 +379,7 @@ void drive_instruction(order_t *order) {
 			if (trigger_type_left == 0x30) { // Use function for both wheels to use PID mode with D
 				drive_UsePID(WHEEL_BOTH, order->data[1]);
 			} else {
+				// Only drive the wheels if the triggers haven't been reached
 				if (!(order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED)) {
 					drive_UsePID(WHEEL_LEFT, order->data[1]);
 				}
@@ -379,6 +404,7 @@ void drive_instruction(order_t *order) {
 		if (trigger_type_right == 0xc0) { // Set new differential correction
 			trigger_value_left = (order->data[1] << 8) + order->data[2];
 			wheel_WriteDifference(trigger_value_left);
+			// We are done with this order
 			order->status |= ORDER_STATUS_DONE;
 			return;
 		}
@@ -390,8 +416,10 @@ void drive_instruction(order_t *order) {
 			debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  trigger_value_left = "), trigger_value_left);
 			debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  trigger_value_right = "), trigger_value_right);
 		}
+		// Set the Trigger values
 		setTrigger(trigger_type_left, WHEEL_LEFT, trigger_value_left);
 		setTrigger(trigger_type_right, WHEEL_RIGHT, trigger_value_right);
+		// Set Status to started as setup is complete
 		order->status |= ORDER_STATUS_STARTED;
 	}
 }

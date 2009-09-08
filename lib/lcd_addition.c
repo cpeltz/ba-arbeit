@@ -13,8 +13,18 @@
  * Provides routines to update the LCD with vital runtime information.
  * @{
  */
+/**
+ * The in-memory representation of the information
+ * printed on the LCD.
+ */
 char info[4][21]={VERSION,"","",""};
+/**
+ * Position in the info array.
+ */
 int8_t info_col = 0, info_row = 0;
+/**
+ * Signals, that a LCD-update is in progress.
+ */
 uint8_t lcd_update_underway = 0;
 
 /**
@@ -27,6 +37,7 @@ void lcd_update_info(const order_t * const order) {
 	extern uint8_t ACTIVE_BRAKE_WHEN_IDLE;
 	extern uint8_t ACTIVE_BRAKE_WHEN_TRIGGER_REACHED;
 	extern uint8_t INTERFACE_TWI;
+	// Print the used IO Interface
 	if(INTERFACE_TWI) {
 		info[1][0] = 'T';
 		info[1][1] = 'W';
@@ -37,6 +48,7 @@ void lcd_update_info(const order_t * const order) {
 		info[1][2] = 'i';
 	}
 	info[1][3] = ' ';
+	// Show whether or not Debug Messages are activated
 	if(DEBUG_ENABLE) {
 		info[1][4] = 'D';
 		info[1][5] = 'E';
@@ -51,37 +63,44 @@ void lcd_update_info(const order_t * const order) {
 		info[1][8] = 'g';
 	}
 	info[1][9] = ' ';
+	// Show the state of the ABS
 	info[1][10] = 'A';
 	info[1][11] = 'B';
 	info[1][12] = ':';
 	info[1][13] = ACTIVE_BRAKE_ENABLE ? 'E' : 'e';
 	info[1][14] = ACTIVE_BRAKE_WHEN_IDLE ? 'I' : 'i';
 	info[1][15] = ACTIVE_BRAKE_WHEN_TRIGGER_REACHED ? 'T' : 't';
+	// Don't forget the String-endings, or else we'll get undefined results
 	info[1][16] = '\0';
 	info[2][0] = '\0';
 	info[3][0] = '\0';
+	// Check if there is an order we should print out as well
 	if(order != NULL) {
 		uint8_t row = 2, col = 0;
 		uint8_t length = order_size(order);
 		// Make sure we never write more then we have space for (14 2 digit hex numbers)
 		length = (length > 13) ? 13 : length;
 		for(uint8_t i=0; i < length; i++) {
+			// Convert the order bytes into hex-digits
 			uint8_t lower = order->data[i] & 0x0f;
 			uint8_t upper = (order->data[i] & 0xf0) >> 4;
 			info[row][col++] = (upper < 10) ? ('0' + upper) : ('a' + (upper-10));
 			info[row][col++] = (lower < 10) ? ('0' + lower) : ('a' + (lower-10));
+			// Do a line-jump at the end of the line
 			if(i == 6 || i == 13) {
 				info[row][col] = '\0';
 				row = 3;
 				col = 0;
+			// Otherwise print a seperating space
 			} else
 				info[row][col++] = ' ';
 		}
 		info[row][col] = '\0';
 	}
+	// Set the state variables to values that indicate what has to be done
 	info_col = 0;
-	info_row = -1;
-	lcd_update_underway = 1;
+	info_row = -1; // -1 indicates a clear has to be made
+	lcd_update_underway = 1; // indicates we have to update the lcd screen
 }
 
 /**
@@ -122,7 +141,7 @@ void lcd_update_screen(void) {
 				info_col = 0;
 				lcd_gotoxy(0, info_row);
 			} else {
-				// And now we are done wiht updateing the LCD (Pheew)
+				// And now we are done with updating the LCD (Pheew)
 				lcd_update_underway = 0;
 			}
 		}

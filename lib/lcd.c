@@ -22,7 +22,6 @@
        See the C include lcd.h file for a description of each function
        
 *****************************************************************************/
-/*#define __AVR_ATmega2561__*/
 #include <inttypes.h>
 #include <avr/io.h>
 #include <avr/pgmspace.h>

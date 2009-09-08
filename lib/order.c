@@ -2,6 +2,7 @@
 #include "parse.h"
 #include "order_functions.h"
 #include "debug.h"
+#include <string.h>
 #include <avr/pgmspace.h>
 
 /**
@@ -30,7 +31,6 @@ typedef void (*order_function)(order_t *);
  */
 order_function order_array[16];
 
-#include <string.h>
 /**
  * Setup the order function call table.
  */
@@ -66,7 +66,6 @@ void order_array_init(void) {
 void order_init(order_t *order) {
 	// Function to Initialize a order_t structure
 	// Overwrite every piece of memory with 0
-	// Have to do it that way because no memset available
 	memset(order->data, 0, ORDER_TYPE_MAX_LENGTH);
 	// Set the Status of the order to Initialized
 	order->status = ORDER_STATUS_INITIALIZED;
@@ -77,12 +76,10 @@ void order_init(order_t *order) {
  *
  * @param[in] from The source order.
  * @param[out] to The destination order.
+ * @todo Check whether or not memcpy(to, from, sizeof(order_t)) would work
  */
 void order_copy(const order_t * const from, order_t *to) {
 	// Used to copy the order data from one to another
-	//uint8_t i = 0;
-	//for(; i < ORDER_TYPE_MAX_LENGTH; i++)
-	//	to->data[i] = from->data[i];
 	memcpy(to->data, from->data, ORDER_TYPE_MAX_LENGTH);
 	to->status = from->status;
 }
@@ -115,6 +112,7 @@ void order_process(order_t * const order) {
  *
  * @param[in] order The order, of which one needs the size.
  * @return <em>uint8_t</em> The number of Bytes the order is long.
+ * @todo Maybe think about unifiing order_size and bytes_needed
  */
 uint8_t order_size(const order_t * const order) {
 	return bytes_needed(order->data[0]);

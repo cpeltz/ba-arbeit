@@ -96,6 +96,7 @@ void drive_SetPIDSumError(const uint8_t wheel, const int16_t sumError) {
  * the wheels while driving.
  * @param[in] wheel Either 0 for the left wheel, 1 for the right wheel or 2 for both wheels.
  * @param[in] speed Describes the speed with which the wheel should be used.
+ * @todo Remove the Modulo-Operators
  */
 void drive_UsePID(const uint8_t wheel, const int8_t speed) {
 	int16_t wheel_ModSpeed[2];
@@ -105,18 +106,13 @@ void drive_UsePID(const uint8_t wheel, const int8_t speed) {
 		debug_WriteString_P(PSTR("drive.c : drive_UsePID()\n"));
 	switch (wheel) {
 		case WHEEL_LEFT:
-			// PID Fahrt für linkes Rad
-			if (speed > 0)
-				motor_SetSpeed(WHEEL_LEFT, pid_Controller(speed, wheel_ReadSpeed(WHEEL_LEFT), &drive_PID[WHEEL_LEFT]));
-			else
-				motor_SetSpeed(WHEEL_LEFT, -pid_Controller(-speed, -wheel_ReadSpeed(WHEEL_LEFT), &drive_PID[WHEEL_LEFT]));
-			break;
 		case WHEEL_RIGHT:
+			// PID Fahrt für linkes Rad
 			// PID Fahrt für rechtes Rad
 			if (speed > 0)
-				motor_SetSpeed(WHEEL_RIGHT, pid_Controller(speed, wheel_ReadSpeed(WHEEL_RIGHT), &drive_PID[WHEEL_RIGHT]));
+				motor_SetSpeed(wheel, pid_Controller(speed, wheel_ReadSpeed(wheel), &drive_PID[wheel]));
 			else
-				motor_SetSpeed(WHEEL_RIGHT, -pid_Controller(-speed, -wheel_ReadSpeed(WHEEL_RIGHT), &drive_PID[WHEEL_RIGHT]));
+				motor_SetSpeed(wheel, -pid_Controller(-speed, -wheel_ReadSpeed(wheel), &drive_PID[wheel]));
 			break;
 		case WHEEL_BOTH:
 			// PID Fahrt für beide Räder mit Differenzausgleich
@@ -172,20 +168,8 @@ void drive_UsePID(const uint8_t wheel, const int8_t speed) {
  */
 void drive_brake_active(void) {
 	// Do active braking. Wheels shouldn't move from their position.
-	drive_brake_active_left();
-	drive_brake_active_right();
-}
-
-/**
- * Sets the current position as holding position used while doing active braking.
- *
- * Sets position for both wheels.
- * @todo This version is only for testing!
- */
-void drive_brake_active_set(void) {
-	// Set the Position of the wheels for use with active braking.
-//	drive_brake_active_set_left();
-//	drive_brake_active_set_right();
+//	drive_brake_active_left();
+//	drive_brake_active_right();
 	extern uint8_t ACTIVE_BRAKE_ENABLE;
 	extern uint8_t ACTIVE_BRAKE_AMOUNT;
 	if(!ACTIVE_BRAKE_ENABLE)
@@ -204,6 +188,18 @@ void drive_brake_active_set(void) {
 	} else {
 		motor_SetSpeed(WHEEL_RIGHT, ACTIVE_BRAKE_AMOUNT);
 	}
+}
+
+/**
+ * Sets the current position as holding position used while doing active braking.
+ *
+ * Sets position for both wheels.
+ * @todo This version is only for testing!
+ */
+void drive_brake_active_set(void) {
+	// Set the Position of the wheels for use with active braking.
+	drive_brake_active_set_left();
+	drive_brake_active_set_right();
 }
 
 /**
