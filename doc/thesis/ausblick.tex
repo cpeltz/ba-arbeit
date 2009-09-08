@@ -1,12 +1,12 @@
 \chapter{Zusammenfassung und Ausblick}
 Am Ende dieser Arbeit ist die Platine in der Lage auf Befehle schnell und korrekt zu reagieren,
-solange diese nicht schwerwiegend fehlgeformt sind. Es gehen keine Interrupts verloren und die
+solange diese nicht schwerwiegend fehl geformt sind. Es gehen keine Interrupts verloren und die
 Platine reagiert auf Änderungen in Bruchteilen einer Sekunde.\\
 Dennoch gibt es einige Punkte, die aufgrund der Mangelnden Zeit nicht getestet oder implementiert
 werden konnten.\\
 So ist beispielsweise das Verhalten des ABS abhängig von der Dauer der Hauptschleife. Normalerweise
 ist dies kein Problem, wenn allerdings Debug-Ausgaben vorgenommen werden, kann das ABS sich
-auf eine Art und Weise verhalten, die nicht erwünscht ist (dauerndes hin- und herschwenken der Räder,
+auf eine Art und Weise verhalten, die nicht erwünscht ist (dauerndes hin und her schwenken der Räder,
 da kein Schleifendurchlauf während des Nullpunktes stattfindet). Um dieses zu verhindern kann man
 einen Timer-Interrupt mit einer möglichst niedrigen Auflösung benutzen. Der Vorteil wäre hierbei,
 dass das ABS nicht mehr abhängig von der Geschwindigkeit der Hauptschleife ist, sowie, dass das
@@ -19,10 +19,10 @@ Fehlererkennung. So ist es möglich eintreffende Befehle auf komplette syntaktis
 zu überprüfen und nur solche Befehle zu akzeptieren, die diese Tests bestehen. Diese Erweiterung
 muss allerdings möglichst effizient und einfach erweiterbar implementiert werden, um zum einen nicht
 entgegen der Designprinzipien des Systems zu handeln, als auch das Laufzeitverhalten nicht
-schwerwiegend zu beeinträchtigen. Zusätzlich zu dieser Fehlererkennen kann die Robustheit des Systems
+schwerwiegend zu beeinträchtigen. Zusätzlich zu dieser Fehlererkennung kann die Robustheit des Systems
 durch ein Überwachungssystem erhöht werden, welches in periodischen Abständen, ermöglicht durch
 die eingebauten Timer, die einzelnen Module des Gesamtsystems auf Anzeichen von Problemen untersucht,
-wie z.B. voll Buffer, runaway Befehle, Parser Status Korruptionen und dergleichen. Um die Möglichkeit
+wie z.B. volle Puffer, runaway Befehle, Parser Status Korruption und dergleichen. Um die Möglichkeit
 von runaway Code auszuschließen, ist die Benutzung des eingebauten Watchdog-Timers möglich, dessen
 timeout Wert allerdings sehr sorgfältig gewählt werden muss. Der timeout Wert darf nicht kleiner sein
 als die längste Hauptschleifen Iteration plus ein entsprechendes Sicherheitspolster.\\
@@ -36,5 +36,5 @@ Wie im Kapitel über die Laufzeituntersuchung beschrieben ist die Datenrate übe
 limitierende Faktor bei der Übermittlung von Fahrbefehlen von der Praktikumsplatine an die
 Motorplatine. Damit dieses Problem minimiert wird kann man zum einen erwägen den I2C-Bus im \"high-speed\"
 Modus operieren zu lassen, oder eine eigene Punkt-zu-Punkt Kommunikation mithilfe der freien Ports auf der
-Motorplatine zu realisieren. Solch ein Maßgeschneideter Port mit einem eigens dafür entwickelten Protokoll
+Motorplatine zu realisieren. Solch ein Maßgeschneiderter Port mit einem eigens dafür entwickelten Protokoll
 könnte die Latenz, die durch das Senden des Befehls entsteht, erheblich verringern.

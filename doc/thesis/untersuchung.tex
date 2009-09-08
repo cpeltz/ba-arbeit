@@ -8,7 +8,7 @@ trotzdem nach draußen gelegt wurden, somit konnte der Logik-
 Analyser an die Platine angeschlossen und ein kleines Modul
 geschrieben werden, um diese Pins setzen und wieder löschen zu
 können. Diese Operationen wurden als Makros implementiert um den
-Messungsoverhead so gering wie möglich zu halten.
+Messoverhead so gering wie möglich zu halten.
 \begin{table}[htb]
 \begin{center}
 	\begin{tabular}{|c||c|c|}
@@ -25,7 +25,7 @@ Wie hier beschrieben sind die Zeiten für das Ausführen der Instruktion
 zum setzen, löschen und umschalten von einzelnen Pins ziemlich gering.
 Doch bei den Messungen insbesondere mit einem Leistungsfähigen und
 sehr genauen Oszilloskop konnte herausgefunden werden, dass das eigentliche
-wechsel des Stroms am Pin verhältnissmäßig langsam durchgeführt wird,
+Wechsel des Stroms am Pin verhältnismäßig langsam durchgeführt wird,
 insbesondere das Abfallen des Stromes, also bei einer fallenden Flanke
 benötigt ungefähr 2 us von denen allerdings, und hier liegt das Problem,
 zwischen 0.5 und 1 us fälschlicherweise als ''high'' gemessen wird.
@@ -43,7 +43,7 @@ Wirklichkeit behaftet.
 Durch die ersten Messungen wurde der Startpunkt für die Untersuchung der Software
 festgelegt. Dafür wurde in der Hauptschleife (siehe Abb. \ref{main_loop_full}) zum einen
 ein pin\_toggle() eingebaut, um die Länge einer Schleifeniteration zu messen, zum anderen
-wurde die einzelen Funktionsaufrufe in der Hauptschleife mit pin\_set() und pin\_clear()
+wurde die einzelnen Funktionsaufrufe in der Hauptschleife mit pin\_set() und pin\_clear()
 umgeben.
 \begin{figure}[htb]
  \centering
@@ -57,4 +57,4 @@ umgeben.
 \subsection{Eleminierung von Modulo-Operatoren}
 \subsection{Effizienteres Initialisieren des Speichers}
 \subsection{Bedingtes Kompilieren von Debugausgaben}
-\section{Vergleich mit der Orginal-Software}
+\section{Vergleich mit der Original-Software}

@@ -14,11 +14,11 @@ Geändert werden diese allerdings nur in sehr wenigen Funktionen, in denen dies
 auch explizit Kommentiert wurde. Außerdem wurde in den Coding-Guidelines extra
 auf den Umstand hingewiesen wenn möglich keine Funktionen zu schreiben, die die
 globalen Variablen verändern und wenn doch dies explizit zu dokumentieren.
-Neben diesen maximal fünf Verhaltensverändernden globalen Variablen gibt es vier
+Neben diesen maximal fünf Verhaltens verändernden globalen Variablen gibt es vier
 weitere Variablen in zwei verschiedenen Modulen, die jeweils aus einem anderen
 Modul explizit gesetzt werden. Dies sind die Trigger-Werte für die Position und
 die Zeit. Diese werden nur durch den Drive, bzw den Advanced Drive Befehl
-gesetzt und während der Motor Interrupts nach und nach dekrementiert.
+gesetzt und während der Motor Interrupts nach und nach decrementiert.
 Über die Module wird in den Unterkapiteln genauer eingegangen.
 \section{System}
 Das als System bezeichnete Modul beinhaltet die Hauptschleife der Betriebssoftware,
@@ -36,13 +36,13 @@ fließen kann.
 \section{Debug}
 Eigene Mechanismen zum Debugging sind genau dann sehr wichtig, wenn man nicht mit den
 gewohnten Werkzeugen dies tun kann. Während der Laufzeit verstehen was in dem kleinen
-Microcontroller vor sich geht ist essentiel, allerdings auch nicht sehr simpel, denn
-die einzigen Möglichkeiten, die die Platine hat mit der Aussenwelt zu kommunizieren
-beschränken sich auf 5 LED's, ein 4*20 Zeichen LCD, eine USART und eine I2C-Bus 
+Mikrocontroller vor sich geht ist essentiell, allerdings auch nicht sehr simpel, denn
+die einzigen Möglichkeiten, die die Platine hat mit der Außenwelt zu kommunizieren
+beschränken sich auf 5 LED's, ein 4*20 Zeichen LCD, eine UART und eine I2C-Bus 
 Schnittstelle. Der Aussagegehalt von den LED's (insbesondere da diese sich geweigert
 haben zuverlässig zu funktionieren) und der LCD ist doch sehr begrenzt (man kann nicht
 viele Informationen auf einem 4*20 Zeichen LCD unterbringen). Die Wahl fiel dann auf
-die USART Schnittstelle, da der Arbeitscomputer, an dem das Debugging durchgeführt wurde
+die UART Schnittstelle, da der Arbeitscomputer, an dem das Debugging durchgeführt wurde
 einen solchen Anschluss besitzt, aber über keinen I2C Anschluss verfügt.
 Mithilfe der Debugausgaben kann man protokollieren, was das System in jedem
 Schleifendurchlauf getan hat und dadurch das Verhalten analysieren, um schlussendlich
@@ -58,12 +58,12 @@ errechnet die korrigierten Werte für die Räder, die dann vom Drive Modul an di
 weiter geleitet werden. Die Fehler die auftreten können sind vielfältig und nicht besonders
 groß, wie zum Beispiel eine kleine Varianz in der Geschwindigkeit eines Rades oder ähnliches.
 Damit aber das Fahrverhalten stabiler wird müssen diese Fehler korrigiert werden.
-\section{IO, I2C und USART}
+\section{IO, I2C und UART}
 Das IO Modul stellt für das System einheitliche Funktionen zur Verfügung um Daten zu lesen als
 auch zu schreiben. Hierbei kann es dem Benutzer der Funktionen egal sein, welche Schnittstelle
 letztendlich für die Kommunikation genutzt wird. Das IO Modul kümmert sich um die Unterschiede
-zwischen USART und I2C.
-Sowohl das I2C als auch das USART Modul kümmern sich hauptsächlich um das Initialisieren der
+zwischen UART und I2C.
+Sowohl das I2C als auch das UART Modul kümmern sich hauptsächlich um das Initialisieren der
 Hardware und das behandeln der Interrupt Service Routinen.
 \section{Order und Queue}
 Das Order Modul ist das größte aller Module. Es beinhaltet zum einen den Typ, mit dem Befehle
@@ -74,12 +74,12 @@ im Protokoll spezifizierten Befehle. Falls ein Befehl länger benötigt, bis er 
 gelten kann, wird die entsprechende Order Funktion mit dem korrespondierenden Befehl in jeder
 Iteration der Hauptschleife aufgerufen. Diese kann dann eventuell Wartungsarbeiten an dem
 Befehl durchführen und überprüfen, ob dieser beendet ist und entsprechend seinen Status ändern.
-Durch diesen Aufbau ist eine Hauptschleifeniteration sehr kurz, aber auch komplizierte Befehle
+Durch diesen Aufbau ist eine Iteration der Hautpschleife sehr kurz, aber auch komplizierte Befehle
 oder solche deren Parameter und Durchführung überwacht werden müssen sind hierdurch möglich.\\
 Durch das Queue Modul ist es möglich der Motorplatine mehrere Befehle direkt hintereinander
 zu übermitteln, die dann einer nach dem anderen ausgeführt werden, außerdem kümmert die
 Queue sich darum, das Prioritäts-Befehle nicht eingereiht werden sondern bei der nächsten
-Hauptschleifeniteration ausgeführt werden.
+Iteration der Hauptschleife ausgeführt werden.
 \section{Timer, Parser und Options}
 Diese drei Module haben hauptsächlich eine unterstützende Funktion, so bringt das Timer Modul
 die Möglichkeit mit in bestimmten zeitlichen Intervallen Befehle auszuführen. Der Parser
