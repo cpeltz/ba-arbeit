@@ -1,17 +1,17 @@
 \chapter{Zusammenfassung und Ausblick}
-Am Ende dieser Arbeit ist die Platine in der Lage auf Befehle schnell und korrekt zu reagieren,
-solange diese nicht schwerwiegend fehl geformt sind. Es gehen keine Interrupts verloren und die
+Das Ergebniss dieser Arbeit ist, dass die Platine auf Befehle schnell und korrekt reagiert,
+solange diese nicht gravierend von den Spezifikation abweichen. Es gehen keine Interrupts verloren, und die
 Platine reagiert auf Änderungen in Bruchteilen einer Sekunde.\\
-Dennoch gibt es einige Punkte, die aufgrund der Mangelnden Zeit nicht getestet oder implementiert
+Dennoch gibt es einige Punkte, die aufgrund der begrenzten Zeit nicht getestet oder implementiert
 werden konnten.\\
 So ist beispielsweise das Verhalten des ABS abhängig von der Dauer der Hauptschleife. Normalerweise
-ist dies kein Problem, wenn allerdings Debug-Ausgaben vorgenommen werden, kann das ABS sich
+ist dies kein Problem. Wenn allerdings Debug-Ausgaben vorgenommen werden, kann das ABS sich
 auf eine Art und Weise verhalten, die nicht erwünscht ist (dauerndes hin und her schwenken der Räder,
-da kein Schleifendurchlauf während des Nullpunktes stattfindet). Um dieses zu verhindern kann man
+da kein Schleifendurchlauf während des Nullpunktes stattfindet). Um dies zu verhindern, kann man
 einen Timer-Interrupt mit einer möglichst niedrigen Auflösung benutzen. Der Vorteil wäre hierbei,
-dass das ABS nicht mehr abhängig von der Geschwindigkeit der Hauptschleife ist, sowie, dass das
-Abschalten des ABS gleichzusetzen ist mit dem Abschalten des zugehörigen Interrupts, was wiederum
-den Overhead des ABS komplett eliminiert, wenn dieses abgeschaltet ist. Dieser Overhead wird auf
+dass das ABS nicht mehr abhängig von der Geschwindigkeit der Hauptschleife ist. Außerdem ist das
+Abschalten des ABS gleichzusetzen mit dem Abschalten des zugehörigen Interrupts. Dieses wiederum
+eliminiert den Overhead des ABS komplett, wenn es abgeschaltet ist. Dieser Overhead wird auf
 ungefähr 2,5 us pro Schleifendurchlauf geschätzt. Der Nachteil besteht in einem geringen
 Mehraufwand, da ein Funktionsaufruf durch eine Interrupt-Service-Routine ersetzt wird.\\
 Eine weitere Erweiterungsmöglichkeit für das System besteht in erhöhter Robustheit und erweiterter

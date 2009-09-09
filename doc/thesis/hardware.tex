@@ -9,14 +9,14 @@ entwickelt.
 \end{figure}
 \section{Mikrocontroller}
 Das Herzstück der Platine bildet ein Mikrocontroller der Firma Atmel.
-Es handelt sich hierbei um einen ATMEGA2561\cite{ATMEGA_MANUAL}, der 256 KB Speicher für
-Programme (Flash) hat, sowie 8 KB Speicher für Variablen (SRAM). Der maximale Takt für
-diesen Mikrocontroller liegt bei 16 MHz, dieser wird auch ausgenutzt. Das bedeutet, dass
+Es handelt sich hierbei um einen ATMEGA2561\cite{ATMEGA_MANUAL}, der 256 KiB Speicher für
+Programme (Flash) hat, sowie 8 KiB Speicher für Variablen (SRAM). Der maximale Takt für
+diesen Mikrocontroller liegt bei 16 MHz, der auch ausgenutzt wird. Das bedeutet, dass
 ein Takt 62,5 ns benötigt. Da der Großteil der Instruktionen des Mikrocontrollers nur
-einen Takt benötigen, kann er theoretisch 16 MIPS an Leistung erreichen, durch die Benutzung
-von Funktionen, Pin-IO und bedingten Sprüngen bleibt dies auch nur eine theoretische Zahl.
-Vorteilhafterweise unterstützt der Controller In-System Programming (ISP), was bei der
-Entwicklung der Betriebssoftware von großem Nutzen war, da hierdurch schnell und relativ
+einen Takt benötigt, kann dieser theoretisch 16 MIPS an Leistung erreichen. Durch die Benutzung
+von Funktionen, Pin-IO und bedingten Sprüngen bleibt dies aber nur eine theoretische Zahl.
+Vorteilhafterweise unterstützt der Controller das ISP (In-System Programming). Dies war bei der
+Entwicklung der Betriebssoftware von großem Nutzen, da hierdurch schnell und relativ
 unkompliziert neue Versionen auf die Platine überspielt werden konnten.\\
 Der Controller verfügt über 6 Timer, zwei von diesen sind nur 8-Bit, die anderen vier allerdings
 haben 16-Bit, was bei dem gegebenen Takt von 16 MHz einen maximalen Timer-Intervall von 262 ms
@@ -32,7 +32,7 @@ den UART-Port verfügt, hält sich der administrative Aufwand für die Kommunika
 Grenzen. Es können lediglich Interrupt Service Routinen (ISR) für diese zur Verfügung gestellt
 werden, die es dann ermöglichen schnell auf Situationen zu reagieren und ohne die Gefahr
 einzugehen Informationen zu verlieren.
-\section{Interne Ein-/Ausgabe Ports}
+\section{Interne Ein-/Ausgabe-Ports}
 Zusätzlich zu den externen Kommunikationsmöglichkeiten, besitzt der ATMEGA2561 54
 programmierbare IO Kanäle, die in Ports mit je 8 Kanälen zusammenfasst werden. 16 von diesen
 Kanälen sind für die Steuerung der Servomotoren zuständig, die die Räder antreiben, sowie bieten

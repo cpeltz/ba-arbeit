@@ -1,28 +1,28 @@
 \chapter{Einleitung}
 
 Im Praktikum ''Programmierung eingebetteter Systeme'' wird eine Motorplatine \cite{STUD_TIMO}
-eingesetzt, damit die Studenten die Motoren benutzen können um ihr Fahrzeug
-fahren zu lassen. Diese Motorplatine benötigt für seine Operation eine
+eingesetzt, damit die Studenten die Motoren benutzen können, um ihr Fahrzeug
+fahren zu lassen. Diese Motorplatine benötigt für ihre Operation eine
 Betriebssoftware, die die Befehle der Praktikumsplatine entgegen nimmt,
-interpretiert und in Aktionen umsetzen kann. Die Entwicklung dieser Software,
+interpretiert und in Aktionen umsetzen kann. Die Entwicklung dieser Software
 sowie die qualitative Untersuchung ihres Laufzeitverhaltens ist Gegenstand
 dieser Arbeit.\\
-Zuerst wird auf die Hardware eingegangen für die die Betriebssoftware geschrieben wird
+Zuerst wird auf die Hardware eingegangen für die die Betriebssoftware geschrieben wird,
 und die in einer eigenen Arbeit für diesen Einsatzzweck speziell entwickelt wurde.
 Der Mikrocontroller und die Kommunikationseinrichtungen werden genauer betrachtet, um
 einen Überblick über die Möglichkeiten zu haben, die die Motorplatine bietet.\\
 Dann wird die Motorplatine mit der Hardware, die im Praktikum eingesetzt wird, in Verbindung
 gebracht. Das beinhaltet die Beziehung zwischen der Praktikumsplatine, dem WLAN-Modul und der
-Motorplatine. Dies ist die Plattform, die im Praktikum benutzt wird und somit die Umgebung in
-der die Software auch eingesetzt wird und deren Anforderungen sie genügen muss.\\
+Motorplatine. Dies ist die Plattform, die im Praktikum benutzt wird. Sie stellt somit die
+Umgebung dar, in der die Software eingesetzt wird. Die Software muss den Anforderungen
+dieser Umgebung genügen.\\
 Für die Implementierung dieser Betriebssoftware wurde als Programmiersprache
 C \cite{C_PROG} vorgegeben, deren Standard C99 ausgewählt wurde. Da diese
-Software für längere Zeit eingesetzt werden soll, waren die Aspekte der
-Wartbarkeit und die Möglichkeit die Software einfach erweitern zu können,
-dominante Designaspekte, kurz darauf folgt die Anforderung, dass die Software
+Software für längere Zeit eingesetzt werden soll, waren die
+Wartbarkeit und die Möglichkeit, die Software einfach erweitern zu können,
+dominante Designaspekte. Kaum weniger wichtig war die Anforderung, dass die Software
 ihre Arbeit performant und zuverlässig ausführt.\\
-Um die Performance und Zuverlässigkeit zu Untersuchen wurde sowohl ein
-Logikanalyzer als auch ein Oszilloskop benutzt, die Flanken und deren Länge
-an nach außen gelegten Pins gemessen haben. Diese Pins wurden für den Zweck
-der Untersuchung von der Betriebssoftware an wichtigen bzw. kritischen Stellen
-im Programmcode gesetzt und wieder gelöscht.
+Zur Untersuchung der Performance und der Zuverlässigkeit wurden ein Logikanalyzer und ein
+Oszilloskop benutzt, die die Flanken und deren Länge
+an nach außen gelegten Pins gemessen haben. Diese Pins wurden für die Untersuchung von der
+Betriebssoftware an wichtigen bzw. kritischen Stellen im Programmcode gesetzt und wieder gelöscht.
