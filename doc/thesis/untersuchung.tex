@@ -38,8 +38,6 @@ werden kann ohne einen geringen Fußabdruck zu hinterlassen, sind die Messungen 
 einem abschätzbaren aber nicht genau vorhersagbaren Fehler im Vergleich zur
 Wirklichkeit behaftet.
 \section{Erste Messungen}
-% Tabelle mit wichtigen Zeiten
-% LCD update 3,250 ms
 Durch die ersten Messungen wurde der Startpunkt für die Untersuchung der Software
 festgelegt. Dafür wurde in der Hauptschleife (siehe Abb. \ref{main_loop_full}) zum einen
 ein pin\_toggle() eingebaut, um die Länge einer Schleifeniteration zu messen, zum anderen
@@ -50,6 +48,38 @@ umgeben.
  \scalebox{0.5}{\includegraphics{pictures/main_loop_full.png}}
  \caption{\label{main_loop_full}Die Hauptschleife mit Debugausgaben und Pin-Operationen}
 \end{figure}
+\begin{table}[htb]
+\begin{center}
+	\begin{tabular}{|c||r|c|}
+		\hline
+		\textbf{Funktion} & \textbf{Zeit} & \textbf{Rahmenbedingungen} \\ \hline \hline
+		Hauptschleife & 27,916 \textmu{}s & Idle, LCD an, DEBUG aus, I2C an, AB:EIT \\ \hline
+		process\_orders() & 11,964 \textmu{}s &  \\ \hline
+		lcd\_update\_screen() & 3,988 \textmu{}s &  \\ \hline
+		parser\_update() & 3,988 \textmu{}s &  \\ \hline
+		queue\_update() & 3,988 \textmu{}s &  \\ \hline \hline
+		Hauptschleife & 47,856 \textmu{}s & ABS aktiv im Idle Status, ansonsten wie oben \\ \hline
+		process\_orders() & 31,904 \textmu{}s &  \\ \hline
+		lcd\_update\_screen() & 3,988 \textmu{}s &  \\ \hline
+		parser\_update() & 3,988 \textmu{}s &  \\ \hline
+		queue\_update() & 3,988 \textmu{}s &  \\ \hline \hline
+		I2C-Bus ISR & 4,586 \textmu{}s & Adresse empfangen \\ \hline
+		I2C-BUS ISR & 21,934 \textmu{}s & Daten empfangen \\ \hline
+		100ms ISR & 8,076 \textmu{}s & \\ \hline \hline
+		Hauptschleife & 718,843 \textmu{}s & LCD aus, Byte in Parser, Befehl bereit \\ \hline
+		process\_orders() & 39,880 \textmu{}s & I2C ISR (Daten) aufgetreten \\ \hline
+		lcd\_update\_screen() & 0,997 \textmu{}s &  \\ \hline
+		parser\_update() & 175,474 \textmu{}s &  \\ \hline
+		queue\_update() & 505,484 \textmu{}s &  \\ \hline \hline
+		Hauptschleife & 718,843 \textmu{}s & LCD an, Befehl in Queue, aber nicht gestartet \\ \hline
+		process\_orders() & 358,923 \textmu{}s &  \\ \hline
+		lcd\_update\_screen() & 3250,000 \textmu{}s &  \\ \hline
+		parser\_update() & 6,032 \textmu{}s &  \\ \hline
+		queue\_update() & 5,583 \textmu{}s &  \\ \hline
+	\end{tabular}
+	\caption{\label{erste_messung} Ergebnisse der ersten Messungen}
+\end{center}
+\end{table}
 
 \section{Das LCD-Problem}
 \section{Optimierung}
