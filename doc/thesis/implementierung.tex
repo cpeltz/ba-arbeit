@@ -18,7 +18,7 @@ die untersten vier Bits des ersten Befehlsbytes als Index für eine Call-Table b
 Abb. \ref{dispatch_function}).\\
 \begin{figure}[htb]
  \centering
- \scalebox{0.5}{\includegraphics{pictures/dispatch_function.png}}
+ \scalebox{0.6}{\includegraphics{pictures/dispatch_function.png}}
  \caption{\label{dispatch_function}Die Verteilerfunktion}
 \end{figure}
 Falls kein Befehl vorliegt oder die Queue angehalten wurde, ruft die process\_\-orders()-Funktion die
@@ -50,12 +50,98 @@ Damit erkannt werden kann, wann ein Befehl zu ende ist benutzt die parser\_\-ord
 die bytes\_\-needed()-Funktion, in der fest codiert ist, welcher Befehlscode mit welchen Optionen wieviele
 Bytes benötigt. Dies ist auch eine der Stellen, die angepasst werden müssen, wenn ein neuer Befehl hinzugefügt
 wird, oder bestehende verändert werden.
-\subsection{queue\_update()}
-\section{Das Aktive Brems System (ABS)}
-Das aktive Bremsen steuert die Räder in der Art, dass sie möglichst
-auf einem Flecken verweilen. Dazu muss nach dem Ende eines Fahr-Befehls die aktuelle Position der Räder
-vermerkt werden, die dann nachher als Referenzpunkt dient.
-% Hauptschleife, was wird während der Hauptschleife erledigt
-% Datenpfad: Wie laufen die Daten vom Eingang bis zur Verarbeitung
-% Debug Define Trick
-% Order Type Aufbau und Benutzung, sowie order dispatching
+\subsection{queue\_update()\label{chapter_queue_update}}
+Diese Funktion führt Wartungsarbeiteten an der Befehlswarteschlange (Queue) durch. Dies beinhaltet neue
+Befehle beim Parser-Modul abzuholen und diese korrekt einzureihen. Es gibt zwei Möglichkeiten, wie die Queue
+diese neuen Befehle einreihen kann. Zum einen als normale Befehle, diese werden einer nach dem anderen abgearbeitet,
+zum anderen als priorisierte Befehl. Es kann nur ein priorisierter Befehl in der Queue sein. Diese Befehle werden
+umgehend in der nächsten Haupt\-schleifen\-iteration ausgeführt. In die Kategorie der priorisierten Befehle fallen
+alle Queue-Kontroll-Befehle, wie z.B. pausieren, löschen, aktuellen Befehl verwerfen, etc. (vgl. Protokoll-Spezifikation
+im Anhang).
+\section{Das Aktive BremsSystem (ABS)}
+Das aktive Bremssystem bewirkt, dass die Räder versuchen ihre Position nicht zu verlassen. Dies wird realisiert indem
+eine Referenz-Position für jedes Rad gespeichert wird. Während der Hauptschleife wird nun die tatsächliche Position mit
+der Referenz-Position verglichen. In dem Fall, dass diese Positionen nicht übereinstimmen, werden die Motoren mit einer
+einstellbaren Geschwindigkeit betrieben, um die Räder wieder auf die Referenz-Position zu bringen.\\
+Die Referenz-Positionen werden an drei verschiedenen Stellen im Code gesetzt. Zum einen in der process\_\-orders()-Funktion
+in der Hauptschleife, wenn der aktuelle Befehl beendet wurde, zum anderen in den Fahr-Befehls-Funktionen, falls ein Rad
+früher als das andere seine Stopp-Bedingung erreicht hat.\\
+Das ABS kann vom Benutzer während das System läuft, angepasst werden. So kann man die Geschwindigkeit ändern, mit der
+die Motoren die Positions-Differenz ausgleichen. Außerdem kann man Teile des ABS deaktiveren oder auch wieder reaktivieren
+sowie das gesamte ABS abschalten, bzw. wieder anschalten. Damit kann der Benutzer das ABS an seine Wünsche anpassen.
+\section{Befehle: Struktur und Funktionen}
+Die Struktur (Abb. \ref{order_type}), die einen Befehl im System repräsentiert, besteht hauptsächlich aus einem Array, in dem die eigentlichen Daten
+gespeichert sind, und einem Status-Byte, in dem Statusinformationen in Form von Flags gespeichert werden.
+\begin{figure}[htb]
+ \centering
+ \scalebox{0.6}{\includegraphics{pictures/order_t.png}}
+ \caption{\label{order_type}Befehlsstruktur}
+\end{figure}
+Das erste Byte dieses Arrays ist das Typ-Byte, das die Art des Befehls und die zugehörigen Optionen spezifiziert. Der
+Befehlscode (die unteren vier Bits des Typ-Bytes) 0 ist für zukünftige Erweiterungen Reserviert, die mehr als ein Typ-Byte
+benötigen. Desweiteren sind die Befehlscodes 1 bis 6 durch diese Arbeit bereits definiert und mit Funktionalität erfüllt.
+Die Befehlscodes 7 bis 15 sind noch nicht definiert und können für zukünftige Erweiterungen benutzt werden, die mit einem
+Typ-Byte auskommen.\\
+Alle auf das Typ-Byte (oder die Typ-Bytes im Falle des Befehlscodes 0) folgenden Bytes sind Parameter. Die Anzahl und Länge
+dieser hängt von der Spezifikation des Befehls ab. Grundsätzlich gilt aber, dass bei Parametern, mit mehr als ein Byte Länge,
+zuerst das höchstwertige Byte im Array gespeichert wird, dann absteigend bis zum niederwertigsten Byte.\\
+Oft benutze Aktionen bezüglich der Befehlsstruktur wurden zusammengefasst (siehe Abb. \ref{order_init} und \ref{order_copy}).
+Vor der Untersuchung des Laufzeiverhaltens und der damit einhergehenden Optimierungen, wurden diese beiden Funktionen
+durch for-Schleifen implementiert, was sich aber als langsamer als die Standard C Funktionen memset() und memcpy()
+herausstellte.
+\begin{figure}[htb]
+ \centering
+ \scalebox{0.6}{\includegraphics{pictures/order_init.png}}
+ \caption{\label{order_init}order\_init()-Funktion}
+\end{figure}
+\begin{figure}[htb]
+ \centering
+ \scalebox{0.6}{\includegraphics{pictures/order_copy.png}}
+ \caption{\label{order_copy}order\_copy()-Funktion}
+\end{figure}
+\section{Datenpfad von Befehlen}
+Befehle werden entweder über die UART oder die I2C Schnittstelle byteweise empfangen. Diese Schnittstellen werden über
+Interrupt Service Routinen bearbeitet, um zeitnah auf eingehende Daten zu reagieren, da diese Übertragung die größte
+Latenz-Quelle darstellt (I2C: ca. 270 us pro Byte; UART: ca 139 us pro Byte). In diesen Interrupt Service Routinen wird
+das empfangene Byte in den Eingangspuffer gelegt. Wenn die Hauptschleife wieder die parser\_\-update()-Funktion erreicht,
+wird die bisher empfangene Bytes abgeholt und in der Parser-Puffer abgelegt, um aus den Bytes order\_t Struktur Instanzen
+zu generieren. Wenn der Befehl fertig im Parser vorliegt, ruft ihn queue\_\-update() ab und reiht ihn in die Warteschlange
+ein (siehe Kapitel \ref{chapter_queue_update}). Von der Warteschlange holt sich die process\_\-orders()-Funktion den
+aktuellen Befehl und führt die zugeordnete order\_function-Funktion solange aus, bis im Status-Byte (vgl. Abb. \ref{order_type})
+das ORDER\_\-STATUS\_\-DONE Flag gesetzt wurde und entfernt diese dann aus der Warteschlange.\\
+Falls der Befehl, der bearbeitet wird, eine Ausgabe von Daten bewirkt, wird in der entsprechenden order\_\-function-Funktion
+die auszugebenden Daten in den Ausgabepuffer des IO-Framework eingereiht. Dieses Framework wird dann, sobald möglich, diese Daten
+über die ausgewählte Schnittstelle senden (bei UART wird sofort angefangen zu senden, bei I2C muss gewartet werden, bis die Daten
+vom Benutzer abgerufen werden).
+% Datenpfadbild
+\section{Debug-Ausgaben}
+Das Problem mit Debug-Ausgaben ist, dass sie notwendig sind, insbesondere wenn die Benutzung eines üblichen Debuggers nicht
+ohne weiteres möglich ist. Debug-Ausgaben benötigen entsprechenden Code, nicht nur um die Ausgaben überhaupt zu ermöglichen,
+sonder auch an vielen Stellen im Code, um wirklich etwas zu bestimmten Zeitpunkten auszugeben. Diese Ausgaben, selbst wenn
+sie nicht gemacht werden müssen, indem sie mit if-Statements umschlossen werden (siehe Abb. \ref{debug_trick}), verlangsamen
+das gesamte System. Während der normalen Operation der Betriebssoftware im Praktikum, sind diese Ausgaben nicht nötig und für
+die meisten Teilnehmer des Praktikums, nicht informativ. Damit die Ausgaben zum Zweck der Fehlerbehebung benutzt werden können,
+muss der Leser eine entsprechende Kenntniss des Codes vorweisen.\\
+Aufgrund dieser fragwürdigen Hilfe, die diese Ausgaben einem durchschnittlichen Praktikanten bieten, und der negativen Auswirkung
+der Ausgaben auf die Perfomance des Systems, wurde ein Prä-Prozessor Trick angewandt, der zusammen mit der eingestellten Stufe
+der Code-Optimierung des Compilers diese beiden Probleme löst. Durch diesen Trick werden die Debug-Ausgaben nur dann mitkompiliert,
+wenn dem Compiler der Parameter -DDEBUG übergeben wird. Selbst dann ist es noch möglich mit einem DIP-Schalter auf der Platine
+die Ausgaben auszuschalten, dann hat man aber immernoch die leichten negativen Auswirkungen auf die Performance.
+\begin{figure}[htb]
+ \centering
+ \scalebox{0.5}{\includegraphics{pictures/debug_trick.png}}
+ \caption{\label{debug_trick}Debug-Defines und die Verwendung im Code}
+\end{figure}
+\section{IO-Framework}
+Das Ziel des IO-Frameworks war die Abstraktion der Ein- und Ausgabe von Daten von den zu grunde liegenden Schnittstellen.
+Die UART und die I2C Schnittstelle sind in der Benutzung sehr unterschiedlich. Statt überall im Code wo E/A stattfindet
+jeweils für beide Schnittstellen Code einzufügen, wurde das IO-Framework als Zwischenschicht entwickelt. Es verfügt über sowohl
+über einen Ausgabe- als auch über einen Eingabepuffer. Diese sind jeweils auf 256 Bytes festgelegt. Durch diese Definition
+konnte das normale Überlaufsverhalten der 8-Bit-Variablen ausgenutzt werden, um Modulo-Operationen zu ersetzen, welche
+ungerechtfertigt viel Zeit in Anspruch nehmen.\\
+Eine Besonderheit ist die Objektbasierte Ausgabe von Daten. Ein Objekt hat mindestens ein Byte und maximal 256 Byte. Objekte
+werden bei entweder komplett Übertragen oder gar nicht. Wenn ein Objekt nicht komplett übertragen werden konnte, wird bei der
+nächsten Übertragen vom Anfang der Objektes wieder angefangen. Außerdem bewirkt die Ausgabe von Objekten bei Benutzung der I2C 
+Schnittstelle, dass für jede Lese-Operation, die von der Praktikumsplatine eingeleitet wird, ein Objekt übermittelt wird.\\
+E/A-Operationen geschehen nicht-blockend und gepuffert. Damit verbraucht die E/A nur Prozessorzeit, wenn es nötig ist und
+verschwendet diese nicht mit aktiven Warten.
