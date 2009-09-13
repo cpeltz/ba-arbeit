@@ -71,7 +71,7 @@ umgeben.
 		lcd\_update\_screen() & 0,997 \textmu{}s &  \\ \hline
 		parser\_update() & 175,474 \textmu{}s &  \\ \hline
 		queue\_update() & 505,484 \textmu{}s &  \\ \hline \hline
-		Hauptschleife & 718,843 \textmu{}s & LCD an, Befehl in Queue, aber nicht gestartet \\ \hline
+		Hauptschleife & 3614,000 \textmu{}s & LCD an, Befehl in Queue, aber nicht gestartet \\ \hline
 		process\_orders() & 358,923 \textmu{}s &  \\ \hline
 		lcd\_update\_screen() & 3250,000 \textmu{}s &  \\ \hline
 		parser\_update() & 6,032 \textmu{}s &  \\ \hline
@@ -80,11 +80,84 @@ umgeben.
 	\caption{\label{erste_messung} Ergebnisse der ersten Messungen}
 \end{center}
 \end{table}
-
+In der Tabelle \ref{erste_messung} sind die Wichtigsten Daten der ersten Messreihen zusammen
+gefasst. Die Spalte ''Rahmenbedingungen'' beschreibt Bedingungen während der Messung geherrscht haben.
+Hierbei bezeichnet die Bedingung ''AB:EIT'', dass das aktive Bremsen (AB:) eingeschaltet (E; Enable) ist und
+sowohl aktiviert wird, wenn kein Befehl bearbeitet wird(I; Idle) oder eines der Räder seinen Trigger früher
+erreicht hat als das andere (T; Trigger). ''I2C an'' bezeichnet, dass der I2C-Bus für die E/A-Operationen
+verwendet wurde und nicht die UART Schnittstelle.\\
+Interessant ist bei diesen Daten, dass das aktualisieren der Warteschlange, wenn ein Befehl vorliegt, gut
+eine halbe millisekunde benötigt.
 \section{Das LCD-Problem}
+Wie in der Tabelle \ref{erste_messung} zu sehen ist, benötigt das System zum aktualisieren der Informationen
+des LCD über drei millisekunden. Damit ist diese Funktion die mit Abstand zeitintensivste im gesamten System.
+Zwar ist das Aktualisieren recht selten, nämlich nur, wenn ein neuer Befehl gestartet wird, aber haben drei
+millisekunden Latenz eine negative Wirkung auf die Reaktion des Systems auf Ereignisse. So können während
+der drei Millisekunden ungefähr zwölf Bytes auf dem I2C Bus eintreffen, was im schlimmsten Fall sechs eigenständige
+Befehle wären. Wenn diese Befehle priorisierte Befehle sind, so könnte sich das System unerwartet verhalten.\\
+Damit dieses Problem gelößt werden konnte, musste die Arbeitsweise des LCD, welches durch eine fertige Programm-Bibliothek
+gesteuert wird, analysiert werden. Dadurch wurde herausgefunden, dass die Funktionen, die Daten auf das LCD ausgeben,
+aktives Warten betreiben. Ein LCD benötigt natürlich Zeit, um ein übermitteltes Zeichen auch anzeigen zu können.
+Während dieser Zeit wird das sog. Busy-Flag gesetzt, welches anzeigt, dass das LCD noch beschäftigt ist. Erst
+wenn dieses Flag nicht mehr gesetzt ist darf ein neues Zeichen übermittelt werden. Beim aktiven Warten verbraucht die
+Funktion unnötig CPU-Zeit, die sinnvoll genutzt werden könnte.\\
+Mit diesem Wissen wurde die ursprüngliche lcd\_\-update\_\-screen()-Funktion in zwei Funktionen aufgeteilt. Die eine
+wurde lcd\_\-update\_\-info() genannt und aktualisierte die LCD-Informationen in einem Speicherpuffer. Die andere,
+immer noch lcd\_\-update\_\-screen() genannt, überprüft das Busy-Flag des LCD's und schreibt das nächste Zeichen aus
+dem Speicherpuffer aufs LCD, wenn es nicht gesetzt ist.
+\begin{table}[htb]
+\begin{center}
+	\begin{tabular}{|c||r|r|c|}
+		\hline
+		\textbf{Funktion} & \textbf{Zeit} & \textbf{Verbesserung} & \textbf{Rahmenbedingungen} \\ \hline \hline
+		Hauptschleife & 421,158 \textmu{}s & -88,32\% & LCD an, Befehl in Queue,\\
+		& & & aber nicht gestartet \\ \hline
+		process\_orders() & 354,627 \textmu{}s & & \\ \hline
+		lcd\_update\_screen() & 57,884 \textmu{}s & -98,22\% & \\ \hline
+	\end{tabular}
+	\caption{\label{lcd_opt} LCD Ergebniss}
+\end{center}
+\end{table}
+Wie in der Tabelle \ref{lcd_opt} zu sehen, hatten diese Maßnahmen ihre gewünschte Wirkung. Über 98\% weniger Zeit
+wird nun im zeitintensivsten Fall benötigt. Dies hat seinen Nachteil in einer leicht erhöten Laufzeit für das
+Aktualisieren des LCD im Ruhezustand. Diese Zeit hat sich von durschnittlich 4 \textmu{}s auf 9 \textmu{}s erhöht.
 \section{Optimierung}
+Damit die Latenz des Systems möglichst niedrig ist, müssen die Funktionen, die in der Hauptschleife aufgerufen werden,
+unter allen Bedingungen möglichst effizient ihre Arbeit verrichten. Dazu wurde jede dieser Funktionen, mit dem Pin setzen
+und wieder löschen Verfahren, auf Möglichkeiten untersucht sie zu optimieren.
 \subsection{Inlining von Funktionen}
-\subsection{Eleminierung von Modulo-Operatoren}
+Die erste Möglichkeit, die in Betracht gezogen wurde, um die Latenz des Systems zu verringern, war die Verwendung von
+Compiler-Optimierungen. Zu Beginn wurde das System auf Code-Größe optimiert (-Os Option des Compilers). Da das System
+wesentlich weniger Speicher benötigt als auf der Platine zur Verfügung stehen, wurde
+nun der Compiler auf die Optimierung der Geschwindigkeit eingestellt (-O2 Option). Außerdem wurden die Debug-Informationen,
+die der Compiler dort platziert hat, entfernt (-g Option entfernt). Dadurch änderten sich die Parameter des Systems nicht
+wesentlich. Die Größe blieb nahezu identisch und die Geschwindigkeit wurde etwas besser, besonders bei langen Funktionen.\\
+Nachdem verifiziert werden konnte, dass Funktionsaufrufe zwischen 1 und 2 \textmu{}s Overhead mit sich bringen, wurde
+die Compiler-Option -finline-functions aktiviert, die bewirkt, dass der Code genügend simpler Funktionen direkt in die aufrufende
+Funktion eingefügt wird, ohne dass dabei Register gerettet werden müssten oder ähnliches. Dies hatte deutlich merkbare
+Konsequenzen für die Geschwindigkeit des gesamten Systems, wie man in Tabelle \ref{compiler_flags_2} sehen kann.
+\begin{table}[htb]
+\begin{center}
+	\begin{tabular}{|c||r|r|c|}
+		\hline
+		\textbf{Funktion} & \textbf{Zeit} & \textbf{Verbesserung} & \textbf{Rahmenbedingungen} \\ \hline \hline
+		Hauptschleife & 420,659 \textmu{}s & & LCD an, Befehl in Queue,\\
+		& & & aber nicht gestartet \\ \hline
+		process\_orders() & 355,289 \textmu{}s &  & \\ \hline
+		lcd\_update\_screen() & 59,481 \textmu{}s & & \\ \hline
+		parser\_update() & 4,146 \textmu{}s &  & \\ \hline
+		queue\_update() & 4,640 \textmu{}s &  & \\ \hline \hline
+		Hauptschleife & 285,643 \textmu{}s & -32,1\% & LCD an, Befehl in Queue,\\
+		& & & aber nicht gestartet \\ \hline
+		process\_orders() & 224,836 \textmu{}s & -36,72\% & \\ \hline
+		lcd\_update\_screen() & 51,647 \textmu{}s & -13,17\% & \\ \hline
+		parser\_update() & 5,384 \textmu{}s & +29,86\% & \\ \hline
+		queue\_update() & 4,187 \textmu{}s & -9,76\% & \\ \hline \hline
+	\end{tabular}
+	\caption{\label{compiler_flags_2} Auswirkung von -finline-functions}
+\end{center}
+\end{table}
+\subsection{Eliminierung von Modulo-Operatoren}
 \subsection{Effizienteres Initialisieren des Speichers}
 \subsection{Bedingtes Kompilieren von Debugausgaben}
 \section{Vergleich mit der Original-Software}
