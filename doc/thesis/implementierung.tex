@@ -114,7 +114,7 @@ die auszugebenden Daten in den Ausgabepuffer des IO-Framework eingereiht. Dieses
 über die ausgewählte Schnittstelle senden (bei UART wird sofort angefangen zu senden, bei I2C muss gewartet werden, bis die Daten
 vom Benutzer abgerufen werden).
 % Datenpfadbild
-\section{Debug-Ausgaben}
+\section{Debug-Ausgaben \label{impl_debug}}
 Das Problem mit Debug-Ausgaben ist, dass sie notwendig sind, insbesondere wenn die Benutzung eines üblichen Debuggers nicht
 ohne weiteres möglich ist. Debug-Ausgaben benötigen entsprechenden Code, nicht nur um die Ausgaben überhaupt zu ermöglichen,
 sonder auch an vielen Stellen im Code, um wirklich etwas zu bestimmten Zeitpunkten auszugeben. Diese Ausgaben, selbst wenn

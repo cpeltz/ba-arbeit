@@ -218,5 +218,26 @@ queue_writeposition -= (queue_writeposition
   / QUEUE_SIZE) * QUEUE_SIZE;
 \end{verbatim}
 \subsection{Effizienteres Initialisieren des Speichers}
+Die Funktionen zum initialisieren und kopieren von Befehlen wurden, aufgrund ihrer häufigen Verwendung ebenfalls
+untersucht. Die Befehlsstrukturen wurden einfach mithilfe von Schleifen mit dem Wert 0 initialisiert und beim
+Kopieren wurde ebenfalls mit einer Schleife die Werte von einem Befehl in den Nächsten kopiert. Diese Schleifen
+wurden durch die memset()- bzw. die memcpy()-Funktion aus der Standardbibliothek ersetzt. Dies führte zu einer
+40\%igen Geschwindigkeitszuwachs (siehe \ref{order_init_meas}).
+\begin{table}[htb]
+\begin{center}
+	\begin{tabular}{|l||r|r|}
+		\hline
+		\textbf{Funktion} & \textbf{Zeit} & \textbf{Verbesserung} \\ \hline \hline
+		order\_init() & 13,968 \textmu{}s & \\ \hline
+		order\_init() (memset) & 7,976 \textmu{}s & 42,9\% \\ \hline
+	\end{tabular}
+	\caption{\label{order_init_meas} Ergebnisse der order\_init() Optimierung}
+\end{center}
+\end{table}
 \subsection{Bedingtes Kompilieren von Debugausgaben}
+Wie in Kapitel \ref{impl_debug} beschrieben wurde ein Sprachenspezifischer Trick verwendet, um 
+die Möglichkeit zu haben einfach Diagnoseausgaben ausgeben zu können, die im normalen Betrieb keine Auswirkung
+auf das Laufzeitverhalten des Systems haben. So generiert der Compiler für die Ausgaben keinen Code, solange nicht
+das Compilerflag -DDEBUG gegeben ist. Selbst wenn es gegeben ist und die Ausgaben mithilfe des entsprechenden DIP-Schalters
+deaktiviert sind, bringt jede Ausgabe lediglich weniger als eine \textmu{}s größere Laufzeit.
 \section{Vergleich mit der Original-Software}
