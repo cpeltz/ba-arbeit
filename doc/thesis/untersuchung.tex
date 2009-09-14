@@ -152,12 +152,71 @@ Konsequenzen für die Geschwindigkeit des gesamten Systems, wie man in Tabelle \
 		process\_orders() & 224,836 \textmu{}s & -36,72\% & \\ \hline
 		lcd\_update\_screen() & 51,647 \textmu{}s & -13,17\% & \\ \hline
 		parser\_update() & 5,384 \textmu{}s & +29,86\% & \\ \hline
-		queue\_update() & 4,187 \textmu{}s & -9,76\% & \\ \hline \hline
+		queue\_update() & 4,187 \textmu{}s & -9,76\% & \\ \hline
 	\end{tabular}
 	\caption{\label{compiler_flags_2} Auswirkung von -finline-functions}
 \end{center}
 \end{table}
 \subsection{Eliminierung von Modulo-Operatoren}
+Während der Untersuchung der parser\_\-update()-Funktion wurde festgestellt, dass eine innere Funktion unverhältnissmäßig
+viel Zeit benötigt, um ihre Aufgabe zu erfüllen. Dies war die io\_\-get()-Funktion, deren Aufgabe es ist das nächste Byte
+im Eingangspuffer an den Aufrufer zurück zu liefern. Für diese simple Operation benötigte über 36 \textmu{}s. Mehr als die
+gesamte Hauptschleife im Idle Zustand. Eine genaue Untersuchung der Funktion lies darauf schließen, dass die Anweisungen
+mit Modulo-Operationen für diesen Aufwand verantworlich waren. Dies konnte zum einen durch Kontrolle des generierten Assembler
+Codes, zum anderen durch das Auslagern der Modulo-Operation in eine eigene Zeile bestätigt werden. Der Compiler generiert
+für die Modulo-Operation eine extra Funktion, die sehr kompliziert ist und offensichtlich eine Menge Zeit benötigt.\\
+\begin{verbatim}
+uint8_t io_get(uint8_t* value) {
+  pin_set_C(6);
+  if ((inpos_begin + 1) % IO_INBUFFER_SIZE == inpos_end)
+    return 0;
+  pin_clear_C(6);
+  pin_set_C(7);
+  *value = in_buffer[inpos_begin];
+  pin_clear_C(7);
+  pin_set_C(1);
+  inpos_begin = (inpos_begin + 1) % IO_INBUFFER_SIZE;
+  pin_clear_C(1);
+  return 1;
+}
+\end{verbatim}
+Es gibt zwei Möglichkeiten dies zu korrigieren: Zum einen kann die Modulo-Operation durch eine Reihe simplerer Operationen ersetzt werden.
+Zum anderen kann auf die Modulo-Operation komplett verzichtet werden, wenn man das Überlaufverhalten der Variablen ausnutzen kann.
+Die zweite Methode setzt vorraus, dass der Puffer so viele Elemente hat wie der größte darstellbare Wert der Variablen plus eins.
+Da hier Variablen vom Typ uint8\_t verwendet werden (unsigned 8-Bit integer; vorzeichenlose 8-Bit Ganzzahl) muss der Puffer 256
+Elemente umfassen. Da diese Zahl bereits eingestellt war und diese Funktion sehr häufig verwendet wird, wurde hier die zweite Methode
+benutzt. Es wurde dadurch nicht mehr Speicher verwendet als vorher, aber die Methode lief daraufhin wesentlich schneller.
+\begin{table}[htb]
+\begin{center}
+	\begin{tabular}{|l||r|r|}
+		\hline
+		\textbf{Funktion} & \textbf{Zeit} & \textbf{Verbesserung} \\ \hline \hline
+		io\_get() & 36,527 \textmu{}s & \\ \hline
+		io\_get() (umgeschrieben) & 3,393 \textmu{}s & 75,19\% \\ \hline
+	\end{tabular}
+	\caption{\label{io_get} Ergebnisse der io\_get()-Messungen}
+\end{center}
+\end{table}
+Der Code sieht nun wie folgt aus:
+\begin{verbatim}
+uint8_t io_get(uint8_t* value) {
+  uint8_t temp = (inpos_begin + 1);
+  if (temp == inpos_end)
+    return 0;
+  *value = in_buffer[inpos_begin];
+  inpos_begin = temp;
+  return 1;
+}
+\end{verbatim}
+Das selbe Problem existierte in der Queue, dort wurde allerdings die Modulo Operationen
+\begin{verbatim}
+queue_writeposition %= QUEUE_SIZE;
+\end{verbatim}
+durch simplere Operationen ersetzt.
+\begin{verbatim}
+queue_writeposition -= (queue_writeposition
+  / QUEUE_SIZE) * QUEUE_SIZE;
+\end{verbatim}
 \subsection{Effizienteres Initialisieren des Speichers}
 \subsection{Bedingtes Kompilieren von Debugausgaben}
 \section{Vergleich mit der Original-Software}
