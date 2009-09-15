@@ -236,8 +236,64 @@ wurden durch die memset()- bzw. die memcpy()-Funktion aus der Standardbibliothek
 \end{table}
 \subsection{Bedingtes Kompilieren von Debugausgaben}
 Wie in Kapitel \ref{impl_debug} beschrieben wurde ein Sprachenspezifischer Trick verwendet, um 
-die Möglichkeit zu haben einfach Diagnoseausgaben ausgeben zu können, die im normalen Betrieb keine Auswirkung
+die Möglichkeit zu besitzen einfach Diagnoseausgaben auszugeben, die im normalen Betrieb keine Auswirkung
 auf das Laufzeitverhalten des Systems haben. So generiert der Compiler für die Ausgaben keinen Code, solange nicht
 das Compilerflag -DDEBUG gegeben ist. Selbst wenn es gegeben ist und die Ausgaben mithilfe des entsprechenden DIP-Schalters
 deaktiviert sind, bringt jede Ausgabe lediglich weniger als eine \textmu{}s größere Laufzeit.
+\section{Verlieren/Verpassen von Interrupts}
+Während den Messungen kam die Frage auf, was passiert, wenn ein Interrupt auftritt, wenn ein anderer bereits läuft.
+Wenn dies geschehen kann, was passiert mit den beiden Interrupts, geht eventuell sogar einer verloren?\\
+Die Antwort auf diese Frage wurde von dem Handbuch des Mikrocontrollers \cite{ATMEGA_MANUAL} beantwortet. Mit
+den richtigen Einstellungen, die bereits eingestellt waren, werden Interrupts, die während eines anderen
+Interrupts auftreten, gespeichert und nach der Beendingung des laufenden Interrupts werden die gespeicherten
+ihrer Priorität nach ausgeführt.
 \section{Vergleich mit der Original-Software}
+Der harte Vergleich mit Nummern der Original-Software mit der in dieser Arbeit geschriebenen Software ist
+nur schwer möglich, da das zugrunde liegende Design von beiden Projekten so unterschiedlich ist, dass hauptsächlich
+die Dauer der Hauptschleife eine Idee davon geben kann, inwiefern die eine Software schneller arbeitet als die Andere
+(siehe Tabelle \ref{vergl_speed}).\\
+Zusätzlich kann man noch den Speicherfußabdruck der Systeme vergleichen (siehe Tabelle \ref{vergl_speicher}). Hierbei
+fällt auf, dass der generierte Maschienencode im Vergleich zum Original etwas größer ist, was aber unter anbetracht
+der benutzten Compiler-Flags bedeutet, dass der Code mit gleichen Flags kleiner wäre als das Original. Dies ist
+auch demonstriert worden, indem die Original-Software mit den Compiler-Flags der jetzigen Software übersetzt
+wurde.
+\begin{table}[htb]
+\begin{center}
+	\begin{tabular}{|l||r|}
+		\hline
+		\textbf{Speicherart} & \textbf{Belegung} \\ \hline \hline
+		Program (Original) & 14968 Bytes (5,7\%)  \\ \hline
+		Data (Original)& 1952 Bytes (23,8\%) \\ \hline \hline
+		Program (Original + mod. Makefile) & 17808 Bytes (6,8\%)  \\ \hline
+		Data (Original + mod. Makefile) & 1952 Bytes (23,8\%) \\ \hline \hline
+		Program (Jetzt)& 15362 Bytes (5,9\%) \\ \hline
+		Data (Jetzt)& 1248 Bytes (15,2\%) \\ \hline
+	\end{tabular}
+	\caption{\label{vergl_speicher} Vergleich der Speicheranforderung}
+\end{center}
+\end{table}
+\begin{table}[htb]
+\begin{center}
+	\begin{tabular}{|l||r|r|c|}
+		\hline
+		\textbf{Funktion} & \textbf{Zeit} & \textbf{Verb.} & \textbf{Bedingung} \\ \hline \hline
+		Hauptschleife (Original) & 121,885 \textmu{}s & & Idle \\ \hline
+		Hauptschleife (mod Orig) & 121,635 \textmu{}s & 0,20\% & Idle \\ \hline
+		Hauptschleife (Jetzt) & 23,535 \textmu{}s & 80,69\% & Idle \\ \hline \hline
+		Befehl (kurz, Original) & 3655 \textmu{}s (13 Byte) & & I2C-Bus, kürzester Befehl \\ \hline
+		Befehl (kurz, Jetzt) & 1023 \textmu{}s (4 Byte) & & I2C-Bus, kürzester Befehl \\ \hline
+		Befehl (lang, Original) & 7747 \textmu{}s (27 Byte) & & I2C-Büs, längster Befehl \\ \hline
+		Befehl (lang, Jetzt) & 2191 \textmu{}s (8 Byte) & & I2C-Büs, längster Befehl \\ \hline
+	\end{tabular}
+	\caption{\label{vergl_speed} Vergleich der Geschwindigkeiten}
+\end{center}
+\end{table}
+Zusätzlich wurde noch verglichen, wie lange ein Befehl von der Praktikumsplatine bis zur Motorplatine benötigt.
+Hier ist die Übertragungsgeschwindigkeit des I2C-Busses das größte Hinderness und dank der höheren Datendichte
+der Befehlesübertragung im neuen System ist dieses wesentlich schneller (vgl. Tabelle \ref{vergl_speed} und Abb.
+ \ref{vergl_befehle}).
+\begin{figure}[htb]
+ \centering
+ \scalebox{0.35}{\includegraphics{pictures/vergl_befehle.png}}
+ \caption{\label{vergl_befehle}Vergleich von mehreren Befehlen}
+\end{figure}
