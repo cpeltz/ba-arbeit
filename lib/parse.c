@@ -3,6 +3,7 @@
 #include "order.h"
 #include "pin.h"
 #include <avr/pgmspace.h>
+#include "debug.h"
 /**
  * @defgroup PARSER_Module Parser
  * This Modules is used to convert the raw byte stream from
@@ -27,7 +28,9 @@ int8_t first_buffer_position = -1;
  * Holds the current position IN the order structure
  */
 uint8_t current_order_position = 0;
-
+/**
+ * Simple forward decleration
+ */
 void parser_add_byte(uint8_t);
 
 /**
@@ -42,8 +45,6 @@ void parser_init(void) {
 		order_init(&parser_order_buffer[i]);
 	}
 }
-
-#include "debug.h"
 
 /**
  * Updates the parser.
@@ -185,8 +186,8 @@ void parser_add_byte(uint8_t byte) {
 			// This trick is needed to acknowledge a full buffer
 			first_buffer_position = current_buffer_position;
 		}
-//		current_buffer_position = (current_buffer_position + 1) % PARSER_ORDER_BUFFER_SIZE;
 		current_buffer_position++;
+		// manual Modulo Operation, needed because normal Modulo takes way to long
 		current_buffer_position -= (current_buffer_position / PARSER_ORDER_BUFFER_SIZE) * PARSER_ORDER_BUFFER_SIZE;
 		current_order_position = 0;
 	}
@@ -212,15 +213,22 @@ uint8_t parser_has_new_order() {
  */
 void parser_check_order(order_t* order) {
 	int8_t cmd = -1;
+	// Order is always valide
+	// At this point more checks can be done
 	order->status |= ORDER_STATUS_VALID;
+	// only the lower 4 bit interest us
 	cmd = order->data[0] & 0x0f;
+	// Is the command code one of the priority orders
 	if (cmd - ORDER_TYPE_CONTROL  == 0 ||
 		cmd - ORDER_TYPE_QUERY == 0)
+		// Set priority status
 		order->status |= ORDER_STATUS_PRIORITY;
 }
 
 /**
  * Fills the given order with the data of the next buffered order.
+ *
+ * parser_has_new_order() _has_ to return true before calling this.
  *
  * @param[out] order The order structure which should be filled.
  */
@@ -231,10 +239,15 @@ void parser_get_new_order(order_t* order) {
 	parser_check_order(&parser_order_buffer[first_buffer_position]);
 	if (DEBUG_ENABLE)
 		debug_WriteInteger(PSTR("parse.c : parser_get_new_order() : status = "), parser_order_buffer[first_buffer_position].status);
+	// Copy the order to the caller
 	order_copy(&parser_order_buffer[first_buffer_position], order);
+	// Clean the local structure
 	order_init(&parser_order_buffer[first_buffer_position]);
-	first_buffer_position = (first_buffer_position + 1) % PARSER_ORDER_BUFFER_SIZE;
-	if( first_buffer_position == current_buffer_position ) {
+	first_buffer_position++;
+	// manual modulo operation, because normal modulo operation takes to much time
+	first_buffer_position -= (first_buffer_position / PARSER_ORDER_BUFFER_SIZE) * PARSER_ORDER_BUFFER_SIZE;
+	// if buffer is full, set position to illegal value
+	if (first_buffer_position == current_buffer_position) {
 		first_buffer_position = -1;
 	}
 }

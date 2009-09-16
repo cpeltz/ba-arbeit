@@ -45,9 +45,11 @@ static uint8_t queue_entries = 0;
  */
 void queue_init(void) {
 	uint8_t i = 0;
+	// Initialize the order buffer
 	for (; i < (QUEUE_SIZE - 1); i++) {
 		order_init(&order_queue[i]);
 	}
+	// Initialize the priority order structure
 	order_init(&priority_order);
 	queue_readposition = 0;
 	queue_writeposition = 0;
@@ -78,7 +80,7 @@ uint8_t queue_push(const order_t * const order) {
 	order_copy(order, &order_queue[queue_writeposition]);
 	queue_entries++;
 	queue_writeposition++;
-//	queue_writeposition %= QUEUE_SIZE;
+	// manual modulo operation, because normal modulo operation takes to long
 	queue_writeposition -= (queue_writeposition / QUEUE_SIZE) * QUEUE_SIZE;
 	return 1;
 }
@@ -127,7 +129,8 @@ void queue_pop(void) {
 		order_init(&order_queue[queue_readposition]);
 		queue_entries--;
 		queue_readposition++;
-		queue_readposition %= QUEUE_SIZE;
+		// manual modulo operation, because normal modulo operation is to slow
+		queue_readposition -= (queue_readposition / QUEUE_SIZE) * QUEUE_SIZE;
 	}
 }
 
@@ -146,29 +149,27 @@ uint8_t queue_order_available(void) {
  */
 void queue_update(void) {
 	order_t local_order;
+	// Check wheter there is a new order
 	if (parser_has_new_order()) {
 		if (DEBUG_ENABLE)
 			debug_WriteString_P(PSTR("queue.c : queue_update() : We have a new order\n"));
-//		pin_set_C(5);
 		order_init(&local_order);
-//		pin_clear_C(5);
-//		pin_set_C(6);
+		// Get the new order
 		parser_get_new_order(&local_order);
-//		pin_clear_C(6);
 		if (DEBUG_ENABLE) {
 			debug_WriteInteger(PSTR("queue.c : queue_update() : order opcode is = "), local_order.data[0]);
 			debug_WriteInteger(PSTR("queue.c : queue_update() : order status is = "), local_order.status);
 		}
+		// If its a Priority order we need to push it in the right place
 		if (local_order.status & ORDER_STATUS_PRIORITY) {
 			if (DEBUG_ENABLE)
 				debug_WriteString_P(PSTR("queue.c : queue_update() : PRIORITY\n"));
 			queue_push_priority(&local_order);
+		// No priority order
 		} else {
 			if (DEBUG_ENABLE)
 				debug_WriteString_P(PSTR("queue.c : queue_update() : NO PRIORITY\n"));
-//			pin_set_C(7);
 			queue_push(&local_order);
-//			pin_clear_C(7);
 		}
 	}
 }
