@@ -20,14 +20,7 @@ unsigned char order_send(order_t *order) {
 	return i2c_send(order->dat, order->pos);
 }
 
-unsigned char order_send_and_recv_co(order_t *order) {
-	order_send(order);
-	order_init(order);
-	i2c_receive(order->dat, 2);
-	return i2c_receive(order->dat, order->dat[1]);
-}
-
-unsigned char bytes_to_recv(order_t *order) {
+unsigned char order_bytes_to_recv(order_t *order) {
 	switch(order->dat[0]) {
 		case ORDER_REGISTER_LEFT_SPEED:
 		case ORDER_REGISTER_RIGHT_SPEED:
@@ -36,14 +29,6 @@ unsigned char bytes_to_recv(order_t *order) {
 		default:
 			return 0;
 	}
-}
-
-unsigned char order_send_and_recv(order_t *order) {
-	if (order->dat[1] == 0x42) // for recv a current order one needs the other function.
-		return 0;
-	i2c_send(order->dat, order->pos);
-	order_init(order);
-	return i2c_receive(order->dat, bytes_to_recv(order) + 1);
 }
 
 void order_set_type(order_t *order, unsigned char type) {

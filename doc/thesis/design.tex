@@ -11,15 +11,15 @@ Nutzen, der dadurch erzielt wurde.
 Somit gibt es nun vier bis fünf globale Variablen, die sich während der Laufzeit
 ändern können und in unterschiedlichen Modulen direkt referenziert werden.
 Geändert werden diese allerdings nur in sehr wenigen Funktionen, in denen dies
-auch explizit Kommentiert wurde. Außerdem wurde in den Coding-Guidelines extra
-auf den Umstand hingewiesen wenn möglich keine Funktionen zu schreiben, die die
-globalen Variablen verändern und wenn doch dies explizit zu dokumentieren.
-Neben diesen maximal fünf Verhaltens verändernden globalen Variablen gibt es vier
+auch explizit dokumentiert wurde. Außerdem wurde in den Coding-Guidelines
+auf den Umstand hingewiesen, wenn möglich keine Funktionen zu schreiben, die die
+globalen Variablen verändern, und wenn doch, dies explizit zu dokumentieren.
+Neben diesen maximal fünf Verhaltens-verändernden globalen Variablen gibt es vier
 weitere Variablen in zwei verschiedenen Modulen, die jeweils aus einem anderen
 Modul explizit gesetzt werden. Dies sind die Trigger-Werte für die Position und
 die Zeit. Diese werden nur durch den Drive, bzw den Advanced Drive Befehl
-gesetzt und während der Motor Interrupts nach und nach decrementiert.
-Über die Module wird in den Unterkapiteln genauer eingegangen.
+gesetzt und während der Motor Interrupts nach und nach dekrementiert.
+Auf die Module wird in den Unterkapiteln genauer eingegangen.
 \section{System}
 Das als System bezeichnete Modul beinhaltet die Hauptschleife der Betriebssoftware,
 sowie die Initialisierung aller anderen Submodule. Es benutzt ein paar wenige Module
@@ -57,7 +57,7 @@ Das PID Modul, welches größtenteils aus der vorhergegangen Studienarbeit über
 errechnet die korrigierten Werte für die Räder, die dann vom Drive Modul an diese auch
 weiter geleitet werden. Die Fehler die auftreten können sind vielfältig und nicht besonders
 groß, wie zum Beispiel eine kleine Varianz in der Geschwindigkeit eines Rades oder ähnliches.
-Damit aber das Fahrverhalten stabiler wird müssen diese Fehler korrigiert werden.
+Damit aber das Fahr-verhalten stabiler wird müssen diese Fehler korrigiert werden.
 \section{IO, I2C und UART}
 Das IO Modul stellt für das System einheitliche Funktionen zur Verfügung um Daten zu lesen als
 auch zu schreiben. Hierbei kann es dem Benutzer der Funktionen egal sein, welche Schnittstelle
@@ -74,11 +74,11 @@ im Protokoll spezifizierten Befehle. Falls ein Befehl länger benötigt, bis er 
 gelten kann, wird die entsprechende Order Funktion mit dem korrespondierenden Befehl in jeder
 Iteration der Hauptschleife aufgerufen. Diese kann dann eventuell Wartungsarbeiten an dem
 Befehl durchführen und überprüfen, ob dieser beendet ist und entsprechend seinen Status ändern.
-Durch diesen Aufbau ist eine Iteration der Hautpschleife sehr kurz, aber auch komplizierte Befehle
+Durch diesen Aufbau ist eine Iteration der Hauptschleife sehr kurz, aber auch komplizierte Befehle
 oder solche deren Parameter und Durchführung überwacht werden müssen sind hierdurch möglich.\\
 Durch das Queue Modul ist es möglich der Motorplatine mehrere Befehle direkt hintereinander
 zu übermitteln, die dann einer nach dem anderen ausgeführt werden, außerdem kümmert die
-Queue sich darum, das Prioritäts-Befehle nicht eingereiht werden sondern bei der nächsten
+Queue sich darum, das Prioritäts-Befehle nicht angereiht werden sondern bei der nächsten
 Iteration der Hauptschleife ausgeführt werden.
 \section{Timer, Parser und Options}
 Diese drei Module haben hauptsächlich eine unterstützende Funktion, so bringt das Timer Modul

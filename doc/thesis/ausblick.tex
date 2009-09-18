@@ -1,5 +1,5 @@
 \chapter{Zusammenfassung und Ausblick}
-Das Ergebniss dieser Arbeit ist, dass die Platine auf Befehle schnell und korrekt reagiert,
+Das Ergebnis dieser Arbeit ist, dass die Platine auf Befehle schnell und korrekt reagiert,
 solange diese nicht gravierend von den Spezifikation abweichen. Es gehen keine Interrupts verloren, und die
 Platine reagiert auf Änderungen in Bruchteilen einer Sekunde.\\
 Dennoch gibt es einige Punkte, die aufgrund der begrenzten Zeit nicht getestet oder implementiert
@@ -12,7 +12,7 @@ einen Timer-Interrupt mit einer möglichst niedrigen Auflösung benutzen. Der Vo
 dass das ABS nicht mehr abhängig von der Geschwindigkeit der Hauptschleife ist. Außerdem ist das
 Abschalten des ABS gleichzusetzen mit dem Abschalten des zugehörigen Interrupts. Dieses wiederum
 eliminiert den Overhead des ABS komplett, wenn es abgeschaltet ist. Dieser Overhead wird auf
-ungefähr 2,5 us pro Schleifendurchlauf geschätzt. Der Nachteil besteht in einem geringen
+ungefähr 2,5 \textmu{}s pro Schleifendurchlauf geschätzt. Der Nachteil besteht in einem geringen
 Mehraufwand, da ein Funktionsaufruf durch eine Interrupt-Service-Routine ersetzt wird.\\
 Eine weitere Erweiterungsmöglichkeit für das System besteht in erhöhter Robustheit und erweiterter
 Fehlererkennung. So ist es möglich eintreffende Befehle auf komplette syntaktische Korrektheit

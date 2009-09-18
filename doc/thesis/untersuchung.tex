@@ -27,8 +27,8 @@ Doch bei den Messungen insbesondere mit einem Leistungsfähigen und
 sehr genauen Oszilloskop konnte herausgefunden werden, dass das eigentliche
 Wechsel des Stroms am Pin verhältnismäßig langsam durchgeführt wird,
 insbesondere das Abfallen des Stromes, also bei einer fallenden Flanke
-benötigt ungefähr 2 us von denen allerdings, und hier liegt das Problem,
-zwischen 0.5 und 1 us fälschlicherweise als ''high'' gemessen wird.
+benötigt ungefähr 2 \textmu{}s von denen allerdings, und hier liegt das Problem,
+zwischen 0.5 und 1 \textmu{}s fälschlicherweise als ''high'' gemessen wird.
 D.h. der Logikanalyser misst eine gewisse Zeitspanne einen ''falschen'' Wert.
 (Er ist nicht physikalisch falsch nur logisch). Denn wenn der Strom abfällt
 ist der bin schon nicht mehr gesetzt, der Logikanalyser allerdings betrachtet
@@ -87,15 +87,15 @@ sowohl aktiviert wird, wenn kein Befehl bearbeitet wird(I; Idle) oder eines der 
 erreicht hat als das andere (T; Trigger). ''I2C an'' bezeichnet, dass der I2C-Bus für die E/A-Operationen
 verwendet wurde und nicht die UART Schnittstelle.\\
 Interessant ist bei diesen Daten, dass das aktualisieren der Warteschlange, wenn ein Befehl vorliegt, gut
-eine halbe millisekunde benötigt.
+eine halbe Millisekunde benötigt.
 \section{Das LCD-Problem}
 Wie in der Tabelle \ref{erste_messung} zu sehen ist, benötigt das System zum aktualisieren der Informationen
-des LCD über drei millisekunden. Damit ist diese Funktion die mit Abstand zeitintensivste im gesamten System.
+des LCD über drei Millisekunden. Damit ist diese Funktion die mit Abstand zeit intensivste im gesamten System.
 Zwar ist das Aktualisieren recht selten, nämlich nur, wenn ein neuer Befehl gestartet wird, aber haben drei
-millisekunden Latenz eine negative Wirkung auf die Reaktion des Systems auf Ereignisse. So können während
+Millisekunden Latenz eine negative Wirkung auf die Reaktion des Systems auf Ereignisse. So können während
 der drei Millisekunden ungefähr zwölf Bytes auf dem I2C Bus eintreffen, was im schlimmsten Fall sechs eigenständige
 Befehle wären. Wenn diese Befehle priorisierte Befehle sind, so könnte sich das System unerwartet verhalten.\\
-Damit dieses Problem gelößt werden konnte, musste die Arbeitsweise des LCD, welches durch eine fertige Programm-Bibliothek
+Damit dieses Problem gelöst werden konnte, musste die Arbeitsweise des LCD, welches durch eine fertige Programm-Bibliothek
 gesteuert wird, analysiert werden. Dadurch wurde herausgefunden, dass die Funktionen, die Daten auf das LCD ausgeben,
 aktives Warten betreiben. Ein LCD benötigt natürlich Zeit, um ein übermitteltes Zeichen auch anzeigen zu können.
 Während dieser Zeit wird das sog. Busy-Flag gesetzt, welches anzeigt, dass das LCD noch beschäftigt ist. Erst
@@ -119,8 +119,8 @@ dem Speicherpuffer aufs LCD, wenn es nicht gesetzt ist.
 \end{center}
 \end{table}
 Wie in der Tabelle \ref{lcd_opt} zu sehen, hatten diese Maßnahmen ihre gewünschte Wirkung. Über 98\% weniger Zeit
-wird nun im zeitintensivsten Fall benötigt. Dies hat seinen Nachteil in einer leicht erhöten Laufzeit für das
-Aktualisieren des LCD im Ruhezustand. Diese Zeit hat sich von durschnittlich 4 \textmu{}s auf 9 \textmu{}s erhöht.
+wird nun im zeitintensivsten Fall benötigt. Dies hat seinen Nachteil in einer leicht erhöhten Laufzeit für das
+Aktualisieren des LCD im Ruhezustand. Diese Zeit hat sich von durchschnittlich 4 \textmu{}s auf 9 \textmu{}s erhöht.
 \section{Optimierung}
 Damit die Latenz des Systems möglichst niedrig ist, müssen die Funktionen, die in der Hauptschleife aufgerufen werden,
 unter allen Bedingungen möglichst effizient ihre Arbeit verrichten. Dazu wurde jede dieser Funktionen, mit dem Pin setzen
@@ -158,11 +158,11 @@ Konsequenzen für die Geschwindigkeit des gesamten Systems, wie man in Tabelle \
 \end{center}
 \end{table}
 \subsection{Eliminierung von Modulo-Operatoren}
-Während der Untersuchung der parser\_\-update()-Funktion wurde festgestellt, dass eine innere Funktion unverhältnissmäßig
+Während der Untersuchung der parser\_\-update()-Funktion wurde festgestellt, dass eine innere Funktion unverhältnismäßig
 viel Zeit benötigt, um ihre Aufgabe zu erfüllen. Dies war die io\_\-get()-Funktion, deren Aufgabe es ist das nächste Byte
 im Eingangspuffer an den Aufrufer zurück zu liefern. Für diese simple Operation benötigte über 36 \textmu{}s. Mehr als die
 gesamte Hauptschleife im Idle Zustand. Eine genaue Untersuchung der Funktion lies darauf schließen, dass die Anweisungen
-mit Modulo-Operationen für diesen Aufwand verantworlich waren. Dies konnte zum einen durch Kontrolle des generierten Assembler
+mit Modulo-Operationen für diesen Aufwand verantwortlich waren. Dies konnte zum einen durch Kontrolle des generierten Assembler
 Codes, zum anderen durch das Auslagern der Modulo-Operation in eine eigene Zeile bestätigt werden. Der Compiler generiert
 für die Modulo-Operation eine extra Funktion, die sehr kompliziert ist und offensichtlich eine Menge Zeit benötigt.\\
 \begin{verbatim}
@@ -182,7 +182,7 @@ uint8_t io_get(uint8_t* value) {
 \end{verbatim}
 Es gibt zwei Möglichkeiten dies zu korrigieren: Zum einen kann die Modulo-Operation durch eine Reihe simplerer Operationen ersetzt werden.
 Zum anderen kann auf die Modulo-Operation komplett verzichtet werden, wenn man das Überlaufverhalten der Variablen ausnutzen kann.
-Die zweite Methode setzt vorraus, dass der Puffer so viele Elemente hat wie der größte darstellbare Wert der Variablen plus eins.
+Die zweite Methode setzt voraus, dass der Puffer so viele Elemente hat wie der größte darstellbare Wert der Variablen plus eins.
 Da hier Variablen vom Typ uint8\_t verwendet werden (unsigned 8-Bit integer; vorzeichenlose 8-Bit Ganzzahl) muss der Puffer 256
 Elemente umfassen. Da diese Zahl bereits eingestellt war und diese Funktion sehr häufig verwendet wird, wurde hier die zweite Methode
 benutzt. Es wurde dadurch nicht mehr Speicher verwendet als vorher, aber die Methode lief daraufhin wesentlich schneller.
@@ -235,7 +235,7 @@ wurden durch die memset()- bzw. die memcpy()-Funktion aus der Standardbibliothek
 \end{center}
 \end{table}
 \subsection{Bedingtes Kompilieren von Debugausgaben}
-Wie in Kapitel \ref{impl_debug} beschrieben wurde ein Sprachenspezifischer Trick verwendet, um 
+Wie in Kapitel \ref{impl_debug} beschrieben wurde ein Sprachen-spezifischer Trick verwendet, um 
 die Möglichkeit zu besitzen einfach Diagnoseausgaben auszugeben, die im normalen Betrieb keine Auswirkung
 auf das Laufzeitverhalten des Systems haben. So generiert der Compiler für die Ausgaben keinen Code, solange nicht
 das Compilerflag -DDEBUG gegeben ist. Selbst wenn es gegeben ist und die Ausgaben mithilfe des entsprechenden DIP-Schalters
@@ -245,7 +245,7 @@ Während den Messungen kam die Frage auf, was passiert, wenn ein Interrupt auftr
 Wenn dies geschehen kann, was passiert mit den beiden Interrupts, geht eventuell sogar einer verloren?\\
 Die Antwort auf diese Frage wurde von dem Handbuch des Mikrocontrollers \cite{ATMEGA_MANUAL} beantwortet. Mit
 den richtigen Einstellungen, die bereits eingestellt waren, werden Interrupts, die während eines anderen
-Interrupts auftreten, gespeichert und nach der Beendingung des laufenden Interrupts werden die gespeicherten
+Interrupts auftreten, gespeichert und nach der Beendigung des laufenden Interrupts werden die gespeicherten
 ihrer Priorität nach ausgeführt.
 \section{Vergleich mit der Original-Software}
 Der harte Vergleich mit Nummern der Original-Software mit der in dieser Arbeit geschriebenen Software ist
@@ -253,7 +253,7 @@ nur schwer möglich, da das zugrunde liegende Design von beiden Projekten so unt
 die Dauer der Hauptschleife eine Idee davon geben kann, inwiefern die eine Software schneller arbeitet als die Andere
 (siehe Tabelle \ref{vergl_speed}).\\
 Zusätzlich kann man noch den Speicherfußabdruck der Systeme vergleichen (siehe Tabelle \ref{vergl_speicher}). Hierbei
-fällt auf, dass der generierte Maschienencode im Vergleich zum Original etwas größer ist, was aber unter anbetracht
+fällt auf, dass der generierte Maschinencode im Vergleich zum Original etwas größer ist, was aber unter Anbetracht
 der benutzten Compiler-Flags bedeutet, dass der Code mit gleichen Flags kleiner wäre als das Original. Dies ist
 auch demonstriert worden, indem die Original-Software mit den Compiler-Flags der jetzigen Software übersetzt
 wurde.
@@ -282,14 +282,14 @@ wurde.
 		Hauptschleife (Jetzt) & 23,535 \textmu{}s & 80,69\% & Idle \\ \hline \hline
 		Befehl (kurz, Original) & 3655 \textmu{}s (13 Byte) & & I2C-Bus, kürzester Befehl \\ \hline
 		Befehl (kurz, Jetzt) & 1023 \textmu{}s (4 Byte) & & I2C-Bus, kürzester Befehl \\ \hline
-		Befehl (lang, Original) & 7747 \textmu{}s (27 Byte) & & I2C-Büs, längster Befehl \\ \hline
-		Befehl (lang, Jetzt) & 2191 \textmu{}s (8 Byte) & & I2C-Büs, längster Befehl \\ \hline
+		Befehl (lang, Original) & 7747 \textmu{}s (27 Byte) & & I2C-Bus, längster Befehl \\ \hline
+		Befehl (lang, Jetzt) & 2191 \textmu{}s (8 Byte) & & I2C-Bus, längster Befehl \\ \hline
 	\end{tabular}
 	\caption{\label{vergl_speed} Vergleich der Geschwindigkeiten}
 \end{center}
 \end{table}
 Zusätzlich wurde noch verglichen, wie lange ein Befehl von der Praktikumsplatine bis zur Motorplatine benötigt.
-Hier ist die Übertragungsgeschwindigkeit des I2C-Busses das größte Hinderness und dank der höheren Datendichte
+Hier ist die Übertragungsgeschwindigkeit des I2C-Busses das größte Hindernis und dank der höheren Datendichte
 der Befehlesübertragung im neuen System ist dieses wesentlich schneller (vgl. Tabelle \ref{vergl_speed} und Abb.
  \ref{vergl_befehle}).
 \begin{figure}[htb]
