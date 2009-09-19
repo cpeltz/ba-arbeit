@@ -1,51 +1,53 @@
-\chapter{Design und Designentscheidungen}
+\chapter{Design und Design-Entscheidungen}
 %Modul Überblick-bild
-Die Betriebssoftware wurde in Module aufgeteilt, wobei eine Code-Datei einem
-Modul zugeordnet ist und ein Module mehrere Code-Dateien umfassen kann.
+Die Betriebssoftware wurde in Module aufgeteilt. Ein Modul kann mehrere Code-Dateien
+umfassen. Eine Code-Datei ist aber nur einem Modul zugeordnet.
 Es wurde besonderer Wert darauf gelegt, dass Module so wenig wie möglich andere
-Module aufrufen und dies auch nur durch Funktionen und nicht durch Variablen.
+Module aufrufen, und dies auch nur durch Funktionen, nicht durch die Variablen.
 Dieses Prinzip musste allerdings während der Optimierungs- und Testphase
-geringfügig aufgeweicht werden, da entweder der Code dadurch unleserlich wurde
-oder der Preis für einen Funktionsaufruf zu hoch war in Relation zu dem
-Nutzen, der dadurch erzielt wurde.
-Somit gibt es nun vier bis fünf globale Variablen, die sich während der Laufzeit
-ändern können und in unterschiedlichen Modulen direkt referenziert werden.
+geringfügig modifiziert werden. Entweder wurde der Code dadurch unleserlich, oder
+die Relation Preis zu Nutzen je Funktionsaufruf unangemessen hoch.
+Als wesentliche Verbesserung wurden vier bis fünf globale Variablen eingeführt, die
+sich während der Laufzeit ändern können, und die in unterschiedlichen Modulen direkt
+referenziert werden.
 Geändert werden diese allerdings nur in sehr wenigen Funktionen, in denen dies
-auch explizit dokumentiert wurde. Außerdem wurde in den Coding-Guidelines
-auf den Umstand hingewiesen, wenn möglich keine Funktionen zu schreiben, die die
-globalen Variablen verändern, und wenn doch, dies explizit zu dokumentieren.
-Neben diesen maximal fünf Verhaltens-verändernden globalen Variablen gibt es vier
+auch explizit dokumentiert wurde. Außerdem wurde in den Coding-Guidelines darauf hingewiesen,
+möglichst keine Funktionen zu schreiben, die die globalen Variablen verändern.
+Anderenfalls ist dies ausdrücklich hervorzuheben.
+Neben diesen maximal fünf globalen Variablen, die das Systemverhalten verändern, gibt es vier
 weitere Variablen in zwei verschiedenen Modulen, die jeweils aus einem anderen
-Modul explizit gesetzt werden. Dies sind die Trigger-Werte für die Position und
-die Zeit. Diese werden nur durch den Drive, bzw den Advanced Drive Befehl
-gesetzt und während der Motor Interrupts nach und nach dekrementiert.
+Modul gesetzt werden. Dies sind die Trigger-Werte für die Position und
+die Zeit. Diese werden nur durch den Drive bzw. den Advanced Drive Befehl
+gesetzt und während der Motorunterbrechungen nach und nach dekrementiert.
 Auf die Module wird in den Unterkapiteln genauer eingegangen.
 \section{System}
-Das als System bezeichnete Modul beinhaltet die Hauptschleife der Betriebssoftware,
-sowie die Initialisierung aller anderen Submodule. Es benutzt ein paar wenige Module
+Das als System bezeichnete Modul beinhaltet die Hauptschleife der Betriebssoftware
+und die Initialisierung aller anderen Untermodule. Es benutzt nur wenige Module,
 um seine Aufgabe in einem abstrakten Maße zu erfüllen. Während der Hauptschleife, die
-in gekürzter Fassung (Kommentare und Debug-Ausgaben entfernt) in Abb. \ref{main_loop} zu sehen,
-werden nur ein paar wenige Funktionen aufgerufen, die die wichtigen Module auf dem
-aktuellen Stand halten und damit es ermöglichen, dass Daten zwischen den Modulen
-fließen kann.
+in gekürzter Fassung (d.h., ohne Kommentare und Debug-Ausgaben) in Abb. \ref{main_loop} zu sehen ist,
+werden nur einige wenige Funktionen aufgerufen. Dadurch werden die wichtigen Module auf dem
+aktuellen Stand gehalten. Außerdem wird es ermöglicht, dass Daten zwischen den Modulen fließen können.
 \begin{figure}[htb]
  \centering
  \scalebox{0.5}{\includegraphics{pictures/main_loop_code.png}}
  \caption{\label{main_loop}Die Hauptschleife}
 \end{figure}
 \section{Debug}
-Eigene Mechanismen zum Debugging sind genau dann sehr wichtig, wenn man nicht mit den
-gewohnten Werkzeugen dies tun kann. Während der Laufzeit verstehen was in dem kleinen
-Mikrocontroller vor sich geht ist essentiell, allerdings auch nicht sehr simpel, denn
-die einzigen Möglichkeiten, die die Platine hat mit der Außenwelt zu kommunizieren
-beschränken sich auf 5 LED's, ein 4*20 Zeichen LCD, eine UART und eine I2C-Bus 
-Schnittstelle. Der Aussagegehalt von den LED's (insbesondere da diese sich geweigert
-haben zuverlässig zu funktionieren) und der LCD ist doch sehr begrenzt (man kann nicht
-viele Informationen auf einem 4*20 Zeichen LCD unterbringen). Die Wahl fiel dann auf
-die UART Schnittstelle, da der Arbeitscomputer, an dem das Debugging durchgeführt wurde
+Eigene Mechanismen zum Debugging sind gerade dann wichtig, wenn man dies nicht mit den
+gewohnten Werkzeugen durchführen kann.
+Es ist unabdingbar wichtig zu wissen, welche Vorgänge sich in dem kleinen Mikrocontroller
+während der Laufzeit abspielen.
+Dies ist aber nicht ganz einfach, denn die einzigen Möglichkeiten, die die Platine zur
+Kommunikation mit der Außenwelt hat, beschränken sich auf
+5 LED, ein 4*20 Zeichen LCD, eine UART und eine I2C-Bus 
+Schnittstelle.
+Die LED funktionieren nicht zuverlässig und das LCD ist in seinem Aussagegehalt sehr
+begrenzt, weil man nicht viele Informationen auf einem 4*20 Zeichen LCD unterbringen kann. 
+Die Wahl fiel dann auf
+die UART Schnittstelle, da der Arbeitscomputer, an dem das Debugging durchgeführt wurde,
 einen solchen Anschluss besitzt, aber über keinen I2C Anschluss verfügt.
 Mithilfe der Debugausgaben kann man protokollieren, was das System in jedem
-Schleifendurchlauf getan hat und dadurch das Verhalten analysieren, um schlussendlich
+Schleifendurchlauf getan hat, und dadurch das Verhalten analysieren, um schlussendlich
 Fehler aufzuspüren. 
 \section{Drive, Motor und PID}
 Das Motor bindet zum einen das System an die Motoren und an die anderen nötigen
