@@ -115,7 +115,7 @@ dem Speicherpuffer aufs LCD, wenn es nicht gesetzt ist.
 		process\_orders() & 354,627 \textmu{}s & & \\ \hline
 		lcd\_update\_screen() & 57,884 \textmu{}s & -98,22\% & \\ \hline
 	\end{tabular}
-	\caption{\label{lcd_opt} LCD Ergebniss}
+	\caption{\label{lcd_opt} LCD Ergebnis}
 \end{center}
 \end{table}
 Wie in der Tabelle \ref{lcd_opt} zu sehen, hatten diese Maßnahmen ihre gewünschte Wirkung. Über 98\% weniger Zeit
@@ -231,7 +231,7 @@ wurden durch die memset()- bzw. die memcpy()-Funktion aus der Standardbibliothek
 		order\_init() & 13,968 \textmu{}s & \\ \hline
 		order\_init() (memset) & 7,976 \textmu{}s & 42,9\% \\ \hline
 	\end{tabular}
-	\caption{\label{order_init_meas} Ergebnisse der order\_init() Optimierung}
+	\caption{\label{order_init_meas} Ergebnisse der order\_init()-Optimierung}
 \end{center}
 \end{table}
 \subsection{Bedingtes Kompilieren von Debugausgaben}
