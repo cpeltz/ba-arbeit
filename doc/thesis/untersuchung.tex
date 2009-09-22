@@ -50,32 +50,51 @@ umgeben.
 \end{figure}
 \begin{table}[htb]
 \begin{center}
-	\begin{tabular}{|c||r|c|}
+	\begin{tabular}{c}
+	\begin{tabularx}{\textwidth}{|c||r|X|}
 		\hline
 		\textbf{Funktion} & \textbf{Zeit} & \textbf{Rahmenbedingungen} \\ \hline \hline
 		Hauptschleife & 27,916 \textmu{}s & Idle, LCD an, DEBUG aus, I2C an, AB:EIT \\ \hline
 		process\_orders() & 11,964 \textmu{}s &  \\ \hline
 		lcd\_update\_screen() & 3,988 \textmu{}s &  \\ \hline
 		parser\_update() & 3,988 \textmu{}s &  \\ \hline
-		queue\_update() & 3,988 \textmu{}s &  \\ \hline \hline
+		queue\_update() & 3,988 \textmu{}s &  \\ \hline
+	\end{tabularx} \\
+	\\
+	\begin{tabularx}{\textwidth}{|c||r|X|}
+		\hline
 		Hauptschleife & 47,856 \textmu{}s & ABS aktiv im Idle Status, ansonsten wie oben \\ \hline
 		process\_orders() & 31,904 \textmu{}s &  \\ \hline
 		lcd\_update\_screen() & 3,988 \textmu{}s &  \\ \hline
 		parser\_update() & 3,988 \textmu{}s &  \\ \hline
-		queue\_update() & 3,988 \textmu{}s &  \\ \hline \hline
-		I2C-Bus ISR & 4,586 \textmu{}s & Adresse empfangen \\ \hline
-		I2C-BUS ISR & 21,934 \textmu{}s & Daten empfangen \\ \hline
-		100ms ISR & 8,076 \textmu{}s & \\ \hline \hline
+		queue\_update() & 3,988 \textmu{}s &  \\ \hline
+	\end{tabularx} \\
+	\\
+	\begin{tabularx}{\textwidth}{|c||r|X|}
+		\hline
 		Hauptschleife & 718,843 \textmu{}s & LCD aus, Byte in Parser, Befehl bereit \\ \hline
-		process\_orders() & 39,880 \textmu{}s & I2C ISR (Daten) aufgetreten \\ \hline
+		process\_orders() & 39,880 \textmu{}s & I2C-Bus ISR (Daten) aufgetreten \\ \hline
 		lcd\_update\_screen() & 0,997 \textmu{}s &  \\ \hline
 		parser\_update() & 175,474 \textmu{}s &  \\ \hline
-		queue\_update() & 505,484 \textmu{}s &  \\ \hline \hline
-		Hauptschleife & 3614,000 \textmu{}s & LCD an, Befehl in Queue, aber nicht gestartet \\ \hline
+		queue\_update() & 505,484 \textmu{}s &  \\ \hline
+	\end{tabularx} \\
+	\\
+	\begin{tabularx}{\textwidth}{|c||r|X|}
+		\hline
+		Hauptschleife & 3614,000 \textmu{}s & LCD an, Befehl in Queue, \\
+		& & aber nicht gestartet \\ \hline
 		process\_orders() & 358,923 \textmu{}s &  \\ \hline
 		lcd\_update\_screen() & 3250,000 \textmu{}s &  \\ \hline
 		parser\_update() & 6,032 \textmu{}s &  \\ \hline
 		queue\_update() & 5,583 \textmu{}s &  \\ \hline
+	\end{tabularx} \\
+	\\
+	\begin{tabularx}{\textwidth}{|c||r|X|}
+		\hline
+		I2C-Bus ISR & 4,586 \textmu{}s & Adresse empfangen \\ \hline
+		I2C-Bus ISR & 21,934 \textmu{}s & Daten empfangen \\ \hline
+		100ms ISR & 8,076 \textmu{}s & \\ \hline
+	\end{tabularx} \\
 	\end{tabular}
 	\caption{\label{erste_messung} Ergebnisse der ersten Messungen}
 \end{center}
