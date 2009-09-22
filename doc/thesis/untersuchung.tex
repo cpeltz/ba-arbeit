@@ -259,13 +259,35 @@ die Möglichkeit zu besitzen einfach Diagnoseausgaben auszugeben, die im normale
 auf das Laufzeitverhalten des Systems haben. So generiert der Compiler für die Ausgaben keinen Code, solange nicht
 das Compilerflag -DDEBUG gegeben ist. Selbst wenn es gegeben ist und die Ausgaben mithilfe des entsprechenden DIP-Schalters
 deaktiviert sind, bringt jede Ausgabe lediglich weniger als eine \textmu{}s größere Laufzeit.
+
 \section{Verlieren/Verpassen von Interrupts}
 Während den Messungen kam die Frage auf, was passiert, wenn ein Interrupt auftritt, wenn ein anderer bereits läuft.
 Wenn dies geschehen kann, was passiert mit den beiden Interrupts, geht eventuell sogar einer verloren?\\
 Die Antwort auf diese Frage wurde von dem Handbuch des Mikrocontrollers \cite{ATMEGA_MANUAL} beantwortet. Mit
 den richtigen Einstellungen, die bereits eingestellt waren, werden Interrupts, die während eines anderen
 Interrupts auftreten, gespeichert und nach der Beendigung des laufenden Interrupts werden die gespeicherten
-ihrer Priorität nach ausgeführt.
+ihrer Priorität nach ausgeführt.\\
+Der schnellste Interrupt tritt alle 138 \textmu{}s auf, das ist der UART-Interrupt. Im schlimmsten Fall treten alle 
+Interrupts zur selben
+Zeit auf und der am schnellsten wieder auftretende hat die niedrigste Priorität. Er wird also erst nachdem alle
+anderen Interrupts abgearbeitet wurden ausgeführt. Bei vier Hall-Sensoren-Interrupts, einem I2C-Bus-Interrupt,
+zwei Timer-Interrupts und zwei UART-Interrupts und einer oberen Schranke von 8 \textmu{}s pro Interrupt plus
+2 \textmu{}s Umschaltungszeit zwischen zwei Interrupts kommt man auf eine Zeit von 90 \textmu{}s.
+Das bedeutet, dass bevor der schnellste Interrupt wieder auftreten kann, wurden alle Interrupt-Service-Routinen
+abgearbeitet und mindestens ein Hauptschleifendurchlauf beendet. Anzumerken ist hier noch, dass dieser konstruierte
+schlimmste Fall unmöglich ist. Entweder ist der UART-Empfang-Interrupt oder der I2C-Bus-Interrupt ausgeschaltet, sie
+sind niemals zur selben Zeit aktiv. Außerdem benötigt der Großteil der Interrupts weniger als 5 \textmu{}s, um
+seine Arbeit zu beenden. Ganz zu schweigen davon, dass die Hall-Sensoren-Interrupts, durch ihre Anordnung an den
+Rädern, nicht alle zur selben Zeit auftreten können.\\
+Die Hall-Sensoren-Interrupts treten sehr häufig auf, wenn die Räder in
+Bewegung sind. Die Auswirkung dieser Interrupts auf das Echtzeitverhalten des Systems wurde daher
+untersucht. Dabei wurde durch Messungen herausgefunden, dass bei einer Spannung von 12 V und maximaler
+eingestellter Geschwindigkeit der Räder, die Hall-Sensoren jeder alle 1,7 ms einen Interrupt generieren.
+Das sind 1700 \textmu{}s und dieser Interrupt benötigt maximal 8 \textmu{}s. Während dieser 1700 \textmu{}s
+treten insgesamt 4 Interrupts auf, jeweils einer von jedem Sensor, d.h. alle 425 \textmu{}s wird ein Interrupt der Länge
+mit 8 \textmu{}s. Das bedeutet, dass zwischen zwei Interrepts der Hall-Sensoren im Durschnitt 9 bis 10 Hauptschleifeniterationen
+durchgeführt werden.
+
 \section{Vergleich mit der Original-Software}
 Der harte Vergleich mit Nummern der Original-Software mit der in dieser Arbeit geschriebenen Software ist
 nur schwer möglich, da das zugrunde liegende Design von beiden Projekten so unterschiedlich ist, dass hauptsächlich
