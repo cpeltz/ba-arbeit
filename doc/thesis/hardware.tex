@@ -1,5 +1,38 @@
 \chapter{Überblick über die Hardware}
+Die Hardware, die in dieser Arbeit zum Einsatz kommt, wurde eigens für den Zweck des Praktikums
+''Programmierung eingebetteter Systeme'' entwickelt.
 
+\section{Einsatz im Praktikum}
+In diesem Praktikum wird den Studenten der
+Umgang mit kleinen Systemen näher gebracht, die sich wesentlich von den bekannten IBM-PC-kompatiblen
+Systemen unterscheiden. Das schließt die Rechenleistung, den Speicherplatz und die
+Kommunikationsmöglichkeiten mit ein. 
+Der Großteil der Praktikanten kennt nur das Schreiben von Programmen, die auf Betriebssystemen laufen.
+Dies ist mit gewissen Vorteilen verbunden. Es gibt
+Dateien, der Speicher wird verwaltet und vieles mehr. Auf diesen kleinen Systemen, mit denen die Studenten im
+Praktikum konfrontiert werden, läuft kein Betriebssystem, sondern lediglich ein Bootloader. Dieser
+ermöglicht es, neue Programme auf die Platine zu laden, um diese dann ausführen zu können.
+Im Laufe des Praktikums lernen die Studenten, wie man Programme in der Sprache C schreibt und wie die Timer
+sowie andere angeschlossene Geräte verwendet werden, zu denen z.B. ein LCD und ein Servomotor zählen.
+Außerdem wird den Studenten vermittelt, wie der I2C-Bus funktioniert und wie man diesen benutzt.\\
+Im zweiten Teil des Praktikums können die Studenten sich für ein Projekt entscheiden,
+welches sie durchführen möchten (die Projektideen kommen von den Studenten).
+Als Plattform für ihre Projekte wird ihnen ein Fahrzeug zur Verfügung gestellt. Dieses
+Fahrzeug besitzt die aus dem ersten Teil des Praktikums bekannte Platine (von nun an
+Praktikumsplatine genannt) und ein WLAN-Modul, das das Programmieren der Praktikumsplatine
+ohne Kabel ermöglicht. Außerdem können hierüber Daten mit der Praktikumsplatine während
+der Laufzeit ausgetauscht werden. Zusätzlich besitzt das Fahrzeug eine Motorplatine mit
+zugehörigen Motoren und Rädern, die zur Fortbewegung des Fahrzeugs genutzt werden. Die
+Motorplatine wird mithilfe von Befehlen, welche die Praktikumsplatine sendet, gesteuert, und
+diese wiederum steuert die Motoren.\\
+Die Motorplatine, für die die Betriebssoftware in der vorliegenden Arbeit entwickelt wurde, wird
+im Allgemeinen von den Studenten nur benutzt, aber nicht modifiziert (auch wenn ihnen dies
+frei steht). Die Leistungen, die die Motorplatine bereitstellt, 
+sollen einfach anzusprechen sein, damit die Studenten sich auf das Implementieren
+ihres eigenen Projektes konzentrieren können.\\
+%Bild des Fahrzeugs
+
+\section{Die Motorplatine}
 Die Motorplatine wurde im Zuge der Studienarbeit von Timo Klingeberg \cite{STUD_TIMO}
 entwickelt.
 \begin{figure}[htb]
@@ -7,7 +40,7 @@ entwickelt.
  \scalebox{0.5}{\includegraphics{pictures/board.png}}
  \caption{\label{board}Die Motorplatine}
 \end{figure}
-\section{Mikrocontroller}
+\subsection{Mikrocontroller}
 Das Herzstück der Platine bildet ein Mikrocontroller der Firma Atmel.
 Es handelt sich hierbei um einen ATMEGA2561\cite{ATMEGA_MANUAL}, der 256 KiB Speicher für
 Programme (Flash) hat, sowie 8 KiB Speicher für Variablen (SRAM). Der maximale Takt für
@@ -22,7 +55,7 @@ Der Controller verfügt über 6 Timer. Zwei von diesen haben nur 8 Bit, die ande
 16 Bit. Das entspricht bei dem gegebenen Takt von 16 MHz einem maximalen Timer-Intervall von 262 ms.
 Zusätzlich kann der Controller sechs Pulsweitenmodulationen betreiben, von
 denen zwei für die Servomotoren benutzt werden, die die Räder antreiben.
-\section{Ein-/Ausgabemöglichkeiten zur Praktikumsplatine}
+\subsection{Ein-/Ausgabemöglichkeiten zur Praktikumsplatine}
 Die Motorplatine verfügt sowohl über einen UART-Port, als auch einen I2C-Bus \cite{I2C_WIKI}, über die
 die Praktikumsplatine mit der Motorplatine kommunizieren kann. Der UART-Port wird außerdem
 für die Ausgabe von Debug-Informationen benutzt, falls diese aktiviert wird. Im Allgemeinen
@@ -31,7 +64,7 @@ Da der Mikrocontroller über eingebaute Hardwarelogiken für den I2C-Bus und auc
 den UART-Port verfügt, hält sich der administrative Aufwand für die Kommunikation in engen
 Grenzen. Es können lediglich Interrupt Service Routinen (ISR) für diese Kommunikations-Einrichtungen zur Verfügung gestellt
 werden. Dadurch ist es möglich, schnell auf Situationen zu reagieren, ohne Informationen verlieren zu können.
-\section{Interne Ein-/Ausgabe-Ports}
+\subsection{Interne Ein-/Ausgabe-Ports}
 Zusätzlich zu den externen Kommunikationsmöglichkeiten besitzt der ATMEGA2561 54
 programmierbare IO Kanäle, die in Ports mit je 8 Kanälen zusammenfasst werden. 16 von diesen
 Kanälen sind für die Steuerung der Servomotoren zuständig, die die Räder und die Hall-Sensoren betreiben.
