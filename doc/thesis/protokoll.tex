@@ -11,7 +11,38 @@ die Informationsdichte der Instruktionen nicht sehr hoch ist und damit zusätzli
 Wartezeit bei der Übermittlung anfällt.
 
 \section{Grundlegende Konzepte}
+Da die Kommunikationseinrichtungen der Hardware Byte-orientiert sind, wurde das
+Protokoll ebenfalls Byte-orientiert aufgebaut. Im Gegensatz zu dem Vorgänger-Protokoll
+werden also keine Zeichenketten benutzt, um die Informationen zu repräsentieren, sondern
+nur der Wert der einzelnen Bytes.\\
+Ein Befehl ist eine Folge von n Bytes, wobei n mindestens 1 und maximal die im Code
+eingestellte Größe der Befehlsstruktur entspricht. Von den eingebauten Befehlen besitzt
+keiner eine maximale Länge von mehr als 9 Bytes. Das erste Byte eines Befehls hat eine
+besondere Bedeutung. Dieses Byte wird Kommando-Byte genannt. Dieses Kommando-Byte
+ist in zwei Teile geteilt. Der erste Teil umfasst die niederwertigsten 4 Bit und
+wird Befehlscode genannt. Dieser Befehlscode spezifiziert die Art des Befehls.
+Der zweite Teil beinhaltet die höchstwertigen 4 Bit. In ihm werden Optionen
+angegeben, die den im Befehlscode angegebenen Befehl modifizieren. Die Kombination
+von Befehlscode und Optionen legt auch die Länge des Befehls fest. Alle auf dem
+Kommando-Byte folgende Bytes sind Parameter, wie z.B. die Geschwindigkeit der Räder.\\
+Da 4 Bit für Befehlscodes zur Verfügung stehen, sind 16 verschiedene Befehle möglich.
+Sechs Befehle wurden im Zuge dieser Arbeit implementiert, das würde noch Platz für
+10 weitere Befehle lassen. Das Protokoll sollte allerdings noch mehr Freiheiten
+für zukünftige Erweiterungen bieten, deswegen wurde einer der Befehlscodes
+reserviert. Dieser reservierte Befehlscode und dessen Behandlung im Code, ermöglichen
+es, dass es mehr als ein Kommando-Byte gibt. Damit ist es möglich Befehle einfach 
+hinzuzufügen, die nicht auf das ''ein Kommando-Byte, viele Parameter''-Schema passen.\\
+Wenn Parameter übertragen werden müssen, die mehr als ein Byte benötigen, wird zuerst
+das höherwertigste Byte übertragen. Danach absteigend nach der Wertigkeit die anderen
+Bytes.\\
+Durch die volle Ausnutzung der Bytes gibt es kein Protokoll-spezifisches STOP- oder START-Byte.
+Das bedeutet, dass das Protokoll sich auf die Flusskontrolle der zugrunde liegende Hardware
+verlässt.
+
 \section{Eingebaute Befehle}
+Sechs Befehle und die Infrastruktur für den reservierten Befehlscode wurden implementiert.
+Im nachfolgenden werden die Befehle einzeln vorgestellt.
+
 \subsection{Extended Instruction}
 \subsection{Control}
 \subsection{Queue}
