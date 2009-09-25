@@ -14,27 +14,19 @@
  */
 
 /**
- * Speed of the left wheel in the last 100ms.
+ * Speed of the wheels in the last 100ms.
  */
-static int8_t timer_Speed_W0 = 0;
-/**
- * Speed of the right wheel in the last 100ms.
- */
-static int8_t timer_Speed_W1 = 0;
+static int8_t timer_Speed[NUMBER_OF_WHEELS] = { 0, 0 };
 /**
  * Used to store the speed during the 100ms. It gets incremented by irq.c.
  */
-int8_t timer_SpeedSum_W0 = 0;
-/**
- * Used to store the speed during the 100ms. It gets incremented by irq.c.
- */
-int8_t timer_SpeedSum_W1 = 0;
+static int8_t timer_SpeedSum[NUMBER_OF_WHEELS] = { 0, 0 };
 /**
  * Stores the current value for the time triggers.
  * 
  * This Values will be decremented over time until they have reached 0.
  */
-uint16_t timer_t_trigger_counter[2] = { 0, 0 };
+uint16_t timer_t_trigger_counter[NUMBER_OF_WHEELS] = { 0, 0 };
 /**
  * Stores the system uptime in seconds (at least until overflow.
  */
@@ -56,33 +48,24 @@ ISR(TIMER1_COMPC_vect) {
 	// und TIMER_100MS Flag setzen
 
 	// linker T_Trigger aktiv
-	if (timer_t_trigger_counter[0] != 0) {
-		timer_t_trigger_counter[0]--;
+	if (timer_t_trigger_counter[WHEEL_LEFT] != 0) {
+		timer_t_trigger_counter[WHEEL_LEFT]--;
 	}
-	if (timer_t_trigger_counter[1] != 0) {
-		timer_t_trigger_counter[1]--;
+	if (timer_t_trigger_counter[WHEEL_RIGHT] != 0) {
+		timer_t_trigger_counter[WHEEL_RIGHT]--;
 	}
 
 	// Geschwindigkeiten in timer_Speed_W0/1 übertragen
-	timer_Speed_W0 = timer_SpeedSum_W0;
-	timer_Speed_W1 = timer_SpeedSum_W1;
-	timer_SpeedSum_W0 = 0;
-	timer_SpeedSum_W1 = 0;
+	timer_Speed[WHEEL_LEFT] = timer_SpeedSum[WHEEL_LEFT];
+	timer_Speed[WHEEL_RIGHT] = timer_SpeedSum[WHEEL_RIGHT];
+	timer_SpeedSum[WHEEL_LEFT] = 0;
+	timer_SpeedSum[WHEEL_RIGHT] = 0;
 
 	// Increase counter
 	timer_100ms_counter++;
-}
-
-/**
- * Timer interrupt being called every 262ms.
- */
-ISR(TIMER1_OVF_vect) {
-	// ISR wird alle 262 Millisekunden aufgerufen
-	timer_global_flags |= TIMER_262MS;
-	// TIMER_262MS Flag setzen
-	if( timer_100ms_counter > 10 ) {
-		timer_1s_counter += timer_100ms_counter / 10;
-		timer_100ms_counter -= (timer_100ms_counter / 10) * 10;
+	if (timer_100ms_counter >= 10) {
+		timer_1s_counter += 1;
+		timer_100ms_counter = 0;
 	}
 }
 
@@ -97,7 +80,7 @@ void timer_init(void) {
 	// Compare Match B -> 100Hz -> 10ms
 	OCR1C = 25000;
 	// Compare Match C -> 10Hz -> 100ms
-	TIMSK1 = (1 << OCIE1C) | /*(1 << OCIE1B) | (1 << OCIE1A) |*/ (1 << TOIE1);
+	TIMSK1 = (1 << OCIE1C) /*| (1 << OCIE1B) | (1 << OCIE1A) | (1 << TOIE1)*/;
 	// Aktiviere Compare Match A+B+C IRQ und Overflow IRQ
 	TCCR1B = (3 << CS10);
 	// Prescaler = clkIO/64 -> 250kHz -> 4µs
@@ -110,14 +93,6 @@ void timer_init(void) {
  * @return <em>int8_t</em> The Speed of the requested wheel.
  */
 int8_t wheel_ReadSpeed(const uint8_t wheel) {
-	switch (wheel) {
-		case WHEEL_LEFT:
-			return timer_Speed_W0;
-			break;
-		case WHEEL_RIGHT:
-			return timer_Speed_W1;
-			break;
-	}
-	return 0;
+	return timer_Speed[wheel];
 }
 /*@}*/

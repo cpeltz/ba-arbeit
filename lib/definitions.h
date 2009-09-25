@@ -90,6 +90,11 @@
  * Convinience define to use in functions, which can operate on both wheels.
  */
 #define WHEEL_BOTH              2
+/**
+ * Specifies the number of all wheels. Needed for the size of arrays throughout
+ * the program.
+ */
+#define NUMBER_OF_WHEELS		2
 
 /*@}*/
 #endif

@@ -4,9 +4,9 @@ Coding\-Guidelines
 - Nach Kommentarzeichen folgt ein Leerzeichen
 - Geschweifte Klammern werden direkt nach dem entsprechenden Statement geöffnet.
 Bsp.:
-if(a < b) {
+if (a < b) {
 	// Do something
-} else if(a > b) {
+} else if (a > b) {
 	// Do another thing
 } else {
 	// Whatever

@@ -14,33 +14,24 @@
  * @{
  */
 
+
 /**
- * Position of wheel 0 (left)
+ * Position of the wheels
  */
-int16_t irq_Position_W0 = 0;
-/**
- * Position of wheel 1 (right)
- */
-int16_t irq_Position_W1 = 0;
+int16_t irq_Position[NUMBER_OF_WHEELS] = { 0, 0 };
 /**
  * Difference between both wheels.
  */
 static int16_t irq_WheelDifference = 0;
 /**
  * Probably used for triggering on position.
- *
- * \todo Needs refactoring
  */
-int16_t irq_p_trigger_position[2] = { 0, 0 };
+int16_t irq_p_trigger_position[NUMBER_OF_WHEELS] = { 0, 0 };
 
 /**
  * Used to store the speed during the 100ms. It gets incremented by irq.c.
  */
-extern int8_t timer_SpeedSum_W0;
-/**
- * Used to store the speed during the 100ms. It gets incremented by irq.c.
- */
-extern int8_t timer_SpeedSum_W1;
+extern int8_t timer_SpeedSum[NUMBER_OF_WHEELS];
 
 /**
  * Interrupt Service Routine for wheel 0 (left) sensor A.
@@ -53,29 +44,29 @@ ISR(INT4_vect) {
 		case ((0 << IRQ_A0) | (0 << IRQ_B0)):
 		case ((1 << IRQ_A0) | (1 << IRQ_B0)):
 			// Linksdrehung, Rad 0
-			irq_Position_W0++;
+			irq_Position[WHEEL_LEFT]++;
 			irq_WheelDifference++;
 			// Increment the speed for the wheel
 			// needed for the PID-Controller
-			if ((timer_SpeedSum_W0 < 127))
-				timer_SpeedSum_W0++;
+			if ((timer_SpeedSum[WHEEL_LEFT] < 127))
+				timer_SpeedSum[WHEEL_LEFT]++;
 			break;
 
 		case ((0 << IRQ_A0) | (1 << IRQ_B0)):
 		case ((1 << IRQ_A0) | (0 << IRQ_B0)):
 			// Rechtsdrehung, Rad 0
-			irq_Position_W0--;
+			irq_Position[WHEEL_LEFT]--;
 			irq_WheelDifference--;
 			// Decrement the speed for the wheel
 			// needed for the PID_Controller
-			if ((timer_SpeedSum_W0 > -127))
-				timer_SpeedSum_W0--;
+			if ((timer_SpeedSum[WHEEL_LEFT] > -127))
+				timer_SpeedSum[WHEEL_LEFT]--;
 			break;
 	}
 
 	// IRQ_P_Trigger, links aktiv
-	if (irq_p_trigger_position[0] != 0) {
-		irq_p_trigger_position[0]--;
+	if (irq_p_trigger_position[WHEEL_LEFT] != 0) {
+		irq_p_trigger_position[WHEEL_LEFT]--;
 	}
 	pin_clear_C(0);
 }
@@ -91,28 +82,28 @@ ISR(INT5_vect) {
 		case ((0 << IRQ_A0) | (0 << IRQ_B0)):
 		case ((1 << IRQ_A0) | (1 << IRQ_B0)):
 			// Rechtsdrehung, Rad 0
-			irq_Position_W0--;
+			irq_Position[WHEEL_LEFT]--;
 			irq_WheelDifference--;
 			// Decrement the speed for the wheel
 			// needed for the PID_Controller
-			if ((timer_SpeedSum_W0 > -127))
-				timer_SpeedSum_W0--;
+			if ((timer_SpeedSum[WHEEL_LEFT] > -127))
+				timer_SpeedSum[WHEEL_LEFT]--;
 			break;
 
 		case ((0 << IRQ_A0) | (1 << IRQ_B0)):
 		case ((1 << IRQ_A0) | (0 << IRQ_B0)):
 			// Linksdrehung, Rad 0
-			irq_Position_W0++;
+			irq_Position[WHEEL_LEFT]++;
 			irq_WheelDifference++;
 			// Increment the speed for the wheel
 			// needed for the PID-Controller
-			if ((timer_SpeedSum_W0 < 127))
-				timer_SpeedSum_W0++;
+			if ((timer_SpeedSum[WHEEL_LEFT] < 127))
+				timer_SpeedSum[WHEEL_LEFT]++;
 			break;
 	}
 
-	if (irq_p_trigger_position[0] != 0) {
-		irq_p_trigger_position[0]--;
+	if (irq_p_trigger_position[WHEEL_LEFT] != 0) {
+		irq_p_trigger_position[WHEEL_LEFT]--;
 	}
 	pin_clear_C(1);
 }
@@ -128,28 +119,28 @@ ISR(INT6_vect) {
 		case ((0 << IRQ_A1) | (0 << IRQ_B1)):
 		case ((1 << IRQ_A1) | (1 << IRQ_B1)):
 			// Rechtsdrehung, Rad 1
-			irq_Position_W1--;
+			irq_Position[WHEEL_RIGHT]--;
 			irq_WheelDifference++;
 			// Decrement the speed for the wheel
 			// needed for the PID_Controller
-			if ((timer_SpeedSum_W1 > -127))
-				timer_SpeedSum_W1--;
+			if ((timer_SpeedSum[WHEEL_RIGHT] > -127))
+				timer_SpeedSum[WHEEL_RIGHT]--;
 			break;
 
 		case ((0 << IRQ_A1) | (1 << IRQ_B1)):
 		case ((1 << IRQ_A1) | (0 << IRQ_B1)):
 			// Linksdrehung, Rad 1
-			irq_Position_W1++;
+			irq_Position[WHEEL_RIGHT]++;
 			irq_WheelDifference--;
 			// Increment the speed for the wheel
 			// needed for the PID-Controller
-			if ((timer_SpeedSum_W1 < 127))
-				timer_SpeedSum_W1++;
+			if ((timer_SpeedSum[WHEEL_RIGHT] < 127))
+				timer_SpeedSum[WHEEL_RIGHT]++;
 			break;
 	}
 
-	if (irq_p_trigger_position[1] != 0) {
-		irq_p_trigger_position[1]--;
+	if (irq_p_trigger_position[WHEEL_RIGHT] != 0) {
+		irq_p_trigger_position[WHEEL_RIGHT]--;
 	}
 	pin_clear_C(2);
 }
@@ -165,28 +156,28 @@ ISR(INT7_vect) {
 		case ((0 << IRQ_A1) | (0 << IRQ_B1)):
 		case ((1 << IRQ_A1) | (1 << IRQ_B1)):
 			// Linksdrehung, Rad 1
-			irq_Position_W1++;
+			irq_Position[WHEEL_RIGHT]++;
 			irq_WheelDifference--;
 			// Increment the speed for the wheel
 			// needed for the PID-Controller
-			if ((timer_SpeedSum_W1 < 127))
-				timer_SpeedSum_W1++;
+			if ((timer_SpeedSum[WHEEL_RIGHT] < 127))
+				timer_SpeedSum[WHEEL_RIGHT]++;
 			break;
 
 		case ((0 << IRQ_A1) | (1 << IRQ_B1)):
 		case ((1 << IRQ_A1) | (0 << IRQ_B1)):
 			// Rechtsdrehung, Rad 1
-			irq_Position_W1--;
+			irq_Position[WHEEL_RIGHT]--;
 			irq_WheelDifference++;
 			// Decrement the speed for the wheel
 			// needed for the PID_Controller
-			if ((timer_SpeedSum_W1 > -127))
-				timer_SpeedSum_W1--;
+			if ((timer_SpeedSum[WHEEL_RIGHT] > -127))
+				timer_SpeedSum[WHEEL_RIGHT]--;
 			break;
 	}
 
-	if (irq_p_trigger_position[1] != 0) {
-		irq_p_trigger_position[1]--;
+	if (irq_p_trigger_position[WHEEL_RIGHT] != 0) {
+		irq_p_trigger_position[WHEEL_RIGHT]--;
 	}
 	pin_clear_C(3);
 }
@@ -214,15 +205,7 @@ void irq_init(void) {
  * @return <em>int16_t</em> The Position of the given wheel.
  */
 int16_t	wheel_ReadPosition(uint8_t wheel) {
-	switch (wheel) {
-		case WHEEL_LEFT:
-			return irq_Position_W0;
-			break;
-		case WHEEL_RIGHT:
-			return irq_Position_W1;
-			break;
-	}
-	return 0;
+	return irq_Position[wheel];
 }
 
 /**
@@ -235,14 +218,12 @@ void wheel_ClearPosition(uint8_t wheel) {
 	cli();
 	switch (wheel) {
 		case WHEEL_LEFT:
-			irq_Position_W0 = 0;
-			break;
 		case WHEEL_RIGHT:
-			irq_Position_W1 = 0;
+			irq_Position[wheel] = 0;
 			break;
 		case WHEEL_BOTH:
-			irq_Position_W0 = 0;
-			irq_Position_W1 = 0;
+			irq_Position[WHEEL_LEFT] = 0;
+			irq_Position[WHEEL_RIGHT] = 0;
 			break;
 	}
 	sei();
