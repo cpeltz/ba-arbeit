@@ -251,7 +251,8 @@ int main(void) {
 
 		// If a LCD is pluged in we get nice status messages on it
 		if (LCD_PRESENT) {
-			debug_WriteString_P(PSTR("main.c : main() :  lcd_update_screen()\n"));
+			if (DEBUG_ENABLE)
+				debug_WriteString_P(PSTR("main.c : main() :  lcd_update_screen()\n"));
 			lcd_update_screen();
 		}
 

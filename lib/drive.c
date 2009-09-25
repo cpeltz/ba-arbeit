@@ -22,22 +22,14 @@
 static pid_data_t drive_PID[2];
 
 /**
- * External reference to the Position Variable of the left wheel.
+ * External reference to the Position Variable for the wheels.
  */
-extern int16_t irq_Position_W0;
-/**
- * External reference to the Position Variable of the right wheel.
- */
-extern int16_t irq_Position_W1;
+extern int16_t irq_Position[NUMBER_OF_WHEELS];
 
 /**
- *	Stores the position the left wheel should hold during active braking.
+ *	Stores the position of the wheels they should hold during active braking.
  */
-int16_t drive_brake_position_left;
-/**
- *	Stores the position the right wheel should hold during active braking.
- */
-int16_t drive_brake_position_right;
+int16_t drive_brake_position[NUMBER_OF_WHEELS];
 
 /**
  * Sets the PID-Parameter for either one wheel or both wheels.
@@ -174,16 +166,16 @@ void drive_brake_active(void) {
 	extern uint8_t ACTIVE_BRAKE_AMOUNT;
 	if(!ACTIVE_BRAKE_ENABLE)
 		return;
-	if (drive_brake_position_left == irq_Position_W0) {
+	if (drive_brake_position[WHEEL_LEFT] == irq_Position[WHEEL_LEFT]) {
 		motor_SetSpeed(WHEEL_LEFT, 0);
-	} else if (drive_brake_position_left < irq_Position_W0) {
+	} else if (drive_brake_position[WHEEL_LEFT] < irq_Position[WHEEL_LEFT]) {
 		motor_SetSpeed(WHEEL_LEFT, -(ACTIVE_BRAKE_AMOUNT));
 	} else {
 		motor_SetSpeed(WHEEL_LEFT, ACTIVE_BRAKE_AMOUNT);
 	}
-	if (drive_brake_position_right == irq_Position_W1) {
+	if (drive_brake_position[WHEEL_RIGHT] == irq_Position[WHEEL_RIGHT]) {
 		motor_SetSpeed(WHEEL_RIGHT, 0);
-	} else if (drive_brake_position_right < irq_Position_W1) {
+	} else if (drive_brake_position[WHEEL_RIGHT] < irq_Position[WHEEL_RIGHT]) {
 		motor_SetSpeed(WHEEL_RIGHT, -(ACTIVE_BRAKE_AMOUNT));
 	} else {
 		motor_SetSpeed(WHEEL_RIGHT, ACTIVE_BRAKE_AMOUNT);
@@ -212,9 +204,9 @@ void drive_brake_active_left(void) {
 	extern uint8_t ACTIVE_BRAKE_AMOUNT;
 	if(!ACTIVE_BRAKE_ENABLE)
 		return;
-	if (drive_brake_position_left == irq_Position_W0) {
+	if (drive_brake_position[WHEEL_LEFT] == irq_Position[WHEEL_LEFT]) {
 		motor_SetSpeed(WHEEL_LEFT, 0);
-	} else if (drive_brake_position_left < irq_Position_W0) {
+	} else if (drive_brake_position[WHEEL_LEFT] < irq_Position[WHEEL_LEFT]) {
 		motor_SetSpeed(WHEEL_LEFT, -(ACTIVE_BRAKE_AMOUNT));
 	} else {
 		motor_SetSpeed(WHEEL_LEFT, ACTIVE_BRAKE_AMOUNT);
@@ -225,7 +217,7 @@ void drive_brake_active_left(void) {
  * Sets the position for active braking for the left wheel.
  */
 void drive_brake_active_set_left(void) {
-	drive_brake_position_left = irq_Position_W0;
+	drive_brake_position[WHEEL_LEFT] = irq_Position[WHEEL_LEFT];
 }
 
 /**
@@ -238,9 +230,9 @@ void drive_brake_active_right(void) {
 	extern uint8_t ACTIVE_BRAKE_AMOUNT;
 	if(!ACTIVE_BRAKE_ENABLE)
 		return;
-	if (drive_brake_position_right == irq_Position_W1) {
+	if (drive_brake_position[WHEEL_RIGHT] == irq_Position[WHEEL_RIGHT]) {
 		motor_SetSpeed(WHEEL_RIGHT, 0);
-	} else if (drive_brake_position_right < irq_Position_W1) {
+	} else if (drive_brake_position[WHEEL_RIGHT] < irq_Position[WHEEL_RIGHT]) {
 		motor_SetSpeed(WHEEL_RIGHT, -(ACTIVE_BRAKE_AMOUNT));
 	} else {
 		motor_SetSpeed(WHEEL_RIGHT, ACTIVE_BRAKE_AMOUNT);
@@ -251,6 +243,6 @@ void drive_brake_active_right(void) {
  * Sets the position for active braking for the right wheel.
  */
 void drive_brake_active_set_right(void) {
-	drive_brake_position_right = irq_Position_W1;
+	drive_brake_position[WHEEL_RIGHT] = irq_Position[WHEEL_RIGHT];
 }
 /*@}*/

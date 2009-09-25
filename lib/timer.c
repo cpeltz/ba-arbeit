@@ -20,7 +20,7 @@ static int8_t timer_Speed[NUMBER_OF_WHEELS] = { 0, 0 };
 /**
  * Used to store the speed during the 100ms. It gets incremented by irq.c.
  */
-static int8_t timer_SpeedSum[NUMBER_OF_WHEELS] = { 0, 0 };
+int8_t timer_SpeedSum[NUMBER_OF_WHEELS] = { 0, 0 };
 /**
  * Stores the current value for the time triggers.
  * 
