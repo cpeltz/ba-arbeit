@@ -41,11 +41,85 @@ verlässt.
 
 \section{Eingebaute Befehle}
 Sechs Befehle und die Infrastruktur für den reservierten Befehlscode wurden implementiert.
-Im nachfolgenden werden die Befehle einzeln vorgestellt.
+Im nachfolgenden werden die Befehle einzeln vorgestellt. Dabei wurd der Befehlscode bei
+jeden Befehl in hexadezimaler Schreibweise als ganzes Byte dargestellt.
 
 \subsection{Extended Instruction}
+Dieser Befehl ist ein Platzhalter für zukünftige Befehle, die mehr als ein Kommandobyte benötigen,
+oder wenn alle normalen Befehlscodes bereits vergeben sind. Der Befehlscode ist 0x00.\\
+Im Code werden Befehle dieser Art mithilfe von besonderen Funktionen behandelt. Die 
+parser\_\-extended\_\-order\_\-complete-Funktion ist ein Beispiel hierfür. Diese
+besonderen Versionen von Funktionen gibt es allerdings nur im Parser, danach wird eine Extended
+Instruction genauso behandelt wie ein normaler Befehl. Diese zusätzlichen Funktionen
+waren nötig, da sich diese Befehle im Aufbau sehr von normalen Befehlen unterscheiden.
+
 \subsection{Control}
-\subsection{Queue}
+Mithilfe dieses Befehls kann das System gesteuert werden. Darunter fallen Aufgaben wie das
+Reseten des gesamten Programs, das Anhalten der Befehlsausführung und die Manipulation
+der Befehls-Warteschlange. Der Befehlscode für diesen Befehl ist 0x01. Außerdem ist der Control-Befehl
+ein priorisierter Befehl, d.h. er wird bei dem nächsten Hauptschleifendurchlauf ausgeführt und nicht
+an die Warteschlange angereiht.\\
+Die in Tabelle \ref{protocol_control} beschriebene Bitmaske wird mit dem Befehlscode verundet
+und ergibt das Kommandobyte. Bei manchen Befehlen können mehrere Optionen zur gleichen Zeit
+gewählt werden, dies ist hier nicht der Fall. Die Optionen dieses Befehlsschließen sich
+gegenseitig aus. Die Länge der Befehle mit diesem Befehlscode beläuft sich auf 1 Byte, also
+lediglich das Kommandobyte muss gesendet werden.
+\begin{table}[htb]
+\begin{center}
+	\begin{tabularx}{\linewidth}{|l|l|X|}
+		\hline
+		\textbf{Option} & \textbf{Bitmaske} & \textbf{Beschreibung} \\
+		\hline
+		\hline
+		Reset 			& 0x10 				& Resetet die Hardware \\
+		\hline
+		Stop Queue		& 0x20				& Der Aktuelle Befehl wird verworfen. Queue wird angehalten, aber nicht verworfen. \\
+		\hline
+		Continue Queue	& 0x30				& Der nächste Befehl in der Queue wird ausgeführt. \\
+		\hline
+		Clear Queue		& 0x40				& Die Warteschlange wird gelöscht. \\
+		\hline
+		Stop Drive		& 0x50				& Befehl wird angehalten, Fahrzeug geht zum aktiven Bremsen über. \\
+		\hline
+	\end{tabularx}
+	\caption{\label{protocol_control} Optionen des Control-Befehls}
+\end{center}
+\end{table}
+
+\subsection{Query}
+Manchmal ist es für die kontrollierende Praktikumsplatine wichtig verschiedene Laufzeitwerte
+der Motorplatine zu kennen. Dieser Befehl, dem der Befehlscode 0x02 zugeordnet ist, ermöglicht
+es die Geschwindigkeit der Räder, die Anzahl der Befehle in der Warteschlange und den aktuellen
+Befehl abzufragen. Die Optionen schließen sich gegenseitig aus und die Länge des Befehls beträgt
+immer 1 Byte. Der Befehl ist wie der Control-Befehl ein priorisierter Befehl.\\
+Wenn dieser Befehl an die Motorplatine gesendet wurde und kurz darauf versucht wird über den
+I2C-Bus das Ergebniss zu lesen, kann es vorkommen, dass das Ergebniss noch nicht bereit ist.
+Dies ist insbesondere der Fall, wenn der aktuelle Befehl angefordert wurde. In diesem Fall muss
+die Lese-Operation nochmal gestartet werden.\\
+Damit die Praktikumsplatine etwas mit dem aktuellen Befehl, den die Motorplatine zurückgibt,
+anfangen kann, muss die Länge des Befehls mit übertragen werden. Deswegen ist es nötig,
+dass die Praktikumsplatinen zwei Lese-Operationen durchführt. Die erste hat eine Länge
+von einem Byte und spezifiziert wie lang die zweite Antwort in Bytes ist.
+
+\begin{table}[htb]
+\begin{center}
+	\begin{tabularx}{\linewidth}{|l|l|X|}
+		\hline
+		\textbf{Bitmaske} & \textbf{Beschreibung} & \textbf{Antwortlänge} \\
+		\hline
+		\hline
+		0x10 				& Geschwindigkeit des linken Rades & 1 \\
+		\hline
+		0x20				& Geschwindigkeit des rechten Rades & 1 \\
+		\hline
+		0x30				& Anzahl der Befehl in der Queue & 1 \\
+		\hline
+		0x40				& Aktueller Befehl & 2 - 16 \\
+		\hline
+	\end{tabularx}
+	\caption{\label{protocol_queue} Optionen des Queue-Befehls}
+\end{center}
+\end{table}
 \subsection{Drive}
 \subsection{Advanced Drive}
 \subsection{SetPID}
