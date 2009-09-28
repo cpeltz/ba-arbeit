@@ -25,12 +25,12 @@ Wie hier beschrieben sind die Zeiten für das Ausführen der Instruktion
 zum setzen, löschen und umschalten von einzelnen Pins ziemlich gering.
 Doch bei den Messungen insbesondere mit einem Leistungsfähigen und
 sehr genauen Oszilloskop konnte herausgefunden werden, dass das eigentliche
-Wechsel des Stroms am Pin verhältnismäßig langsam durchgeführt wird,
-insbesondere das Abfallen des Stromes, also bei einer fallenden Flanke
+Wechsel der Spannung am Pin verhältnismäßig langsam durchgeführt wird,
+insbesondere das Abfallen der Spannung, also bei einer fallenden Flanke
 benötigt ungefähr 2 \textmu{}s von denen allerdings, und hier liegt das Problem,
 zwischen 0.5 und 1 \textmu{}s fälschlicherweise als ''high'' gemessen wird.
 D.h. der Logikanalyser misst eine gewisse Zeitspanne einen ''falschen'' Wert.
-(Er ist nicht physikalisch falsch nur logisch). Denn wenn der Strom abfällt
+(Er ist nicht physikalisch falsch nur logisch). Denn wenn die Spannung abfällt
 ist der bin schon nicht mehr gesetzt, der Logikanalyser allerdings betrachtet
 dies teilweise immer noch als gesetzt.
 Aufgrund dieses Umstandes als auch der Tatsache, dass das System nicht untersucht
@@ -107,7 +107,7 @@ erreicht hat als das andere (T; Trigger). ''I2C an'' bezeichnet, dass der I2C-Bu
 verwendet wurde und nicht die UART Schnittstelle.\\
 Interessant ist bei diesen Daten, dass das aktualisieren der Warteschlange, wenn ein Befehl vorliegt, gut
 eine halbe Millisekunde benötigt.
-\section{Das LCD-Problem}
+\section{Das LCD-Problem\label{chapter_lcd_problem}}
 Wie in der Tabelle \ref{erste_messung} zu sehen ist, benötigt das System zum aktualisieren der Informationen
 des LCD über drei Millisekunden. Damit ist diese Funktion die mit Abstand zeit intensivste im gesamten System.
 Zwar ist das Aktualisieren recht selten, nämlich nur, wenn ein neuer Befehl gestartet wird, aber haben drei
@@ -157,22 +157,28 @@ Funktion eingefügt wird, ohne dass dabei Register gerettet werden müssten oder
 Konsequenzen für die Geschwindigkeit des gesamten Systems, wie man in Tabelle \ref{compiler_flags_2} sehen kann.
 \begin{table}[htb]
 \begin{center}
-	\begin{tabular}{|c||r|r|c|}
+	\begin{tabularx}{\textwidth}{|c||r|X|}
+		\hline
+		\textbf{Funktion} & \textbf{Zeit} & \textbf{Rahmenbedingungen} \\ \hline \hline
+		Hauptschleife & 420,659 \textmu{}s & LCD an, Befehl in Queue,\\
+		& & aber nicht gestartet, \\
+		& & ohne -finline-functions \\ \hline
+		process\_orders() & 355,289 \textmu{}s &  \\ \hline
+		lcd\_update\_screen() & 59,481 \textmu{}s & \\ \hline
+		parser\_update() & 4,146 \textmu{}s & \\ \hline
+		queue\_update() & 4,640 \textmu{}s & \\ \hline \hline
+	\end{tabularx}
+	\begin{tabularx}{\textwidth}{|c||r|r|X|}
 		\hline
 		\textbf{Funktion} & \textbf{Zeit} & \textbf{Verbesserung} & \textbf{Rahmenbedingungen} \\ \hline \hline
-		Hauptschleife & 420,659 \textmu{}s & & LCD an, Befehl in Queue,\\
-		& & & aber nicht gestartet \\ \hline
-		process\_orders() & 355,289 \textmu{}s &  & \\ \hline
-		lcd\_update\_screen() & 59,481 \textmu{}s & & \\ \hline
-		parser\_update() & 4,146 \textmu{}s &  & \\ \hline
-		queue\_update() & 4,640 \textmu{}s &  & \\ \hline \hline
-		Hauptschleife & 285,643 \textmu{}s & -32,1\% & LCD an, Befehl in Queue,\\
-		& & & aber nicht gestartet \\ \hline
-		process\_orders() & 224,836 \textmu{}s & -36,72\% & \\ \hline
-		lcd\_update\_screen() & 51,647 \textmu{}s & -13,17\% & \\ \hline
-		parser\_update() & 5,384 \textmu{}s & +29,86\% & \\ \hline
-		queue\_update() & 4,187 \textmu{}s & -9,76\% & \\ \hline
-	\end{tabular}
+		Hauptschleife & 285,643 \textmu{}s & +32,1\% & LCD an, Befehl in Queue,\\
+		& & & aber nicht gestartet, \\
+		& & & mit -finline-functions \\ \hline
+		process\_orders() & 224,836 \textmu{}s & +36,72\% & \\ \hline
+		lcd\_update\_screen() & 51,647 \textmu{}s & +13,17\% & \\ \hline
+		parser\_update() & 5,384 \textmu{}s & -29,86\% & \\ \hline
+		queue\_update() & 4,187 \textmu{}s & +9,76\% & \\ \hline
+	\end{tabularx}
 	\caption{\label{compiler_flags_2} Auswirkung von -finline-functions}
 \end{center}
 \end{table}
@@ -254,7 +260,7 @@ wurden durch die memset()- bzw. die memcpy()-Funktion aus der Standardbibliothek
 \end{center}
 \end{table}
 \subsection{Bedingtes Kompilieren von Debugausgaben}
-Wie in Kapitel \ref{impl_debug} beschrieben wurde ein Sprachen-spezifischer Trick verwendet, um 
+Wie in Kapitel \ref{impl_debug} beschrieben wurde eine Sprachen-spezifische Technik verwendet, um 
 die Möglichkeit zu besitzen einfach Diagnoseausgaben auszugeben, die im normalen Betrieb keine Auswirkung
 auf das Laufzeitverhalten des Systems haben. So generiert der Compiler für die Ausgaben keinen Code, solange nicht
 das Compilerflag -DDEBUG gegeben ist. Selbst wenn es gegeben ist und die Ausgaben mithilfe des entsprechenden DIP-Schalters
@@ -288,25 +294,25 @@ treten insgesamt 4 Interrupts auf, jeweils einer von jedem Sensor, d.h. alle 425
 mit 8 \textmu{}s. Das bedeutet, dass zwischen zwei Interrepts der Hall-Sensoren im Durschnitt 9 bis 10 Hauptschleifeniterationen
 durchgeführt werden.
 
-\section{Vergleich mit der Original-Software}
-Der harte Vergleich mit Nummern der Original-Software mit der in dieser Arbeit geschriebenen Software ist
+\section{Vergleich mit der Vorläufer-Software}
+Der harte Vergleich mit Nummern der Vorläufer-Software mit der in dieser Arbeit geschriebenen Software ist
 nur schwer möglich, da das zugrunde liegende Design von beiden Projekten so unterschiedlich ist, dass hauptsächlich
 die Dauer der Hauptschleife eine Idee davon geben kann, inwiefern die eine Software schneller arbeitet als die Andere
 (siehe Tabelle \ref{vergl_speed}).\\
 Zusätzlich kann man noch den Speicherfußabdruck der Systeme vergleichen (siehe Tabelle \ref{vergl_speicher}). Hierbei
-fällt auf, dass der generierte Maschinencode im Vergleich zum Original etwas größer ist, was aber unter Anbetracht
-der benutzten Compiler-Flags bedeutet, dass der Code mit gleichen Flags kleiner wäre als das Original. Dies ist
-auch demonstriert worden, indem die Original-Software mit den Compiler-Flags der jetzigen Software übersetzt
+fällt auf, dass der generierte Maschinencode im Vergleich zum Vorläufer etwas größer ist, was aber unter Anbetracht
+der benutzten Compiler-Flags bedeutet, dass der Code mit gleichen Flags kleiner wäre als das Vorläufer. Dies ist
+auch demonstriert worden, indem die Vorläufer-Software mit den Compiler-Flags der jetzigen Software übersetzt
 wurde.
 \begin{table}[htb]
 \begin{center}
 	\begin{tabular}{|l||r|}
 		\hline
 		\textbf{Speicherart} & \textbf{Belegung} \\ \hline \hline
-		Program (Original) & 14968 Bytes (5,7\%)  \\ \hline
-		Data (Original)& 1952 Bytes (23,8\%) \\ \hline \hline
-		Program (Original + mod. Makefile) & 17808 Bytes (6,8\%)  \\ \hline
-		Data (Original + mod. Makefile) & 1952 Bytes (23,8\%) \\ \hline \hline
+		Program (Vorläufer) & 14968 Bytes (5,7\%)  \\ \hline
+		Data (Vorläufer)& 1952 Bytes (23,8\%) \\ \hline \hline
+		Program (Vorläufer + mod. Makefile) & 17808 Bytes (6,8\%)  \\ \hline
+		Data (Vorläufer + mod. Makefile) & 1952 Bytes (23,8\%) \\ \hline \hline
 		Program (Jetzt)& 15362 Bytes (5,9\%) \\ \hline
 		Data (Jetzt)& 1248 Bytes (15,2\%) \\ \hline
 	\end{tabular}
@@ -318,12 +324,12 @@ wurde.
 	\begin{tabular}{|l||r|r|c|}
 		\hline
 		\textbf{Funktion} & \textbf{Zeit} & \textbf{Verb.} & \textbf{Bedingung} \\ \hline \hline
-		Hauptschleife (Original) & 121,885 \textmu{}s & & Idle \\ \hline
-		Hauptschleife (mod Orig) & 121,635 \textmu{}s & 0,20\% & Idle \\ \hline
+		Hauptschleife (Vorläufer) & 121,885 \textmu{}s & & Idle \\ \hline
+		Hauptschleife (mod Vorl) & 121,635 \textmu{}s & 0,20\% & Idle \\ \hline
 		Hauptschleife (Jetzt) & 23,535 \textmu{}s & 80,69\% & Idle \\ \hline \hline
-		Befehl (kurz, Original) & 3655 \textmu{}s (13 Byte) & & I2C-Bus, kürzester Befehl \\ \hline
+		Befehl (kurz, Vorläufer) & 3655 \textmu{}s (13 Byte) & & I2C-Bus, kürzester Befehl \\ \hline
 		Befehl (kurz, Jetzt) & 1023 \textmu{}s (4 Byte) & & I2C-Bus, kürzester Befehl \\ \hline
-		Befehl (lang, Original) & 7747 \textmu{}s (27 Byte) & & I2C-Bus, längster Befehl \\ \hline
+		Befehl (lang, Vorläufer) & 7747 \textmu{}s (27 Byte) & & I2C-Bus, längster Befehl \\ \hline
 		Befehl (lang, Jetzt) & 2191 \textmu{}s (8 Byte) & & I2C-Bus, längster Befehl \\ \hline
 	\end{tabular}
 	\caption{\label{vergl_speed} Vergleich der Geschwindigkeiten}

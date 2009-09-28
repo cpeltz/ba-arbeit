@@ -18,8 +18,8 @@ Außerdem wird den Studenten vermittelt, wie der I2C-Bus funktioniert und wie ma
 Im zweiten Teil des Praktikums können die Studenten sich für ein Projekt entscheiden,
 welches sie durchführen möchten (die Projektideen kommen von den Studenten).
 Als Plattform für ihre Projekte wird ihnen ein Fahrzeug zur Verfügung gestellt. Dieses
-Fahrzeug besitzt die aus dem ersten Teil des Praktikums bekannte Platine (von nun an
-Praktikumsplatine genannt) und ein WLAN-Modul, das das Programmieren der Praktikumsplatine
+Fahrzeug besitzt die aus dem ersten Teil des Praktikums bekannte Praktikumsplatine und ein WLAN-Modul,
+das das Programmieren der Praktikumsplatine
 ohne Kabel ermöglicht. Außerdem können hierüber Daten mit der Praktikumsplatine während
 der Laufzeit ausgetauscht werden. Zusätzlich besitzt das Fahrzeug eine Motorplatine mit
 zugehörigen Motoren und Rädern, die zur Fortbewegung des Fahrzeugs genutzt werden. Die
@@ -64,12 +64,32 @@ Da der Mikrocontroller über eingebaute Hardwarelogiken für den I2C-Bus und auc
 den UART-Port verfügt, hält sich der administrative Aufwand für die Kommunikation in engen
 Grenzen. Es können lediglich Interrupt Service Routinen (ISR) für diese Kommunikations-Einrichtungen zur Verfügung gestellt
 werden. Dadurch ist es möglich, schnell auf Situationen zu reagieren, ohne Informationen verlieren zu können.
-\subsection{Interne Ein-/Ausgabe-Ports}
-Zusätzlich zu den externen Kommunikationsmöglichkeiten besitzt der ATMEGA2561 54
+\subsection{Ein-/Ausgabe-Ports}
+Zusätzlich zu den externen Kommunikationsmöglichkeiten zur Praktikumsplatine besitzt der ATMEGA2561 54
 programmierbare IO Kanäle, die in Ports mit je 8 Kanälen zusammenfasst werden. 16 von diesen
 Kanälen sind für die Steuerung der Servomotoren zuständig, die die Räder und die Hall-Sensoren betreiben.
+Je ein Servomotor in Verbindung mit zwei Sensoren belegen einen Port. Der Servomotor benötigt 3 Kanäle
+des Ports und die Sensoren 5 Kanäle.
 Diese Sensoren, die an den Motoren befestigt sind, lösen bei Bewegung der Räder Unterbrechungen aus.
 Damit liefern sie Informationen, aus denen auf die Drehrichtung der Räder und die Strecke, die zurückgelegt wurde,
 geschlossen werden kann.
 Für jede Umdrehung eines Rades werden 360 Interrupts ausgelöst, d.h. für jedes Grad ein Interrupt. Je
 nach Größe des Raddurchmessers ist eine Steckenauflösung von wenigen Millimetern möglich.
+Durch die Rückmeldung der Sensoren ist es möglich die Servomotoren zu regeln und nicht nur zu steuern.
+Die Geschwindigkeit der einzelnen Räder kann durch diese Informationen ebenfalls gewonnen werden.
+Diese Informationen werden genutzt, um die Pulsweiten-Modulation zu regeln, mit der die Servomotoren angetrieben
+werden.\\
+Neben diesen zwei Ports zum regeln der Motoren, sind weitere zwei Ports nach außen gelegt. Mithilfe
+der Pins dieser zwei nicht belegten Ports, konnte eine möglichst unverfälschte Untersuchung des
+Echtzeitverhaltens der Betriebssoftware durchgeführt werden.
+
+\subsection{LCD}
+Die Motorplatine verfügt über einen Anschluss für ein LCD. Dieses LCD kann zur autonomen Ausgabe
+von Informationen genutzt werden. Die Betriebssoftware nutzt diese Möglichkeit,
+wenn ein LCD angeschlossen ist und der zugehörige DIP-Schalter aktiviert wurde.
+Es werden die aktuelle Version der Betriebssoftware, die Optionen und, falls vorhanden,
+der aktuelle Befehl in hexadezimaler Darstellung ausgegeben. Zu den Optionen zählen Debug-Ausgaben,
+welche Kommunikations-Einrichtung verwendet wird und der Zustand des ABS. Diese Optionen
+werden entweder groß geschrieben, wenn sie aktiviert sind, oder klein geschrieben, falls sie
+deaktiviert sind. Die Betriebssoftware ist auf LCDs eingestellt, die 4 Zeilen und 20 Zeichen besitzen.
+Falls ein anderes LCD angeschlossen werden würde, ist eine korrekte Ausgabe nicht möglich.

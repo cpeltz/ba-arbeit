@@ -22,7 +22,9 @@ Software für längere Zeit eingesetzt werden soll, waren die
 Wartbarkeit und die Möglichkeit, die Software einfach erweitern zu können,
 dominante Designaspekte. Kaum weniger wichtig war die Anforderung, dass die Software
 ihre Arbeit performant und zuverlässig ausführt.\\
-Zur Untersuchung der Performance und der Zuverlässigkeit wurden ein Logikanalyzer und ein
-Oszilloskop benutzt, die die Flanken und deren Länge
-an nach außen gelegten Pins gemessen haben. Diese Pins wurden für die Untersuchung von der
-Betriebssoftware an wichtigen bzw. kritischen Stellen im Programmcode gesetzt und wieder gelöscht.
+Zur Untersuchung der Performance und des Echtzeitverhaltens der Betriebssoftware, wurden
+an besonders wichtigen bzw. kritischen Stellen im Programmcode
+verschiedene nach außen gelegte Portpins gesetzt bzw. zurückgesetzt. An diesen Portpins
+wurden Flanken und Signaldauer gemessen und ausgewertet. Der hierfür benötigte
+Programmcode wird als Makro eingefügt und ist so kurz, dass eine Verfälschung der Laufzeit des
+Betriebsprogramms vernachlässigt werden kann.

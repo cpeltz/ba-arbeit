@@ -50,23 +50,28 @@ Mithilfe der Debugausgaben kann man protokollieren, was das System in jedem
 Schleifendurchlauf getan hat, und dadurch das Verhalten analysieren, um schlussendlich
 Fehler aufzuspüren. 
 \section{Drive, Motor und PID}
-Das Motor bindet zum einen das System an die Motoren und an die anderen nötigen
+Das Motormodul bindet zum einen das System an die Motoren und an die anderen nötigen
 Fahrelemente an, wohingegen das Drive Modul die Services, die das Motor Modul anbietet
 abstrahiert und in einer weise Zusammenfasst, die es dem System erlaubt auf sehr einfache
 Art und Weise die Motoren zu bedienen.
 Das PID Modul, welches größtenteils aus der vorhergegangen Studienarbeit übernommen wurde
 \cite{STUD_TIMO}, ist für den Fehlerausgleich der Radbewegungen zuständig. Genauer: Es
-errechnet die korrigierten Werte für die Räder, die dann vom Drive Modul an diese auch
-weiter geleitet werden. Die Fehler die auftreten können sind vielfältig und nicht besonders
-groß, wie zum Beispiel eine kleine Varianz in der Geschwindigkeit eines Rades oder ähnliches.
+errechnet die korrigierten Werte für die Räder, die dann vom Drive Modul an diese 
+weiter geleitet werden.\\
+Verschiedene Eigenschaften der Räder, unterschiedliche Bodenbeschaffenheiten,
+ungleiche Gewichtsverteilung auf dem Fahrzeug und unterschiedliches Verhalten der
+Servomotoren bei gleichen Parametern. Dies alles sind Quellen für mögliche Fehler.
 Damit aber das Fahr-verhalten stabiler wird müssen diese Fehler korrigiert werden.
+Insbesondere im Falle der Geradeaus-Fahrt sind selbst kleine Fehler schnell zu erkennen.
 \section{IO, I2C und UART}
-Das IO Modul stellt für das System einheitliche Funktionen zur Verfügung um Daten zu lesen als
-auch zu schreiben. Hierbei kann es dem Benutzer der Funktionen egal sein, welche Schnittstelle
-letztendlich für die Kommunikation genutzt wird. Das IO Modul kümmert sich um die Unterschiede
-zwischen UART und I2C.
+Das IO Modul stellt für das System einheitliche Funktionen zur Verfügung um Daten zu lesen
+und zu schreiben. Hierbei ist es egal, welche Schnittstelle für die Kommunikation genutzt wird.
+Es werden in beiden Fällen die selben Funktionen verwendet.
+Das IO Modul kümmert sich um die Unterschiede zwischen UART und I2C. Es besitzt Puffer für den
+Ein- und Ausgang, um Daten zwischenzuspeichern bevor sie verarbeitet werden können.
 Sowohl das I2C als auch das UART Modul kümmern sich hauptsächlich um das Initialisieren der
-Hardware und das behandeln der Interrupt Service Routinen.
+Hardware und das behandeln der Interrupt Service Routinen, die die eigentliche Kommunikation
+ermöglichen.
 \section{Order und Queue}
 Das Order Modul ist das größte aller Module. Es beinhaltet zum einen den Typ, mit dem Befehle
 intern dargestellt und verarbeitet werden. Aufbauend auf den Typ, dem einige unterstützende
@@ -84,8 +89,14 @@ Queue sich darum, das Prioritäts-Befehle nicht angereiht werden sondern bei der
 Iteration der Hauptschleife ausgeführt werden.
 \section{Timer, Parser und Options}
 Diese drei Module haben hauptsächlich eine unterstützende Funktion, so bringt das Timer Modul
-die Möglichkeit mit in bestimmten zeitlichen Intervallen Befehle auszuführen. Der Parser
-fasst einzelne Bytes logisch zu Befehlen zusammen und übergibt diese der Queue. Das Options
+die Möglichkeit mit in bestimmten zeitlichen Intervallen Befehle auszuführen. In Benutzung
+befindet sich nur ein Timer, der alle 100ms eine Unterbrechung auslöst. Er speichert die Anzahl
+der Räder-Ticks für das PID-Modul ab, welches mit diesen Informationen Nachregelungen durchführt.
+Außerdem erhöht dieser Timer alle 10 Unterbechungen den Sekunden-Zähler.\\
+Der Parser holt eingegangene Bytes beim IO-Modul ab und konvertiert diese zu Befehlen. Dabei
+achtet er auf die Länge die bestimmte Kommando-Bytes vorgeben. Wenn ein Befehl fertig empfangen ist
+wird er von der Queue abgeholt und an die Warteschlange angereiht.\\
+Das Options
 Modul beinhaltet die Einstellungen, die das Verhalten des gesamten Systems beeinflussen, wie
-z.B. ob Debugging Ausgaben aktiviert sind, mit was für einer Geschwindigkeit das ABS bremst
-und einiges mehr.
+z.B. ob Debugging Ausgaben aktiviert sind, mit was für einer Geschwindigkeit das ABS standardmäßig bremst,
+die maximale Länge eines Befehls oder die Größe der Ringbuffer für das Parser- und Queue-Modul.
