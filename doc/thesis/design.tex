@@ -89,15 +89,14 @@ zu übermitteln, die dann nacheinander ausgeführt werden. Außerdem sorgt die
 Queue dafür, dass Prioritäts-Befehle nicht angereiht werden, sondern bei der nächsten
 Iteration der Hauptschleife ausgeführt werden.
 \section{Timer, Parser und Options}
-Diese drei Module haben hauptsächlich eine unterstützende Funktion, so bringt das Timer Modul
-die Möglichkeit mit in bestimmten zeitlichen Intervallen Befehle auszuführen. In Benutzung
-befindet sich nur ein Timer, der alle 100ms eine Unterbrechung auslöst. Er speichert die Anzahl
+Diese drei Module haben hauptsächlich eine unterstützende Funktion. So bietet das Timer-Modul
+die Möglichkeit in bestimmten zeitlichen Intervallen Befehle auszuführen. Benutzt wird
+nur \textbf{ein} Timer, der alle 100 ms eine Unterbrechung auslöst. Er speichert die Anzahl
 der Räder-Ticks für das PID-Modul ab, welches mit diesen Informationen Nachregelungen durchführt.
-Außerdem erhöht dieser Timer alle 10 Unterbechungen den Sekunden-Zähler.\\
+Außerdem erhöht dieser Timer nach je 10 Unterbechungen den Sekunden-Zähler.\\
 Der Parser holt eingegangene Bytes beim IO-Modul ab und konvertiert diese zu Befehlen. Dabei
-achtet er auf die Länge die bestimmte Kommando-Bytes vorgeben. Wenn ein Befehl fertig empfangen ist
-wird er von der Queue abgeholt und an die Warteschlange angereiht.\\
-Das Options
-Modul beinhaltet die Einstellungen, die das Verhalten des gesamten Systems beeinflussen, wie
-z.B. ob Debugging Ausgaben aktiviert sind, mit was für einer Geschwindigkeit das ABS standardmäßig bremst,
-die maximale Länge eines Befehls oder die Größe der Ringbuffer für das Parser- und Queue-Modul.
+achtet er auf die Länge, die bestimmte Kommando-Bytes vorgeben (vgl. Kapitel \ref{chapter_protokoll}).
+Wenn ein Befehl vollständig empfangen ist, wird er von der Queue abgeholt und an die Warteschlange angereiht.\\
+Das Options-Modul beinhaltet die Einstellungen, die das Verhalten des gesamten Systems beeinflussen, wie
+z.B., ob Debugging-Ausgaben aktiviert sind, mit welcher Geschwindigkeit das ABS standardmäßig bremst,
+die maximale Länge eines Befehls, oder die Größe der Ringpuffer für das Parser- und Queue-Modul.
