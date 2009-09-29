@@ -3,7 +3,7 @@
 Im Praktikum ''Programmierung eingebetteter Systeme'' wird eine Motorplatine \cite{STUD_TIMO}
 eingesetzt, damit die Studenten die Motoren benutzen können, um ihr Fahrzeug
 in Bewegung zu setzen. Diese Motorplatine benötigt für ihre Operation eine
-Betriebssoftware, die die Befehle der Praktikumsplatine entgegen nimmt,
+Betriebssoftware, die die Befehle der Praktikumsplatine entgegennimmt,
 interpretiert und in Aktionen umsetzen kann. Die Entwicklung dieser Software
 und die qualitative Untersuchung ihres Laufzeitverhaltens ist Gegenstand
 dieser Arbeit.\\
@@ -20,9 +20,9 @@ Für die Implementierung dieser Betriebssoftware wurde als Programmiersprache
 C \cite{C_PROG} vorgegeben, deren Standard C99 ausgewählt wurde. Da diese
 Software für längere Zeit eingesetzt werden soll, waren die
 Wartbarkeit und die Möglichkeit, die Software einfach erweitern zu können,
-dominante Designaspekte. Kaum weniger wichtig war die Anforderung, dass die Software
+dominante Designaspekte. Nicht weniger wichtig war die Anforderung, dass die Software
 ihre Arbeit performant und zuverlässig ausführt.\\
-Zur Untersuchung der Performance und des Echtzeitverhaltens der Betriebssoftware, wurden
+Zur Untersuchung der Performance und des Echtzeitverhaltens der Betriebssoftware wurden
 an besonders wichtigen bzw. kritischen Stellen im Programmcode
 verschiedene nach außen gelegte Portpins gesetzt bzw. zurückgesetzt. An diesen Portpins
 wurden Flanken und Signaldauer gemessen und ausgewertet. Der hierfür benötigte
