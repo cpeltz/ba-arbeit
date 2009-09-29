@@ -17,7 +17,7 @@ Anderenfalls ist dies ausdrücklich hervorzuheben.
 Neben diesen maximal fünf globalen Variablen, die das Systemverhalten verändern, gibt es vier
 weitere Variablen in zwei verschiedenen Modulen, die jeweils aus einem anderen
 Modul gesetzt werden. Dies sind die Trigger-Werte für die Position und
-die Zeit. Diese werden nur durch den Drive bzw. den Advanced Drive Befehl
+die Zeit. Diese werden nur durch den Drive bzw. den Advanced-Drive-Befehl
 gesetzt und während der Motorunterbrechungen nach und nach dekrementiert.
 Auf die Module wird in den Unterkapiteln genauer eingegangen.
 \section{System}
@@ -39,53 +39,54 @@ Es ist unabdingbar wichtig zu wissen, welche Vorgänge sich in dem kleinen Mikro
 während der Laufzeit abspielen.
 Dies ist aber nicht ganz einfach, denn die einzigen Möglichkeiten, die die Platine zur
 Kommunikation mit der Außenwelt hat, beschränken sich auf
-5 LED, ein 4*20 Zeichen LCD, eine UART und eine I2C-Bus 
-Schnittstelle.
+5 LED, ein 4*20-Zeichen-LCD, eine UART- und eine I2C-Bus-Schnittstelle.
 Die LED funktionieren nicht zuverlässig und das LCD ist in seinem Aussagegehalt sehr
-begrenzt, weil man nicht viele Informationen auf einem 4*20 Zeichen LCD unterbringen kann. 
+begrenzt, weil man nicht viele Informationen auf einem 4*20-Zeichen-LCD unterbringen kann. 
 Die Wahl fiel dann auf
-die UART Schnittstelle, da der Arbeitscomputer, an dem das Debugging durchgeführt wurde,
-einen solchen Anschluss besitzt, aber über keinen I2C Anschluss verfügt.
+die UART-Schnittstelle, da der Arbeitscomputer, an dem das Debugging durchgeführt wurde,
+einen solchen Anschluss besitzt, aber über keinen I2C-Anschluss verfügt.
 Mithilfe der Debugausgaben kann man protokollieren, was das System in jedem
 Schleifendurchlauf getan hat, und dadurch das Verhalten analysieren, um schlussendlich
 Fehler aufzuspüren. 
 \section{Drive, Motor und PID}
-Das Motormodul bindet zum einen das System an die Motoren und an die anderen nötigen
-Fahrelemente an, wohingegen das Drive Modul die Services, die das Motor Modul anbietet
-abstrahiert und in einer weise Zusammenfasst, die es dem System erlaubt auf sehr einfache
-Art und Weise die Motoren zu bedienen.
-Das PID Modul, welches größtenteils aus der vorhergegangen Studienarbeit übernommen wurde
-\cite{STUD_TIMO}, ist für den Fehlerausgleich der Radbewegungen zuständig. Genauer: Es
-errechnet die korrigierten Werte für die Räder, die dann vom Drive Modul an diese 
-weiter geleitet werden.\\
-Verschiedene Eigenschaften der Räder, unterschiedliche Bodenbeschaffenheiten,
-ungleiche Gewichtsverteilung auf dem Fahrzeug und unterschiedliches Verhalten der
-Servomotoren bei gleichen Parametern. Dies alles sind Quellen für mögliche Fehler.
-Damit aber das Fahr-verhalten stabiler wird müssen diese Fehler korrigiert werden.
-Insbesondere im Falle der Geradeaus-Fahrt sind selbst kleine Fehler schnell zu erkennen.
+Das Motormodul seinerseits bindet das System an die Motoren und an die anderen nötigen
+Fahrelemente an. Dagegen abstrahiert das Drive-Modul die Services, die das Motormodul anbietet,
+und fasst diese so zusammen, dass das System auf sehr einfache Art und Weise die Motoren bedienen
+kann.
+Das PID-Modul, welches größtenteils aus der vorhergegangen Studienarbeit übernommen wurde
+\cite{STUD_TIMO}, ist für den Fehlerausgleich der Radbewegungen zuständig. Genauer gesagt: Es
+errechnet die korrigierten Werte für die Räder, die dann vom Drive-Modul an diese 
+weitergeleitet werden.\\
+Mögliche Fehlerquellen sind: Verschiedenheiten in der Ausführung oder Anbringung der Räder,
+unterschiedliche Bodenbeschaffenheiten,
+ungleiche Gewichtsverteilung auf dem Fahrzeug, und unterschiedliches Verhalten der
+Servomotoren bei gleichen Parametern.
+Damit das Fahrverhalten aber stabiler wird, müssen diese Fehler korrigiert werden.
+Insbesondere bei ''Geradeaus-Fahrt'' sind selbst kleine Fehler schnell zu erkennen.
 \section{IO, I2C und UART}
-Das IO Modul stellt für das System einheitliche Funktionen zur Verfügung um Daten zu lesen
-und zu schreiben. Hierbei ist es egal, welche Schnittstelle für die Kommunikation genutzt wird.
-Es werden in beiden Fällen die selben Funktionen verwendet.
-Das IO Modul kümmert sich um die Unterschiede zwischen UART und I2C. Es besitzt Puffer für den
-Ein- und Ausgang, um Daten zwischenzuspeichern bevor sie verarbeitet werden können.
-Sowohl das I2C als auch das UART Modul kümmern sich hauptsächlich um das Initialisieren der
-Hardware und das behandeln der Interrupt Service Routinen, die die eigentliche Kommunikation
-ermöglichen.
+Das IO-Modul stellt für das System einheitliche Funktionen zur Verfügung um Daten zu lesen
+oder zu schreiben. 
+Dabei spielt es für den Benutzer der Funktionen keine Rolle, welche Schnittstelle
+für die Kommunikation genutzt wird.
+Es werden in beiden Fällen dieselben Funktionen verwendet.
+Das IO-Modul hebt die sichtbaren Unterschiede zwischen UART und I2C auf. Es besitzt Puffer für den
+Ein- und Ausgang, um Daten zwischenzuspeichern, bevor diese verarbeitet werden können.
+Sowohl das I2C- als auch das UART-Modul initialisieren hauptsächlich die Hardware und
+behandeln die Interrupt-Service-Routinen, die die eigentliche Kommunikation ermöglichen.
 \section{Order und Queue}
-Das Order Modul ist das größte aller Module. Es beinhaltet zum einen den Typ, mit dem Befehle
-intern dargestellt und verarbeitet werden. Aufbauend auf den Typ, dem einige unterstützende
-Funktionen zugeteilt sind um wiederkehrende Aufgaben zu erleichtern, existiert im Order
-Modul auch die Order Funktionen. Diese Order Funktionen sind Handler-Funktionen für die
-im Protokoll spezifizierten Befehle. Falls ein Befehl länger benötigt, bis er als beendet
-gelten kann, wird die entsprechende Order Funktion mit dem korrespondierenden Befehl in jeder
+Das Order-Modul ist das größte aller Module. Es beinhaltet unter anderem den Typ, mit dem Befehle
+intern dargestellt und verarbeitet werden. Aufbauend auf dem Typ, dem einige unterstützende
+Funktionen zugeteilt sind, um wiederkehrende Aufgaben zu erleichtern, existieren im Order-Modul
+auch die Order-Funktionen. Diese Order-Funktionen sind Handler-Funktionen für die
+im Protokoll spezifizierten Befehle. Falls ein Befehl längere Zeit benötigt, bis er als beendet
+gelten kann, wird die entsprechende Order-Funktion mit dem korrespondierenden Befehl in jeder
 Iteration der Hauptschleife aufgerufen. Diese kann dann eventuell Wartungsarbeiten an dem
-Befehl durchführen und überprüfen, ob dieser beendet ist und entsprechend seinen Status ändern.
-Durch diesen Aufbau ist eine Iteration der Hauptschleife sehr kurz, aber auch komplizierte Befehle
-oder solche deren Parameter und Durchführung überwacht werden müssen sind hierdurch möglich.\\
-Durch das Queue Modul ist es möglich der Motorplatine mehrere Befehle direkt hintereinander
-zu übermitteln, die dann einer nach dem anderen ausgeführt werden, außerdem kümmert die
-Queue sich darum, das Prioritäts-Befehle nicht angereiht werden sondern bei der nächsten
+Befehl durchführen und überprüfen, ob dieser beendet ist, und entsprechend seinen Status ändern.
+Durch diesen Aufbau ist eine Iteration der Hauptschleife sehr kurz; aber auch komplizierte Befehle
+oder solche, deren Parameter und Durchführung überwacht werden müssen, sind hierdurch möglich.\\
+Durch das Queue-Modul ist es möglich, der Motorplatine mehrere Befehle direkt hintereinander
+zu übermitteln, die dann nacheinander ausgeführt werden. Außerdem sorgt die
+Queue dafür, dass Prioritäts-Befehle nicht angereiht werden, sondern bei der nächsten
 Iteration der Hauptschleife ausgeführt werden.
 \section{Timer, Parser und Options}
 Diese drei Module haben hauptsächlich eine unterstützende Funktion, so bringt das Timer Modul
