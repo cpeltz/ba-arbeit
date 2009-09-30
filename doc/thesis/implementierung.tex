@@ -5,11 +5,13 @@ Aktualisierungen gegenüber C89 aufwarten kann. Als Compiler wurde eine Version 
 GNU Compiler Collection (GCC) mit einem Backend für AVR-kompatiblen Assembler benutzt.
 Außer der C Standard Library und der AVR IO Library besitzt die Software keine externen
 Abhängigkeiten im Code.
+
 \section{Die Hauptschleife}
 Die Hauptschleife ist in dieser Implementierung eine Endlosschleife, da die Beendigung dieser
 Schleife dazu führen würde, dass das System nicht mehr reagiert.
 Wie in Abb. \ref{main_loop} zu sehen ist, werden in der Hauptschleife vier wichtige Funktionen
 aufgerufen.
+
 \subsection{process\_orders()}
 Die process\_\-orders()\--Funktion bearbeitet die Befehle, die bereits in der Queue sind. Dafür holt
 sich die Funktion den aktuellen Befehl von der Queue. Falls es solch einen Befehl gibt ruft die
@@ -23,6 +25,7 @@ Abb. \ref{dispatch_function}).\\
 \end{figure}
 Falls kein Befehl vorliegt oder die Queue angehalten wurde, ruft die process\_\-orders()-Funktion die
 Funktion zum aktiven Bremsen auf. Das aktive Bremsen wird in Kapitel \ref{chapter_abs} behandelt.
+
 \subsection{lcd\_update\_screen()}
 In dem Fall, dass ein LCD angeschlossen ist, können dort Informationen ausgegeben werden. Ob ein LCD
 angeschlossen ist wird über die Stellung eines DIP-Schalters auf der Platine geregelt.\\
@@ -39,6 +42,7 @@ Befehle die innerhalb eines Hauptschleifendurchlaufs abgearbeitet sind werden ni
 generieren auch keinen Aufruf von lcd\_\-update\_\-info(). Dies ist nötig, da diese Befehle zu schnell abgearbeitet
 werden. Es können vier bis fünf dieser Befehle abgearbeitet werden, bevor das LCD auch nur einmal vollständig
 aktualisiert werden kann.
+
 \subsection{parser\_update()}
 Der Parser ist dafür zuständig aus den Bytes, die über I2C oder UART gelesen werden, Befehle in Form von
 order\_t-Strukturen zu erstellen. Die parser\_\-update()-Funktion fragt beim IO-Modul nach, wie viele Bytes
@@ -50,6 +54,7 @@ Damit erkannt werden kann, wann ein Befehl zu ende ist benutzt die parser\_\-ord
 die bytes\_\-needed()-Funktion, in der fest codiert ist, welcher Befehlscode mit welchen Optionen wie viele
 Bytes benötigt. Dies ist auch eine der Stellen, die angepasst werden müssen, wenn ein neuer Befehl hinzugefügt
 wird, oder bestehende verändert werden.
+
 \subsection{queue\_update()\label{chapter_queue_update}}
 Diese Funktion führt Wartungsarbeiten an der Befehlswarteschlange (Queue) durch. Dies beinhaltet neue
 Befehle beim Parser-Modul abzuholen und diese korrekt einzureihen. Es gibt zwei Möglichkeiten, wie die Queue
@@ -57,6 +62,7 @@ diese neuen Befehle einreihen kann. Zum einen als normale Befehle, diese werden 
 zum anderen als priorisierte Befehl. Es kann nur ein priorisierter Befehl in der Queue sein. Diese Befehle werden
 umgehend in der nächsten Haupt\-schleifen\-iteration ausgeführt. In die Kategorie der priorisierten Befehle fallen
 alle Queue-Kontroll-Befehle, wie z.B. pausieren, löschen, aktuellen Befehl verwerfen, etc. (vgl. Kapitel \ref{chapter_protokoll}).
+
 \section{Das Aktive-Brems-System (ABS)\label{chapter_abs}}
 Das aktive Bremssystem bewirkt, dass die Räder versuchen ihre Position nicht zu verlassen. Dies wird realisiert indem
 eine Referenz-Position für jedes Rad gespeichert wird. Während der Hauptschleife wird nun die tatsächliche Position mit
@@ -68,6 +74,7 @@ früher als das andere seine Stopp-Bedingung erreicht hat.\\
 Das ABS kann vom Benutzer während das System läuft, angepasst werden. So kann man die Geschwindigkeit ändern, mit der
 die Motoren die Positions-Differenz ausgleichen. Außerdem kann man Teile des ABS deaktivieren oder auch wieder reaktivieren
 sowie das gesamte ABS abschalten, bzw. wieder anschalten. Damit kann der Benutzer das ABS an seine Wünsche anpassen.
+
 \section{Befehle: Struktur und Funktionen}
 Die Struktur (Abb. \ref{order_type}), die einen Befehl im System repräsentiert, besteht hauptsächlich aus einem Array, in dem die eigentlichen Daten
 gespeichert sind, und einem Status-Byte, in dem Statusinformationen in Form von Flags gespeichert werden.
@@ -113,6 +120,7 @@ die auszugebenden Daten in den Ausgabepuffer des IO-Framework angereiht. Dieses 
 über die ausgewählte Schnittstelle senden (bei UART wird sofort angefangen zu senden, bei I2C muss gewartet werden, bis die Daten
 vom Benutzer abgerufen werden).
 % Datenpfadbild
+
 \section{Debug-Ausgaben \label{impl_debug}}
 Das Problem mit Debug-Ausgaben ist, dass sie notwendig sind, insbesondere wenn die Benutzung eines üblichen Debuggers nicht
 ohne weiteres möglich ist. Debug-Ausgaben benötigen entsprechenden Code, nicht nur um die Ausgaben überhaupt zu ermöglichen,
@@ -133,6 +141,7 @@ diese Debug-Ausgaben erwünscht sind.
  \scalebox{0.5}{\includegraphics{pictures/debug_trick.png}}
  \caption{\label{debug_trick}Debug-Defines und die Verwendung im Code}
 \end{figure}
+
 \section{IO-Framework}
 Das Ziel des IO-Frameworks war die Abstraktion der Ein- und Ausgabe von Daten von den zu Grunde liegenden Schnittstellen.
 Die UART und die I2C Schnittstelle sind in der Benutzung sehr unterschiedlich. Statt überall im Code wo E/A stattfindet
@@ -146,4 +155,23 @@ nächsten Übertragen vom Anfang der Objektes wieder angefangen. Außerdem bewir
 Schnittstelle, dass für jede Lese-Operation, die von der Praktikumsplatine eingeleitet wird, ein Objekt übermittelt wird.\\
 E/A-Operationen geschehen nicht-blockend und gepuffert. Damit verbraucht die E/A nur Prozessor-zeit, wenn es nötig ist und
 verschwendet diese nicht mit aktiven Warten.
+
 \section{Unterstützende Bibliothek für die Praktikumsplatine}
+Das Benutzen der Motorplatine soll für die Studierenden möglichst einfach sein.
+Aus diesem Grund wurde neben der Betriebssoftware für die Motorplatine auch eine
+Bibliothek für die Praktikumsplatine geschrieben. Diese Bibliothek stellt
+Funktionen und Definitionen zur Verfügung, um Befehle an die Motorplatine zu
+senden oder zu empfangen. Hierfür wurde eine modifizierte Version der
+Befehls-Struktur für die Praktikumsplatine geschrieben. Es sind drei Funktionsaufrufe
+nötig, um jeden möglichen Befehl zusammen zu stellen und zu versenden. Die erste
+Funktion setzt das Kommando-Byte. Die zweite setzt die Parameter, dies wurde
+mit Funktion gelöst, die eine variable Liste von Argumenten erhält. Die dritte und
+letzte Funktion sendet den Befehl an die Motorplatine. Vorher muss allerdings die
+Befehls-Struktur einmal initialisiert werden.
+\begin{verbatim}
+order_t order;
+order_init(&order);
+order_set_type(&order, ORDER_DRIVE_P_P);
+order_add_params(&order, "1122", 127, -100, 32700, 16768);
+order_send(&order);
+\end{verbatim}

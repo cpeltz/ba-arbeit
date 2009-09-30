@@ -37,6 +37,7 @@ Aufgrund dieses Umstandes als auch der Tatsache, dass das System nicht untersuch
 werden kann ohne einen geringen Fußabdruck zu hinterlassen, sind die Messungen mit
 einem abschätzbaren aber nicht genau vorhersagbaren Fehler im Vergleich zur
 Wirklichkeit behaftet.
+
 \section{Erste Messungen}
 Durch die ersten Messungen wurde der Startpunkt für die Untersuchung der Software
 festgelegt. Dafür wurde in der Hauptschleife (siehe Abb. \ref{main_loop_full}) zum einen
@@ -107,6 +108,7 @@ erreicht hat als das andere (T; Trigger). ''I2C an'' bezeichnet, dass der I2C-Bu
 verwendet wurde und nicht die UART Schnittstelle.\\
 Interessant ist bei diesen Daten, dass das aktualisieren der Warteschlange, wenn ein Befehl vorliegt, gut
 eine halbe Millisekunde benötigt.
+
 \section{Das LCD-Problem\label{chapter_lcd_problem}}
 Wie in der Tabelle \ref{erste_messung} zu sehen ist, benötigt das System zum aktualisieren der Informationen
 des LCD über drei Millisekunden. Damit ist diese Funktion die mit Abstand zeit intensivste im gesamten System.
@@ -140,10 +142,12 @@ dem Speicherpuffer aufs LCD, wenn es nicht gesetzt ist.
 Wie in der Tabelle \ref{lcd_opt} zu sehen, hatten diese Maßnahmen ihre gewünschte Wirkung. Über 98\% weniger Zeit
 wird nun im zeitintensivsten Fall benötigt. Dies hat seinen Nachteil in einer leicht erhöhten Laufzeit für das
 Aktualisieren des LCD im Ruhezustand. Diese Zeit hat sich von durchschnittlich 4 \textmu{}s auf 9 \textmu{}s erhöht.
+
 \section{Optimierung}
 Damit die Latenz des Systems möglichst niedrig ist, müssen die Funktionen, die in der Hauptschleife aufgerufen werden,
 unter allen Bedingungen möglichst effizient ihre Arbeit verrichten. Dazu wurde jede dieser Funktionen, mit dem Pin setzen
 und wieder löschen Verfahren, auf Möglichkeiten untersucht sie zu optimieren.
+
 \subsection{Inlining von Funktionen}
 Die erste Möglichkeit, die in Betracht gezogen wurde, um die Latenz des Systems zu verringern, war die Verwendung von
 Compiler-Optimierungen. Zu Beginn wurde das System auf Code-Größe optimiert (-Os Option des Compilers). Da das System
@@ -182,6 +186,7 @@ Konsequenzen für die Geschwindigkeit des gesamten Systems, wie man in Tabelle \
 	\caption{\label{compiler_flags_2} Auswirkung von -finline-functions}
 \end{center}
 \end{table}
+
 \subsection{Eliminierung von Modulo-Operatoren}
 Während der Untersuchung der parser\_\-update()-Funktion wurde festgestellt, dass eine innere Funktion unverhältnismäßig
 viel Zeit benötigt, um ihre Aufgabe zu erfüllen. Dies war die io\_\-get()-Funktion, deren Aufgabe es ist das nächste Byte
@@ -242,6 +247,7 @@ durch simplere Operationen ersetzt.
 queue_writeposition -= (queue_writeposition
   / QUEUE_SIZE) * QUEUE_SIZE;
 \end{verbatim}
+
 \subsection{Effizienteres Initialisieren des Speichers}
 Die Funktionen zum initialisieren und kopieren von Befehlen wurden, aufgrund ihrer häufigen Verwendung ebenfalls
 untersucht. Die Befehlsstrukturen wurden einfach mithilfe von Schleifen mit dem Wert 0 initialisiert und beim
@@ -259,6 +265,7 @@ wurden durch die memset()- bzw. die memcpy()-Funktion aus der Standardbibliothek
 	\caption{\label{order_init_meas} Ergebnisse der order\_init()-Optimierung}
 \end{center}
 \end{table}
+
 \subsection{Bedingtes Kompilieren von Debug-Ausgaben}
 Wie in Kapitel \ref{impl_debug} beschrieben wurde eine Sprachen-spezifische Technik verwendet, um 
 die Möglichkeit zu besitzen einfach Diagnoseausgaben auszugeben, die im normalen Betrieb keine Auswirkung
