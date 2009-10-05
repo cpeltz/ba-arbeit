@@ -131,13 +131,16 @@ dem Speicherpuffer aufs LCD, wenn es nicht gesetzt ist.
 	\begin{tabular}{|c||r|r|c|}
 		\hline
 		\textbf{Funktion} & \textbf{Zeit} & \textbf{Verbesserung} & \textbf{Rahmenbedingungen} \\ \hline \hline
-		Hauptschleife & 421,158 \textmu{}s & -88,32\% & LCD an, Befehl in Queue,\\
+		Hauptschleife & 421,158 \textmu{}s & -88,35\% & LCD an, Befehl in Queue,\\
 		& & & aber nicht gestartet \\ \hline
 		process\_orders() & 354,627 \textmu{}s & & \\ \hline
 		lcd\_update\_screen() & 57,884 \textmu{}s & -98,22\% & \\ \hline
 	\end{tabular}
 	\caption{\label{lcd_opt} LCD Ergebnis}
 \end{center}
+\textbf{Anmerkung:} Für diese Tabelle und alle noch folgenden mit einer Rubrik ''Verbesserung'' gilt:\\
+Prozentwerte, der Verbesserung mit Minuszeichen bedeuten eine Reduzierung, mit Pluszeichen eine Erhöhung
+der ursprünglichen Werte.
 \end{table}
 Wie in der Tabelle \ref{lcd_opt} zu sehen, hatten diese Maßnahmen ihre gewünschte Wirkung. Über 98\% weniger Zeit
 wird nun im zeitintensivsten Fall benötigt. Dies hat seinen Nachteil in einer leicht erhöhten Laufzeit für das
@@ -175,13 +178,13 @@ Konsequenzen für die Geschwindigkeit des gesamten Systems, wie man in Tabelle \
 	\begin{tabularx}{\textwidth}{|c||r|r|X|}
 		\hline
 		\textbf{Funktion} & \textbf{Zeit} & \textbf{Verbesserung} & \textbf{Rahmenbedingungen} \\ \hline \hline
-		Hauptschleife & 285,643 \textmu{}s & +32,1\% & LCD an, Befehl in Queue,\\
+		Hauptschleife & 285,643 \textmu{}s & -32,1\% & LCD an, Befehl in Queue,\\
 		& & & aber nicht gestartet, \\
 		& & & mit -finline-functions \\ \hline
-		process\_orders() & 224,836 \textmu{}s & +36,72\% & \\ \hline
-		lcd\_update\_screen() & 51,647 \textmu{}s & +13,17\% & \\ \hline
-		parser\_update() & 5,384 \textmu{}s & -29,86\% & \\ \hline
-		queue\_update() & 4,187 \textmu{}s & +9,76\% & \\ \hline
+		process\_orders() & 224,836 \textmu{}s & -36,72\% & \\ \hline
+		lcd\_update\_screen() & 51,647 \textmu{}s & -13,17\% & \\ \hline
+		parser\_update() & 5,384 \textmu{}s & +29,86\% & \\ \hline
+		queue\_update() & 4,187 \textmu{}s & -9,76\% & \\ \hline
 	\end{tabularx}
 	\caption{\label{compiler_flags_2} Auswirkung von -finline-functions}
 \end{center}
@@ -222,7 +225,7 @@ benutzt. Es wurde dadurch nicht mehr Speicher verwendet als vorher, aber die Met
 		\hline
 		\textbf{Funktion} & \textbf{Zeit} & \textbf{Verbesserung} \\ \hline \hline
 		io\_get() & 36,527 \textmu{}s & \\ \hline
-		io\_get() (umgeschrieben) & 3,393 \textmu{}s & 90,71\% \\ \hline
+		io\_get() (umgeschrieben) & 3,393 \textmu{}s & -90,71\% \\ \hline
 	\end{tabular}
 	\caption{\label{io_get} Ergebnisse der io\_get()-Messungen}
 \end{center}
@@ -260,7 +263,7 @@ wurden durch die memset()- bzw. die memcpy()-Funktion aus der Standardbibliothek
 		\hline
 		\textbf{Funktion} & \textbf{Zeit} & \textbf{Verbesserung} \\ \hline \hline
 		order\_init() & 13,968 \textmu{}s & \\ \hline
-		order\_init() (memset) & 7,976 \textmu{}s & 42,9\% \\ \hline
+		order\_init() (memset) & 7,976 \textmu{}s & -42,9\% \\ \hline
 	\end{tabular}
 	\caption{\label{order_init_meas} Ergebnisse der order\_init()-Optimierung}
 \end{center}
@@ -332,8 +335,8 @@ wurde.
 		\hline
 		\textbf{Funktion} & \textbf{Zeit} & \textbf{Verb.} & \textbf{Bedingung} \\ \hline \hline
 		Hauptschleife (Vorläufer) & 121,885 \textmu{}s & & Idle \\ \hline
-		Hauptschleife (mod Vorl) & 121,635 \textmu{}s & 0,20\% & Idle \\ \hline
-		Hauptschleife (Jetzt) & 23,535 \textmu{}s & 80,69\% & Idle \\ \hline \hline
+		Hauptschleife (mod Vorl) & 121,635 \textmu{}s & -0,21\% & Idle \\ \hline
+		Hauptschleife (Jetzt) & 23,535 \textmu{}s & -80,69\% & Idle \\ \hline \hline
 		Befehl (kurz, Vorläufer) & 3655 \textmu{}s (13 Byte) & & I2C-Bus, kürzester Befehl \\ \hline
 		Befehl (kurz, Jetzt) & 1023 \textmu{}s (4 Byte) & & I2C-Bus, kürzester Befehl \\ \hline
 		Befehl (lang, Vorläufer) & 7747 \textmu{}s (27 Byte) & & I2C-Bus, längster Befehl \\ \hline
