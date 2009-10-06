@@ -171,15 +171,15 @@ E/A-Operationen geschehen nicht-blockend und gepuffert. Damit verbraucht die E/A
 vermeidet so nutzlosen Zeitverbrauch bedingt durch aktives Warten.
 
 \section{Unterstützende Bibliothek für die Praktikumsplatine}
-Das Benutzen der Motorplatine soll für die Studierenden möglichst einfach sein.
+Die Benutzung der Motorplatine soll für die Studierenden möglichst einfach sein.
 Aus diesem Grund wurde neben der Betriebssoftware für die Motorplatine auch eine
 Bibliothek für die Praktikumsplatine geschrieben. Diese Bibliothek stellt
-Funktionen und Definitionen zur Verfügung, um Befehle an die Motorplatine zu
-senden oder zu empfangen. Hierfür wurde eine modifizierte Version der
+Funktionen und Definitionen zur Verfügung, um Befehle an die Motorplatine
+senden oder empfangen zu können. Hierfür wurde eine modifizierte Version der
 Befehls-Struktur für die Praktikumsplatine geschrieben. Es sind drei Funktionsaufrufe
-nötig, um jeden möglichen Befehl zusammen zu stellen und zu versenden. Die erste
-Funktion setzt das Kommando-Byte. Die zweite setzt die Parameter, dies wurde
-mit Funktion gelöst, die eine variable Liste von Argumenten erhält. Die dritte und
+nötig, um jeden möglichen Befehl zusammenzustellen und zu versenden. Die erste
+Funktion setzt das Kommando-Byte. Die zweite setzt die Parameter; dies wurde
+mit einer Funktion gelöst, die eine variable Liste von Argumenten erhält. Die dritte und
 letzte Funktion sendet den Befehl an die Motorplatine. Vorher muss allerdings die
 Befehls-Struktur einmal initialisiert werden.
 \begin{verbatim}
