@@ -157,18 +157,18 @@ diese Debug-Ausgaben erwünscht sind.
 \end{figure}
 
 \section{IO-Framework}
-Das Ziel des IO-Frameworks war die Abstraktion der Ein- und Ausgabe von Daten von den zu Grunde liegenden Schnittstellen.
-Die UART und die I2C Schnittstelle sind in der Benutzung sehr unterschiedlich. Statt überall im Code wo E/A stattfindet
-jeweils für beide Schnittstellen Code einzufügen, wurde das IO-Framework als Zwischenschicht entwickelt. Es verfügt über sowohl
-über einen Ausgabe- als auch über einen Eingabepuffer. Diese sind jeweils auf 256 Bytes festgelegt. Durch diese Definition
-konnte das normale "Uberlaufverhalten der 8-Bit-Variablen ausgenutzt werden, um Modulo-Operationen zu ersetzen, welche
-ungerechtfertigt viel Zeit in Anspruch nehmen.\\
-Eine Besonderheit ist die Objekt-basierte Ausgabe von Daten. Ein Objekt hat mindestens ein Byte und maximal 256 Byte. Objekte
-werden bei entweder komplett Übertragen oder gar nicht. Wenn ein Objekt nicht komplett übertragen werden konnte, wird bei der
-nächsten Übertragen vom Anfang der Objektes wieder angefangen. Außerdem bewirkt die Ausgabe von Objekten bei Benutzung der I2C 
-Schnittstelle, dass für jede Lese-Operation, die von der Praktikumsplatine eingeleitet wird, ein Objekt übermittelt wird.\\
-E/A-Operationen geschehen nicht-blockend und gepuffert. Damit verbraucht die E/A nur Prozessor-zeit, wenn es nötig ist und
-verschwendet diese nicht mit aktiven Warten.
+Das Ziel des IO-Frameworks war die Abstraktion der Ein- und Ausgabe von Daten der zu Grunde liegenden Schnittstellen.
+Die UART- und die I2C-Schnittstelle sind in der Benutzung sehr unterschiedlich. Statt überall im Code, wo E/A stattfindet,
+jeweils für beide Schnittstellen Code einzufügen, wurde das IO-Framework als Zwischenschicht entwickelt. Es verfügt sowohl
+über einen Ausgabe- als auch einen Eingabepuffer. Diese sind jeweils auf 256 Bytes festgelegt. Durch diese Definition
+konnte das normale Überlaufverhalten der 8-Bit-Variablen ausgenutzt werden, um Modulo-Operationen zu ersetzen, welche
+unnötigerweise viel Zeit in Anspruch nehmen.\\
+Eine Besonderheit ist die Ausgabe von Daten auf Objekt-Basis. Ein Objekt hat mindestens ein Byte und maximal 256 Byte. Objekte
+werden entweder komplett übertragen oder gar nicht. Wenn ein Objekt nicht komplett übertragen werden konnte, wird bei der
+nächsten Übertragung vom Anfang des Objektes wieder angefangen. Außerdem bewirkt die Ausgabe von Objekten bei Benutzung der
+I2C-Schnittstelle, dass für jede Lese-Operation, die von der Praktikumsplatine eingeleitet wird, ein Objekt übermittelt wird.\\
+E/A-Operationen geschehen nicht-blockend und gepuffert. Damit verbraucht die E/A nur Prozessorzeit, wenn es nötig ist, und
+vermeidet so nutzlosen Zeitverbrauch bedingt durch aktives Warten.
 
 \section{Unterstützende Bibliothek für die Praktikumsplatine}
 Das Benutzen der Motorplatine soll für die Studierenden möglichst einfach sein.
