@@ -126,19 +126,29 @@ vom Benutzer abgerufen werden).
 % Datenpfadbild
 
 \section{Debug-Ausgaben \label{impl_debug}}
-Das Problem mit Debug-Ausgaben ist, dass sie notwendig sind, insbesondere wenn die Benutzung eines üblichen Debuggers nicht
-ohne weiteres möglich ist. Debug-Ausgaben benötigen entsprechenden Code, nicht nur um die Ausgaben überhaupt zu ermöglichen,
-sonder auch an vielen Stellen im Code, um wirklich etwas zu bestimmten Zeitpunkten auszugeben. Diese Ausgaben, selbst wenn
-sie nicht gemacht werden müssen, indem sie mit if-Statements umschlossen werden (siehe Abb. \ref{debug_trick}), verlangsamen
-das gesamte System. Während der normalen Operation der Betriebssoftware im Praktikum, sind diese Ausgaben nicht nötig und für
-die meisten Teilnehmer des Praktikums, nicht informativ. Damit die Ausgaben zum Zweck der Fehlerbehebung benutzt werden können,
-muss der Benutzer eine entsprechende Kenntnisse des Codes vorweisen.\\
-Aufgrund dieser fragwürdigen Hilfe, die diese Ausgaben einem durchschnittlichen Praktikanten bieten, und der negativen Auswirkung
-der Ausgaben auf die Performance des Systems, wurde eine Prä-Prozessor Technik angewandt, die zusammen mit der eingestellten Stufe
-der Code-Optimierung des Compilers diese beiden Probleme löst. Durch diese Technik werden die Debug-Ausgaben nur dann mitkompiliert,
-wenn dem Compiler der Parameter -DDEBUG übergeben wird. Selbst dann ist es noch möglich mit einem DIP-Schalter auf der Platine
-die Ausgaben auszuschalten, dann hat man aber immer noch die leichten negativen Auswirkungen auf die Performance. Normalerweise
-wird die Betriebssoftware ohne diesen Parameter kompiliert. Das bedeutet, dass die Software neukompiliert werden muss, wenn
+Es ist nicht ohne weiteres möglich, einen üblichen Debugger zur Fehlerfindung zu verwenden; stattdessen
+sind Debug-Ausgaben notwendig, um die Funktion des Debuggers zu ersetzen.
+Im Gegensatz zu einem Debugger muss zusätzlicher Programmcode eingefügt werden, um Debug-Ausgaben
+realisieren zu können.
+Diese Ausgaben beeinträchtigen die Geschwindigkeit des gesamten Systems auch dann noch, wenn
+diese mit if-Statements umschlossen werden (siehe Abb. \ref{debug_trick}).
+
+Während der normalen Operation der Betriebssoftware im Praktikum sind diese Ausgaben
+nicht nötig, und für die meisten Teilnehmer des Praktikums nicht informativ.
+Der Leser muss eine entsprechende Kenntnis des Codes vorweisen, damit die Ausgaben
+zum Zweck der Fehlerbehebung benutzt werden können.\\
+Wegen der geringen Hilfe, die diese Ausgaben im Normalfall dem Praktikanten bieten,
+und der negativen Auswirkung der Ausgaben auf die Performance des Systems, wurde
+ein Prä-Prozessor-Technik angewandt, die zusammen mit der eingestellten Stufe der
+Code-Optimierung des Compilers die beiden Probleme löst.
+
+Durch diese Technik werden die Debug-Ausgaben nur dann kompiliert,
+wenn dem Compiler der Parameter -DDEBUG übergeben wird. 
+Zwar ist es auch dann noch möglich, mit einem DIP-Schalter auf der Platine die Ausgaben
+auszuschalten, aber es bleiben immer noch die leicht negativen Auswirkungen auf die Performance.
+
+Normalerweise
+wird die Betriebssoftware ohne diesen Parameter kompiliert. Das bedeutet, dass die Software neu kompiliert werden muss, wenn
 diese Debug-Ausgaben erwünscht sind.
 \begin{figure}[htb]
  \centering
