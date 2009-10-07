@@ -1,14 +1,14 @@
 \chapter{Untersuchung des Laufzeitverhaltens}
-Die Untersuchung der Laufzeitverhaltens wurde mithilfe eines Logik-
-Analysers durchgeführt. Ein Logikanalyser misst wie lange und wann
-ein Pin 1 und/oder 0 ist. Die Pins, die nötig sind um diese Messungen
-durchzuführen, dürfen noch nicht belegt sein. Vorteilhafterweise
-besitzt die Platine zwei Ports, die noch nicht belegt sind aber
-trotzdem nach draußen gelegt wurden, somit konnte der Logik-
-Analyser an die Platine angeschlossen und ein kleines Modul
-geschrieben werden, um diese Pins setzen und wieder löschen zu
-können. Diese Operationen wurden als Makros implementiert um den
-Messoverhead so gering wie möglich zu halten.
+Die Untersuchung des Laufzeitverhaltens wurde mithilfe eines Logik-
+Analysers durchgeführt. Dieser misst, wann und wie lange
+ein Portpin gesetzt oder nicht gesetzt ist. Die Pins, die zur Durchführung
+dieser Messungen nötig sind, dürfen noch nicht belegt sein. Vorteilhafterweise
+besitzt die Platine zwei Ports, die noch nicht belegt sind, aber
+trotzdem nach draußen gelegt wurden; somit konnte der Logik-Analyser
+an die Platine angeschlossen und ein kleines Modul
+geschrieben werden, um die Pins setzen und zurücksetzen zu
+können. Diese Operationen wurden als Makros implementiert, um den
+Mess-Overhead so gering wie möglich zu halten.
 \begin{table}[htb]
 \begin{center}
 	\begin{tabular}{|c||c|c|}
@@ -21,28 +21,28 @@ Messoverhead so gering wie möglich zu halten.
 	\caption{\label{pin_takte} Benötigte Takte/Zeit für Pin-Operationen}
 \end{center}
 \end{table}
-Wie hier beschrieben sind die Zeiten für das Ausführen der Instruktion
-zum setzen, löschen und umschalten von einzelnen Pins ziemlich gering.
-Doch bei den Messungen insbesondere mit einem Leistungsfähigen und
-sehr genauen Oszilloskop konnte herausgefunden werden, dass das eigentliche
-Wechsel der Spannung am Pin verhältnismäßig langsam durchgeführt wird,
-insbesondere das Abfallen der Spannung, also bei einer fallenden Flanke
-benötigt ungefähr 2 \textmu{}s von denen allerdings, und hier liegt das Problem,
-zwischen 0.5 und 1 \textmu{}s fälschlicherweise als ''high'' gemessen wird.
-D.h. der Logikanalyser misst eine gewisse Zeitspanne einen ''falschen'' Wert.
-(Er ist nicht physikalisch falsch nur logisch). Denn wenn die Spannung abfällt
-ist der bin schon nicht mehr gesetzt, der Logikanalyser allerdings betrachtet
-dies teilweise immer noch als gesetzt.
-Aufgrund dieses Umstandes als auch der Tatsache, dass das System nicht untersucht
-werden kann ohne einen geringen Fußabdruck zu hinterlassen, sind die Messungen mit
-einem abschätzbaren aber nicht genau vorhersagbaren Fehler im Vergleich zur
+Wie hier beschrieben, sind die Zeiten für die Ausführung der Instruktionen
+- setzen, löschen und umschalten von einzelnen Pins - ziemlich gering.
+Doch insbesondere bei den Messungen mit einem leistungsfähigen und
+sehr genauen Oszilloskop konnte herausgefunden werden, dass der eigentliche
+Wechsel der Spannung am Pin verhältnismäßig langsam durchgeführt wird.
+Insbesondere das Abfallen der Spannung, also bei einer fallenden Flanke,
+benötigt ungefähr 2 \textmu{}s, von denen allerdings - und hier liegt das Problem - zwischen
+0.5 und 1 \textmu{}s fälschlicherweise als ''high'' gemessen wird.
+Das bedeutet, dass der Logik-Analyser eine gewisse Zeitspanne einen ''falschen''
+Wert misst (Er ist nicht physikalisch falsch, aber \textbf{logisch} falsch).
+Denn: Wenn die Spannung abfällt, ist der Pin schon nicht mehr gesetzt; der
+Logik-Analyser allerdings betrachtet diesen teilweise immer noch als gesetzt.
+Aufgrund dessen, und weil das System nicht untersucht
+werden kann, ohne einen geringen Fußabdruck zu hinterlassen, sind die Messungen mit
+einem zwar abschätzbaren, aber nicht genau vorhersagbaren Fehler im Vergleich zur
 Wirklichkeit behaftet.
 
 \section{Erste Messungen}
 Durch die ersten Messungen wurde der Startpunkt für die Untersuchung der Software
 festgelegt. Dafür wurde in der Hauptschleife (siehe Abb. \ref{main_loop_full}) zum einen
-ein pin\_toggle() eingebaut, um die Länge einer Schleifeniteration zu messen, zum anderen
-wurde die einzelnen Funktionsaufrufe in der Hauptschleife mit pin\_set() und pin\_clear()
+ein pin\_toggle() eingebaut, um die Länge einer Schleifeniteration zu messen; zum anderen
+wurden die einzelnen Funktionsaufrufe in der Hauptschleife mit pin\_set() und pin\_clear()
 umgeben.
 \begin{figure}[htb]
  \centering
@@ -100,13 +100,13 @@ umgeben.
 	\caption{\label{erste_messung} Ergebnisse der ersten Messungen}
 \end{center}
 \end{table}
-In der Tabelle \ref{erste_messung} sind die Wichtigsten Daten der ersten Messreihen zusammen
-gefasst. Die Spalte ''Rahmenbedingungen'' beschreibt Bedingungen während der Messung geherrscht haben.
+In der Tabelle \ref{erste_messung} sind die wichtigsten Daten der ersten Messreihen zusammengefasst.
+Die Spalte ''Rahmenbedingungen'' beschreibt Bedingungen, die während der Messung geherrscht haben.
 Hierbei bezeichnet die Bedingung ''AB:EIT'', dass das aktive Bremsen (AB:) eingeschaltet (E; Enable) ist und
-sowohl aktiviert wird, wenn kein Befehl bearbeitet wird(I; Idle) oder eines der Räder seinen Trigger früher
+sowohl aktiviert wird, wenn kein Befehl bearbeitet wird (I; Idle), oder eines der Räder seinen Trigger früher
 erreicht hat als das andere (T; Trigger). ''I2C an'' bezeichnet, dass der I2C-Bus für die E/A-Operationen
-verwendet wurde und nicht die UART Schnittstelle.\\
-Interessant ist bei diesen Daten, dass das aktualisieren der Warteschlange, wenn ein Befehl vorliegt, gut
+verwendet wurde und nicht die UART-Schnittstelle.\\
+Interessant bei diesen Daten ist, dass das Aktualisieren der Warteschlange bei Vorliegen eines Befehls gut
 eine halbe Millisekunde benötigt.
 
 \section{Das LCD-Problem\label{chapter_lcd_problem}}
