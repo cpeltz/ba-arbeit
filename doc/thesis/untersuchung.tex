@@ -110,21 +110,23 @@ Interessant bei diesen Daten ist, dass das Aktualisieren der Warteschlange bei V
 eine halbe Millisekunde benötigt.
 
 \section{Das LCD-Problem\label{chapter_lcd_problem}}
-Wie in der Tabelle \ref{erste_messung} zu sehen ist, benötigt das System zum aktualisieren der Informationen
-des LCD über drei Millisekunden. Damit ist diese Funktion die mit Abstand zeit intensivste im gesamten System.
-Zwar ist das Aktualisieren recht selten, nämlich nur, wenn ein neuer Befehl gestartet wird, aber haben drei
-Millisekunden Latenz eine negative Wirkung auf die Reaktion des Systems auf Ereignisse. So können während
-der drei Millisekunden ungefähr zwölf Bytes auf dem I2C Bus eintreffen, was im schlimmsten Fall sechs eigenständige
-Befehle wären. Wenn diese Befehle priorisierte Befehle sind, so könnte sich das System unerwartet verhalten.\\
-Damit dieses Problem gelöst werden konnte, musste die Arbeitsweise des LCD, welches durch eine fertige Programm-Bibliothek
-gesteuert wird, analysiert werden. Dadurch wurde herausgefunden, dass die Funktionen, die Daten auf das LCD ausgeben,
+Wie in der Tabelle \ref{erste_messung} zu sehen ist, benötigt das System zum Aktualisieren der Informationen
+des LCD über drei Millisekunden. Damit ist diese Funktion die mit Abstand zeitintensivste im gesamten System.
+Das Aktualisieren erfolgt zwar recht selten, nämlich nur, wenn ein neuer Befehl gestartet wird; aber schon
+bei drei Millisekunden Latenz wird die Reaktion des Systems auf Ereignisse negativ beeinflusst.
+So könnten während der drei Millisekunden ungefähr zwölf Bytes auf dem I2C-Bus eintreffen.
+Dies wären im schlimmsten Fall sechs eigenständige Befehle.
+Wenn diese Befehle priorisierte Befehle sind, könnte sich das System anders als erwartet verhalten.\\
+Zur Lösung dieses Problems musste die Arbeitsweise des LCD, welches durch eine fertige Programm-Bibliothek
+gesteuert wird, analysiert werden. 
+Dabei wurde herausgefunden, dass die Funktionen, die Daten auf das LCD ausgeben,
 aktives Warten betreiben. Ein LCD benötigt natürlich Zeit, um ein übermitteltes Zeichen auch anzeigen zu können.
 Während dieser Zeit wird das sog. Busy-Flag gesetzt, welches anzeigt, dass das LCD noch beschäftigt ist. Erst
-wenn dieses Flag nicht mehr gesetzt ist darf ein neues Zeichen übermittelt werden. Beim aktiven Warten verbraucht die
+wenn dieses Flag nicht mehr gesetzt ist, darf ein neues Zeichen übermittelt werden. Beim aktiven Warten verbraucht die
 Funktion unnötig CPU-Zeit, die sinnvoll genutzt werden könnte.\\
 Mit diesem Wissen wurde die ursprüngliche lcd\_\-update\_\-screen()-Funktion in zwei Funktionen aufgeteilt. Die eine
-wurde lcd\_\-update\_\-info() genannt und aktualisierte die LCD-Informationen in einem Speicherpuffer. Die andere,
-immer noch lcd\_\-update\_\-screen() genannt, überprüft das Busy-Flag des LCD's und schreibt das nächste Zeichen aus
+wurde lcd\_\-update\_\-info() genannt und aktualisiert die LCD-Informationen in einem Speicherpuffer. Die andere,
+immer noch lcd\_\-update\_\-screen() genannt, überprüft das Busy-Flag des LCDs und schreibt das nächste Zeichen aus
 dem Speicherpuffer aufs LCD, wenn es nicht gesetzt ist.
 \begin{table}[htb]
 \begin{center}
@@ -136,31 +138,31 @@ dem Speicherpuffer aufs LCD, wenn es nicht gesetzt ist.
 		process\_orders() & 354,627 \textmu{}s & & \\ \hline
 		lcd\_update\_screen() & 57,884 \textmu{}s & -98,22\% & \\ \hline
 	\end{tabular}
-	\caption{\label{lcd_opt} LCD Ergebnis}
+	\caption{\label{lcd_opt} LCD-Ergebnis}
 \end{center}
 \textbf{Anmerkung:} Für diese Tabelle und alle noch folgenden mit einer Rubrik ''Verbesserung'' gilt:\\
 Prozentwerte der Verbesserung mit Minuszeichen bedeuten eine Reduzierung, mit Pluszeichen eine Erhöhung
 der ursprünglichen Werte.
 \end{table}
-Wie in der Tabelle \ref{lcd_opt} zu sehen, hatten diese Maßnahmen ihre gewünschte Wirkung. Über 98\% weniger Zeit
-wird nun im zeitintensivsten Fall benötigt. Dies hat seinen Nachteil in einer leicht erhöhten Laufzeit für das
-Aktualisieren des LCD im Ruhezustand. Diese Zeit hat sich von durchschnittlich 4 \textmu{}s auf 9 \textmu{}s erhöht.
+Wie in der Tabelle \ref{lcd_opt} zu sehen ist, hatten diese Maßnahmen ihre gewünschte Wirkung. Über 98\% weniger Zeit
+wird nun im zeitintensivsten Fall benötigt. Die nachteillige Folge ist eine leicht erhöhte Laufzeit für das
+Aktualisieren des LCD im Ruhezustand, deren Dauer sich von durchschnittlich 4 \textmu{}s auf 9 \textmu{}s erhöht hat.
 
 \section{Optimierung}
 Damit die Latenz des Systems möglichst niedrig ist, müssen die Funktionen, die in der Hauptschleife aufgerufen werden,
-unter allen Bedingungen möglichst effizient ihre Arbeit verrichten. Dazu wurde jede dieser Funktionen, mit dem Pin setzen
-und wieder löschen Verfahren, auf Möglichkeiten untersucht sie zu optimieren.
+unter allen Bedingungen möglichst effizient ihre Arbeit verrichten. Dazu wurde jede dieser Funktionen mit dem 
+''Pin-setzen-und-zurücksetzen-Verfahren'' auf Möglichkeiten untersucht, sie zu optimieren.
 
 \subsection{Inlining von Funktionen}
 Die erste Möglichkeit, die in Betracht gezogen wurde, um die Latenz des Systems zu verringern, war die Verwendung von
 Compiler-Optimierungen. Zu Beginn wurde das System auf Code-Größe optimiert (-Os Option des Compilers). Da das System
-wesentlich weniger Speicher benötigt als auf der Platine zur Verfügung stehen, wurde
-nun der Compiler auf die Optimierung der Geschwindigkeit eingestellt (-O2 Option). Außerdem wurden die Debug-Informationen,
-die der Compiler dort platziert hat, entfernt (-g Option entfernt). Dadurch änderten sich die Parameter des Systems nicht
-wesentlich. Die Größe blieb nahezu identisch und die Geschwindigkeit wurde etwas besser, besonders bei langen Funktionen.\\
+wesentlich weniger Speicher benötigt, als auf der Platine zur Verfügung steht, wurde
+anschließend der Compiler auf die Optimierung der Geschwindigkeit eingestellt (-O2 Option). Außerdem wurden die Debug-Informationen
+(-g Option) entfernt, die der Compiler im Objektcode platziert hat. Dadurch änderten sich die Parameter des Systems nicht
+wesentlich. Die Größe blieb nahezu identisch und die Geschwindigkeit stieg leicht an, besonders bei langen Funktionen.\\
 Nachdem verifiziert werden konnte, dass Funktionsaufrufe zwischen 1 und 2 \textmu{}s Overhead mit sich bringen, wurde
-die Compiler-Option -finline-functions aktiviert, die bewirkt, dass der Code genügend simpler Funktionen direkt in die aufrufende
-Funktion eingefügt wird, ohne dass dabei Register gerettet werden müssten oder ähnliches. Dies hatte deutlich merkbare
+die Compiler-Option -finline-functions aktiviert. Diese bewirkt, dass der Code von ausreichend simplen Funktionen direkt in die aufrufende
+Funktion eingefügt wird, ohne dass dabei Register gerettet werden müssten oder Ähnliches. Dies hatte deutliche
 Konsequenzen für die Geschwindigkeit des gesamten Systems, wie man in Tabelle \ref{compiler_flags_2} sehen kann.
 \begin{table}[htb]
 \begin{center}
@@ -192,12 +194,13 @@ Konsequenzen für die Geschwindigkeit des gesamten Systems, wie man in Tabelle \
 
 \subsection{Eliminierung von Modulo-Operatoren}
 Während der Untersuchung der parser\_\-update()-Funktion wurde festgestellt, dass eine innere Funktion unverhältnismäßig
-viel Zeit benötigt, um ihre Aufgabe zu erfüllen. Dies war die io\_\-get()-Funktion, deren Aufgabe es ist das nächste Byte
-im Eingangspuffer an den Aufrufer zurück zu liefern. Für diese simple Operation benötigte über 36 \textmu{}s. Mehr als die
-gesamte Hauptschleife im Idle Zustand. Eine genaue Untersuchung der Funktion lies darauf schließen, dass die Anweisungen
-mit Modulo-Operationen für diesen Aufwand verantwortlich waren. Dies konnte zum einen durch Kontrolle des generierten Assembler
-Codes, zum anderen durch das Auslagern der Modulo-Operation in eine eigene Zeile bestätigt werden. Der Compiler generiert
-für die Modulo-Operation eine extra Funktion, die sehr kompliziert ist und offensichtlich eine Menge Zeit benötigt.\\
+viel Zeit benötigt, um ihre Aufgabe zu erfüllen. Dies war die io\_\-get()-Funktion, deren Aufgabe es ist, das nächste Byte
+im Eingangspuffer an den Aufrufer zurückzuliefern. Für diese simple Operation wurden über 36 \textmu{}s benötigt.
+Das ist länger, als die gesamte Hauptschleife im Idle Zustand braucht.
+Eine genaue Untersuchung der Funktion ließ darauf schließen, dass die Anweisungen
+mit Modulo-Operatoren für diesen Aufwand verantwortlich waren. Das konnte zum einen durch Kontrolle des generierten
+Assembler-Codes, zum anderen durch das Auslagern der Modulo-Operatoren in eine eigene Zeile bestätigt werden. Der Compiler generiert
+für die Modulo-Operatoren eine Extra-Funktion, die sehr kompliziert ist und offensichtlich bemerkenswert viel Zeit benötigt.\\
 \begin{verbatim}
 uint8_t io_get(uint8_t* value) {
   pin_set_C(6);
@@ -213,12 +216,12 @@ uint8_t io_get(uint8_t* value) {
   return 1;
 }
 \end{verbatim}
-Es gibt zwei Möglichkeiten dies zu korrigieren: Zum einen kann die Modulo-Operation durch eine Reihe simplerer Operationen ersetzt werden.
+Es gibt zwei Methoden, dies zu korrigieren: Zum einen kann die Modulo-Operation durch eine Reihe simplerer Operationen ersetzt werden.
 Zum anderen kann auf die Modulo-Operation komplett verzichtet werden, wenn man das Überlaufverhalten der Variablen ausnutzen kann.
-Die zweite Methode setzt voraus, dass der Puffer so viele Elemente hat wie der größte darstellbare Wert der Variablen plus eins.
-Da hier Variablen vom Typ uint8\_t verwendet werden (unsigned 8-Bit integer; vorzeichenlose 8-Bit Ganzzahl) muss der Puffer 256
+Die zweite Methode setzt voraus, dass der Puffer so viele Elemente hat, wie der größte darstellbare Wert der Variablen plus eins.
+Da hier Variablen vom Typ uint8\_t verwendet werden (unsigned 8-bit integer bzw. vorzeichenlose 8-Bit-Ganzzahl) muss der Puffer 256
 Elemente umfassen. Da diese Zahl bereits eingestellt war und diese Funktion sehr häufig verwendet wird, wurde hier die zweite Methode
-benutzt. Es wurde dadurch nicht mehr Speicher verwendet als vorher, aber die Methode lief daraufhin wesentlich schneller.
+benutzt. Es wurde dadurch nicht mehr Speicher verwendet als vorher, aber die Funktion lief daraufhin wesentlich schneller.
 \begin{table}[htb]
 \begin{center}
 	\begin{tabular}{|l||r|r|}
@@ -230,7 +233,7 @@ benutzt. Es wurde dadurch nicht mehr Speicher verwendet als vorher, aber die Met
 	\caption{\label{io_get} Ergebnisse der io\_get()-Messungen}
 \end{center}
 \end{table}
-Der Code sieht nun wie folgt aus:
+Der Code sieht nun aus wie folgt:
 \begin{verbatim}
 uint8_t io_get(uint8_t* value) {
   uint8_t temp = (inpos_begin + 1);
@@ -241,7 +244,7 @@ uint8_t io_get(uint8_t* value) {
   return 1;
 }
 \end{verbatim}
-Das selbe Problem existierte in der Queue, dort wurde allerdings die Modulo Operationen
+Dasselbe Problem existierte in der Queue, dort wurden allerdings die Modulo-Operatoren
 \begin{verbatim}
 queue_writeposition %= QUEUE_SIZE;
 \end{verbatim}
