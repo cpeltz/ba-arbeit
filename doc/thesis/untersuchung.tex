@@ -255,10 +255,10 @@ queue_writeposition -= (queue_writeposition
 \end{verbatim}
 
 \subsection{Effizienteres Initialisieren des Speichers}
-Die Funktionen zum initialisieren und kopieren von Befehlen wurden, aufgrund ihrer häufigen Verwendung ebenfalls
-untersucht. Die Befehlsstrukturen wurden einfach mithilfe von Schleifen mit dem Wert 0 initialisiert und beim
-Kopieren wurde ebenfalls mit einer Schleife die Werte von einem Befehl in den Nächsten kopiert. Diese Schleifen
-wurden durch die memset()- bzw. die memcpy()-Funktion aus der Standardbibliothek ersetzt. Dies führte zu einer
+Die Funktionen zum Initialisieren und Kopieren von Befehlen wurden wegen ihrer häufigen Verwendung ebenfalls
+untersucht. Die Befehlsstrukturen wurden einfach mithilfe von Schleifen mit dem Wert 0 initialisiert, und beim
+Kopieren wurden ebenfalls mit einer Schleife die Werte von einem Befehl in den nächsten kopiert. Diese Schleifen
+wurden durch die memset()- bzw. die memcpy()-Funktion aus der Standardbibliothek ersetzt. Dies führte zu einem
 40\%igen Geschwindigkeitszuwachs (siehe \ref{order_init_meas}).
 \begin{table}[htb]
 \begin{center}
@@ -273,39 +273,39 @@ wurden durch die memset()- bzw. die memcpy()-Funktion aus der Standardbibliothek
 \end{table}
 
 \subsection{Bedingtes Kompilieren von Debug-Ausgaben}
-Wie in Kapitel \ref{impl_debug} beschrieben wurde eine Sprachen-spezifische Technik verwendet, um 
-die Möglichkeit zu besitzen einfach Diagnoseausgaben auszugeben, die im normalen Betrieb keine Auswirkung
+Wie in Kapitel \ref{impl_debug} beschrieben, wurde eine Sprachen-spezifische Technik verwendet, um 
+einfache Diagnoseausgaben zu ermöglichen, die im normalen Betrieb keine Auswirkung
 auf das Laufzeitverhalten des Systems haben. So generiert der Compiler für die Ausgaben keinen Code, solange nicht
-das Compilerflag -DDEBUG gegeben ist. Selbst wenn es gegeben ist und die Ausgaben mithilfe des entsprechenden DIP-Schalters
-deaktiviert sind, bringt jede Ausgabe lediglich weniger als eine \textmu{}s größere Laufzeit.
+das Compilerflag -DDEBUG gegeben ist. Wenn es aber gegeben wurde, und die Ausgaben mithilfe des entsprechenden DIP-Schalters
+deaktiviert sind, bringt jede Ausgabe lediglich eine Erhöhung der Laufzeit um weniger als eine \textmu{}s.
 
 \section{Verlieren/Verpassen von Interrupts}
-Während den Messungen kam die Frage auf, was passiert, wenn ein Interrupt auftritt, wenn ein anderer bereits läuft.
-Wenn dies geschehen kann, was passiert mit den beiden Interrupts, geht eventuell sogar einer verloren?\\
-Die Antwort auf diese Frage wurde von dem Handbuch des Mikrocontrollers \cite{ATMEGA_MANUAL} beantwortet. Mit
-den richtigen Einstellungen, die bereits eingestellt waren, werden Interrupts, die während eines anderen
-Interrupts auftreten, gespeichert und nach der Beendigung des laufenden Interrupts werden die gespeicherten
+Während der Messungen kam die Frage auf, was passieren würde, wenn ein Interrupt auftritt und ein anderer bereits läuft.
+Wenn dies möglich sein sollte, was geschieht dann mit den beiden Interrupts? Geht eventuell sogar einer davon verloren?\\
+Die Antwort auf diese Fragen wurde von dem Handbuch des Mikrocontrollers \cite{ATMEGA_MANUAL} gegeben. Mit
+den richtigen Einstellungen, die bereits vorgenommen wurden, werden Interrupts, die während eines anderen
+Interrupts auftreten, gespeichert. Nach der Beendigung des laufenden Interrupts werden die anderen gespeicherten
 ihrer Priorität nach ausgeführt.\\
-Der schnellste Interrupt tritt alle 138 \textmu{}s auf, das ist der UART-Interrupt. Im schlimmsten Fall treten alle 
-Interrupts zur selben
-Zeit auf und der am schnellsten wieder auftretende hat die niedrigste Priorität. Er wird also erst nachdem alle
-anderen Interrupts abgearbeitet wurden ausgeführt. Bei vier Hall-Sensoren-Interrupts, einem I2C-Bus-Interrupt,
-zwei Timer-Interrupts und zwei UART-Interrupts und einer oberen Schranke von 8 \textmu{}s pro Interrupt plus
-2 \textmu{}s Umschaltungszeit zwischen zwei Interrupts kommt man auf eine Zeit von 90 \textmu{}s.
-Das bedeutet, dass bevor der schnellste Interrupt wieder auftreten kann, wurden alle Interrupt-Service-Routinen
+Der schnellste Interrupt ist der UART-Interrupt. Er tritt maximal aller 138 \textmu{}s auf.
+Im ungünstigsten Fall treten alle Interrupts zur selben
+Zeit auf, und der danach am schnellsten wieder auftretende hat die niedrigste Priorität. Er wird also erst ausgeführt,
+nachdem alle anderen Interrupts abgearbeitet wurden. Bei vier Hall-Sensoren-Interrupts, einem I2C-Bus-Interrupt,
+einem Timer-Interrupt und zwei UART-Interrupts sowie einer oberen Schranke von 8 \textmu{}s pro Interrupt, plus
+2 \textmu{}s Umschaltzeit zwischen zwei Interrupts, kommt man auf eine Zeit von 80 \textmu{}s.
+Das bedeutet: Bevor der schnellste Interrupt wieder auftreten kann, wurden alle Interrupt-Service-Routinen
 abgearbeitet und mindestens ein Hauptschleifendurchlauf beendet. Anzumerken ist hier noch, dass dieser konstruierte
-schlimmste Fall unmöglich ist. Entweder ist der UART-Empfang-Interrupt oder der I2C-Bus-Interrupt ausgeschaltet, sie
+ungünstigste Fall nicht möglich ist. Entweder ist der UART-Empfangs-Interrupt oder der I2C-Bus-Interrupt ausgeschaltet; sie
 sind niemals zur selben Zeit aktiv. Außerdem benötigt der Großteil der Interrupts weniger als 5 \textmu{}s, um
-seine Arbeit zu beenden. Ganz zu schweigen davon, dass die Hall-Sensoren-Interrupts, durch ihre Anordnung an den
+seine Arbeit zu beenden. Hinzu kommt, dass die Hall-Sensoren-Interrupts, bedingt durch ihre Anordnung an den
 Rädern, nicht alle zur selben Zeit auftreten können.\\
 Die Hall-Sensoren-Interrupts treten sehr häufig auf, wenn die Räder in
 Bewegung sind. Die Auswirkung dieser Interrupts auf das Echtzeitverhalten des Systems wurde daher
-untersucht. Dabei wurde durch Messungen herausgefunden, dass bei einer Spannung von 12 V und maximaler
-eingestellter Geschwindigkeit der Räder, die Hall-Sensoren jeder alle 1,7 ms einen Interrupt generieren.
-Das sind 1700 \textmu{}s und dieser Interrupt benötigt maximal 8 \textmu{}s. Während dieser 1700 \textmu{}s
-treten insgesamt 4 Interrupts auf, jeweils einer von jedem Sensor, d.h. alle 425 \textmu{}s wird ein Interrupt der Länge
-mit 8 \textmu{}s. Das bedeutet, dass zwischen zwei Interrepts der Hall-Sensoren im Durschnitt 9 bis 10 Hauptschleifeniterationen
-durchgeführt werden.
+untersucht. Messungen ergaben, dass bei einer Spannung von 12 V und maximal
+eingestellter Geschwindigkeit der Räder jeder Hall-Sensor aller 1,7 ms (d.s. 1700 \textmu{}s) einen Interrupt generiert.
+Dieser Interrupt benötigt maximal 8 \textmu{}s. Während der 1700 \textmu{}s
+treten insgesamt 4 Interrupts auf, jeweils einer pro Sensor; d.h. aller 425 \textmu{}s tritt ein Interrupt mit einer Länge
+von 8 \textmu{}s auf. Somit werden zwischen zwei Interrupts der Hall-Sensoren im Durchschnitt 9 bis 10 Hauptschleifen-Iterationen
+durchgeführt.
 
 \section{Vergleich mit der Vorläufer-Software}
 Der harte Vergleich mit Nummern der Vorläufer-Software mit der in dieser Arbeit geschriebenen Software ist
