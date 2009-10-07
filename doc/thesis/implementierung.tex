@@ -135,8 +135,8 @@ diese mit if-Statements umschlossen werden (siehe Abb. \ref{debug_trick}).
 
 Während der normalen Operation der Betriebssoftware im Praktikum sind diese Ausgaben
 nicht nötig, und für die meisten Teilnehmer des Praktikums nicht informativ.
-Der Leser muss eine entsprechende Kenntnis des Codes vorweisen, damit die Ausgaben
-zum Zweck der Fehlerbehebung benutzt werden können.\\
+Der Leser muss eine entsprechende Kenntnis des Codes besitzen, damit die Ausgaben
+für die Fehlerbehebung benutzt werden können.\\
 Wegen der geringen Hilfe, die diese Ausgaben im Normalfall dem Praktikanten bieten,
 und der negativen Auswirkung der Ausgaben auf die Performance des Systems, wurde
 ein Prä-Prozessor-Technik angewandt, die zusammen mit der eingestellten Stufe der
@@ -162,7 +162,7 @@ Die UART- und die I2C-Schnittstelle sind in der Benutzung sehr unterschiedlich. 
 jeweils für beide Schnittstellen Code einzufügen, wurde das IO-Framework als Zwischenschicht entwickelt. Es verfügt sowohl
 über einen Ausgabe- als auch einen Eingabepuffer. Diese sind jeweils auf 256 Bytes festgelegt. Durch diese Definition
 konnte das normale Überlaufverhalten der 8-Bit-Variablen ausgenutzt werden, um Modulo-Operationen zu ersetzen, welche
-unnötigerweise viel Zeit in Anspruch nehmen.\\
+unangemessen viel Zeit in Anspruch nehmen.\\
 Eine Besonderheit ist die Ausgabe von Daten auf Objekt-Basis. Ein Objekt hat mindestens ein Byte und maximal 256 Byte. Objekte
 werden entweder komplett übertragen oder gar nicht. Wenn ein Objekt nicht komplett übertragen werden konnte, wird bei der
 nächsten Übertragung vom Anfang des Objektes wieder angefangen. Außerdem bewirkt die Ausgabe von Objekten bei Benutzung der

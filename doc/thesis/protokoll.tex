@@ -24,7 +24,7 @@ ist in zwei Teile geteilt. Der erste Teil umfasst die 4 Bits mit der niedrigsten
 wird Befehlscode genannt. Der Befehlscode spezifiziert die Art des Befehls.
 Der zweite Teil beinhaltet die höchstwertigen 4 Bits. Darin werden Optionen
 gesetzt, die den im Befehlscode angegebenen Befehl modifizieren. Die Kombination
-von Befehlscode und Optionen legt auch die Länge des Befehls fest. Alle auf dem
+von Befehlscode und Optionen legt auch die Länge des Befehls fest. Alle dem
 Kommando-Byte folgende Bytes sind Parameter, wie z.B. die Geschwindigkeit der Räder.\\
 Da 4 Bits für Befehlscodes zur Verfügung stehen, sind 16 verschiedene Befehle möglich.
 Sechs Befehle wurden im Zuge dieser Arbeit implementiert; das würde noch Platz für
@@ -46,7 +46,7 @@ Im Nachfolgenden werden die Befehle einzeln vorgestellt. Dabei wurde der Befehls
 jedem Befehl in hexadezimaler Schreibweise als ganzes Byte dargestellt.
 
 \subsection{Extended-Instruction}
-Dieser Befehl ist ein Platzhalter für zukünftige Befehle, die mehr als ein Kommando-Byte benötigen;
+Dieser Befehl ist ein Platzhalter für zukünftige Befehle, die mehr als ein Kommando-Byte benötigen,
 oder für den Fall, dass alle normalen Befehlscodes bereits vergeben sind. Der Befehlscode ist 0x00.\\
 Im Code werden solche Befehle mit besonderen Funktionen behandelt. Die 
 parser\_\-extended\_\-order\_\-complete-Funktion ist ein Beispiel hierfür. Diese
