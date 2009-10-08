@@ -88,8 +88,14 @@
 #define WHEEL_RIGHT             1
 /**
  * Convinience define to use in functions, which can operate on both wheels.
+ * @todo depricated
  */
 #define WHEEL_BOTH              2
+/**
+ * Used to specifiy an operation for all wheels.
+ * @todo Replace Use of #WHEEL_BOTH with this.
+ */
+#define WHEEL_ALL				2
 /**
  * Specifies the number of all wheels. Needed for the size of arrays throughout
  * the program.

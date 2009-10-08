@@ -19,7 +19,7 @@
 /**
  *	Used to remember the PID-Parameters for each wheel
  */
-static pid_data_t drive_PID[2];
+static pid_data_t drive_PID[NUMBER_OF_WHEELS];
 
 /**
  * External reference to the Position Variable for the wheels.
@@ -34,7 +34,7 @@ int16_t drive_brake_position[NUMBER_OF_WHEELS];
 /**
  * Sets the PID-Parameter for either one wheel or both wheels.
  *
- * @param[in] wheel Either 0 for the left wheel, 1 for the right wheel or 2 for both wheels.
+ * @param[in] wheel Possible values include #WHEEL_LEFT, #WHEEL_RIGHT and #WHEEL_BOTH.
  * @param[in] Pfactor the proportional Factor of the PID-System
  * @param[in] Ifactor the integral Part of the PID-System
  * @param[in] Dfactor the differential factor
@@ -61,7 +61,7 @@ void drive_SetPIDParameter(	const uint8_t wheel, const int16_t Pfactor, const in
  *	Sets the max value for the sum off all errors.
  *
  *	Beware that this function may be obsolete.
- *	@param[in] wheel Either 0 for the left wheel, 1 for the right wheel or 2 for both wheels.
+ *	@param[in] wheel Possible values include #WHEEL_LEFT, #WHEEL_RIGHT and #WHEEL_BOTH.
  *	@param[in] sumError the max value for the sum of all errors
  */
 
@@ -86,7 +86,7 @@ void drive_SetPIDSumError(const uint8_t wheel, const int16_t sumError) {
  *
  * This function uses the PID-System to control the use of
  * the wheels while driving.
- * @param[in] wheel Either 0 for the left wheel, 1 for the right wheel or 2 for both wheels.
+ * @param[in] wheel Possible values include #WHEEL_LEFT, #WHEEL_RIGHT and #WHEEL_BOTH.
  * @param[in] speed Describes the speed with which the wheel should be used.
  * @todo Remove the Modulo-Operators
  */
@@ -160,8 +160,6 @@ void drive_UsePID(const uint8_t wheel, const int8_t speed) {
  */
 void drive_brake_active(void) {
 	// Do active braking. Wheels shouldn't move from their position.
-//	drive_brake_active_left();
-//	drive_brake_active_right();
 	extern uint8_t ACTIVE_BRAKE_ENABLE;
 	extern uint8_t ACTIVE_BRAKE_AMOUNT;
 	if(!ACTIVE_BRAKE_ENABLE)
@@ -186,7 +184,6 @@ void drive_brake_active(void) {
  * Sets the current position as holding position used while doing active braking.
  *
  * Sets position for both wheels.
- * @todo This version is only for testing!
  */
 void drive_brake_active_set(void) {
 	// Set the Position of the wheels for use with active braking.
@@ -221,6 +218,20 @@ void drive_brake_active_set_left(void) {
 }
 
 /**
+ * Testfunction to set the position for a specified wheel.
+ * @todo test this out against the other three functions.
+ */
+void drive_brake_active_set(uint8_t wheel) {
+	switch(wheel) {
+		case WHEEL_BOTH:
+			memcpy(drive_brake_position, irq_Position, WHEEL_BOTH);
+		default:
+			drive_brake_position[wheel] = irq_Position[wheel];
+			break;
+	}
+}
+
+/**
  * Handles active braking for the right wheel.
  *
  * Will only work if ACTIVE_BRAKE_ENABLE not 0.
@@ -238,6 +249,19 @@ void drive_brake_active_right(void) {
 		motor_SetSpeed(WHEEL_RIGHT, ACTIVE_BRAKE_AMOUNT);
 	}
 }
+
+/*
+void drive_brake_active(uint8_t wheel) {
+	extern uint8_t ACTIVE_BRAKE_ENABLE;
+	extern uint8_t ACTIVE_BRAKE_AMOUNT;
+	if(!ACTIVE_BRAKE_ENABLE)
+		return;
+	
+	motor_SetSpeed(wheel,
+		(drive_brake_position[wheel] - irq_Position[wheel])
+		* ACTIVE_BRAKE_AMOUNT);
+}
+*/
 
 /**
  * Sets the position for active braking for the right wheel.

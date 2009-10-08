@@ -115,7 +115,8 @@ void update_dip_flags(void) {
 }
 
 /**
- *	The Main setup function; calls every needed *_init() function
+ * The Main setup function; calls every needed *_init() function
+ * @todo Shouldn't be the sei()-call at the end of the function
  */
 void initialize(void) {
 	// activate interrupts
@@ -139,7 +140,6 @@ void initialize(void) {
 
 /**
  * This function prints, on every system start, information about the System.
- * @todo Only to dip_update once on startup and use a temp variable here
  */
 void print_startup(void) {
 	// Startup Debug Infos
@@ -182,7 +182,7 @@ void print_startup(void) {
  *	Main process for orders.
  *
  *	This function simply maintains an order, gets a new one from the queue
- *	or just brake active.
+ *	or just uses the active-braking-system.
  */
 void process_orders(void) {
 	// This function gets an order and lets it execute

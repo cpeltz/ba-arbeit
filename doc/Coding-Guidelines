@@ -17,10 +17,10 @@ if (a < b) {
 Bsp.:
 	io_obj_start();
 
-- Defines und globale Variablen werden GROß geschrieben.
+- Defines und globale Variablen (keine Datei-globale, nur System-globale) werden GROß geschrieben.
 - Jede Funktion muss einen Doxygen-Kommentar haben.
 - Jede nicht-triviale Funktion muss im Code dokumentiert werden.
-- Funktionen, die globale Variablen ändern müssen auf diesen Umstand explizit in der
+- Funktionen, die System-globale Variablen ändern müssen auf diesen Umstand explizit in der
 	Dokumentation hinweisen.
 - Parameter sind wenn möglich als const zu spezifizieren.
 - Lokale Variablen werden sinnvoll benannt und einzelne Namensteile durch _ getrennt werden.
