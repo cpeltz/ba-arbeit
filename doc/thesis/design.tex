@@ -6,12 +6,13 @@ Es wurde besonderer Wert darauf gelegt, dass Module so wenig wie möglich andere
 Module aufrufen, und dies auch nur durch Funktionen, nicht durch die Variablen.
 Dieses Prinzip musste allerdings während der Optimierungs- und Testphase
 geringfügig modifiziert werden. Entweder wurde der Code dadurch unleserlich, oder
-die Relation Preis zu Nutzen je Funktionsaufruf unangemessen hoch.
+die Relation Zeit zu Nutzen je Funktionsaufruf unangemessen hoch.
 Als wesentliche Verbesserung wurden vier bis fünf globale Variablen eingeführt, die
 sich während der Laufzeit ändern können, und die in unterschiedlichen Modulen direkt
 referenziert werden.
 Geändert werden diese allerdings nur in sehr wenigen Funktionen, in denen dies
-auch explizit dokumentiert wurde. Außerdem wurde in den Coding-Guidelines darauf hingewiesen,
+auch explizit dokumentiert wurde. Außerdem wurde in den Coding-Guidelines (siehe 
+Anhang \ref{appendix_cg}) darauf hingewiesen,
 möglichst keine Funktionen zu schreiben, die die globalen Variablen verändern.
 Anderenfalls ist dies ausdrücklich hervorzuheben.
 Neben diesen maximal fünf globalen Variablen, die das Systemverhalten verändern, gibt es vier
@@ -40,7 +41,7 @@ während der Laufzeit abspielen.
 Dies ist aber nicht ganz einfach, denn die einzigen Möglichkeiten, die die Platine zur
 Kommunikation mit der Außenwelt hat, beschränken sich auf
 5 LED, ein 4*20-Zeichen-LCD, eine UART- und eine I2C-Bus-Schnittstelle.
-Die LED funktionieren nicht zuverlässig und das LCD ist in seinem Aussagegehalt sehr
+Das LCD ist in seinem Aussagegehalt sehr
 begrenzt, weil man nicht viele Informationen auf einem 4*20-Zeichen-LCD unterbringen kann. 
 Die Wahl fiel dann auf
 die UART-Schnittstelle, da der Arbeitscomputer, an dem das Debugging durchgeführt wurde,
@@ -98,5 +99,6 @@ Der Parser holt eingegangene Bytes beim IO-Modul ab und konvertiert diese zu Bef
 achtet er auf die Länge, die bestimmte Kommando-Bytes vorgeben (vgl. Kapitel \ref{chapter_protokoll}).
 Wenn ein Befehl vollständig empfangen ist, wird er von der Queue abgeholt und an die Warteschlange angereiht.\\
 Das Options-Modul beinhaltet die Einstellungen, die das Verhalten des gesamten Systems beeinflussen, wie
-z.B., ob Debugging-Ausgaben aktiviert sind, mit welcher Geschwindigkeit das ABS standardmäßig bremst,
+z.B., ob Debugging-Ausgaben aktiviert sind, mit welcher Geschwindigkeit das ABS (siehe Kapitel \ref{chapter_abs})
+standardmäßig bremst,
 die maximale Länge eines Befehls, oder die Größe der Ringpuffer für das Parser- und Queue-Modul.

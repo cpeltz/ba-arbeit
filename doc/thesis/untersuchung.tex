@@ -1,6 +1,6 @@
 \chapter{Untersuchung des Laufzeitverhaltens}
 Die Untersuchung des Laufzeitverhaltens wurde mithilfe eines Logik-
-Analysers durchgeführt. Dieser misst, wann und wie lange
+Analysers des Typs ''Agilent Logicwave E9340A'' durchgeführt. Dieser misst, wann und wie lange
 ein Portpin gesetzt oder nicht gesetzt ist. Die Pins, die zur Durchführung
 dieser Messungen nötig sind, dürfen noch nicht belegt sein. Vorteilhafterweise
 besitzt die Platine zwei Ports, die noch nicht belegt sind, aber
@@ -33,10 +33,6 @@ Das bedeutet, dass der Logik-Analyser eine gewisse Zeitspanne einen ''falschen''
 Wert misst (Er ist nicht physikalisch falsch, aber \textbf{logisch} falsch).
 Denn: Wenn die Spannung abfällt, ist der Pin schon nicht mehr gesetzt; der
 Logik-Analyser allerdings betrachtet diesen teilweise immer noch als gesetzt.
-Aufgrund dessen, und weil das System nicht untersucht
-werden kann, ohne einen geringen Fußabdruck zu hinterlassen, sind die Messungen mit
-einem zwar abschätzbaren, aber nicht genau vorhersagbaren Fehler im Vergleich zur
-Wirklichkeit behaftet.
 
 \section{Erste Messungen}
 Durch die ersten Messungen wurde der Startpunkt für die Untersuchung der Software
@@ -44,6 +40,7 @@ festgelegt. Dafür wurde in der Hauptschleife (siehe Abb. \ref{main_loop_full}) 
 ein pin\_toggle() eingebaut, um die Länge einer Schleifeniteration zu messen; zum anderen
 wurden die einzelnen Funktionsaufrufe in der Hauptschleife mit pin\_set() und pin\_clear()
 umgeben.
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}%
 \begin{figure}[htb]
  \centering
  \scalebox{0.5}{\includegraphics{pictures/main_loop_full.png}}
@@ -52,52 +49,53 @@ umgeben.
 \begin{table}[htb]
 \begin{center}
 	\begin{tabular}{c}
-	\begin{tabularx}{\textwidth}{|c||r|X|}
+	\begin{tabularx}{\textwidth}{|c||R|R|X|}
 		\hline
-		\textbf{Funktion} & \textbf{Zeit} & \textbf{Rahmenbedingungen} \\ \hline \hline
-		Hauptschleife & 27,916 \textmu{}s & Idle, LCD an, DEBUG aus, I2C an, AB:EIT \\ \hline
-		process\_orders() & 11,964 \textmu{}s &  \\ \hline
-		lcd\_update\_screen() & 3,988 \textmu{}s &  \\ \hline
-		parser\_update() & 3,988 \textmu{}s &  \\ \hline
-		queue\_update() & 3,988 \textmu{}s &  \\ \hline
+		\textbf{Funktion}     & \textbf{vor der Code-Optimierung} & \textbf{nach der Code-Optimierung} & \textbf{Rahmen\-bedingungen} \\ 
+		\hline \hline
+		Hauptschleife         & 27,916 \textmu{}s      & 24,858 \textmu{}s       & Idle, LCD an, DEBUG aus, I2C an, AB:EIT \\ \hline
+		process\_orders()     & 11,964 \textmu{}s      &  8,375 \textmu{}s       & \\ \hline
+		lcd\_update\_screen() &  3,988 \textmu{}s      &  5,583 \textmu{}s       & \\ \hline
+		parser\_update()      &  3,988 \textmu{}s      &  5,584 \textmu{}s       & \\ \hline
+		queue\_update()       &  3,988 \textmu{}s      &  4,187 \textmu{}s       & \\ \hline
 	\end{tabularx} \\
 	\\
-	\begin{tabularx}{\textwidth}{|c||r|X|}
+	\begin{tabularx}{\textwidth}{|c||R|R|X|}
 		\hline
-		Hauptschleife & 47,856 \textmu{}s & ABS aktiv im Idle Status, ansonsten wie oben \\ \hline
-		process\_orders() & 31,904 \textmu{}s &  \\ \hline
-		lcd\_update\_screen() & 3,988 \textmu{}s &  \\ \hline
-		parser\_update() & 3,988 \textmu{}s &  \\ \hline
-		queue\_update() & 3,988 \textmu{}s &  \\ \hline
+		Hauptschleife         & 47,856 \textmu{}s      & 42,473 \textmu{}s       & ABS aktiv im Idle Status, ansonsten wie oben \\ \hline
+		process\_orders()     & 31,904 \textmu{}s      & 26,221 \textmu{}s       & \\ \hline
+		lcd\_update\_screen() &  3,988 \textmu{}s      &  5,484 \textmu{}s       & \\ \hline
+		parser\_update()      &  3,988 \textmu{}s      &  5,683 \textmu{}s       & \\ \hline
+		queue\_update()       &  3,988 \textmu{}s      &  4,686 \textmu{}s       & \\ \hline
 	\end{tabularx} \\
 	\\
-	\begin{tabularx}{\textwidth}{|c||r|X|}
+	\begin{tabularx}{\textwidth}{|c||R|R|X|}
 		\hline
-		Hauptschleife & 718,843 \textmu{}s & LCD aus, Byte in Parser, Befehl bereit \\ \hline
-		process\_orders() & 39,880 \textmu{}s & I2C-Bus ISR (Daten) aufgetreten \\ \hline
-		lcd\_update\_screen() & 0,997 \textmu{}s &  \\ \hline
-		parser\_update() & 175,474 \textmu{}s &  \\ \hline
-		queue\_update() & 505,484 \textmu{}s &  \\ \hline
+		Hauptschleife         & 718,843 \textmu{}s     & 119,143 \textmu{}s      & LCD aus, Byte in Parser, Befehl bereit \\ \hline
+		process\_orders()     &  39,880 \textmu{}s     &  18,544 \textmu{}s      & I2C-Bus ISR (Daten) aufgetreten \\ \hline
+		lcd\_update\_screen() &   0,997 \textmu{}s     &  <0,040 \textmu{}s      & \\ \hline
+		parser\_update()      & 175,474 \textmu{}s     &  47,258 \textmu{}s      & \\ \hline
+		queue\_update()       & 505,484 \textmu{}s     &  52,443 \textmu{}s      & \\ \hline
 	\end{tabularx} \\
 	\\
-	\begin{tabularx}{\textwidth}{|c||r|X|}
+	\begin{tabularx}{\textwidth}{|c||R|R|X|}
 		\hline
-		Hauptschleife & 3614,000 \textmu{}s & LCD an, Befehl in Queue, \\
-		& & aber nicht gestartet \\ \hline
-		process\_orders() & 358,923 \textmu{}s &  \\ \hline
-		lcd\_update\_screen() & 3250,000 \textmu{}s &  \\ \hline
-		parser\_update() & 6,032 \textmu{}s &  \\ \hline
-		queue\_update() & 5,583 \textmu{}s &  \\ \hline
+		Hauptschleife         & 3614,000 \textmu{}s    & 118,644 \textmu{}s      & LCD an, Befehl in Queue, \\
+		                      &                        &                         & aber nicht gestartet \\ \hline
+		process\_orders()     & 358,923 \textmu{}s     &  11,167 \textmu{}s      & \\ \hline
+		lcd\_update\_screen() & 3250,000 \textmu{}s    &  97,109 \textmu{}s      & \\ \hline
+		parser\_update()      & 6,032 \textmu{}s       &   5,783 \textmu{}s      & \\ \hline
+		queue\_update()       & 5,583 \textmu{}s       &   3,988 \textmu{}s      & \\ \hline
 	\end{tabularx} \\
 	\\
-	\begin{tabularx}{\textwidth}{|c||r|X|}
+	\begin{tabularx}{\textwidth}{|c||R|R|X|}
 		\hline
-		I2C-Bus ISR & 4,586 \textmu{}s & Adresse empfangen \\ \hline
-		I2C-Bus ISR & 21,934 \textmu{}s & Daten empfangen \\ \hline
-		100ms ISR & 8,076 \textmu{}s & \\ \hline
+		I2C-Bus ISR           & 4,586 \textmu{}s       & 6,600 \textmu{}s        & Adresse empfangen \\ \hline
+		I2C-Bus ISR           & 21,934 \textmu{}s      & 6,600 \textmu{}s        & Daten empfangen \\ \hline
+		100ms ISR             & 8,076 \textmu{}s       & 5,583 \textmu{}s        & \\ \hline
 	\end{tabularx} \\
 	\end{tabular}
-	\caption{\label{erste_messung} Ergebnisse der ersten Messungen}
+	\caption{\label{erste_messung} Ergebnisse der Messungen vor und nach den Code-Optimierungen}
 \end{center}
 \end{table}
 In der Tabelle \ref{erste_messung} sind die wichtigsten Daten der ersten Messreihen zusammengefasst.
@@ -127,7 +125,9 @@ Funktion unnötig CPU-Zeit, die sinnvoll genutzt werden könnte.\\
 Mit diesem Wissen wurde die ursprüngliche lcd\_\-update\_\-screen()-Funktion in zwei Funktionen aufgeteilt. Die eine
 wurde lcd\_\-update\_\-info() genannt und aktualisiert die LCD-Informationen in einem Speicherpuffer. Die andere,
 immer noch lcd\_\-update\_\-screen() genannt, überprüft das Busy-Flag des LCDs und schreibt das nächste Zeichen aus
-dem Speicherpuffer aufs LCD, wenn es nicht gesetzt ist.
+dem Speicherpuffer aufs LCD, wenn es nicht gesetzt ist. Diese Lösung des Problems ist die effektivste, da die einzige
+elegantere und effizientere die Benutzung eines Interrupts auf Basis des Busy-Flags wäre. Dies ist aber aufgrund der
+Konstruktion des LCDs nicht möglich.
 \begin{table}[htb]
 \begin{center}
 	\begin{tabular}{|c||r|r|c|}
@@ -144,7 +144,7 @@ dem Speicherpuffer aufs LCD, wenn es nicht gesetzt ist.
 Prozentwerte der Verbesserung mit Minuszeichen bedeuten eine Reduzierung, mit Pluszeichen eine Erhöhung
 der ursprünglichen Werte.
 \end{table}
-Wie in der Tabelle \ref{lcd_opt} zu sehen ist, hatten diese Maßnahmen ihre gewünschte Wirkung. Über 98\% weniger Zeit
+Wie in der Tabelle \ref{lcd_opt} zu sehen ist, hatten diese Maßnahmen aber ihre gewünschte Wirkung. Über 98\% weniger Zeit
 wird nun im zeitintensivsten Fall benötigt. Die nachteillige Folge ist eine leicht erhöhte Laufzeit für das
 Aktualisieren des LCD im Ruhezustand, deren Dauer sich von durchschnittlich 4 \textmu{}s auf 9 \textmu{}s erhöht hat.
 
@@ -308,7 +308,7 @@ von 8 \textmu{}s auf. Somit werden zwischen zwei Interrupts der Hall-Sensoren im
 durchgeführt.
 
 \section{Vergleich mit der Vorläufer-Software}
-Der harte Vergleich mit Nummern der Vorläufer-Software mit der in dieser Arbeit geschriebenen Software ist
+Der harte Vergleich mit Werten der Vorläufer-Software mit der in dieser Arbeit geschriebenen Software ist
 nur schwer möglich, da das zugrunde liegende Design von beiden Projekten so unterschiedlich ist, dass hauptsächlich
 die Dauer der Hauptschleife eine Idee davon geben kann, inwiefern die eine Software schneller arbeitet als die Andere
 (siehe Tabelle \ref{vergl_speed}).\\
@@ -329,7 +329,7 @@ wurde.
 		Program (Jetzt)& 15362 Bytes (5,9\%) \\ \hline
 		Data (Jetzt)& 1248 Bytes (15,2\%) \\ \hline
 	\end{tabular}
-	\caption{\label{vergl_speicher} Vergleich der Speicheranforderung}
+	\caption{\label{vergl_speicher} Vergleich der Speicheranforderung mit der Vorläufer-Software}
 \end{center}
 \end{table}
 \begin{table}[htb]
@@ -345,7 +345,7 @@ wurde.
 		Befehl (lang, Vorläufer) & 7747 \textmu{}s (27 Byte) & & I2C-Bus, längster Befehl \\ \hline
 		Befehl (lang, Jetzt) & 2191 \textmu{}s (8 Byte) & & I2C-Bus, längster Befehl \\ \hline
 	\end{tabular}
-	\caption{\label{vergl_speed} Vergleich der Geschwindigkeiten}
+	\caption{\label{vergl_speed} Vergleich der Geschwindigkeiten mit der Vorläufer-Software}
 \end{center}
 \end{table}
 Zusätzlich wurde noch verglichen, wie lange ein Befehl von der Praktikumsplatine bis zur Motorplatine benötigt.
@@ -355,5 +355,5 @@ der Befehlesübertragung im neuen System ist dieses wesentlich schneller (vgl. T
 \begin{figure}[htb]
  \centering
  \scalebox{0.35}{\includegraphics{pictures/vergl_befehle.png}}
- \caption{\label{vergl_befehle}Vergleich von mehreren Befehlen}
+ \caption{\label{vergl_befehle}Vergleich von mehreren Befehlen im alten und neuen Protokoll}
 \end{figure}

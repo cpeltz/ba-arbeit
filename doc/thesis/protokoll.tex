@@ -45,54 +45,56 @@ Sechs Befehle und die Infrastruktur für den reservierten Befehlscode wurden imp
 Im Nachfolgenden werden die Befehle einzeln vorgestellt. Dabei wurde der Befehlscode bei
 jedem Befehl in hexadezimaler Schreibweise als ganzes Byte dargestellt.
 
-\subsection{Extended-Instruction}
+\subsection{Extended-Instruction - 0x00}
 Dieser Befehl ist ein Platzhalter für zukünftige Befehle, die mehr als ein Kommando-Byte benötigen,
-oder für den Fall, dass alle normalen Befehlscodes bereits vergeben sind. Der Befehlscode ist 0x00.\\
+oder für den Fall, dass alle normalen Befehlscodes bereits vergeben sind. Der Befehlscode ist \textbf{0x00}.\\
 Im Code werden solche Befehle mit besonderen Funktionen behandelt. Die 
 parser\_\-extended\_\-order\_\-complete-Funktion ist ein Beispiel hierfür. Diese
 besonderen Funktionsvarianten gibt es allerdings nur im Parser.
 Nach dem Verlassen des Parsers wird eine Extended-Instruction wie ein normaler Befehl behandelt.
 Die zusätzlichen Funktionen waren nötig, weil sich diese Befehle im Aufbau von normalen Befehlen stark unterscheiden.
 
-\subsection{Control}
+\subsection{Control - 0x01}
 Mit diesem Befehl kann das System gesteuert werden. Darunter fallen Aufgaben wie das
 Reseten des gesamten Programms, das Anhalten der Befehlsausführung, und die Manipulation
-der Befehls-Warteschlange. Der Befehlscode für diesen Befehl ist 0x01. Außerdem ist der Control-Befehl
+der Befehls-Warteschlange. Der Befehlscode für diesen Befehl ist \textbf{0x01}. Außerdem ist der Control-Befehl
 ein priorisierter Befehl, d.h. er wird bei dem nächsten Hauptschleifendurchlauf ausgeführt und nicht
 an die Warteschlange angereiht.\\
-Die in Tabelle \ref{protocol_control} beschriebene Bitmaske wird mit dem Befehlscode verundet
+Die in Tabelle \ref{protocol_control} beschriebene Bitmaske wird mit dem Befehlscode verodert
 und ergibt das Kommando-Byte. Bei manchen Befehlen können mehrere Optionen zur gleichen Zeit
 gewählt werden; dies ist hier nicht der Fall. Die Optionen dieses Befehls schließen sich
 gegenseitig aus. Die Länge der Befehle mit vorgenanntem Befehlscode beläuft sich auf 1 Byte, sodass
- das Kommando-Byte gesendet werden muss.
+ nur das Kommando-Byte gesendet werden muss.
 \begin{table}[htb]
 \begin{center}
-	\begin{tabularx}{\linewidth}{|l|l|X|}
+	\begin{tabularx}{\linewidth}{|l|c|c|X|}
 		\hline
-		\textbf{Option} & \textbf{Bitmaske} & \textbf{Beschreibung} \\
+		\textbf{Option} & \textbf{Bitmaske} & \textbf{resultierendes} & \textbf{Beschreibung} \\
+		                &                   & \textbf{Kommando-Byte}   & \\
 		\hline
 		\hline
-		Reset 			& 0x10 				& Hardware-Reset \\
+		Reset 			& 0x10 				& 0x11                    & Hardware-Reset \\
 		\hline
-		Stop Queue		& 0x20				& Der Aktuelle Befehl wird verworfen. Die Warteschlange wird angehalten, aber nicht verworfen. \\
+		Stop Queue		& 0x20				& 0x21                    & Der Aktuelle Befehl wird verworfen. Die Warteschlange wird angehalten, aber nicht verworfen. \\
 		\hline
-		Continue Queue	& 0x30				& Der nächste Befehl in der Warteschlange wird ausgeführt. \\
+		Continue Queue	& 0x30				& 0x31                    & Der nächste Befehl in der Warteschlange wird ausgeführt. \\
 		\hline
-		Clear Queue		& 0x40				& Die Warteschlange wird gelöscht. \\
+		Clear Queue		& 0x40				& 0x41                    & Die Warteschlange wird gelöscht. \\
 		\hline
-		Stop Drive		& 0x50				& Befehl wird angehalten, Fahrzeug geht zum aktiven Bremsen über. \\
+		Stop Drive		& 0x50				& 0x51                    &Befehl wird angehalten, Fahrzeug geht zum aktiven Bremsen über. \\
 		\hline
 	\end{tabularx}
 	\caption{\label{protocol_control} Optionen des Control-Befehls}
 \end{center}
 \end{table}
 
-\subsection{Query}
+\subsection{Query - 0x02}
 Manchmal ist es wichtig, dass die kontrollierende Praktikumsplatine verschiedene Laufzeitwerte
-der Motorplatine kennt. Dieser Befehl, dem der Befehlscode 0x02 zugeordnet ist, ermöglicht
+der Motorplatine kennt. Dieser Befehl, dem der Befehlscode \textbf{0x02} zugeordnet ist, ermöglicht
 es, die Geschwindigkeit der Räder, die Anzahl der Befehle in der Warteschlange und den aktuellen
 Befehl abzufragen. Die Optionen schließen sich gegenseitig aus, und die Länge des Befehls beträgt
-immer 1 Byte. Der Befehl ist wie der Control-Befehl ein priorisierter Befehl.\\
+immer 1 Byte. Der Befehl ist wie der Control-Befehl ein priorisierter Befehl. Er wird also
+nicht an die Warteschlange angereiht.\\
 Wenn nach Senden dieses Befehls an die Motorplatine kurz darauf versucht wird, über den I2C-Bus
 das Ergebnis zu lesen, kann der Fall eintreten, dass es noch nicht vorliegt.
 Das geschieht besonders dann, wenn der aktuelle Befehl angefordert wurde.
@@ -104,27 +106,28 @@ wobei die erste eine Länge von einem Byte hat und außerdem spezifiziert, wie l
 
 \begin{table}[htb]
 \begin{center}
-	\begin{tabularx}{\linewidth}{|l|l|X|}
+	\begin{tabularx}{\linewidth}{|c|c|X|l|}
 		\hline
-		\textbf{Bitmaske} & \textbf{Beschreibung} & \textbf{Antwortlänge} \\
+		\textbf{Bitmaske} & \textbf{resultierendes} & \textbf{Beschreibung} & \textbf{Antwortlänge} \\
+		                  & \textbf{Kommando-Byte}  &                       & \textbf{in Bytes}\\
 		\hline
 		\hline
-		0x10 				& Geschwindigkeit des linken Rades & 1 \\
+		0x10              & 0x12                    & Geschwindigkeit des linken Rades & 1 \\
 		\hline
-		0x20				& Geschwindigkeit des rechten Rades & 1 \\
+		0x20              & 0x22                    & Geschwindigkeit des rechten Rades & 1 \\
 		\hline
-		0x30				& Anzahl der Befehle in der Warteschlange & 1 \\
+		0x30              & 0x32                    & Anzahl der Befehle in der Warteschlange & 1 \\
 		\hline
-		0x40				& Aktueller Befehl & 2 - 16 \\
+		0x40              & 0x42                    & Aktueller Befehl & 2 - 16 \\
 		\hline
 	\end{tabularx}
-	\caption{\label{protocol_queue} Optionen des Queue-Befehls}
+	\caption{\label{protocol_queue} Optionen des Query-Befehls}
 \end{center}
 \end{table}
 
-\subsection{Drive}
+\subsection{Drive - 0x03}
 Der am häufigsten benutzte Befehl ist der Drive-Befehl. Durch ihn werden die Räder des Fahrzeugs
-in Bewegung gesetzt. Ihm ist der Befehlscode 0x03 zugeteilt, und seine Länge beträgt zwischen 3
+in Bewegung gesetzt. Ihm ist der Befehlscode \textbf{0x03} zugeteilt, und seine Länge beträgt zwischen 3
 und 7 Bytes. Im Minimalfall besteht der Befehl aus dem Kommando-Byte und je einem Byte für
 die gewünschte Geschwindigkeit der einzelnen Räder. Ohne die Angabe einer Abbruchbedingung für
 beide Räder würde dieser Befehl endlos laufen, oder solange, bis mithilfe des Control-Befehls
@@ -144,12 +147,16 @@ erfolgt dies nach den Geschwindigkeitsangaben.
 Man beginnt ebenfalls mit dem Triggerwert für das linke Rad, dann folgt der
 Wert für das rechte.\\
 Zusätzlich zu diesen Fahrmöglichkeiten gibt es einen speziellen Fahrmodus, der für
-die ''Geradeaus-Fahrt'' optimiert ist. Er wird als ''Fahrt mit Differentialausgleich''
+die ''Geradeaus-Fahrt'' optimiert ist. Er wird als ''Fahrt mit Differenzausgleich''
 bezeichnet. Hierbei wird versucht, die Differenz beider Räder möglichst auf 0 zu
 halten. Wegen der Geradeaus-Fahrt entfällt die zweite Geschwindigkeitsangabe, und 
 die Bitmasken für die Trigger des rechten Rades gelten für beide Räder. Eine weitere
-Bitmaske erlaubt es, den Startwert des Differentialwertes festzulegen. Dieser ist dann
-der einzige Parameter, 2 Bytes lang und vorzeichenbehaftet.
+Bitmaske erlaubt es, den Startwert des Differenzwertes festzulegen. Dieser ist dann
+der einzige Parameter, 2 Bytes lang und vorzeichenbehaftet.\\
+Zur Konstruktion des Kommando-Bytes dieses Befehls wird der Befehlscode mit der Bitmaske
+für das linke Rad und für das rechte Rad verodert. Es muss eine der drei Möglichkeiten
+ausgewählt werden, die in dem oberen Teil der Tabelle \ref{protocol_drive} vorgestellt werden.
+Dies gilt nur, wenn nicht die Bitmaske 0x30 oder 0xc0 verwendet wird.
 \begin{table}[htb]
 \begin{center}
 	\begin{tabular}{c}
@@ -160,9 +167,10 @@ der einzige Parameter, 2 Bytes lang und vorzeichenbehaftet.
 		Kein Trigger	& 0x00						   & 0x00						   & Endlosfahrt \\ \hline
 		Zeit-Trigger	& 0x10						   & 0x40						   & zeitlich begrenzte Fahrt\\ \hline
 		Positions-Trigger & 0x20					   & 0x80						   & fährt eine bestimmte Strecke \\ \hline
-		Fahrt mit Differential-Ausgleich & 0x30		   & -						   & beide Räder fahren mit derselben Geschwindigkeit geradeaus \\ \hline
+		Fahrt mit Differenz-Ausgleich & 0x30		   & -						   & beide Räder fahren mit derselben Geschwindigkeit geradeaus \\ \hline
 		Differenz setzen & 0xc0					   	   & -						   & setzt die Differenz der Räder \\ \hline
 	\end{tabularx}\\
+	Optionen des Drive-Befehls
 	\\
 	\begin{tabularx}{\linewidth}{|l|l|l|X|}
 		\hline
@@ -183,12 +191,12 @@ der einzige Parameter, 2 Bytes lang und vorzeichenbehaftet.
 		\hline
 	\end{tabularx}
 	\end{tabular}
-	\caption{\label{protocol_drive} Optionen des Drive-Befehls}
+	\caption{\label{protocol_drive} Parameter des Drive-Befehls}
 \end{center}
 \end{table}
 
-\subsection{Advanced-Drive}
-Der Advanced-Drive-Befehl, der den Befehlscode 0x04 besitzt, verhält sich grundsätzlich
+\subsection{Advanced-Drive - 0x04}
+Der Advanced-Drive-Befehl, der den Befehlscode \textbf{0x04} besitzt, verhält sich grundsätzlich
 wie der normale Drive-Befehl. Er bietet allerdings mehr Möglichkeiten für den Einsatz der Trigger.
 Wird der Befehl ohne Trigger
 verwendet, so ist er mit dem Drive-Befehl identisch. Werden diese jedoch verwendet,
@@ -214,11 +222,11 @@ zu erteilen, die entweder eine bestimmte Strecke oder eine bestimmte Zeit fahren
 \end{center}
 \end{table}
 
-\subsection{SetPID}
+\subsection{SetPID - 0x05}
 Das PID-Modul benutzt mehrere Parameter, um den Fehlerausgleich durchzuführen. Diesen
 Parametern sind im Programmcode bereits Standardwerte zugewiesen worden. Es kann aber
 vonnöten sein, diese Parameter anzupassen. Dafür ist der SetPID-Befehl erforderlich.
-Dieser besitzt den Befehlscode 0x05. Seine Länge beträgt immer 9 Bytes. Es müssen
+Dieser besitzt den Befehlscode \textbf{0x05}. Seine Länge beträgt immer 9 Bytes. Es müssen
 alle Werte dem SetPID-Befehl übergeben werden. Jeder Wert benötigt 2 Bytes.
 Die Werte können auch negativ sein. Sie werden in der Reihenfolge angegeben,
 wie sie im oberen Teil der Tabelle \ref{protocol_setpid} zu finden sind.
@@ -242,16 +250,16 @@ Timo Klingeberg \cite{STUD_TIMO} nachgelesen werden.
 		\hline
 	\end{tabularx}\\
 	\\
-	\begin{tabularx}{\linewidth}{|l|X|}
+	\begin{tabularx}{\linewidth}{|l|c|X|}
 		\hline
-		\textbf{Option} & \textbf{Bitmaske} \\
+		\textbf{Option} & \textbf{Bitmaske} & \textbf{resultierendes Kommando-Byte} \\
 		\hline
 		\hline
-		linkes Rad	& 0x00 \\
+		linkes Rad	& 0x00 & 0x05 \\
 		\hline
-		rechtes Rad	& 0x10 \\
+		rechtes Rad	& 0x10 & 0x15 \\
 		\hline
-		beide Räder & 0x20 \\
+		beide Räder & 0x20 & 0x25 \\
 		\hline
 	\end{tabularx}
 	\end{tabular}
@@ -259,10 +267,10 @@ Timo Klingeberg \cite{STUD_TIMO} nachgelesen werden.
 \end{center}
 \end{table}
 
-\subsection{Option}
-Der Option-Befehl besitzt den Befehlscode 0x06 und hat eine Länge von 2 Bytes.
+\subsection{Option - 0x06}
+Der Option-Befehl besitzt den Befehlscode \textbf{0x06} und hat eine Länge von 2 Bytes.
 Durch ihn können bestimmte Variablen auf der Motorplatine während der Laufzeit
-geändert werden. Momentan kann damit das ABS angepasst werden. Nach dem
+geändert werden. Momentan kann damit das ABS (siehe Kapitel \ref{chapter_abs}) angepasst werden. Nach dem
 Kommando-Byte folgt der neue Wert der Variablen.
 \begin{table}[htb]
 \begin{center}

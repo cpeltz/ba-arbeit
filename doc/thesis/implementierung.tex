@@ -9,8 +9,13 @@ Abhängigkeiten im Code.
 \section{Die Hauptschleife}
 Die Hauptschleife ist in dieser Implementierung eine Endlosschleife, da die Beendigung dieser
 Schleife sonst dazu führen würde, dass das System nicht mehr reagiert.
-Wie in Abb. \ref{main_loop} zu sehen ist, werden in der Hauptschleife vier wichtige Funktionen
+Wie in Abb. \ref{impl_main_loop} zu sehen ist, werden in der Hauptschleife vier wichtige Funktionen
 aufgerufen.
+\begin{figure}[h]
+ \centering
+ \scalebox{0.5}{\includegraphics{pictures/main_loop_code.png}}
+ \caption{\label{impl_main_loop}Die Hauptschleife}
+\end{figure}
 
 \subsection{process\_orders()}
 Die process\_\-orders()\--Funktion bearbeitet die Befehle, die bereits in der Queue sind. Dafür holt
@@ -30,7 +35,7 @@ Funktion zum aktiven Bremsen auf. Das aktive Bremsen wird in Kapitel \ref{chapte
 Wenn ein LCD angeschlossen ist, können dort Informationen ausgegeben werden.
 Der Anschluss des LCD wird dem System mit einem DIP-Schalter auf der Platine mitgeteilt.\\
 Da das synchrone Aktualisieren des LCD sehr viel Zeit benötigt (vgl. Kapitel \ref{chapter_lcd_problem}), wird
-während dieser Funktion maximal ein Zeichen an das LCD geschickt.
+pro Aufruf dieser Funktion maximal ein Zeichen an das LCD geschickt.
 Dies wird durch Abfrage des Busy-Flags erreicht, welches signalisiert, dass das LCD noch
 beschäftigt ist. Falls es nicht gesetzt ist und noch Daten zu aktualisieren sind,
 wird das nächste Zeichen an das LCD gesendet.\\
@@ -41,7 +46,7 @@ die lcd\_\-update\_\-info()-Funktion auf, die diese Informationen in einem Puffe
 gibt die lcd\_\-update\_\-screen()-Funktion den Inhalt dieses Puffers an das LCD weiter.\\
 Befehle, die innerhalb eines Hauptschleifendurchlaufs abgearbeitet sind, werden nicht ausgegeben und
 generieren auch keinen Aufruf von lcd\_\-update\_\-info(). Das ist nötig, weil diese Befehle zu schnell abgearbeitet
-werden. Es könnten mitunter vier bis fünf dieser Befehle abgearbeitet werden, bevor das LCD auch nur einmal vollständig
+werden. Es könnten zwischenzeitlich vier bis fünf dieser Befehle abgearbeitet werden, bevor das LCD auch nur einmal vollständig
 aktualisiert werden kann.
 
 \subsection{parser\_update()}
@@ -58,14 +63,14 @@ oder bestehende verändert werden sollen.
 
 \subsection{queue\_update()\label{chapter_queue_update}}
 Diese Funktion führt Wartungsarbeiten an der Befehlswarteschlange (Queue) durch. Das beinhaltet, neue
-Befehle beim Parser-Modul abzuholen und diese korrekt einzureihen. Es gibt zwei Möglichkeiten, wie die Queue
-diese neuen Befehle einreihen kann. Zum einen als normale Befehle, die einer nach dem anderen abgearbeitet werden,
+Befehle beim Parser-Modul abzuholen und diese korrekt einzureihen. Es gibt zwei Möglichkeiten, wie die
+neuen Befehle an die Queue angereiht werden können. Zum einen als normale Befehle, die einer nach dem anderen abgearbeitet werden,
 zum anderen als priorisierter Befehl. Es kann nur ein priorisierter Befehl in der Queue sein. Die Befehle werden
 umgehend in der nächsten Haupt\-schleifen\-iteration ausgeführt. In die Kategorie der priorisierten Befehle fallen
 alle Queue-Kontroll-Befehle, wie z.B. pausieren, löschen, aktuellen Befehl verwerfen etc. (vgl. Kapitel \ref{chapter_protokoll}).
 
 \section{Das Aktive-Brems-System (ABS)\label{chapter_abs}}
-Das aktive Bremssystem soll bewirken, dass die Räder im praktischen Betrieb ihre Position verlassen können.
+Das aktive Bremssystem soll dem entgegen wirken, dass die Räder im praktischen Betrieb ihre Position verlassen können.
 Dies wird realisiert, indem
 eine Referenz-Position für jedes Rad gespeichert wird. Während der Hauptschleife wird die tatsächliche Position mit
 der Referenz-Position verglichen. Für den Fall, dass diese Positionen nicht übereinstimmen, werden die Motoren mit einer
