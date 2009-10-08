@@ -80,12 +80,12 @@ void main() {
 		//order_set_type(&order, 0x16);
 		//order_add_params(&order, "1", (byte) 30);
 		//order_send(&order);
-		order_set_type(&order, ORDER_DRIVE_N_N);
+		/*order_set_type(&order, ORDER_DRIVE_N_N);
 		order_add_params(&order, "11", 0x40, 0x40);
-		send = order_send(&order);
-		/*order_set_type(&order, ORDER_DRIVE_P_P);
-		order_add_params(&order, "1122", 0x9c, 0x9c, (unsigned int)0x0100, (unsigned int)0x0100);
 		send = order_send(&order);*/
+		order_set_type(&order, ORDER_DRIVE_P_P);
+		order_add_params(&order, "1122", 0x9c, 0x9c, (unsigned int)0x0100, (unsigned int)0x0100);
+		send = order_send(&order);
 		//order_set_type(&order, 0x04);
 		//order_add_params(&order, "11", 0x64, 0x64);
 	//	order_set_type(&order, 0xa4);

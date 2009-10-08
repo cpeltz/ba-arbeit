@@ -217,11 +217,13 @@ void drive_brake_active_set_left(void) {
 	drive_brake_position[WHEEL_LEFT] = irq_Position[WHEEL_LEFT];
 }
 
+#include <string.h>
+
 /**
  * Testfunction to set the position for a specified wheel.
  * @todo test this out against the other three functions.
  */
-void drive_brake_active_set(uint8_t wheel) {
+/*void drive_brake_active_set(uint8_t wheel) {
 	switch(wheel) {
 		case WHEEL_BOTH:
 			memcpy(drive_brake_position, irq_Position, WHEEL_BOTH);
@@ -229,7 +231,7 @@ void drive_brake_active_set(uint8_t wheel) {
 			drive_brake_position[wheel] = irq_Position[wheel];
 			break;
 	}
-}
+}*/
 
 /**
  * Handles active braking for the right wheel.

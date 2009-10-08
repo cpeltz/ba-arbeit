@@ -101,7 +101,7 @@ void control_instruction(order_t *order) {
 	// Remove the priority Order from Queue
 	queue_clear_priority();
 	// Set Position for the ABS
-	drive_brake_active_set();
+	drive_brake_active_set(/*WHEEL_ALL*/);
 }
 
 /**

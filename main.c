@@ -208,7 +208,9 @@ void process_orders(void) {
 				debug_WriteString_P(PSTR("main.c : process_orders() :  Order has status = DONE\n"));
 
 			// Set the current Position as reference position for the ABS
-			drive_brake_active_set();
+			pin_set_C(4);
+			drive_brake_active_set(/*WHEEL_ALL*/);
+			pin_clear_C(4);
 			// Remove the Order, as it is done
 			queue_pop();
 		}
@@ -239,6 +241,7 @@ int main(void) {
 		print_startup();
 
 	while(1) {
+		pin_toggle_A(0);
 		// Copy global timer flags to a local copy, which will be used throughout the program.
 		// This is done to not miss a timer tick.
 		local_time_flags = timer_global_flags;
@@ -247,24 +250,32 @@ int main(void) {
 		// Processes the next or current order
 		if (DEBUG_ENABLE)
 			debug_WriteString_P(PSTR("main.c : main() :  process_orders()\n"));
+		pin_set_A(1);
 		process_orders();
+		pin_clear_A(1);
 
 		// If a LCD is pluged in we get nice status messages on it
 		if (LCD_PRESENT) {
 			if (DEBUG_ENABLE)
 				debug_WriteString_P(PSTR("main.c : main() :  lcd_update_screen()\n"));
+			pin_set_A(2);
 			lcd_update_screen();
+			pin_clear_A(2);
 		}
 
 		// Update the order parser
 		if (DEBUG_ENABLE)
 			debug_WriteString_P(PSTR("main.c : main() :  parser_update()\n"));
+		pin_set_A(3);
 		parser_update();
+		pin_clear_A(3);
 
 		// Housekeeping for the order queue
 		if (DEBUG_ENABLE)
 			debug_WriteString_P(PSTR("main.c : main() :  queue_update()\n"));
+		pin_set_A(4);
 		queue_update();
+		pin_clear_A(4);
 	}
 
 	// Should be never reached

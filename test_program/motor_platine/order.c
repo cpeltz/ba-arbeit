@@ -22,9 +22,9 @@ unsigned char order_send(order_t *order) {
 
 unsigned char order_bytes_to_recv(order_t *order) {
 	switch(order->dat[0]) {
-		case ORDER_REGISTER_LEFT_SPEED:
-		case ORDER_REGISTER_RIGHT_SPEED:
-		case ORDER_REGISTER_QUEUE_SIZE:
+		case ORDER_QUERY_LEFT_SPEED:
+		case ORDER_QUERY_RIGHT_SPEED:
+		case ORDER_QUERY_QUEUE_SIZE:
 			return 1;
 		default:
 			return 0;

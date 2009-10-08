@@ -11,7 +11,7 @@
  *	This file holds many global definitions used through the program.
  */
 
-#define VERSION "Ver. 3.2.5.0005"
+#define VERSION "Ver. 3.2.6.0000"
 
 #define INPUT_DDR               DDRB
 #define INPUT_PORT              PORTB

@@ -41,6 +41,7 @@ uint8_t timer_global_flags = 0;
  * The interrupt which gets called every 100ms.
  */
 ISR(TIMER1_COMPC_vect) {
+	pin_set_A(6);
 	// ISR wird alle 100 Millisekunden ausgeführt
 	OCR1C = TCNT1 + 25000;
 	// Neuen Wert für Compare Match C setzen
@@ -67,6 +68,7 @@ ISR(TIMER1_COMPC_vect) {
 		timer_1s_counter += 1;
 		timer_100ms_counter = 0;
 	}
+	pin_clear_A(6);
 }
 
 /**
