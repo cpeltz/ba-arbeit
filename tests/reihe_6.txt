@@ -1,0 +1,62 @@
+Datum: 2009-10-08
+Version: 3.2.5.000x
+
+Compiliert ohne -g und mit -O2 -finline-functions
+LCD: an
+
+Port-Belegung:
+A0: main-loop (toggle)
+A1: process_orders()
+A2: lcd_update_screen()
+A3: parser_update()
+A4: queue_update()
+A5: I2C Interrupt
+A6: 100ms Interrupt
+A7: 
+C0: 
+C1: 
+C2: 
+C3: 
+C4: 
+C5: 
+C6: 
+C7: 
+
+Einzelne Messungen:
+
+drive_brake_active_set:
+neu: 4,108 us
+alt: 3,290 us
+
+Idle, LCD an, DEBUG aus, I2C an, AB:EIT
+A0 24,858 us
+ |- A1 8,375 us
+ |- A2 5,583 us
+ |- A3 5,583 us
+ |- A4 4,187 us
+
+ABS aktiv im Idle Status, ansonsten wie oben
+A0 42,473 us
+ |- A1 26,221 us
+ |- A2 5,484 us
+ |- A3 5,683 us
+ |- A4 4,686 us
+
+LCD aus, Byte im Parser, Befehl bereit
+A0 119,143 us
+ |- A1 18,544 us
+  |- A5 6,381 us
+ |- A2 < 40 ns
+ |- A3 47,258 us
+ |- A4 52,443 us
+
+LCD an, Befehl in Queue, aber noch nicht gestartet
+A0 118,644 us
+ |- A1 11,167 us
+ |- A2 97,109 us
+  |- A5 2,193 us
+ |- A3 5,783 us
+ |- A4 3,988 us
+
+I2C-Bus-Interrupt: 6,600 us bzw 2,193 us (die zweite Zahl ist für den STOP-Interrupt)
+100ms Int: 5,583 us
