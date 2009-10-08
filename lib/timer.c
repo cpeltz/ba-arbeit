@@ -42,6 +42,7 @@ uint8_t timer_global_flags = 0;
  */
 ISR(TIMER1_COMPC_vect) {
 	pin_set_A(6);
+	PORTG ^= (1 << PG2);
 	// ISR wird alle 100 Millisekunden ausgeführt
 	OCR1C = TCNT1 + 25000;
 	// Neuen Wert für Compare Match C setzen
