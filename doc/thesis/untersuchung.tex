@@ -23,7 +23,7 @@ Mess-Overhead so gering wie möglich zu halten.
 \end{table}
 Wie hier beschrieben, sind die Zeiten für die Ausführung der Instruktionen
 -- setzen, löschen und umschalten von einzelnen Pins -- ziemlich gering.
-Doch insbesondere bei den Messungen mit einem leistungsfähigen und
+Doch vor allem bei den Messungen mit einem leistungsfähigen und
 sehr genauen Oszilloskop konnte herausgefunden werden, dass der eigentliche
 Wechsel der Spannung am Pin verhältnismäßig langsam durchgeführt wird.
 Insbesondere das Abfallen der Spannung, also bei einer fallenden Flanke,
@@ -73,7 +73,7 @@ umgeben.
 	\\
 	\begin{tabularx}{\textwidth}{|c||R|R|X|}
 		\hline
-		Hauptschleife         & 47,856 \textmu{}s      & 42,473 \textmu{}s       & ABS aktiv im Idle Status, ansonsten wie oben \\ \hline
+		Hauptschleife         & 47,856 \textmu{}s      & 42,473 \textmu{}s       & ABS aktiv im Idle-Status, ansonsten wie oben \\ \hline
 		process\_orders()     & 31,904 \textmu{}s      & 26,221 \textmu{}s       & \\ \hline
 		lcd\_update\_screen() &  3,988 \textmu{}s      &  5,484 \textmu{}s       & \\ \hline
 		parser\_update()      &  3,988 \textmu{}s      &  5,683 \textmu{}s       & \\ \hline
@@ -83,8 +83,8 @@ umgeben.
 	\begin{tabularx}{\textwidth}{|c||R|R|X|}
 		\hline
 		Hauptschleife         & 718,843 \textmu{}s     & 119,143 \textmu{}s      & LCD aus, Byte in Parser, Befehl bereit \\ \hline
-		process\_orders()     &  39,880 \textmu{}s     &  18,544 \textmu{}s      & I2C-Bus ISR (Daten) aufgetreten \\ \hline
-		lcd\_update\_screen() &   0,997 \textmu{}s     &  <0,040 \textmu{}s      & \\ \hline
+		process\_orders()     &  39,880 \textmu{}s     &  18,544 \textmu{}s      & I2C-Bus-ISR (Daten) aufgetreten \\ \hline
+		lcd\_update\_screen() &   0,997 \textmu{}s     &  $<$0,040 \textmu{}s      & \\ \hline
 		parser\_update()      & 175,474 \textmu{}s     &  47,258 \textmu{}s      & \\ \hline
 		queue\_update()       & 505,484 \textmu{}s     &  52,443 \textmu{}s      & \\ \hline
 	\end{tabularx} \\
@@ -101,9 +101,9 @@ umgeben.
 	\\
 	\begin{tabularx}{\textwidth}{|c||R|R|X|}
 		\hline
-		I2C-Bus ISR           & 4,586 \textmu{}s       & 6,600 \textmu{}s        & Adresse empfangen \\ \hline
-		I2C-Bus ISR           & 21,934 \textmu{}s      & 6,600 \textmu{}s        & Daten empfangen \\ \hline
-		100ms ISR             & 8,076 \textmu{}s       & 5,583 \textmu{}s        & \\ \hline
+		I2C-Bus-ISR           & 4,586 \textmu{}s       & 6,600 \textmu{}s        & Adresse empfangen \\ \hline
+		I2C-Bus-ISR           & 21,934 \textmu{}s      & 6,600 \textmu{}s        & Daten empfangen \\ \hline
+		100ms-ISR             & 8,076 \textmu{}s       & 5,583 \textmu{}s        & \\ \hline
 	\end{tabularx} \\
 	\end{tabular}
 	\caption{\label{erste_messung} Ergebnisse der Messungen vor und nach den Code-Optimierungen}
@@ -125,7 +125,7 @@ Das Aktualisieren erfolgt zwar recht selten, nämlich nur, wenn ein neuer Befehl
 bei drei Millisekunden Latenz wird die Reaktion des Systems auf Ereignisse negativ beeinflusst.
 So könnten während der drei Millisekunden ungefähr zwölf Bytes auf dem I2C-Bus eintreffen.
 Dies wären im schlimmsten Fall sechs eigenständige Befehle.
-Wenn diese Befehle priorisierte Befehle sind, könnte sich das System anders als erwartet verhalten.\\
+Wenn diese Befehle priorisierte Befehle sind, könnte sich das System anders verhalten als erwartet .\\
 Zur Lösung dieses Problems musste die Arbeitsweise des LCD, welches durch eine fertige Programm-Bibliothek
 gesteuert wird, analysiert werden. 
 Dabei wurde herausgefunden, dass die Funktionen, die Daten auf das LCD ausgeben,
@@ -319,13 +319,13 @@ von 8 \textmu{}s auf. Somit werden zwischen zwei Interrupts der Hall-Sensoren im
 durchgeführt.
 
 \section{Vergleich mit der Vorläufer-Software}
-Der harte Vergleich mit Werten der Vorläufer-Software mit der in dieser Arbeit geschriebenen Software ist
-nur schwer möglich, da das zugrunde liegende Design von beiden Projekten so unterschiedlich ist, dass hauptsächlich
-die Dauer der Hauptschleife eine Idee davon geben kann, inwiefern die eine Software schneller arbeitet als die Andere
+Der strenge Vergleich zwischen der Vorläufer-Software und der in dieser Arbeit geschriebenen Software ist
+nur sehr bedingt möglich. Das zugrunde liegende Design von beiden Projekten ist so unterschiedlich, dass hauptsächlich
+die Dauer der Hauptschleife andeuten kann, inwiefern die eine Software schneller arbeitet als die andere
 (siehe Tabelle \ref{vergl_speed}).\\
-Zusätzlich kann man noch den Speicherfußabdruck der Systeme vergleichen (siehe Tabelle \ref{vergl_speicher}). Hierbei
-fällt auf, dass der generierte Maschinencode im Vergleich zum Vorläufer etwas größer ist, was aber unter Anbetracht
-der benutzten Compiler-Flags bedeutet, dass der Code mit gleichen Flags kleiner wäre als das Vorläufer. Dies ist
+Zusätzlich kann man noch den Speicherbedarf der Systeme vergleichen (siehe Tabelle \ref{vergl_speicher}). Hierbei
+fällt auf, dass der generierte Maschinencode im Vergleich zum Vorläufer etwas größer ist. In Anbetracht
+der benutzten Compiler-Flags bedeutet das aber, dass der Code mit gleichen Flags kleiner wäre als das Vorläufer. Dies ist
 auch demonstriert worden, indem die Vorläufer-Software mit den Compiler-Flags der jetzigen Software übersetzt
 wurde.
 \begin{table}[htb]
@@ -337,8 +337,8 @@ wurde.
 		Data (Vorläufer)& 1952 Bytes (23,8\%) \\ \hline \hline
 		Program (Vorläufer + mod. Makefile) & 17808 Bytes (6,8\%)  \\ \hline
 		Data (Vorläufer + mod. Makefile) & 1952 Bytes (23,8\%) \\ \hline \hline
-		Program (Jetzt)& 15362 Bytes (5,9\%) \\ \hline
-		Data (Jetzt)& 1248 Bytes (15,2\%) \\ \hline
+		Program (aktuell)& 15362 Bytes (5,9\%) \\ \hline
+		Data (aktuell)& 1248 Bytes (15,2\%) \\ \hline
 	\end{tabular}
 	\caption{\label{vergl_speicher} Vergleich der Speicheranforderung mit der Vorläufer-Software}
 \end{center}
@@ -349,22 +349,27 @@ wurde.
 		\hline
 		\textbf{Funktion} & \textbf{Zeit} & \textbf{Verb.} & \textbf{Bedingung} \\ \hline \hline
 		Hauptschleife (Vorläufer) & 121,885 \textmu{}s & & Idle \\ \hline
-		Hauptschleife (mod Vorl) & 121,635 \textmu{}s & -0,21\% & Idle \\ \hline
-		Hauptschleife (Jetzt) & 23,535 \textmu{}s & -80,69\% & Idle \\ \hline \hline
+		Hauptschleife (mod. Vorl.) & 121,635 \textmu{}s & -0,21\% & Idle \\ \hline
+		Hauptschleife (aktuell) & 23,535 \textmu{}s & -80,69\% & Idle \\ \hline \hline
 		Befehl (kurz, Vorläufer) & 3655 \textmu{}s (13 Byte) & & I2C-Bus, kürzester Befehl \\ \hline
-		Befehl (kurz, Jetzt) & 1023 \textmu{}s (4 Byte) & & I2C-Bus, kürzester Befehl \\ \hline
+		Befehl (kurz, aktuell) & 1023 \textmu{}s (4 Byte) & & I2C-Bus, kürzester Befehl \\ \hline
 		Befehl (lang, Vorläufer) & 7747 \textmu{}s (27 Byte) & & I2C-Bus, längster Befehl \\ \hline
-		Befehl (lang, Jetzt) & 2191 \textmu{}s (8 Byte) & & I2C-Bus, längster Befehl \\ \hline
+		Befehl (lang, aktuell) & 2191 \textmu{}s (8 Byte) & & I2C-Bus, längster Befehl \\ \hline
 	\end{tabular}
 	\caption{\label{vergl_speed} Vergleich der Geschwindigkeiten mit der Vorläufer-Software}
 \end{center}
 \end{table}
 Zusätzlich wurde noch verglichen, wie lange ein Befehl von der Praktikumsplatine bis zur Motorplatine benötigt.
-Hier ist die Übertragungsgeschwindigkeit des I2C-Busses das größte Hindernis und dank der höheren Datendichte
+Hier ist die Übertragungsgeschwindigkeit des I2C-Busses das größte Hindernis, aber dank der höheren Datendichte
 der Befehlesübertragung im neuen System ist dieses wesentlich schneller (vgl. Tabelle \ref{vergl_speed} und Abb.
  \ref{vergl_befehle}).
 \begin{figure}[htb]
- \centering
+\begin{center}
  \scalebox{0.35}{\includegraphics{pictures/vergl_befehle.png}}
  \caption{\label{vergl_befehle}Vergleich von mehreren Befehlen im alten und neuen Protokoll}
+\end{center}
+\textbf{Anmerkung:} Die vorliegende Abbildung zeigt sowohl den kürzesten als auch den längsten
+Drive-Befehl im Format des alten und neuen Protokolls. Eine Zahl oder ein Buchstabe, der von ' eingeschlossen ist
+repräsentiert den Wert eines Bytes. Dies verdeutlich die Reduktion der zu übertragenden Bytes
+und die erhöhte Informationsdichte des neuen Protokolls.
 \end{figure}
