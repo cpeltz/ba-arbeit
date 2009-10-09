@@ -1,0 +1,38 @@
+\chapter{Coding-Guidelines \label{appendix_cg}}
+\begin{verbatim}
+- Jede Einrückungsebene wird mit einem Tabulator eingerückt.
+- Nach Kommentarzeichen folgt ein Leerzeichen.
+- Geschweifte Klammern werden direkt nach dem entsprechenden
+  Statement geöffnet.
+Bsp.:
+if (a < b) {
+    // Do something
+} else if (a > b) {
+    // Do another thing
+} else {
+    // Whatever
+}
+
+- Funktionen werden nach folgendem Schema benannt:
+    modul_namensteil1_..._namensteilN();
+Bsp.:
+    io_obj_start();
+
+- Defines und globale Variablen (keine Datei-globale, nur
+  System-globale) werden GROß geschrieben.
+- Jede Funktion muss einen Doxygen-Kommentar haben.
+- Jede nicht-triviale Funktion muss im Code dokumentiert
+  werden.
+- Funktionen, die System-globale Variablen ändern müssen
+  auf diesen Umstand explizit in der Dokumentation
+  hinweisen.
+- Parameter sind, wenn möglich, als const zu deklarieren.
+- Lokale Variablen werden sinnvoll benannt und einzelne
+  Namensteile durch _ getrennt.
+Bsp.:
+    uint8_t inbuf_start;
+- Ein-Zeichen Variablen sollen nur für for-Schleifen
+  verwendet werden.
+- Der Typ der Variablen muss explizit angegeben werden,
+  mit Bit-größe. (uint8_t, int8_t, uint16_t, int16_t, etc)
+\end{verbatim}

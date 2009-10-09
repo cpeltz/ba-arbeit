@@ -155,23 +155,10 @@ Bitmaske erlaubt es, den Startwert des Differenzwertes festzulegen. Dieser ist d
 der einzige Parameter, 2 Bytes lang und vorzeichenbehaftet.\\
 Zur Konstruktion des Kommando-Bytes dieses Befehls wird der Befehlscode mit der Bitmaske
 für das linke Rad und für das rechte Rad verodert. Es muss eine der drei Möglichkeiten
-ausgewählt werden, die in dem oberen Teil der Tabelle \ref{protocol_drive} vorgestellt werden.
+ausgewählt werden, die in dem oberen Teil der Tabelle \ref{protocol_opt_drive} vorgestellt werden.
 Dies gilt nur, wenn nicht die Bitmaske 0x30 oder 0xc0 verwendet wird.
-\begin{table}[htb]
+\begin{table}[h]
 \begin{center}
-	\begin{tabular}{c}
-	\begin{tabularx}{\linewidth}{|p{2cm}|l|l|X|}
-		\hline
-		\textbf{Option} & \textbf{Bitmaske links} & \textbf{Bitmaske rechts} & \textbf{Beschreibung} \\
-		\hline \hline
-		Kein Trigger	& 0x00						   & 0x00						   & Endlosfahrt \\ \hline
-		Zeit-Trigger	& 0x10						   & 0x40						   & zeitlich begrenzte Fahrt\\ \hline
-		Positions-Trigger & 0x20					   & 0x80						   & fährt eine bestimmte Strecke \\ \hline
-		Fahrt mit Differenz-Ausgleich & 0x30		   & -						   & beide Räder fahren mit derselben Geschwindigkeit geradeaus \\ \hline
-		Differenz setzen & 0xc0					   	   & -						   & setzt die Differenz der Räder \\ \hline
-	\end{tabularx}\\
-	Optionen des Drive-Befehls
-	\\
 	\begin{tabularx}{\linewidth}{|l|l|l|X|}
 		\hline
 		\textbf{Byte-Anzahl} & \textbf{Option} & \textbf{Wertebereich} & \textbf{Beschreibung} \\
@@ -190,10 +177,29 @@ Dies gilt nur, wenn nicht die Bitmaske 0x30 oder 0xc0 verwendet wird.
 		2					 & Positions-Trigger & 0 bis 65535 &  Anzahl der Ticks für die Fahrt des rechten Rades\\
 		\hline
 	\end{tabularx}
-	\end{tabular}
-	\caption{\label{protocol_drive} Parameter des Drive-Befehls}
+	\caption{\label{protocol_para_drive} Parameter des Drive-Befehls}
 \end{center}
 \end{table}
+\begin{table}[h]
+\begin{center}
+	\begin{tabularx}{\linewidth}{|p{2cm}|l|l|X|}
+		\hline
+		\textbf{Option} & \textbf{Bitmaske links} & \textbf{Bitmaske rechts} & \textbf{Beschreibung} \\
+		\hline \hline
+		Kein Trigger	& 0x00						   & 0x00						   & Endlosfahrt \\ \hline
+		Zeit-Trigger	& 0x10						   & 0x40						   & zeitlich begrenzte Fahrt\\ \hline
+		Positions-Trigger & 0x20					   & 0x80						   & fährt eine bestimmte Strecke \\ \hline
+		Fahrt mit Differenz-Ausgleich & 0x30		   & -						   & beide Räder fahren mit derselben Geschwindigkeit geradeaus \\ \hline
+		Differenz setzen & 0xc0					   	   & -						   & setzt die Differenz der Räder \\ \hline
+	\end{tabularx}
+	\caption{\label{protocol_opt_drive} Optionen des Drive-Befehls}
+\end{center}
+\end{table}
+\begin{figure}[h]
+ \centering
+ \scalebox{0.5}{\includegraphics{pictures/drive_konzept.png}}
+ \caption{\label{prot_drive_concept}Das Grundlegende Konzept zur Erstellung eines Drive-Kommando-Bytes}
+\end{figure}
 
 \subsection{Advanced-Drive - 0x04}
 Der Advanced-Drive-Befehl, der den Befehlscode \textbf{0x04} besitzt, verhält sich grundsätzlich
@@ -204,7 +210,7 @@ müssen für jedes Rad zwei Trigger-Werte angegeben werden. Es werden also immer
 und Positions-Trigger verwendet. Je nach gewählter Option werden sie miteinander mit einem logischen
 UND oder einem logischen ODER verknüpft. So ist es möglich, Fahrbefehle
 zu erteilen, die entweder eine bestimmte Strecke oder eine bestimmte Zeit fahren.
-\begin{table}[htb]
+\begin{table}[h]
 \begin{center}
 	\begin{tabularx}{\linewidth}{|X|l|l|X|}
 		\hline
@@ -263,7 +269,7 @@ Timo Klingeberg \cite{STUD_TIMO} nachgelesen werden.
 		\hline
 	\end{tabularx}
 	\end{tabular}
-	\caption{\label{protocol_setpid} Optionen des SetPID-Befehls}
+	\caption{\label{protocol_setpid} Parameter und Optionen des SetPID-Befehls}
 \end{center}
 \end{table}
 

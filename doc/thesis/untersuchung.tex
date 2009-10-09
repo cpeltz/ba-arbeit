@@ -33,6 +33,17 @@ Das bedeutet, dass der Logik-Analyser eine gewisse Zeitspanne einen ''falschen''
 Wert misst (Er ist nicht physikalisch falsch, aber \textbf{logisch} falsch).
 Denn: Wenn die Spannung abfällt, ist der Pin schon nicht mehr gesetzt; der
 Logik-Analyser allerdings betrachtet diesen teilweise immer noch als gesetzt.
+\begin{figure}[h]
+\begin{center}
+ \scalebox{0.4}{\includegraphics{pictures/messbild.png}}
+ \caption{\label{impl_messbild} Reales und logisches Spannungsverhalten der Portpins}
+\end{center}
+ \textbf{Anmerkung:} In diesem Bild sind sowohl der reale Spannungsverlauf (gelb) als
+ auch der logische Spannungsverlauf (rosa) auf der selben zeitlichen Basis dargestellt.
+ Die horizontale braune Linie zeigt den Schwellenwert hat, ab dem der gemessene Portpin
+ als logisch ''high'' betrachtet wird. Man erkennt hier auch deutlich, dass die Spannung
+ beim zurücksetzen des Pins nur langsam abfällt.
+\end{figure}
 
 \section{Erste Messungen}
 Durch die ersten Messungen wurde der Startpunkt für die Untersuchung der Software
