@@ -39,10 +39,10 @@ Logik-Analyser allerdings betrachtet diesen teilweise immer noch als gesetzt.
  \caption{\label{impl_messbild} Reales und logisches Spannungsverhalten der Portpins}
 \end{center}
  \textbf{Anmerkung:} In diesem Bild sind sowohl der reale Spannungsverlauf (gelb) als
- auch der logische Spannungsverlauf (rosa) auf der selben zeitlichen Basis dargestellt.
- Die horizontale braune Linie zeigt den Schwellenwert hat, ab dem der gemessene Portpin
- als logisch ''high'' betrachtet wird. Man erkennt hier auch deutlich, dass die Spannung
- beim zurücksetzen des Pins nur langsam abfällt.
+ auch der logische Spannungsverlauf (pink) auf derselben zeitlichen Basis dargestellt.
+ Die horizontale braune Linie zeigt den Schwellenwert an, ab dem der gemessene Portpin
+ als logisch ''high'' betrachtet wird. Man erkennt hier deutlich, dass die Spannung
+ beim Zurücksetzen des Pins nur langsam abfällt.
 \end{figure}
 
 \section{Erste Messungen}
@@ -136,9 +136,9 @@ Funktion unnötig CPU-Zeit, die sinnvoll genutzt werden könnte.\\
 Mit diesem Wissen wurde die ursprüngliche lcd\_\-update\_\-screen()-Funktion in zwei Funktionen aufgeteilt. Die eine
 wurde lcd\_\-update\_\-info() genannt und aktualisiert die LCD-Informationen in einem Speicherpuffer. Die andere,
 immer noch lcd\_\-update\_\-screen() genannt, überprüft das Busy-Flag des LCDs und schreibt das nächste Zeichen aus
-dem Speicherpuffer aufs LCD, wenn es nicht gesetzt ist. Diese Lösung des Problems ist die effektivste, da die einzige
-elegantere und effizientere die Benutzung eines Interrupts auf Basis des Busy-Flags wäre. Dies ist aber aufgrund der
-Konstruktion des LCDs nicht möglich.
+dem Speicherpuffer aufs LCD, wenn es nicht gesetzt ist. Diese Lösung des Problems ist unter den gegebenen Bedingungen
+die effektivste. Die eleganteste und effizienteste Lösung wäre die Benutzung eines Interrupts auf Basis des Busy-Flags;
+dies ist aber aufgrund der Konstruktion des LCDs nicht möglich.
 \begin{table}[htb]
 \begin{center}
 	\begin{tabular}{|c||r|r|c|}
@@ -368,8 +368,8 @@ der Befehlesübertragung im neuen System ist dieses wesentlich schneller (vgl. T
  \scalebox{0.35}{\includegraphics{pictures/vergl_befehle.png}}
  \caption{\label{vergl_befehle}Vergleich von mehreren Befehlen im alten und neuen Protokoll}
 \end{center}
-\textbf{Anmerkung:} Die vorliegende Abbildung zeigt sowohl den kürzesten als auch den längsten
-Drive-Befehl im Format des alten und neuen Protokolls. Eine Zahl oder ein Buchstabe, der von ' eingeschlossen ist
-repräsentiert den Wert eines Bytes. Dies verdeutlich die Reduktion der zu übertragenden Bytes
+\textbf{Anmerkung:} Die vorliegende Abbildung zeigt den kürzesten und den längsten
+Drive-Befehl im Format des alten und des neuen Protokolls. Eine Zahl oder ein Buchstabe, die von ' eingeschlossen sind,
+repräsentieren den Wert eines Bytes. Die Abbildung verdeutlicht die Reduktion der zu übertragenden Bytes
 und die erhöhte Informationsdichte des neuen Protokolls.
 \end{figure}

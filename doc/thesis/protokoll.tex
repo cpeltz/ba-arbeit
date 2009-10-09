@@ -64,7 +64,7 @@ Die in Tabelle \ref{protocol_control} beschriebene Bitmaske wird mit dem Befehls
 und ergibt das Kommando-Byte. Bei manchen Befehlen können mehrere Optionen zur gleichen Zeit
 gewählt werden; dies ist hier nicht der Fall. Die Optionen dieses Befehls schließen sich
 gegenseitig aus. Die Länge der Befehle mit vorgenanntem Befehlscode beläuft sich auf 1 Byte, sodass
- nur das Kommando-Byte gesendet werden muss.
+lediglich das Kommando-Byte gesendet werden muss.
 \begin{table}[htb]
 \begin{center}
 	\begin{tabularx}{\linewidth}{|l|c|c|X|}
@@ -153,10 +153,11 @@ halten. Wegen der Geradeaus-Fahrt entfällt die zweite Geschwindigkeitsangabe, u
 die Bitmasken für die Trigger des rechten Rades gelten für beide Räder. Eine weitere
 Bitmaske erlaubt es, den Startwert des Differenzwertes festzulegen. Dieser ist dann
 der einzige Parameter, 2 Bytes lang und vorzeichenbehaftet.\\
-Zur Konstruktion des Kommando-Bytes dieses Befehls wird der Befehlscode mit der Bitmaske
-für das linke Rad und für das rechte Rad verodert. Es muss eine der drei Möglichkeiten
-ausgewählt werden, die in dem oberen Teil der Tabelle \ref{protocol_opt_drive} vorgestellt werden.
-Dies gilt nur, wenn nicht die Bitmaske 0x30 oder 0xc0 verwendet wird.
+Zur Konstruktion des Kommando-Bytes für diesen Befehls wird der Befehlscode mit der Bitmaske
+für das linke und rechte Rad verodert.
+Dabei ist zu beachten, dass eine der drei Möglichkeiten
+ausgewählt wird, die in dem oberen Teil der Tabelle \ref{protocol_opt_drive} vorgestellt werden.
+Das gilt nur, wenn keine die Bitmaske 0x30 oder 0xc0 verwendet wird.
 \begin{table}[h]
 \begin{center}
 	\begin{tabularx}{\linewidth}{|l|l|l|X|}
@@ -198,7 +199,7 @@ Dies gilt nur, wenn nicht die Bitmaske 0x30 oder 0xc0 verwendet wird.
 \begin{figure}[h]
  \centering
  \scalebox{0.5}{\includegraphics{pictures/drive_konzept.png}}
- \caption{\label{prot_drive_concept}Das Grundlegende Konzept zur Erstellung eines Drive-Kommando-Bytes}
+ \caption{\label{prot_drive_concept}Das grundlegende Konzept zur Erstellung eines Drive-Kommando-Bytes}
 \end{figure}
 
 \subsection{Advanced-Drive - 0x04}
