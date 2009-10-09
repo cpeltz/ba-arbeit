@@ -1,40 +1,40 @@
 \chapter{Zusammenfassung und Ausblick}
-Das Ergebnis dieser Arbeit ist, dass die Platine auf Befehle schnell und korrekt reagiert,
-solange diese nicht gravierend von den Spezifikation abweichen. Es gehen keine Interrupts verloren, und die
+Das Ergebnis dieser Arbeit zeigt, dass die Platine auf Befehle schnell und korrekt reagiert,
+solange diese nicht gravierend von der Spezifikation abweichen. Es gehen keine Interrupts verloren, und die
 Platine reagiert auf Änderungen in Bruchteilen einer Sekunde.\\
 Dennoch gibt es einige Punkte, die aufgrund der begrenzten Zeit nicht getestet oder implementiert
 werden konnten.\\
 So ist beispielsweise das Verhalten des ABS abhängig von der Dauer der Hauptschleife. Normalerweise
 ist dies kein Problem. Wenn allerdings Debug-Ausgaben vorgenommen werden, kann das ABS sich
-auf eine Art und Weise verhalten, die nicht erwünscht ist (dauerndes hin und her schwenken der Räder,
+auf eine Art und Weise verhalten, die nicht erwünscht ist (dauerndes Hin- und Herschwenken der Räder,
 da kein Schleifendurchlauf während des Nullpunktes stattfindet). Um dies zu verhindern, kann man
 einen Timer-Interrupt mit einer möglichst niedrigen Auflösung benutzen. Der Vorteil wäre hierbei,
 dass das ABS nicht mehr abhängig von der Geschwindigkeit der Hauptschleife ist. Außerdem ist das
-Abschalten des ABS gleichzusetzen mit dem Abschalten des zugehörigen Interrupts. Dieses wiederum
-eliminiert den Overhead des ABS komplett, wenn es abgeschaltet ist. Dieser Overhead wird auf
+Abschalten des ABS gleichzusetzen mit dem Abschalten des zugehörigen Interrupts. Das wiederum
+eliminiert den Overhead des ABS komplett, wenn dieses abgeschaltet ist. Der Overhead wird auf
 ungefähr 2,5 \textmu{}s pro Schleifendurchlauf geschätzt. Der Nachteil besteht in einem geringen
 Mehraufwand, da ein Funktionsaufruf durch eine Interrupt-Service-Routine ersetzt wird.\\
-Eine weitere Erweiterungsmöglichkeit für das System besteht in erhöhter Robustheit und erweiterter
-Fehlererkennung. So ist es möglich eintreffende Befehle auf komplette syntaktische Korrektheit
+Noch eine Erweiterungsmöglichkeit für das System besteht in erhöhter Robustheit und zusätzlicher 
+Fehlererkennung. So ist es möglich, eintreffende Befehle auf komplette syntaktische Korrektheit
 zu überprüfen und nur solche Befehle zu akzeptieren, die diese Tests bestehen. Diese Erweiterung
-muss allerdings möglichst effizient und einfach erweiterbar implementiert werden, um zum einen nicht
-entgegen der Designprinzipien des Systems zu handeln, als auch das Laufzeitverhalten nicht
+muss allerdings möglichst effizient und einfach ausbaubar implementiert werden, um einerseits nicht
+gegen die Designprinzipien des Systems zu handeln, andererseits das Laufzeitverhalten nicht
 schwerwiegend zu beeinträchtigen. Zusätzlich zu dieser Fehlererkennung kann die Robustheit des Systems
 durch ein Überwachungssystem erhöht werden, welches in periodischen Abständen, ermöglicht durch
 die eingebauten Timer, die einzelnen Module des Gesamtsystems auf Anzeichen von Problemen untersucht,
-wie z.B. volle Puffer, runaway Befehle, Parser Status Korruption und dergleichen. Um die Möglichkeit
-von runaway Code auszuschließen, ist die Benutzung des eingebauten Watchdog-Timers möglich, dessen
-timeout Wert allerdings sehr sorgfältig gewählt werden muss. Der timeout Wert darf nicht kleiner sein
-als die längste Hauptschleifen Iteration plus ein entsprechendes Sicherheitspolster.\\
-Ein Bereich, der während der Arbeit vollkommen vernachlässigt wurde, ist die Möglichkeit die
-Motorplatine in einen Idle-Modus zu schicken, in diesem Modus verbraucht die Platine wesentlich weniger
-Strom. Dies würde die Zeit verlängern, die eine Batterie an solch einem Fahrzeug hält, während die
-Praktikanten an ihm arbeiten und die Motorplatine längere Zeit nichts zu tun hat. In dieser Hinsicht
-wäre es auch interessant den Idle-Modus bzw. das Verhalten um dem Idle-Modus durch Befehle während der
+wie z.B. volle Puffer, runaway-Befehle, Parser-Status-Korruption und dergleichen. Um die Möglichkeit
+von runaway-Code auszuschließen, ist die Benutzung des eingebauten Watchdog-Timers möglich, dessen
+timeout-Wert allerdings sehr sorgfältig gewählt werden muss. Der timeout-Wert darf nicht kleiner sein
+als die längste Hauptschleifen-Iteration plus ein entsprechendes Sicherheitspolster.\\
+Ein Bereich, der während der Arbeit gänzlich ausgeklammert wurde, ist die Möglichkeit, die
+Motorplatine in einen Idle-Modus zu schicken. In diesem Modus verbraucht die Platine wesentlich weniger
+Strom. Das würde die Nutzungsdauer der Batterie erhöhen, wenn die Praktikanten an solch einem Fahrzeug arbeiten
+und die Motorplatine sich für längere Zeit im Leerlauf befindet. In dieser Hinsicht
+wäre es auch interessant, den Idle-Modus -- bzw. das Verhalten des Idle-Modus -- durch Befehle während der
 Laufzeit steuern zu können.\\
-Wie im Kapitel über die Laufzeituntersuchung beschrieben ist die Datenrate über den I2C-Bus der größte
+Wie im Kapitel über die Laufzeituntersuchung beschrieben wurde, ist die Datenrate über den I2C-Bus der größte
 limitierende Faktor bei der Übermittlung von Fahrbefehlen von der Praktikumsplatine an die
-Motorplatine. Damit dieses Problem minimiert wird kann man zum einen erwägen den I2C-Bus im ''high-speed''
-Modus operieren zu lassen, oder eine eigene Punkt-zu-Punkt Kommunikation mithilfe der freien Ports auf der
-Motorplatine zu realisieren. Solch ein Maßgeschneiderter Port mit einem eigens dafür entwickelten Protokoll
+Motorplatine. Damit dieses Problem minimiert wird, kann man zum einen erwägen, den I2C-Bus im
+''high-speed''-Modus operieren zu lassen, oder eine eigene Punkt-zu-Punkt-Kommunikation mithilfe der freien Ports auf der
+Motorplatine zu realisieren. Solch ein maßgeschneiderter Port mit einem eigens dafür entwickelten Protokoll
 könnte die Latenz, die durch das Senden des Befehls entsteht, erheblich verringern.

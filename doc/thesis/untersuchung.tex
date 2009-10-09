@@ -319,13 +319,13 @@ von 8 \textmu{}s auf. Somit werden zwischen zwei Interrupts der Hall-Sensoren im
 durchgeführt.
 
 \section{Vergleich mit der Vorläufer-Software}
-Der strenge Vergleich zwischen der Vorläufer-Software und der in dieser Arbeit geschriebenen Software ist
+Ein strenger Vergleich zwischen der Vorläufer-Software und der in dieser Arbeit geschriebenen Software ist
 nur sehr bedingt möglich. Das zugrunde liegende Design von beiden Projekten ist so unterschiedlich, dass hauptsächlich
 die Dauer der Hauptschleife andeuten kann, inwiefern die eine Software schneller arbeitet als die andere
 (siehe Tabelle \ref{vergl_speed}).\\
 Zusätzlich kann man noch den Speicherbedarf der Systeme vergleichen (siehe Tabelle \ref{vergl_speicher}). Hierbei
 fällt auf, dass der generierte Maschinencode im Vergleich zum Vorläufer etwas größer ist. In Anbetracht
-der benutzten Compiler-Flags bedeutet das aber, dass der Code mit gleichen Flags kleiner wäre als das Vorläufer. Dies ist
+der benutzten Compiler-Flags bedeutet das aber, dass der Code mit gleichen Flags kleiner wäre als der des Vorläufers. Dies ist
 auch demonstriert worden, indem die Vorläufer-Software mit den Compiler-Flags der jetzigen Software übersetzt
 wurde.
 \begin{table}[htb]
@@ -360,7 +360,7 @@ wurde.
 \end{center}
 \end{table}
 Zusätzlich wurde noch verglichen, wie lange ein Befehl von der Praktikumsplatine bis zur Motorplatine benötigt.
-Hier ist die Übertragungsgeschwindigkeit des I2C-Busses das größte Hindernis, aber dank der höheren Datendichte
+Hier ist die Übertragungsgeschwindigkeit des I2C-Busses das größte Hindernis; aber dank der höheren Datendichte
 der Befehlesübertragung im neuen System ist dieses wesentlich schneller (vgl. Tabelle \ref{vergl_speed} und Abb.
  \ref{vergl_befehle}).
 \begin{figure}[htb]
