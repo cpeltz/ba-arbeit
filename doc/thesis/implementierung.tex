@@ -39,7 +39,7 @@ pro Aufruf dieser Funktion maximal ein Zeichen an das LCD geschickt.
 Dies wird durch Abfrage des Busy-Flags erreicht, welches signalisiert, dass das LCD noch
 beschäftigt ist. Falls es nicht gesetzt ist und noch Daten zu aktualisieren sind,
 wird das nächste Zeichen an das LCD gesendet.\\
-Auf dem LCD werden die Versionsnummer der Betriebssoftware, der Status einiger globaler Variablen, und
+Auf dem LCD werden die Versionsnummer der Betriebssoftware, der Status einiger globaler Variablen und
 der aktuell ausgeführte Befehl angezeigt. Wenn nun ein Befehl bearbeitet wird, der länger als einen
 Schleifendurchlauf benötigt (das sind z.B. alle Fahr-Befehle), ruft die lcd\_\-update\_\-screen()-Funktion
 die lcd\_\-update\_\-info()-Funktion auf, die diese Informationen in einem Puffer konstruiert. Nach und nach
@@ -144,7 +144,7 @@ Der Leser muss eine entsprechende Kenntnis des Codes besitzen, damit die Ausgabe
 für die Fehlerbehebung benutzt werden können.\\
 Wegen der geringen Hilfe, die diese Ausgaben im Normalfall dem Praktikanten bieten,
 und der negativen Auswirkung der Ausgaben auf die Performance des Systems, wurde
-ein Prä-Prozessor-Technik angewandt, die zusammen mit der eingestellten Stufe der
+eine Prä-Prozessor-Technik angewandt, die zusammen mit der eingestellten Stufe der
 Code-Optimierung des Compilers die beiden Probleme löst.
 
 Durch diese Technik werden die Debug-Ausgaben nur dann kompiliert,

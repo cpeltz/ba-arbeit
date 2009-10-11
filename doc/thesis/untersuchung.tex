@@ -124,7 +124,7 @@ des LCD über drei Millisekunden. Damit ist diese Funktion die mit Abstand zeiti
 Das Aktualisieren erfolgt zwar recht selten, nämlich nur, wenn ein neuer Befehl gestartet wird; aber schon
 bei drei Millisekunden Latenz wird die Reaktion des Systems auf Ereignisse negativ beeinflusst.
 So könnten während der drei Millisekunden ungefähr zwölf Bytes auf dem I2C-Bus eintreffen.
-Dies wären im schlimmsten Fall sechs eigenständige Befehle.
+Dies wären im ungünstigsten Fall sechs eigenständige Befehle.
 Wenn diese Befehle priorisierte Befehle sind, könnte sich das System anders verhalten als erwartet .\\
 Zur Lösung dieses Problems musste die Arbeitsweise des LCD, welches durch eine fertige Programm-Bibliothek
 gesteuert wird, analysiert werden. 
@@ -208,7 +208,7 @@ Konsequenzen für die Geschwindigkeit des gesamten Systems, wie man in Tabelle \
 Während der Untersuchung der parser\_\-update()-Funktion wurde festgestellt, dass eine innere Funktion unverhältnismäßig
 viel Zeit benötigt, um ihre Aufgabe zu erfüllen. Dies war die io\_\-get()-Funktion, deren Aufgabe es ist, das nächste Byte
 im Eingangspuffer an den Aufrufer zurückzuliefern. Für diese simple Operation wurden über 36 \textmu{}s benötigt.
-Das ist länger, als die gesamte Hauptschleife im Idle Zustand braucht.
+Das ist länger, als die gesamte Hauptschleife im Idle-Zustand braucht.
 Eine genaue Untersuchung der Funktion ließ darauf schließen, dass die Anweisungen
 mit Modulo-Operatoren für diesen Aufwand verantwortlich waren. Das konnte zum einen durch Kontrolle des generierten
 Assembler-Codes, zum anderen durch das Auslagern der Modulo-Operatoren in eine eigene Zeile bestätigt werden. Der Compiler generiert
@@ -294,7 +294,7 @@ deaktiviert sind, bringt jede Ausgabe lediglich eine Erhöhung der Laufzeit um w
 \section{Verlieren/Verpassen von Interrupts}
 Während der Messungen kam die Frage auf, was passieren würde, wenn ein Interrupt auftritt und ein anderer bereits läuft.
 Wenn dies möglich sein sollte, was geschieht dann mit den beiden Interrupts? Geht eventuell sogar einer davon verloren?\\
-Die Antwort auf diese Fragen wurde von dem Handbuch des Mikrocontrollers \cite{ATMEGA_MANUAL} gegeben. Mit
+Die Antwort auf diese Fragen findet man in dem Handbuch des Mikrocontrollers \cite{ATMEGA_MANUAL}. Mit
 den richtigen Einstellungen, die bereits vorgenommen wurden, werden Interrupts, die während eines anderen
 Interrupts auftreten, gespeichert. Nach der Beendigung des laufenden Interrupts werden die anderen gespeicherten
 ihrer Priorität nach ausgeführt.\\

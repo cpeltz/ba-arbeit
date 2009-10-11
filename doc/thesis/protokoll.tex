@@ -153,11 +153,11 @@ halten. Wegen der Geradeaus-Fahrt entfällt die zweite Geschwindigkeitsangabe, u
 die Bitmasken für die Trigger des rechten Rades gelten für beide Räder. Eine weitere
 Bitmaske erlaubt es, den Startwert des Differenzwertes festzulegen. Dieser ist dann
 der einzige Parameter, 2 Bytes lang und vorzeichenbehaftet.\\
-Zur Konstruktion des Kommando-Bytes für diesen Befehls wird der Befehlscode mit der Bitmaske
+Zur Konstruktion des Kommando-Bytes für diesen Befehl wird der Befehlscode mit der Bitmaske
 für das linke und rechte Rad verodert.
 Dabei ist zu beachten, dass eine der drei Möglichkeiten
 ausgewählt wird, die in dem oberen Teil der Tabelle \ref{protocol_opt_drive} vorgestellt werden.
-Das gilt nur, wenn keine die Bitmaske 0x30 oder 0xc0 verwendet wird.
+Das gilt nur, wenn keine der Bitmasken 0x30 oder 0xc0 verwendet werden.
 \begin{table}[h]
 \begin{center}
 	\begin{tabularx}{\linewidth}{|l|l|l|X|}

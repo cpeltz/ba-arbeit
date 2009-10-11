@@ -57,7 +57,7 @@ Der Controller verfügt über 6 Timer. Zwei von diesen haben nur 8 Bits, die and
 Zusätzlich kann der Controller sechs Pulsweitenmodulationen betreiben, von
 denen zwei für die Servomotoren genutzt werden, die die Räder antreiben.
 \subsection{Ein-/Ausgabemöglichkeiten zur Praktikumsplatine}
-Die Motorplatine verfügt sowohl über einen UART-Port, als auch einen I2C-Bus \cite{I2C_WIKI}, über die
+Die Motorplatine verfügt sowohl über einen UART-Port als auch einen I2C-Bus \cite{I2C_WIKI}, über die
 die Praktikumsplatine mit der Motorplatine kommunizieren kann. Der UART-Port kann außerdem
 für die Ausgabe von Debug-Informationen benutzt werden, wenn diese aktiviert wird. Im Allgemeinen
 wird allerdings nur der I2C-Bus zur Kommunikation zwischen den beiden Platinen verwendet.
@@ -75,9 +75,9 @@ Diese Sensoren, die an den Motoren befestigt sind, lösen bei Bewegung der Räde
 Damit liefern sie Informationen, aus denen auf die Drehrichtung der Räder und die Strecke, die zurückgelegt wurde,
 geschlossen werden kann.
 Für jede Umdrehung eines Rades werden 360 Interrupts ausgelöst, d.h. für jedes Grad ein Interrupt. Je
-nach Größe des Raddurchmessers ist eine Steckenauflösung von wenigen Millimetern möglich.
+nach Größe des Raddurchmessers ist eine Streckenauflösung von wenigen Millimetern möglich.
 Durch die Rückmeldung der Sensoren ist es möglich, die Servomotoren nicht nur zu steuern, sondern zu regeln.
-Zusätzlich kann die Geschwindigkeit der einzelnen Rädern aus diesen Informationen ermittelt werden.
+Zusätzlich kann die Geschwindigkeit der einzelnen Räder aus diesen Informationen ermittelt werden.
 Die Informationen werden genutzt, um die Pulsweiten-Modulation zu regeln, mit der die Servomotoren angetrieben
 werden.\\
 Neben diesen zwei Ports zum Regeln der Motoren sind weitere zwei Ports nach außen gelegt. Mithilfe
@@ -87,10 +87,10 @@ Echtzeitverhaltens der Betriebssoftware durchgeführt werden.
 \subsection{LCD}
 Die Motorplatine verfügt über einen Anschluss für ein LCD. Dieses LCD kann zur autonomen Ausgabe
 von Informationen genutzt werden. Die Betriebssoftware nutzt diese Möglichkeit,
-wenn ein LCD angeschlossen ist, und der zugehörige DIP-Schalter aktiviert wurde.
+wenn ein LCD angeschlossen ist und der zugehörige DIP-Schalter aktiviert wurde.
 Es werden die aktuelle Version der Betriebssoftware, die Optionen und, falls vorhanden,
 der aktuelle Befehl in hexadezimaler Darstellung ausgegeben. Zu den Optionen zählen der Status der Debug-Ausgaben,
-welche Kommunikations-Einrichtung verwendet wird, und der Zustand des ABS. Diese Optionen
+welche Kommunikations-Einrichtung verwendet wird und der Zustand des ABS. Diese Optionen
 werden groß geschrieben, wenn sie aktiviert sind, und klein geschrieben, wenn sie
 deaktiviert sind. Die Betriebssoftware ist auf LCDs eingestellt, die 4 Zeilen und 20 Zeichen je Zeile besitzen.
 Sollte ein anderes LCD angeschlossen werden, ist eine korrekte Ausgabe -- ohne

@@ -3,7 +3,7 @@
 Die Betriebssoftware wurde in Module aufgeteilt. Ein Modul kann mehrere Code-Dateien
 umfassen. Eine Code-Datei ist aber nur einem Modul zugeordnet.
 Es wurde besonderer Wert darauf gelegt, dass Module so wenig wie möglich andere
-Module aufrufen, und dies auch nur durch Funktionen, nicht durch die Variablen.
+Module aufrufen und dies auch nur durch Funktionen, nicht durch die Variablen.
 Dieses Prinzip musste allerdings während der Optimierungs- und Testphase
 geringfügig modifiziert werden. Entweder wurde der Code dadurch unleserlich, oder
 die Relation Zeit zu Nutzen je Funktionsaufruf unangemessen hoch.
@@ -18,14 +18,14 @@ Anderenfalls ist dies ausdrücklich hervorzuheben.
 Neben diesen maximal fünf globalen Variablen, die das Systemverhalten verändern, gibt es vier
 weitere Variablen in zwei verschiedenen Modulen, die jeweils aus einem anderen
 Modul gesetzt werden. Dies sind die Trigger-Werte für die Position und
-die Zeit. Diese werden nur durch den Drive bzw. den Advanced-Drive-Befehl
+die Zeit. Diese werden nur durch den Drive- bzw. den Advanced-Drive-Befehl
 gesetzt und während der Motorunterbrechungen nach und nach dekrementiert.
 Auf die Module wird in den Unterkapiteln genauer eingegangen.
 \section{System}
 Das als System bezeichnete Modul beinhaltet die Hauptschleife der Betriebssoftware
 und die Initialisierung aller anderen Untermodule. Es benutzt nur wenige Module,
 um seine Aufgabe in einem abstrakten Maße zu erfüllen. Während der Hauptschleife, die
-in gekürzter Fassung (d.h., ohne Kommentare und Debug-Ausgaben) in Abb. \ref{main_loop} zu sehen ist,
+in gekürzter Fassung (d.h. ohne Kommentare und Debug-Ausgaben) in Abb. \ref{main_loop} zu sehen ist,
 werden nur einige wenige Funktionen aufgerufen. Dadurch werden die wichtigen Module auf dem
 aktuellen Stand gehalten. Außerdem wird es ermöglicht, dass Daten zwischen den Modulen fließen können.
 \begin{figure}[htb]
@@ -47,7 +47,7 @@ Die Wahl fiel dann auf
 die UART-Schnittstelle, da der Arbeitscomputer, an dem das Debugging durchgeführt wurde,
 einen solchen Anschluss besitzt, aber über keinen I2C-Anschluss verfügt.
 Mithilfe der Debugausgaben kann man protokollieren, was das System in jedem
-Schleifendurchlauf getan hat, und dadurch das Verhalten analysieren, um schlussendlich
+Schleifendurchlauf getan hat und dadurch das Verhalten analysieren, um schlussendlich
 Fehler aufzuspüren. 
 \section{Drive, Motor und PID}
 Das Motormodul seinerseits bindet das System an die Motoren und an die anderen nötigen
@@ -65,7 +65,7 @@ Servomotoren bei gleichen Parametern.
 Damit das Fahrverhalten aber stabiler wird, müssen diese Fehler korrigiert werden.
 Insbesondere bei ''Geradeaus-Fahrt'' sind selbst kleine Fehler schnell zu erkennen.
 \section{IO, I2C und UART}
-Das IO-Modul stellt für das System einheitliche Funktionen zur Verfügung um Daten zu lesen
+Das IO-Modul stellt für das System einheitliche Funktionen zur Verfügung, um Daten zu lesen
 oder zu schreiben. 
 Dabei spielt es für den Benutzer der Funktionen keine Rolle, welche Schnittstelle
 für die Kommunikation genutzt wird.
@@ -89,16 +89,16 @@ Durch das Queue-Modul ist es möglich, der Motorplatine mehrere Befehle direkt h
 zu übermitteln, die dann nacheinander ausgeführt werden. Außerdem sorgt die
 Queue dafür, dass Prioritäts-Befehle nicht angereiht werden, sondern bei der nächsten
 Iteration der Hauptschleife ausgeführt werden.
-\section{Timer, Parser und Options}
+\section{Timer, Parser und Option}
 Diese drei Module haben hauptsächlich eine unterstützende Funktion. So bietet das Timer-Modul
-die Möglichkeit in bestimmten zeitlichen Intervallen Befehle auszuführen. Benutzt wird
+die Möglichkeit, in bestimmten zeitlichen Intervallen Befehle auszuführen. Benutzt wird
 nur \textbf{ein} Timer, der alle 100 ms eine Unterbrechung auslöst. Er speichert die Anzahl
 der Räder-Ticks für das PID-Modul ab, welches mit diesen Informationen Nachregelungen durchführt.
 Außerdem erhöht dieser Timer nach je 10 Unterbechungen den Sekunden-Zähler.\\
 Der Parser holt eingegangene Bytes beim IO-Modul ab und konvertiert diese zu Befehlen. Dabei
 achtet er auf die Länge, die bestimmte Kommando-Bytes vorgeben (vgl. Kapitel \ref{chapter_protokoll}).
 Wenn ein Befehl vollständig empfangen ist, wird er von der Queue abgeholt und an die Warteschlange angereiht.\\
-Das Options-Modul beinhaltet die Einstellungen, die das Verhalten des gesamten Systems beeinflussen, wie
+Das Option-Modul beinhaltet die Einstellungen, die das Verhalten des gesamten Systems beeinflussen wie
 z.B., ob Debugging-Ausgaben aktiviert sind, mit welcher Geschwindigkeit das ABS (siehe Kapitel \ref{chapter_abs})
 standardmäßig bremst,
 die maximale Länge eines Befehls, oder die Größe der Ringpuffer für das Parser- und Queue-Modul.
