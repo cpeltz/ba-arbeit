@@ -10,50 +10,18 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{4pt}
 
-\title{Bachelor-Arbeit: Protokoll Spezifikation}
+\title{Benutzerhandbuch}
 \author{Christoph Peltz}
 
 \begin{document}
 \maketitle
-	\begin{tabularx}{\linewidth}{|l|l|l|l|X|}
-		\hline
-		\textbf{Version} & \textbf{Datum} & \textbf{Autor} 	& \textbf{Status} & \textbf{Kommentar} \\
-		\hline
-		\hline
-		1 				 & 25.02.2009 	  & Christoph Peltz & 				  & Erste Version \\
-		2 				 & 01.05.2009 	  & Christoph Peltz & 				  & Korrigierung und neue Features \\
-		3				 & 24.07.2009	  & Christoph Peltz &				  & Option und Advanced Drive Befehl \\
-		4				 & 26.07.2009	  & Christoph Peltz &				  & Befehls-Bibliothek Nutzung\\
-		\hline
-	\end{tabularx}
-
 \pagebreak
 \tableofcontents
 \pagebreak
-	\section{Aktuelle Lage und Ziele}
-
-	\subsection{Aktuelle Lage}
-
-	Momentan besteht das Protokoll der Motorplatine aus einer Zusammensetzung von String-Literalen, die eine bestimmt Form haben müssen.
-	Wie z.B. "d,n,n,100,100" lässt das Fahrzeug ohne PID-Korrektur fahren, die beiden Räder werden mit der Geschwindigkeit 100
-	betrieben und es werden keine Trigger verwendet. Diese Form des Protokolls ist für Menschen gut lesbar und auch das Eintippen
-	eines Befehles dieser Form ist sehr simpel, dies ist allerdings nicht der Fall für einen Computer, insbesondere die hier
-	verwendeten Praktikumsplatinen können nicht besonders effizient mit Zeichenketten umgehen. Außerdem verbrauchen diese unnötigen
-	Speicherplatz und auch dieser ist auf diesen eingebetten Systemen eine knappe Ressource mit der sehr sorgfältig umgegangen
-	werden sollte. Zusätzlich wird durch die Länge eines Befehls die Geschwindigkeit mit der dieser Befehl zum einen über den Bus
-	gesendet werden kann, als auch die Geschwindigkeit mit der er verarbeitet werden kann begrenzt. Denn die Befehle haben durch
-	die Verwendung von Zeichenketten und die begrenzte Benutzung von den möglichen Werten eine längere Verarbeitungsdauer (BEWEIS!).
-
-	\subsection{Ziele}
-
-	Ein Teilziel der Bachelor-Arbeit ist das Protokoll so zu ändern, dass die Prozessoren der Platinen besser damit umgehen können.
-	Das bedeutet zum einen, dass der Ansatz der Zeichenkettenrepräsentation der Befehle verworfen wird und stattdessen ein 
-	Byte-orientiertes Protokoll benutzt wird das eine wesentlich höhere Informationsdichte besitzt.
+	\section{Allgemeines zur Verwendung}
 
 
-	\section{Protokoll}
-
-	\subsection{Aufbau}
+	\subsection{Aufbau des Protokolls}
 
 	Wie bereits erwähnt ist das Protokoll Byte-orientiert, das bedeutet also dass die Informationen der Befehle keine
 	lesbare Repräsentation mehr besitzen, es sind einfach eine Aneinanderreihung von Bytes. Von besonderer Wichtigkeit
@@ -82,8 +50,12 @@
 		\caption{Schematischer Aufbau eines Befehls und zweier Beispiele (mittleres ist ein Reset, unteres ein Fahrbefehl ohne
 		Trigger mit den Geschwindigkeiten -128 und 10}
 	\end{figure}
+	\pagebreak
 
-	\subsection{Extended Instruction - 0x00}
+
+	\section{0x00 - Extended Instruction}
+
+	\subsection{Kurzbeschreibung}
 
 	Dieser Befehl ist für zukünftige Erweiterungen des Protokolls gedacht, falls mehr als 15 verschiedene Befehle
 	benötigt werden. Wird dieser Befehl angetroffen, so werden nachfolgende Bytes als zusätzliche Type-Bytes gewertet
@@ -91,7 +63,15 @@
 	In der aktuellen Implementierung wird nur das erste Type-Byte eingelesen, danach gilt der Befehl als beendet. Bei der
 	Ausführung des Befehls wird nichts getan, nur der Befehlsstatus auf DONE gesetzt.
 
-	\subsection{Control - 0x01}
+	\subsection{Referenz}
+
+	Bisher werden Befehle mit diesem Code werden nach einem Byte abgebrochen und in die Queue gestellt. Es existiert noch
+	keine Anwendung für diese Befehlsgattung.
+	\pagebreak
+
+	\section{0x01 - Control}
+
+	\subsection{Kurzbeschreibung}
 
 	Dieser Befehls ist eher eine Befehlsgattung, der sehr unterschiedliche Optionen zu Verfügung stellt. So wird der
 	Befehl benutzt um das Board und die Software zu reseten, die Ausführung des Aktuellen Befehls zu stoppen, den
@@ -101,46 +81,7 @@
 	Sie umgehen die Warteschlange und werden sogar während noch laufenden Befehlen ausgeführt. Sie erhalten den frühst
 	möglichen Zeitslot zur Ausführung.
 
-	\subsection{Queue - 0x02}
-
-	Durch diesen Befehl kann der Benutzer bestimmte Werte des Boards abfragen. Diese stellen dann Informationen
-	wie z.B. die aktuelle Geschwindigkeit oder den aktuellen Befehl zu Verfügung.
-
-	\subsection{Drive - 0x03}
-
-	Mithilfe des Drive-Befehls werden allgemeine Fahrbefehle angenommen. Zu den Optionen zählen die Benutzung von Triggern
-	auf Rad-Ebene, wie z.B. Kein Trigger, Positions-Trigger und Zeit-Trigger. Außerdem gibt es hier die Möglichkeit
-	mithilfe des Differntialausgleichs sehr genau geradeaus zu fahren.
-
-	\subsection{Advanced Drive - 0x04}
-
-	Der Advanced-Drive-Befehl ist in erster Linie ein Drive-Befehl mit erweiterten Trigger-Bedingungen. So ist es möglich
-	ein Rad entweder 100 ms oder 2000 Ticks fahren zu lassen oder aber das Rad erst dann annzuhalten, wenn es mindestens
-	100 ms und 2000 Ticks gefahren ist.
-
-	\subsection{SetPID - 0x05}
-
-	Durch diesen Befehl ist es möglich die Parameter für eine PID-Verbesserte-Fahrt selber zu setzen und somit für sich
-	anzupassen.
-
-	\subsection{Option - 0x06}
-
-	Dank des Option-Befehls ist es dem Benutzer möglich Werte für bestimmte Verhaltenskritische Variablen während des
-	Betriebs zu verändern.
-
-	\subsection{0x07 - 0x0f}
-
-	Diese Befehlscodes sind bisher nicht vergeben.
-
-
-	\section{Befehlsreferenz}
-
-	\subsection{Extended Instruction - 0x00}
-
-	Bisher werden Befehle mit diesem Code werden nach einem Byte abgebrochen und in die Queue gestellt. Es existiert noch
-	keine Anwendung für diese Befehlsgattung.
-
-	\subsection{Control - 0x01}
+	\subsection{Referenz}
 
 	\begin{tabularx}{\linewidth}{|l|l|X|}
 		\hline
@@ -164,7 +105,20 @@
 	Der Control-Befehl hat keine Parameter und ist damit konstant 1 Byte lang. Außerdem umgehet dieser Befehl die Warteschlange,
 	wird also sofort ausgeführt, auch während noch ein anderer Befehl bearbeitet wird.
 
-	\subsection{Query - 0x02}
+	\subsection{Beispiele}
+
+	Reset: 0x01 OR 0x10 = 0x11\\
+	Stop Drive: 0x01 OR 0x50 = 0x51
+	\pagebreak
+
+	\section{0x02 - Query}
+
+	\subsection{Kurzbeschreibung}
+
+	Durch diesen Befehl kann der Benutzer bestimmte Werte des Boards abfragen. Diese stellen dann Informationen
+	wie z.B. die aktuelle Geschwindigkeit oder den aktuellen Befehl zu Verfügung.
+
+	\subsection{Referenz}
 
 	\begin{tabularx}{\linewidth}{|l|l|X|}
 		\hline
@@ -186,9 +140,24 @@
 	nur ein Wert per Befehl abgefragt werden. Die Antwort auf solch eine Anfrage hat eine variable Länge, die ebenfalls aus
 	der Tabelle entnommen werden kann (sie ist in Byte angegeben).
 	Bei der Antwort mit dem Aktuellen Befehl gilt zu beachten, dass zweimal von der Platine gelesen werden muss. Die erste
-	Antwort ist immer 1 Byte lang und gibt an wie lang die zweite Antwort sein wird. Diese hält dann den eigentlichen Befehl.
+	Antw
+	ort ist immer 1 Byte lang und gibt an wie lang die zweite Antwort sein wird. Diese hält dann den eigentlichen Befehl.
+	\subsection{Beispiele}
 
-	\subsection{Drive - 0x03}
+	Anzahl der Befehle: 0x02 OR 0x30 = 0x32\\
+	Antwort (unter der Annahme, dass 5 befehle in der Queue sind): 0x05
+	\pagebreak
+
+
+	\section{0x03 - Drive}
+
+	\subsection{Kurzbeschreibung}
+
+	Mithilfe des Drive-Befehls werden allgemeine Fahrbefehle angenommen. Zu den Optionen zählen die Benutzung von Triggern
+	auf Rad-Ebene, wie z.B. Kein Trigger, Positions-Trigger und Zeit-Trigger. Außerdem gibt es hier die Möglichkeit
+	mithilfe des Differntialausgleichs sehr genau geradeaus zu fahren.
+
+	\subsection{Referenz}
 
 	Beim Drive Befehl sind die vier Optionsbits in zweimal zwei Bit unterteilt, die jeweils für ein Rad den Trigger angeben.
 
@@ -243,7 +212,24 @@
 	werden. Ein Wert gleich 0 setzt den Wert auf 0. Von 0 verschiedene Werte werden auf den aktuellen Differentialwert
 	addiert. Der Differntialwert darf einen wert zwischen -32768 bis 32767. Die Länge beträgt immer 3 Byte.
 
-	\subsection{Advanced Drive - 0x04}
+	\subsection{Beispiele}
+
+	Die Geschwindigkeit des linken Rades soll 100 sein, die des rechten -50. Das linke Rad soll einen Zeit- und das
+	rechte einen Positionstrigger verwenden. Die Zeit soll 500 betragen, die Position 10000.\\
+	Erstes Byte: 0x03 OR 0x10 OR 0x80 = 0x93\\
+	Gesamte Befehl: 0x93 0x64 0xce 0x01 0xf4 0x27 0x10
+	\pagebreak
+
+
+	\section{0x04 - Advanced Drive}
+
+	\subsection{Kurzbeschreibung}
+
+	Der Advanced-Drive-Befehl ist in erster Linie ein Drive-Befehl mit erweiterten Trigger-Bedingungen. So ist es möglich
+	ein Rad entweder 100 ms oder 2000 Ticks fahren zu lassen oder aber das Rad erst dann annzuhalten, wenn es mindestens
+	100 ms und 2000 Ticks gefahren ist.
+
+	\subsection{Referenz}
 
 	Ist identisch zu dem Drive Befehl, bis auf folgende Ausnahmen:
 	
@@ -273,9 +259,19 @@
 	\end{figure}
 	Wenn kein Trigger verwendet wird, benötigt der Befehl 3 Byte, wenn für beide Räder Trigger verwendet werden sind es im
 	maximal Fall 11 Byte.
-	
 
-	\subsection{SetPID - 0x05}
+	\subsection{Beispiele}
+	\pagebreak
+
+
+	\section{0x05 - SetPID}
+
+	\subsection{Kurzbeschreibung}
+
+	Durch diesen Befehl ist es möglich die Parameter für eine PID-Verbesserte-Fahrt selber zu setzen und somit für sich
+	anzupassen.
+
+	\subsection{Referenz}
 
 	Mithilfe dieses Befehls können die Reglergrößen für den PID-Regler eingestellt werden.
 
@@ -311,7 +307,18 @@
 
 	Die Länge des Befehls beträgt immer 9 Byte.
 
-	\subsection{Option - 0x06}
+	\subsection{Beispiele}
+	\pagebreak
+
+
+	\section{0x06 - Option}
+
+	\subsection{Kurzbeschreibung}
+
+	Dank des Option-Befehls ist es dem Benutzer möglich Werte für bestimmte Verhaltenskritische Variablen während des
+	Betriebs zu verändern.
+
+	\subsection{Referenz}
 
 	Der Option-Befehl dient dazu Verhaltenskritische Variablen während des Betriebs zu verändern.
 	Die oberen 4 Bit des Befehlsbytes geben an, welche Variable gesetzt werden soll. Anzumerken ist,
@@ -336,6 +343,10 @@
 	die 0x30 und 0x40 Varianten sind für die Einschränkung des Aktiven Bremsens, wenn es
 	aktiviert ist, verantwortlich. 0x10 wird, wenn ein Wert außerhalb des Wertebereichs
 	angegeben wird, den default-Wert benutzen. Momentan sind alle Option-Befehle 2 Byte lang.
+
+	\subsection{Beispiele}
+	\pagebreak
+
 	
 	\section{Verwendung der Befehls-Bibliothek}
 	
@@ -380,22 +391,5 @@
 	benutzt werden, wenn die Antwort der Platine eine variable Länge hat (so wie die Antwort auf den Query nach dem
 	aktuellen Befehl (current order) von dem der Befehl auch seinen Namen ableitet. Auch dieser Befehl gibt die Anzahl
 	der empfangenen Bytes zurück und speichert die empfangenen Daten ab dem zweiten Feld des dat-Arrays.
-
-	\section{Befehlsbeispiele}
-
-	\subsection{Control - 0x01}
-	
-	Reset: 0x01 OR 0x10 = 0x11\\
-	Stop Drive: 0x01 OR 0x50 = 0x51
-
-	\subsection{Query - 0x02}
-	Anzahl der Befehle: 0x02 OR 0x30 = 0x32\\
-	Antwort (unter der Annahme, dass 5 befehle in der Queue sind): 0x05
-
-	\subsection{Drive - 0x03}
-	Die Geschwindigkeit des linken Rades soll 100 sein, die des rechten -50. Das linke Rad soll einen Zeit- und das
-	rechte einen Positionstrigger verwenden. Die Zeit soll 500 betragen, die Position 10000.\\
-	Erstes Byte: 0x03 OR 0x10 OR 0x80 = 0x93\\
-	Gesamte Befehl: 0x93 0x64 0xce 0x01 0xf4 0x27 0x10
 
 \end{document}
