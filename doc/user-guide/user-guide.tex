@@ -5,6 +5,7 @@
 \usepackage[hyperindex=true]{hyperref}
 \usepackage{tabularx}
 \usepackage{graphics}
+\usepackage{textcomp}
 
 \setlength{\headheight}{27pt} % header with two lines
 \setlength{\parindent}{0pt}
@@ -23,23 +24,30 @@
 
 	\subsection{Aufbau des Protokolls}
 
-	Wie bereits erwähnt ist das Protokoll Byte-orientiert, das bedeutet also dass die Informationen der Befehle keine
-	lesbare Repräsentation mehr besitzen, es sind einfach eine Aneinanderreihung von Bytes. Von besonderer Wichtigkeit
-	ist das erste Byte eines Befehls, im folgenden Type-Byte genannt, da es sowohl die Art des Befehles spezifiziert, als
-	auch etwaige Optionen, die das Verhalten des Befehls beeinflussen oder vollkommen verändern können. Dazu ist das Type-Byte
-	logisch in zwei Teile unterteilt. Die ersten vier Bit (lies least significant bits) spezifizieren einen von 16 möglichen
-	Befehlen (inklusive des Reservierten Befehls 0x00, der für zukünftige Erweiterungen vorgesehen ist), die oberen vier Bit 
-	(lies most significant bits) können Optionen für den ausgewählten Befehl sein. Diese Optionen reichen von Einstellungen
-	für bestimmte Räder, über auswählen eines Unterbefehls bis hin zu einem völlig anderen Verhaltens des Befehles (siehe
-	die Option 0xc0 des Drive-Befehls (0x03)). Alle darauf folgenden Bytes sind Parameter (mit der einen Ausnahme des
-	0x00-Befehls, auch als Extended Instruction bezeichnet), deren Anzahl sich durch die Kombination von Befehl-Typ und
-	Befehl-Optionen ergibt.
-	Es gibt keine spezifischen Start und/oder Stop Muster, das Protokoll verlässt sich auf die ordentliche Übertragung
-	der Daten und auf die korrekte Dateninhalte. Es können nur fehlerhafte Type-Bytes erkannt und abgefangen werden, dies wird
-	allerdings in der Implementation zugunste der einfacheren Behandlung nur bei fehlerhaften Befehls-Typen (die unteren 4 bit) getan.
-	Fehlerhafte Optionen werden ignoriert.
-	Eine weitere Eigenschaft des Protokolls ist, dass ein bestimmter Befehl immer gleich viele Bytes benötigt und die Anzahl
-	der Bytes nicht von den Parametern abhängt (wie es im alten Protokoll der Fall war).
+	Das Protokoll ist Byte-orientiert und besteht aus Befehlen.
+	Ein Befehl muss mindestens ein Byte lang sein, seine
+	maximale Breite ist durch den Wert des Defines
+	ORDER\_TYPE\_MAX\_LENGTH in der option.h gegeben (Standard: 15).
+	Das erste Byte eines Befehls wird Kommando-Byte genannt und
+	besteht aus zwei Teilen. Der erste Teil wird Befehlscode
+	genannt und spezifiziert, welcher Befehl übermittelt wird.
+	Der zweite Teil wird Option-Teil genannt. In ihm werden
+	Optionen angegeben, die das Verhalten des Befehls modizifieren
+	können. Manche Befehle benötigen keine Optionen, um zu
+	funktionieren; andere hingegen schon. Die oberen (MSB) 4 Bit
+	des Kommando-Bytes sind für Optionen reserviert, die unteren
+	(LSB) 4 Bit für den Befehlscode. Die Bytes, die auf dem
+	Kommando-Byte folgen sind Parameter. Es gibt eine Ausnahme
+	diesr Regel: Der Befehl mit dem Befehlscode 0x00 kann mehrere
+	Kommando-Bytes besitzen, doch dies muss explizit implementiert
+	werden. Mehr hierzu findet man bei der Beschreibung des Befehls.
+	\\
+	Die Optionen, die bei den Befehlen angegeben sind, werden mit
+	dem Befehlscode verodert, um das Kommando-Byte zu erhalten.
+	Einige Optionen schließen sich gegenseitig aus, andere können
+	kombiniert werden. Die genaue Verwendung der Optionen wird
+	bei den einzelnen Befehlen genau erläutert.
+	\\
 	\begin{figure}[!ht]
 		\centering
 		\scalebox{0.3}{
@@ -50,6 +58,52 @@
 		\caption{Schematischer Aufbau eines Befehls und zweier Beispiele (mittleres ist ein Reset, unteres ein Fahrbefehl ohne
 		Trigger mit den Geschwindigkeiten -128 und 10}
 	\end{figure}
+	
+	\subsection{I2C-Bus}
+	
+	Die Adresse der Motorplatine am I2C-Bus ist 42. Die Motorplatine
+	antwortet nicht auf die General-Call Adresse des I2C-Bus. Bei
+	Befehlen, die eine Ausgabe zur Folge haben, muss die Praktikumsplatine
+	von der Motorplatine lesen. Die Motorplatine wird von selbst nicht
+	anfangen Daten über den I2C-Bus zu übermitteln. Außerdem muss der
+	Motorplatine genügend Zeit gelassen werden, um die Antwort auf
+	den übertragenen Befehl zu generieren und bereitzustellen (1 ms warten
+	sollte genügen, eventuell ist es auch möglich nur 200 \textmu{}s zu
+	warten).
+	
+	\subsection{UART-Port}
+	
+	Der UART-Port verwendet eine BAUD-Rate von 57600. Falls Debug-Ausgaben
+	eingestellt sind, werden diese über den UART-Port ausgegeben. Das
+	wir auch dann getan, wenn über UART Befehle empfangen werden. D.h.
+	mit aktivierten Debug-Ausgaben kann von der Praktikumsplatine keine
+	Werte ausgelesen werden (Antworten auf einen QUERY-Befehl zum Beispiel),
+	da die Debug-Ausgaben wie normale Antworten aussehen.
+	
+	\subsection{Kompilieren und Überspielen auf die Motorplatine}
+	
+	Soll eine angepasste Version der Betriebssoftware für die Motorplatine
+	kompiliert und auf diese überspielt werden, sind folgende Programme nötig:
+	\begin{itemize}
+		\item Der Quellcode (http://github.com/cpeltz/ba-arbeit)
+		\item git Versions-Kontroll-System (http://en.wikipedia.org/wiki/Git\_(software);
+		http://code.google.com/p/msysgit/)
+		\item gcc-avr (http://winavr.sourceforge.net/)
+	\end{itemize}
+	Mit dem Ende der zugehörigen Bachelor-Arbeit wird, an passenden stellen, ein ''Tag''
+	gesetzt. Nur ordentlich getagte commits sollten kompiliert werden, alle anderen
+	können mit höherer Wahrscheinlichkeit Fehler enthalten. Zuerst sollte sowohl
+	git als auch gcc-avr installiert werden und gcc-avr sollte in die PATH-Variable
+	eingetragen werden. Danach kann das git-Repository an der oben genannten Adresse
+	gecloned werden. Im Hauptverzeichniss des gecloneten Repositories gibt es eine
+	''Makefile''. Ein einfacher Aufruf von ''make'' kompiliert das Programm. Der Aufruf
+	"make program" kopiert das kompilierte Program über die serielle Schnittstelle,
+	die mit einem speziellen AVR-Programmier-Board verbunden sein muss, auf die
+	Motorplatine. Der Aufruf ''make clean'' entfernt alle kompilierten Dateien (ein
+	''git clean -f'' säubert das gesamte Repository). Wie genau die Hardware anzuschließen
+	ist kann in dem Benutzerhandbuch von Timo Klingeberg (http://www.ibr.cs.tu-bs.de/theses/broeke/SA\_Getriebemotorenansteuerung/) nachgelesen werden. Die Einstellungsschritte und
+	das Programm AVR-Studio sind für die Entwicklung allerdings nicht nötig.
+
 	\pagebreak
 
 
@@ -57,29 +111,49 @@
 
 	\subsection{Kurzbeschreibung}
 
-	Dieser Befehl ist für zukünftige Erweiterungen des Protokolls gedacht, falls mehr als 15 verschiedene Befehle
-	benötigt werden. Wird dieser Befehl angetroffen, so werden nachfolgende Bytes als zusätzliche Type-Bytes gewertet
-	und besonders behandelt.
-	In der aktuellen Implementierung wird nur das erste Type-Byte eingelesen, danach gilt der Befehl als beendet. Bei der
-	Ausführung des Befehls wird nichts getan, nur der Befehlsstatus auf DONE gesetzt.
+	Dieser Befehl ist für zukünftige Erweiterungen des Protokolls vorgesehen,
+	falls mehr als 15 verschiedene Befehle benötigt werden. Wird dieser
+	Befehlscode angetroffen, so werden nachfolgende Bytes als zusätzliche
+	Kommando-Bytes gewertet und besonders behandelt. In der aktuellen
+	Implementierung wird nur das erste Kommando-Byte eingelesen, danach gilt der
+	Befehl als beendet. Bei der	Ausführung des Befehls wird nichts getan,
+	nur der Befehlsstatus auf DONE gesetzt.
 
 	\subsection{Referenz}
 
-	Bisher werden Befehle mit diesem Code werden nach einem Byte abgebrochen und in die Queue gestellt. Es existiert noch
-	keine Anwendung für diese Befehlsgattung.
+	Bisher werden Befehle mit diesem Code werden nach einem Byte abgebrochen
+	und in die Queue gestellt. Es existiert noch keine Anwendung für diese
+	Befehlsgattung.
+	\\
+	Die Funktionen, die die Besonderheiten dieses Befehls behandeln, befinden
+	sich fast ausschließlich in der parse.c. Es ist die
+	parser\_extended\_order\_complete()-Funktion, die eine 1 zurück geben muss,
+	wenn der übergebene Befehl fertig empfangen wurde. Eventuell muss die
+	parser\_check\_order()-Funktion für den Befehl angepasst werden. Außerdem
+	muss die extended\_instruction()-Funktion in order\_functions.c implementiert
+	werden.
+	
 	\pagebreak
 
 	\section{0x01 - Control}
 
 	\subsection{Kurzbeschreibung}
+	
+	Der Control-Befehl wird benutzt, um verschiedene Aspekte der Motorplatine
+	zu kontrollieren. Dieser Befehl kann somit genutzt werden, um die
+	Motorplatine zurückzusetzen, den aktuellen Befehl anzuhalten, oder
+	um die Warteschlange zu steuern. Wichtig ist, dass dieser Befehl
+	ein priorisierter Befehl ist. Das bedeutet: Er wird nicht an die
+	Warteschlange angereiht, sondern wird umgehend nach Empfang in der
+	nächsten Hauptschleifen-Iteration ausgeführt. Der bisher ausgeführte Befehl
+	wird hierfür solange ausgesetzt, bis der priorisierte Befehl abgearbeitet
+	wurde. Die bisher implementierten Optionen des Control-Befehls benötigen
+	nur \textbf{eine} Hauptschleifen-Iteration. Es kann gleichzeitig nur
+	ein priorisierer Befehl bearbeitet werden. Dies ist normalerweise kein
+	Problem, da der kleinste Befehl über 500 \textmu{}s benötigt, um übertragen
+	zu werden. Es dauert aber normalerweise ungefähr 300 \textmu{}s bis solch
+	ein Befehl abgearbeitet wurde.
 
-	Dieser Befehls ist eher eine Befehlsgattung, der sehr unterschiedliche Optionen zu Verfügung stellt. So wird der
-	Befehl benutzt um das Board und die Software zu reseten, die Ausführung des Aktuellen Befehls zu stoppen, den
-	nächsten Befehl in der Warteschlange zu bearbeiten, einen Fahrstopp mit aktivem Bremsen auszuführen oder einfach die
-	Warteschlange zu leeren. 
-	Control-Befehle können nicht in die Warteschlange eingereiht werden und es kann nur eine gleichzeitig verarbeitet werden.
-	Sie umgehen die Warteschlange und werden sogar während noch laufenden Befehlen ausgeführt. Sie erhalten den frühst
-	möglichen Zeitslot zur Ausführung.
 
 	\subsection{Referenz}
 
@@ -88,41 +162,53 @@
 		\textbf{Option} & \textbf{Bitmaske} & \textbf{Beschreibung} \\
 		\hline
 		\hline
-		Reset 			& 0x10 				& Resetet die Hardware \\
+		Reset 			& 0x10 				& Zurücksetzen der Hardware \\
 		\hline
-		Stop Queue		& 0x20				& Der Aktuelle Befehl wird verworfen. Queue wird angehalten, aber nicht verworfen. \\
+		Stop Queue		& 0x20				& Der Aktuelle Befehl wird verworfen. Warteschlange wird angehalten, aber nicht verworfen. \\
 		\hline
-		Continue Queue	& 0x30				& Der nächste Befehl in der Queue wird ausgeführt. \\
+		Continue Queue	& 0x30				& Eine gestoppte Warteschlange wird fortgeführt. \\
 		\hline
-		Clear Queue		& 0x40				& Die Warteschlange wird gelöscht. \\
+		Clear Queue		& 0x40				& Der Inhalt der Warteschlange wird gelöscht. \\
 		\hline
-		Stop Drive		& 0x50				& Befehl wird angehalten, Fahrzeug geht zum aktiven Bremsen über. \\
+		Stop Drive		& 0x50				& Aktueller Befehl wird angehalten, Fahrzeug geht zum aktiven Bremsen über (falls aktiviert). \\
 		\hline
 	\end{tabularx}
 
-	Um auf das richtige Befehlsbyte zu kommen muss die Option mit dem Befehl verundet werden. Als Beispiel dient hier das Löschen
-	der Queue: 0x40 \& 0x01 = 0x41. Dies gilt für alle Befehle hier.
-	Der Control-Befehl hat keine Parameter und ist damit konstant 1 Byte lang. Außerdem umgehet dieser Befehl die Warteschlange,
-	wird also sofort ausgeführt, auch während noch ein anderer Befehl bearbeitet wird.
+	Die Optionen schließen sich gegenseitig aus, d.h. es kann nur eine der
+	Optionen gewählt werden. Der Control-Befehl ist 1 Byte lang, besteht also
+	nur aus dem Kommando-Byte. Dieser Befehl gehört zu den priorisierten
+	Befehlen. Er wird also nicht an die normale Warteschlange angereiht,
+	sondern während der nächsten Hauptschleifen-Iteration ausgeführt.
+
 
 	\subsection{Beispiele}
-
-	Reset: 0x01 OR 0x10 = 0x11\\
-	Stop Drive: 0x01 OR 0x50 = 0x51
+	
+	\begin{verbatim}
+		Reset: 0x01 OR 0x10 = 0x11
+		Stop Drive: 0x01 OR 0x50 = 0x51
+	\end{verbatim}
+	
 	\pagebreak
 
 	\section{0x02 - Query}
 
 	\subsection{Kurzbeschreibung}
 
-	Durch diesen Befehl kann der Benutzer bestimmte Werte des Boards abfragen. Diese stellen dann Informationen
-	wie z.B. die aktuelle Geschwindigkeit oder den aktuellen Befehl zu Verfügung.
+	Der Query-Befehl dient zur Abfrage bestimmter Werte, die intern auf der
+	Motorplatine benutzt werden. Der Befehl an sich weist die Motorplatine
+	an die Daten auszugeben. Dies erfolgt bei Benutzung des UART-Ports so
+	schnell wie möglich (nach ungefähr 300 \textmu{}s), bei der Benutzung
+	des I2C-Busses sobald die Daten von der Praktikumsplatine abgefragt
+	werden. Diese Abfrage sollte aber 300 \textmu{}s nach dem Empfangen
+	des Befehls durchgeführt werden. Stehen die Daten noch nicht bereit,
+	während sie angefordert werden, wird nicht zurückgegeben. Ein Aufruf
+	von i2c\_send() oder order\_send() liefern daher 0 zurück.
 
 	\subsection{Referenz}
 
 	\begin{tabularx}{\linewidth}{|l|l|X|}
 		\hline
-		\textbf{Bitmaske} & \textbf{Beschreibung} & \textbf{Antwortlänge} \\
+		\textbf{Bitmaske} & \textbf{Beschreibung} & \textbf{Antwortlänge in Bytes} \\
 		\hline
 		\hline
 		0x10 				& Geschwindigkeit des linken Rades & 1 \\
@@ -131,54 +217,82 @@
 		\hline
 		0x30				& Anzahl der Befehl in der Queue & 1 \\
 		\hline
-		0x40				& Aktueller Befehl & 2 - 33 (siehe Text) \\
+		0x40				& Aktueller Befehl & 2 - 16 (siehe Text) \\
 		\hline
 	\end{tabularx}
-	
-	Der Query-Befehl ist immer nur ein Byte lang, in den oberen 4 bit wird spezifiziert welche Informationen man haben möchte.
-	Welche zur Verfügung stehen und welche Bitmaske man dafür verwenden muss, wird aus der obigen Tabelle entnommen. Es kann immer
-	nur ein Wert per Befehl abgefragt werden. Die Antwort auf solch eine Anfrage hat eine variable Länge, die ebenfalls aus
-	der Tabelle entnommen werden kann (sie ist in Byte angegeben).
-	Bei der Antwort mit dem Aktuellen Befehl gilt zu beachten, dass zweimal von der Platine gelesen werden muss. Die erste
-	Antw
-	ort ist immer 1 Byte lang und gibt an wie lang die zweite Antwort sein wird. Diese hält dann den eigentlichen Befehl.
+
+	Der Query-Befehl ist ein priorisierter Befehl und umgeht damit die
+	Warteschlange. Das bedeutet: Er wird in der nächsten
+	Hauptschleifen-Iteration nach seinem Empfang ausgeführt. Der Befehl
+	hat eine konstante Länge von einem Byte, also nur das Kommando-Byte.
+	Die oben aufgeführten Optionen schließen sich gegenseitig aus.
+	Die Antworten dieses Befehls können eine variable Länge besitzen.
+	So werden bei der Option 0x40 zwei Antworten generiert (nur für I2C-Bus
+	wichtig: Es muss zweimal ein i2c\_recv() ausgeführt werden). Die erste
+	gibt die Länge der zweiten Antwort an und die zweite erst enthält die
+	angeforderten Daten. Die erste Antwort ist in diesem Fall aber immer
+	ein Byte lang. Bei Befehlen mit konstanter Länge wird aber nur
+	eine Antwort generiert.
+
 	\subsection{Beispiele}
 
-	Anzahl der Befehle: 0x02 OR 0x30 = 0x32\\
-	Antwort (unter der Annahme, dass 5 befehle in der Queue sind): 0x05
+	\begin{verbatim}	
+		Anzahl der Befehle: 0x02 OR 0x30 = 0x32
+		Antwort (unter der Annahme, dass fünf
+		Befehle in der Queue sind): 0x05
+	\end{verbatim}
 	\pagebreak
 
 
 	\section{0x03 - Drive}
 
 	\subsection{Kurzbeschreibung}
-
-	Mithilfe des Drive-Befehls werden allgemeine Fahrbefehle angenommen. Zu den Optionen zählen die Benutzung von Triggern
-	auf Rad-Ebene, wie z.B. Kein Trigger, Positions-Trigger und Zeit-Trigger. Außerdem gibt es hier die Möglichkeit
-	mithilfe des Differntialausgleichs sehr genau geradeaus zu fahren.
+	
+	Der Drive-Befehl ist der komplizierteste Befehl. Mit ihm kann das
+	Fahrzeug bewegt werden. Hierbei kann die Geschwidigkeit aller Räder
+	einzeln konfiguriert werden. Zustäzlich können Abbruch-Bedingungen
+	für jedes Rad einzeln angegeben werden. Diese Abbruch-Bedingungen
+	werden Trigger genannte. Es gibt momentan zwei verschiedene Trigger:
+	Zeit-Trigger und Positions-Trigger. Zeit-Trigger halten das Rad an,
+	nachdem sie eine bestimmte Zeit lang gelaufen sind. Positions-Trigger
+	halten das Rad an, nachdem es eine bestimmte Anzahl an ''Ticks''
+	gefahren ist (1 Tick = 1 Grad der Rades; d.h. 360 Ticks = 1
+	Radumdrehung).
+	\\
+	Zusätzlich zu diesen Triggern besitzt der Drive-Befehl eine Option
+	für einen speziellen Fahrmodus: Fahrt mit Differenzausgleich. Dieser
+	Modus ist für die ''Geradeaus-Fahrt'' optimiert und ermöglicht es
+	sehr genau geradeaus zu fahren. Zur Unterstützung dieses Modus
+	gibt es eine weitere Option, die es erlaubt mit diesem Befehl den
+	Startwert der Differenz zwischen den Rädern zu setzen.
 
 	\subsection{Referenz}
-
-	Beim Drive Befehl sind die vier Optionsbits in zweimal zwei Bit unterteilt, die jeweils für ein Rad den Trigger angeben.
 
 	\begin{tabularx}{\linewidth}{|l|l|l|X|}
 		\hline
 		\textbf{Option} & \textbf{Bitmaske linkes Rad} & \textbf{Bitmaske rechtes Rad} & \textbf{Beschreibung} \\
 		\hline
 		\hline
-		Kein Trigger	& 0x00						   & 0x00						   & Endlosfahrt \\
+		Kein Trigger	& 0x00						   & 0x00						   & Endlos-Fahrt \\
 		\hline
-		Zeit Trigger	& 0x10						   & 0x40						   & zeitlich Begrenzte Fahrt\\
+		Zeit Trigger	& 0x10						   & 0x40						   & zeitlich begrenzte Fahrt\\
 		\hline
 		Positions Trigger & 0x20					   & 0x80						   & Fährt eine bestimmte Strecke \\
 		\hline
 	\end{tabularx}
-	
-	Hier müssen für beide Räder eine Options ausgewählt werden und zusammen auf den Befehl geundet werden. Beispiel linkes
-	Rad benutzt einen Zeit Trigger, das rechte einen Positionstrigger: 0x10 | 0x80 | 0x03 = 0x93.
-	Der Befehl erwartet mindestens zwei Parameter, die jeweils ein Byte lang sind und die Geschwindigkeit vom linken und
-	vom rechten Rad angeben.
 
+	Aus dieser Liste muss je eine Bitmaske für das linke und das rechte
+	Rad ausgewählt werden. Es sei denn, es wird eine der Bitmasken 0x30
+	oder 0xc0 verwendet. Der Befehl erhält mindestens zwei Parameter:
+	Die Geschwindigkeiten für das linke und rechte Rad. Beide
+	Parameter haben eine Länge von einem Byte und sind vorzeichenbehaftet.
+	Die Geschwindigkeit für das linke Rad wird vor der Geschwindigkeit
+	des rechten Rades gesendet. Falls für eins oder mehr Räder Trigger
+	ausgewählt wurden, werden deren Werte hinter den Geschwindigkeiten
+	angegeben. Auch hier wird zuerst der Trigger-Wert für das linke Rad
+	übermittelt, erst danach für das rechte Rad. Trigger-Werte sind
+	2 Byte lang und vorzeichenlos.
+	
 	\begin{tabularx}{\linewidth}{|l|l|l|X|}
 		\hline
 		\textbf{Byte Anzahl} & \textbf{Option} & \textbf{Wertebereich} & \textbf{Beschreibung} \\
@@ -188,36 +302,49 @@
 		\hline
 		1					 & - & -128 bis 127 & Geschwindigkeit des rechten Rades\\
 		\hline
-		2					 & Zeit Trigger & 0 bis 65535 &  Anzahl der ms die das linke Rad fährt\\
+		2					 & Zeit Trigger & 0 bis 65535 &  Zeit die das linke Rad fährt (in 100 ms)\\
 		\hline
 		2					 & Positions Trigger & 0 bis 65535 &  Anzahl der Ticks die das linke Rad fährt\\
 		\hline
-		2					 & Zeit Trigger & 0 bis 65535 &  Anzahl der ms die das rechte Rad fährt\\
+		2					 & Zeit Trigger & 0 bis 65535 &  Zeit die das rechte Rad fährt (in 100 ms)\\
 		\hline
 		2					 & Positions Trigger & 0 bis 65535 &  Anzahl der Ticks die das rechte Rad fährt\\
 		\hline
 	\end{tabularx}
-	
-	Die Parameter werden in der Reihenfolge erwartet die hier angegeben wurde wobei die Zeit und Positionsparameter nur
-	angegeben werden müssen wenn für des entsprechende Rad dies auch in den Optionen aktiviert wurde.
-	Die Minimale Länge beläuft sich damit auf 3 Byte (1 Byte Kommando + 2 Byte für die Geschwindigkeiten) und die
-	Maximale auf 7 Byte (1 Byte Kommando + 2 Byte Geschwindigkeit + 2*2 Byte für Trigger-Werte pro Rad).
 
-	Es gibt noch einen speziellen Fahrmodus: Fahren mit Differentialausgleich. Dieser wird aktiviert wenn im Befehlsbyte
-	die Bitmaske 0x30 benutzt wird. Die Trigger Bitmasken für das rechte Rad (siehe Tabelle) gelten dann für beide Räder.
-	Folgend auf das Befehlsbyte tut dann ein Geschwindigkeitsbyte sowie, falls erforderlich, 2 Bytes für den ausgewählten
-	Trigger. Die Minimale Länge beläuft sich hier auf 2 Byte, die Maximale auf 4.
-
-	Wenn die Bitmaske 0xc0 auf dem Befehlsbyte genutzt wird, kann der relative Differentialwert für die Fahrt eingestellt
-	werden. Ein Wert gleich 0 setzt den Wert auf 0. Von 0 verschiedene Werte werden auf den aktuellen Differentialwert
-	addiert. Der Differntialwert darf einen wert zwischen -32768 bis 32767. Die Länge beträgt immer 3 Byte.
+	Der Befehl hat eine minimale Länge von 3 Byte (1 Kommando-Byte + je 1
+	Byte für die Geschwindigkeiten). Maximal benötigt der Befehl 7 Byte
+	(1 Kommando-Byte + je 1 Byte für die Geschwindigkeiten + je 2 Byte für
+	die Trigger-Werte).
+	\\
+	\textbf{Die Bitmaske 0x30} spezifiziert die ''Fahrt mit Differenzausgleich''.
+	Beide Räder werden hierbei so gesteuert, dass das Fahrzeug geradeaus fährt.
+	Dadurch ist auch nur eine Geschwindigkeit notwendig, anstatt zwei. Es können
+	immernoch Trigger verwendet werden. Die Bitmasken für die Trigger des rechten
+	Rades werden für diesen Zweck benutzt. Beim benutzen der Trigger in desem
+	Fahrmodus muss nur ein Triggerwert spezifiziert werden. Dieser wird dann für
+	beide Räder benutzt; gleiches gilt für die Geschwindigkeit. Die minimale
+	Länge verkürzt sich hierbei auf 2 Byte (1 Kommando-Byte + 1 Byte für die
+	Geschwindigkeit) und die maximale auf 4 Byte (1 Kommando-Byte + 1 Byte für
+	die Geschwindigkeit + 2 Byte für den Trigger-Wert).
+	\\
+	\textbf{Die Bitmaske 0xc0} wird verwendet, um die Anfangs-Differenz der Räder
+	einzustellen. Der Befehl hat dann nur einen Parameter, der 2 Byte lang ist und
+	vorzeichenbehaftet ist (-32768 bis 32767). Ein Wert gleich 0 setzt den Wert
+	auf 0. Von 0 verschiedene Werte werden auf den aktuellen Differenzwert
+	addiert. Die Länge des Befehls beträgt nun 3 Byte (1 Kommando-Byte + 2 Byte
+	für den Differenzwert).
 
 	\subsection{Beispiele}
 
-	Die Geschwindigkeit des linken Rades soll 100 sein, die des rechten -50. Das linke Rad soll einen Zeit- und das
-	rechte einen Positionstrigger verwenden. Die Zeit soll 500 betragen, die Position 10000.\\
-	Erstes Byte: 0x03 OR 0x10 OR 0x80 = 0x93\\
+	\begin{verbatim}
+	Die Geschwindigkeit des linken Rades soll 100 betragen,
+	die des rechten -50. Das linke Rad soll einen Zeit- und das
+	rechte einen Positionstrigger verwenden. Die Zeit soll 500
+	betragen, die Position 10000.
+	Erstes Byte: 0x03 OR 0x10 OR 0x80 = 0x93
 	Gesamte Befehl: 0x93 0x64 0xce 0x01 0xf4 0x27 0x10
+	\end{verbatim}
 	\pagebreak
 
 
@@ -225,31 +352,37 @@
 
 	\subsection{Kurzbeschreibung}
 
-	Der Advanced-Drive-Befehl ist in erster Linie ein Drive-Befehl mit erweiterten Trigger-Bedingungen. So ist es möglich
-	ein Rad entweder 100 ms oder 2000 Ticks fahren zu lassen oder aber das Rad erst dann annzuhalten, wenn es mindestens
-	100 ms und 2000 Ticks gefahren ist.
-
+	Der Advanced-Drive-Befehl bewegt wie der Drive-Befehl die Räder des
+	Fahrzeugs. Die Besonderheit ist die Verknüpfung von Zeit- und
+	Positions-Trigger. Es werden für jedes Rad beide Trigger benutzt, falls
+	überhaupt Trigger verwendet werden. Es ist auch möglich, keine Trigger
+	zu benutzen. Die Trigger werden, falls sie angegeben werden, miteinander
+	logisch verknüpft. Dazu steht sowohl ein logisches UND als auch ein
+	logisches ODER zur Verfügung. Damit ist es möglich, ein Rad mindestens
+	2 Sekunden und 500 Ticks fahren zu lassen.
+	
 	\subsection{Referenz}
 
-	Ist identisch zu dem Drive Befehl, bis auf folgende Ausnahmen:
-	
 	\begin{tabularx}{\linewidth}{|l|l|l|X|}
 		\hline
 		\textbf{Option} & \textbf{Bitmaske linkes Rad} & \textbf{Bitmaske rechtes Rad} & \textbf{Beschreibung} \\
 		\hline
 		\hline
-		Kein Trigger				& 0x00						   & 0x00						   & Endlosfahrt \\
+		Kein Trigger				& 0x00						   & 0x00						   & Endlos-Fahrt \\
 		\hline
-		Zeit ODER Position Trigger	& 0x10						   & 0x40						   & zeitlich Begrenzte Fahrt\\
+		Zeit ODER Position Trigger	& 0x10						   & 0x40						   & fährt bis einer der Trigger erreicht wurde\\
 		\hline
-		Zeit UND Positions Trigger  & 0x20						   & 0x80						   & Fährt eine bestimmte Strecke \\
+		Zeit UND Positions Trigger  & 0x20						   & 0x80						   & fährt bis beide Trigger erreicht wurden \\
 		\hline
 	\end{tabularx}
 
-	Außerdem sind die Bitmasken 0x30 und 0xc0 hier ungültig. Der "Zeit ODER Position"-Trigger bewirkt, dass das Rad angehalten
-	wird, wenn einer der beiden Trigger erreicht wurde. Analog bewirkt der "Zeit UND Position"-Trigger, dass das Rad
-	beide Trigger erfüllen muss, bevor das Rad angehalten wird. Dadurch, dass jetzt zwei Trigger gleichzeitig angegeben werden
-	pro Rad ist wichtig zu wissen, wo die Bytes hinkommen müssen. Dies zeigt die folgende Illustration:
+	Die Bitmasken 0x30 und 0xc0 sind hier ungültig und dürfen nicht verwendet werden.
+	Der ''Zeit ODER Position''-Trigger stoppt das Rad, wenn entweder der Zeit- oder der
+	Positions-Trigger erreicht wurde. Beim ''Zeit UND Position''-Trigger wird das Rad
+	gestoppt, wenn beide Trigger erreicht worden. Das bedeutet aber, dass für jedes Rad
+	immer beide Trigger-Werte angegeben werden müssen. Dadurch, dass jetzt zwei Trigger
+	gleichzeitig pro Rad angegeben werden, ist wichtig zu wissen, in welcher Reihenfolge
+	diese übermittelt werden müssen. Dies zeigt die folgende Illustration:
 	\begin{figure}[!ht]
 		\centering
 		\scalebox{1.0}{
@@ -257,8 +390,10 @@
 		}
 		\caption{Ein Advanced-Drive-Befehl mit Zeit ODER Position Trigger für beide Räder (daher die 0x54)}
 	\end{figure}
-	Wenn kein Trigger verwendet wird, benötigt der Befehl 3 Byte, wenn für beide Räder Trigger verwendet werden sind es im
-	maximal Fall 11 Byte.
+	Wenn kein Trigger verwendet wird, benötigt der Befehl 3 Byte (1 Kommando-Byte,
+	je 1 Byte für die Geschwindigkeiten), wenn für beide Räder Trigger verwendet
+	werden sind es im maximal Fall 11 Byte (1 Kommando-Byte, je 1 Byte für die
+	Geschwindigkeiten, je 2*2 Byte für die Triggerwerte).
 
 	\subsection{Beispiele}
 	\pagebreak
@@ -268,19 +403,24 @@
 
 	\subsection{Kurzbeschreibung}
 
-	Durch diesen Befehl ist es möglich die Parameter für eine PID-Verbesserte-Fahrt selber zu setzen und somit für sich
-	anzupassen.
+	Das PID-Modul ist die Haupt-Steuer-Einheit der Motorplatine.
+	Es verwendet vier Parameter, die ihr Verhalten anpassen. Wie
+	genau sich diese Parameter auswirken, ist in der Studienarbeit
+	von Timo Klingeberg nachzulesen (http://www.ibr.cs.tu-bs.de/theses/
+	broeke/SA\_Getriebemotorenansteuerung/download/studienarbeit.pdf).
+	Das PID-Modul wird bereits mit Standard-Werten beim Start der
+	Betriebssoftware programmiert. Daher ist es normalerweise nicht
+	nötig diese anzupassen.
+
 
 	\subsection{Referenz}
-
-	Mithilfe dieses Befehls können die Reglergrößen für den PID-Regler eingestellt werden.
 
 	\begin{tabularx}{\linewidth}{|l|l|l|X|}
 		\hline
 		\textbf{Byte Anzahl} & \textbf{Position} & \textbf{Wertebereich} & \textbf{Beschreibung} \\
 		\hline
 		\hline
-		2					 & 1 & -32768 bis 32767 & Proportinaler Faktor\\
+		2					 & 1 & -32768 bis 32767 & Proportionaler Faktor\\
 		\hline
 		2					 & 2 & -32768 bis 32767 & Integraler Faktor\\
 		\hline
@@ -290,7 +430,7 @@
 		\hline
 	\end{tabularx}
 
-	Im Befehlsbyte muss außerdem einkodiert werden für welches Rad die Parameter gesetzt werden.
+	Im Kommando-Byte muss angegeben werden, für welches Rad die Parameter gesetzt werden.
 
 	\begin{tabularx}{\linewidth}{|l|X|}
 		\hline
@@ -305,7 +445,7 @@
 		\hline
 	\end{tabularx}
 
-	Die Länge des Befehls beträgt immer 9 Byte.
+	Die Länge des Befehls beträgt immer 9 Byte (1 Kommando-Byte + 4*2 Byte für die Variablen).
 
 	\subsection{Beispiele}
 	\pagebreak
@@ -315,34 +455,41 @@
 
 	\subsection{Kurzbeschreibung}
 
-	Dank des Option-Befehls ist es dem Benutzer möglich Werte für bestimmte Verhaltenskritische Variablen während des
-	Betriebs zu verändern.
+	Der Option-Befehl erlaubt es bestimmte Variablen der Motorplatine
+	während der Laufzeit zu setzen. So kann das Aktive-Brems-System (ABS)
+	mit diesem Befehl an die eigenen Bedürfnisse angepasst werden.
 
 	\subsection{Referenz}
 
-	Der Option-Befehl dient dazu Verhaltenskritische Variablen während des Betriebs zu verändern.
-	Die oberen 4 Bit des Befehlsbytes geben an, welche Variable gesetzt werden soll. Anzumerken ist,
-	dass 0x06 an sich, also die oberen 4 Bit gleich 0, reserviert ist für zukünftige Erweiterungen.
+	Im Option-Teil wird die Variable spezifiziert, die gesetzt werden soll.
+	Wichtig hierbei ist, dass das Kommando-Byte 0x06, also der Option-Teil
+	gleich 0, für zukünftige Erweiterungen reserviert ist, damit mehr als
+	16 Variablen mit diesem Befehl gesetzt werden können.
 
 	\begin{tabularx}{\linewidth}{|l|l|l|X|}
 		\hline
 		\textbf{Bitmaske} & \textbf{Default} & \textbf{Wertebereich (Bytes)} & \textbf{Beschreibung} \\
 		\hline
 		\hline
-		0x10 & 40 & 1 bis 127 (1) & Der Geschwindigkeitswert, der beim aktiven Bremsen benutzt wird. \\
+		0x10 & 40 & 1 bis 127 (1) & Der Geschwindigkeitswert, der vom ABS benutzt wird. \\
 		\hline
-		0x20 & 1 & 0 oder 1 (1) & Switch zum aktivieren des aktiven Bremsen. Eine 1 bedeutet, dass das Bremsen aktiviert ist. \\
+		0x20 & 1 & 0 oder 1 (1) & Switch zum aktivieren des ABS. Eine 1 bedeutet, dass das ABS aktiviert ist. \\
 		\hline
-		0x30 & 1 & 0 oder 1 (1) & Switch zum aktivieren des aktiven Bremsens, eines Rades, das bereits seinen Trigger erreicht hat, das andere aber noch weiterfährt. \\
+		0x30 & 1 & 0 oder 1 (1) & Switch zum aktivieren des aktiven Bremsens, eines Rades, das bereits seinen Trigger erreicht hat. \\
 		\hline
 		0x40 & 1 & 0 oder 1 (1) & Switch zum aktivieren des aktiven Bremsens, wenn kein Befehl bearbeitet wird. \\
 		\hline
 	\end{tabularx}
 
-	0x20 kann zum einfachen an- und ausschalten des Aktiven Bremsens verwendet werden,
-	die 0x30 und 0x40 Varianten sind für die Einschränkung des Aktiven Bremsens, wenn es
+	0x20 kann zum einfachen an- und ausschalten des ABS verwendet werden,
+	die 0x30 und 0x40 Varianten sind für die Einschränkung des ABS, wenn es
 	aktiviert ist, verantwortlich. 0x10 wird, wenn ein Wert außerhalb des Wertebereichs
 	angegeben wird, den default-Wert benutzen. Momentan sind alle Option-Befehle 2 Byte lang.
+	Der Status des ABS kann außerdem auf dem LCD abgelesen werden, falls es angeschlossen
+	und aktiviert ist. ''AB:EIT'' ist die Angabe dafür, dass das aktive Bremsen (AB:) aktiviert
+	(E; e wäre deaktiviert) ist. I bedeutet, dass das ABS für den Idle-Modus aktiviert wurde
+	(i falls deaktiviert) und T gibt an, dass das ABS für das Erreichen eines Triggers
+	aktiviert wurde (t falls deaktiviert).
 
 	\subsection{Beispiele}
 	\pagebreak
