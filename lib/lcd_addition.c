@@ -13,15 +13,18 @@
  * Provides routines to update the LCD with vital runtime information.
  * @{
  */
+
 /**
  * The in-memory representation of the information
  * printed on the LCD.
  */
-char info[4][21]={VERSION,"","",""};
+char info[4][21] = { VERSION, "", "", "" };
+
 /**
  * Position in the info array.
  */
 int8_t info_col = 0, info_row = 0;
+
 /**
  * Signals, that a LCD-update is in progress.
  */

@@ -20,7 +20,7 @@ static char buffer[10];
  *
  * @param[in] data The String to be printed
  */
-void debug_PutString(const char *data) {
+void debug_write_string(const char *data) {
 	uint8_t character;
 
 	while ((character = *data++)) {
@@ -33,7 +33,7 @@ void debug_PutString(const char *data) {
  *
  * @param[in] progmem_string The Program-Memory string to be printed.
  */
-void debug_WriteString_P(const char *progmem_string) {
+void debug_write_string_p(const char *progmem_string) {
 	uint8_t character;
 
 	while ((character = pgm_read_byte(progmem_string++))) {
@@ -47,10 +47,10 @@ void debug_WriteString_P(const char *progmem_string) {
  * @param[in] progmem_message The Message in program-memory.
  * @param[in] integer The integer which will printed alongside the message.
  */
-void debug_WriteInteger(const char *progmem_message, const int16_t integer) {
+void debug_write_integer(const char *progmem_message, const int16_t integer) {
 	itoa(integer, buffer, 10);
-	debug_WriteString_P(progmem_message);
-	debug_PutString(buffer);
-	debug_WriteString_P(PSTR("\n"));
+	debug_write_string_p(progmem_message);
+	debug_write_string(buffer);
+	debug_write_string_p(PSTR("\n"));
 }
 /*@}*/

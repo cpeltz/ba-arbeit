@@ -13,46 +13,46 @@
  * @param[in] pfactor The Proportional factor.
  * @param[in] ifactor The integral factor.
  * @param[in] dfactor The differential factor.
- * @param[in] sumErrorMax The max sum of all errors.
+ * @param[in] sum_error_max The max sum of all errors.
  * @param[out] pid The structure to save the pid parameters.
  */
-void pid_Init(	const int16_t pfactor, const int16_t ifactor, const int16_t dfactor,
-				const int16_t sumErrorMax, pid_data_t * pid) {
-	pid->P_Factor = pfactor;
-	pid->I_Factor = ifactor;
-	pid->D_Factor = dfactor;
+void pid_init(	const int16_t pfactor, const int16_t ifactor, const int16_t dfactor,
+				const int16_t sum_error_max, pid_data_t * pid) {
+	pid->pfactor = pfactor;
+	pid->ifactor = ifactor;
+	pid->dfactor = dfactor;
 
-	pid->lastError = 0;
-	pid->sumError = 0;
-	pid->sumError_Max = sumErrorMax;
+	pid->last_error = 0;
+	pid->sum_error = 0;
+	pid->sum_error_max = sum_error_max;
 }
 
 /**
  * Controls the PID values.
  * @todo Discern what this functions does.
  */
-uint8_t pid_Controller(const uint8_t setPoint, const int16_t processValue, pid_data_t * pid) {
+uint8_t pid_controller(const uint8_t set_point, const int16_t process_value, pid_data_t * pid) {
 	int16_t error = 0;
 	int16_t p_term = 0;
 	int32_t i_term = 0;
 	int16_t d_term = 0;
 	int32_t ret = 0;
 
-	error = setPoint - processValue;
+	error = set_point - process_value;
 
-	pid->sumError += error;
+	pid->sum_error += error;
 
 	// Fehlersumme begrenzen
-	if ((pid->sumError > pid->sumError_Max))
-		pid->sumError = pid->sumError_Max;
-	else if ((pid->sumError < 0))
-		pid->sumError = 0;
+	if ((pid->sum_error > pid->sum_error_max))
+		pid->sum_error = pid->sum_error_max;
+	else if ((pid->sum_error < 0))
+		pid->sum_error = 0;
 
-	p_term = pid->P_Factor * error;
-	i_term = pid->I_Factor * pid->sumError;
-	d_term = pid->D_Factor * (error - pid->lastError);
+	p_term = pid->pfactor * error;
+	i_term = pid->ifactor * pid->sum_error;
+	d_term = pid->dfactor * (error - pid->last_error);
 
-	pid->lastError = error;
+	pid->last_error = error;
 
 	ret = (p_term + i_term + d_term) / 100;
 

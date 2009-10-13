@@ -120,6 +120,16 @@ wobei die erste eine Länge von einem Byte hat und außerdem spezifiziert, wie l
 		\hline
 		0x40              & 0x42                    & Aktueller Befehl & 2 - 16 \\
 		\hline
+		0x50              & 0x52                    & Wert des Zeit-Triggers des linken Rades & 2 \\
+		\hline
+		0x60              & 0x62                    & Wert des Positions-Triggers des linken Rades & 2 \\
+		\hline
+		0x70              & 0x72                    & Wert des Zeit-Triggers des rechten Rades & 2 \\
+		\hline
+		0x80              & 0x82                    & Wert des Positions-Triggers des rechten Rades & 2 \\
+		\hline
+		0x90              & 0x92                    & Sekunden Zähler & 2 \\
+		\hline
 	\end{tabularx}
 	\caption{\label{protocol_queue} Optionen des Query-Befehls}
 \end{center}

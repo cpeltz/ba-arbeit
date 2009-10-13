@@ -1,12 +1,13 @@
 #ifndef _TYPES_H_
 #define _TYPES_H_
+
 #include <inttypes.h>
 #include "options.h"
 
 /**
  * @defgroup TYPES_Module Types
- * Global storage for the different Types,
- * like fifo's, order's, and state.
+ * Global storage for the different Types.
+ * 
  * @{
  */
 
@@ -14,12 +15,12 @@
  * Storage for the PID parameters and state.
  */
 typedef struct PID_DATA {
-	int16_t lastError;    /**< Do not know */
-	int16_t sumError;     /**< The sum of all errors*/
-	int16_t sumError_Max; /**< The maximal sum of all errors*/
-	int16_t P_Factor;     /**< The proportional factor*/
-	int16_t I_Factor;     /**< The integral factor*/
-	int16_t D_Factor;     /**< The differential factor*/
+	int16_t last_error;    /**< Do not know */
+	int16_t sum_error;     /**< The sum of all errors*/
+	int16_t sum_error_max; /**< The maximal sum of all errors*/
+	int16_t pfactor;     /**< The proportional factor*/
+	int16_t ifactor;     /**< The integral factor*/
+	int16_t dfactor;     /**< The differential factor*/
 } pid_data_t;
 
 /**

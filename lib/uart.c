@@ -4,7 +4,6 @@
 #include "uart.h"
 #include "io.h"
 #include "definitions.h"
-#include "led.h"
 #include "pin.h"
 #include "debug.h"
 
@@ -19,7 +18,6 @@ extern uint8_t INTERFACE_TWI;
  * The USART transmitter ISR.
  */
 ISR(USART1_UDRE_vect) {
-//	pin_set_C(1);
 	if (INTERFACE_TWI) {
 		UCSR1B &= ~(1 << UDRIE1);
 	} else {
@@ -34,35 +32,31 @@ ISR(USART1_UDRE_vect) {
 			}
 		}
 	}
-//	pin_clear_C(1);
 }
 
 /**
  * The USART reciever ISR.
  */
 ISR(USART1_RX_vect) {
-//	pin_set_C(2);
 	uint8_t value = UDR1;
 
-	led_switch(LED_BLUE, SINGLE);
 	_io_push(value);
-//	pin_clear_C(2);
 }
 
 /**
  * Initializes the USART Module.
  */
 void uart_init(void) {
-	// UART Initialisieren
+	// Initialize UART
 	UBRR1H = UBRR_VAL >> 8;
 	UBRR1L = UBRR_VAL & 0xff;
-	// Aktiviere RX, TX und RX Complete IRQ
+	// Set RX, TX and RX Complete Interrupts to active
 	if (!INTERFACE_TWI) {
 		UCSR1B = (1 << RXEN1) | (1 << TXEN1) | (1 << RXCIE1);
 	} else if(DEBUG_ENABLE) {
 		UCSR1B = (1 << TXEN1);
 	}
-	// Lösche IRQ Flags
+	// Delete Interrupt Flags
 	UCSR1A = (1 << RXC1) | (1 << TXC1);
 }
 

@@ -16,18 +16,22 @@
  * Ring Buffer of orders, holds #PARSER_ORDER_BUFFER_SIZE orders
  */
 order_t parser_order_buffer[PARSER_ORDER_BUFFER_SIZE];
+
 /**
  * Holds the current position in the Ring
  */
 int8_t current_buffer_position = 0;
+
 /**
  * Holds the position of the first order in the Ring
  */
 int8_t first_buffer_position = -1;
+
 /**
  * Holds the current position IN the order structure
  */
 uint8_t current_order_position = 0;
+
 /**
  * Simple forward decleration
  */
@@ -40,8 +44,7 @@ void parser_add_byte(uint8_t);
  */
 void parser_init(void) {
 	// Initialize the Ringbuffer
-	uint8_t i = 0;
-	for(; i < PARSER_ORDER_BUFFER_SIZE; i++) {
+	for (uint8_t i = 0; i < PARSER_ORDER_BUFFER_SIZE; i++) {
 		order_init(&parser_order_buffer[i]);
 	}
 }
@@ -81,16 +84,16 @@ int parser_extended_order_complete(const order_t* order, uint8_t num_bytes) {
  * be complete.
  * @todo Maybe if the value was once calculated it should be cached somewhere
  */
-uint8_t bytes_needed(uint8_t order) {
+uint8_t parser_bytes_needed(uint8_t order) {
 	uint8_t ret_value = 0;
 	if (DEBUG_ENABLE)
-		debug_WriteInteger(PSTR("Bytes needed for "), order);
-		debug_WriteString_P(PSTR(" = "));
+		debug_write_integer(PSTR("Bytes needed for "), order);
+		debug_write_string_p(PSTR(" = "));
 	switch(order & 0x0f) {
 		case 1: //Control Instruction
 		case 2: //Register Query Instruction
 			if (DEBUG_ENABLE);
-				debug_WriteInteger(PSTR(""), 1);
+				debug_write_integer(PSTR(""), 1);
 			return 1; //These are all one byte Instructions
 		case 3: //Drive Instruction is a variable byte order
 			ret_value = 3; //min. three bytes are neccessary: one as order, two for speed (left and right)
@@ -110,7 +113,7 @@ uint8_t bytes_needed(uint8_t order) {
 				}
 			}
 			if (DEBUG_ENABLE)
-				debug_WriteInteger(PSTR(""), ret_value);
+				debug_write_integer(PSTR(""), ret_value);
 			return ret_value;
 		case 4:
 			ret_value = 3;
@@ -119,24 +122,24 @@ uint8_t bytes_needed(uint8_t order) {
 			if (order & 0xc0)
 				ret_value += 4;
 			if (DEBUG_ENABLE)
-				debug_WriteInteger(PSTR(""), ret_value);
+				debug_write_integer(PSTR(""), ret_value);
 			return ret_value;
 		case 5: //Set PID Parameters Instruction
 			if (DEBUG_ENABLE)
-				debug_WriteInteger(PSTR(""), 9);
+				debug_write_integer(PSTR(""), 9);
 			return 9;
 		case 6:
 			if ((order & 0xf0) >= 0x10 && (order & 0xf0) <= 0x40) {
 				if (DEBUG_ENABLE)
-					debug_WriteInteger(PSTR(""), 2);
+					debug_write_integer(PSTR(""), 2);
 				return 2;
 			}
 			if (DEBUG_ENABLE)
-				debug_WriteInteger(PSTR(""), 1);
+				debug_write_integer(PSTR(""), 1);
 			return 1;
 	}
 	if (DEBUG_ENABLE)
-		debug_WriteInteger(PSTR("default  = "), 1);
+		debug_write_integer(PSTR("default  = "), 1);
 	return 1;
 }
 
@@ -151,10 +154,10 @@ int parser_order_complete(const order_t* order, uint8_t num_bytes) {
 	if ((order->data[0] & 0x0f) == 0 )
 		return parser_extended_order_complete(order, num_bytes);
 	else if ((order->data[0] & 0x0f) <= 8 ) {
-		// Call "bytes_needed()", a simple helper function
+		// Call "parser_bytes_needed()", a simple helper function
 		// to determine whether or not the order has the right
 		// amount of parameters and therefor bytes.
-		if (num_bytes >= bytes_needed(order->data[0]))
+		if (num_bytes >= parser_bytes_needed(order->data[0]))
 			return 1;
 	}
 	return 0;
@@ -170,10 +173,10 @@ void parser_add_byte(uint8_t byte) {
 	// This function simple adds another byte to the current order
 	// or discards the byte if the buffer is full.
 	if (DEBUG_ENABLE)
-		debug_WriteInteger(PSTR("parse.c : parser_add_byte() : Add byte = "), byte);
+		debug_write_integer(PSTR("parse.c : parser_add_byte() : Add byte = "), byte);
 	if (current_buffer_position == first_buffer_position) {
 		if (DEBUG_ENABLE)
-			debug_WriteString_P(PSTR("parse.c : parser_add_byte() : Buffer full\n"));
+			debug_write_string_p(PSTR("parse.c : parser_add_byte() : Buffer full\n"));
 		return; // Discard, buffer full
 	}
 	// Put the byte at its position and increment
@@ -238,7 +241,7 @@ void parser_get_new_order(order_t* order) {
 	// the caller must discard it.
 	parser_check_order(&parser_order_buffer[first_buffer_position]);
 	if (DEBUG_ENABLE)
-		debug_WriteInteger(PSTR("parse.c : parser_get_new_order() : status = "), parser_order_buffer[first_buffer_position].status);
+		debug_write_integer(PSTR("parse.c : parser_get_new_order() : status = "), parser_order_buffer[first_buffer_position].status);
 	// Copy the order to the caller
 	order_copy(&parser_order_buffer[first_buffer_position], order);
 	// Clean the local structure

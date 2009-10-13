@@ -10,6 +10,8 @@
 /** \file definitions.h
  *	This file holds many global definitions used through the program.
  */
+ 
+#include <avr/io.h>
 
 #define VERSION "Ver. 3.2.6.0000"
 
@@ -43,10 +45,6 @@
  * Flag set every 100ms.
  */
 #define TIMER_100MS             1
-/**
- * Flag set every 262ms.
- */
-#define TIMER_262MS             2
 
 // LEDs
 #define LED_DDR                 DDRG

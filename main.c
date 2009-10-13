@@ -135,7 +135,7 @@ void initialize(void) {
 	parser_init();
 
 	// set standard PID parameter
-	drive_SetPIDParameter(2, 80, 20, 10, 500);
+	drive_set_pid_parameter(2, 80, 20, 10, 500);
 }
 
 /**
@@ -143,39 +143,39 @@ void initialize(void) {
  */
 void print_startup(void) {
 	// Startup Debug Infos
-	debug_WriteString_P(PSTR("Motorsteuerung "));
-	debug_PutString(VERSION);
-	debug_WriteString_P(PSTR("\n----------------------------\n\n"));
-	debug_WriteString_P(PSTR("DIP-Schalter Einstellungen:\n"));
+	debug_write_string_p(PSTR("Motorsteuerung "));
+	debug_write_string(VERSION);
+	debug_write_string_p(PSTR("\n----------------------------\n\n"));
+	debug_write_string_p(PSTR("DIP-Schalter Einstellungen:\n"));
 	if (INTERFACE_TWI)
-		debug_WriteString_P(PSTR("DIP1: ON   Interface = TWI\n"));
+		debug_write_string_p(PSTR("DIP1: ON   Interface = TWI\n"));
 	else
-		debug_WriteString_P(PSTR("DIP1: OFF  Interface = UART\n"));
+		debug_write_string_p(PSTR("DIP1: OFF  Interface = UART\n"));
 	if (DEBUG_ENABLE)
-		debug_WriteString_P(PSTR("DIP2: ON   Debug-Ausgaben aktiv\n"));
+		debug_write_string_p(PSTR("DIP2: ON   Debug-Ausgaben aktiv\n"));
 	else
-		debug_WriteString_P(PSTR("DIP2: OFF  Debug-Ausgaben inaktiv\n"));
+		debug_write_string_p(PSTR("DIP2: OFF  Debug-Ausgaben inaktiv\n"));
 	if (LCD_PRESENT)
-		debug_WriteString_P(PSTR("DIP3: ON   LCD aktiv\n"));
+		debug_write_string_p(PSTR("DIP3: ON   LCD aktiv\n"));
 	else
-		debug_WriteString_P(PSTR("DIP3: OFF  LCD inaktiv\n"));
+		debug_write_string_p(PSTR("DIP3: OFF  LCD inaktiv\n"));
 	if (dip_read(3))
-		debug_WriteString_P(PSTR("DIP4: ON   nicht verwendet\n"));
+		debug_write_string_p(PSTR("DIP4: ON   nicht verwendet\n"));
 	else
-		debug_WriteString_P(PSTR("DIP4: OFF  nicht verwendet\n"));
+		debug_write_string_p(PSTR("DIP4: OFF  nicht verwendet\n"));
 
-	debug_WriteString_P(PSTR("\nReset Quelle:\n"));
+	debug_write_string_p(PSTR("\nReset Quelle:\n"));
 	if (reset_source & (1<<PORF)) 
-		debug_WriteString_P(PSTR("Power-On "));
+		debug_write_string_p(PSTR("Power-On "));
 	if (reset_source & (1<<EXTRF))
-		debug_WriteString_P(PSTR("External "));
+		debug_write_string_p(PSTR("External "));
 	if (reset_source & (1<<BORF))
-		debug_WriteString_P(PSTR("Brown-Out "));
+		debug_write_string_p(PSTR("Brown-Out "));
 	if (reset_source & (1<<WDRF))
-		debug_WriteString_P(PSTR("Watchdog "));
+		debug_write_string_p(PSTR("Watchdog "));
 	if (reset_source & (1<<JTRF))
-		debug_WriteString_P(PSTR("JTAG"));
-	debug_WriteString_P(PSTR("\n"));
+		debug_write_string_p(PSTR("JTAG"));
+	debug_write_string_p(PSTR("\n"));
 }
 
 /**
@@ -190,33 +190,31 @@ void process_orders(void) {
 	extern uint8_t ACTIVE_BRAKE_WHEN_IDLE;
 
 	if (DEBUG_ENABLE)
-		debug_WriteInteger(PSTR("main.c : process_orders() :  Avaialable Orders = "), queue_order_available());
+		debug_write_integer(PSTR("main.c : process_orders() :  Avaialable Orders = "), queue_order_available());
 	// Get the current order (thats the next order, if the last one was done, or the currently executed order
 	current_order = queue_get_current_order();
 	if (current_order != NULL) {
 		if (DEBUG_ENABLE)
-			debug_WriteString_P(PSTR("main.c : process_orders() :  Ack new Order, starting processing\n"));
+			debug_write_string_p(PSTR("main.c : process_orders() :  Ack new Order, starting processing\n"));
 
 		// Got an order. Call the dispatcher to call the corresponding order_function
 		order_process(current_order);
 		if (DEBUG_ENABLE)
-			debug_WriteString_P(PSTR("main.c : process_orders() :  Processing done\n"));
+			debug_write_string_p(PSTR("main.c : process_orders() :  Processing done\n"));
 
 		// Order has finished working, we can activate the Active Braking System
 		if (current_order->status & ORDER_STATUS_DONE) {
 			if (DEBUG_ENABLE)
-				debug_WriteString_P(PSTR("main.c : process_orders() :  Order has status = DONE\n"));
+				debug_write_string_p(PSTR("main.c : process_orders() :  Order has status = DONE\n"));
 
 			// Set the current Position as reference position for the ABS
-			pin_set_C(4);
-			drive_brake_active_set(/*WHEEL_ALL*/);
-			pin_clear_C(4);
+			drive_brake_active_set(WHEEL_ALL);
 			// Remove the Order, as it is done
 			queue_pop();
 		}
 	// if no order is to be executed, do AB if enabled in this situation
 	} else if (ACTIVE_BRAKE_WHEN_IDLE) {
-		drive_brake_active();
+		drive_brake_active(WHEEL_ALL);
 	}
 }
 
@@ -241,7 +239,6 @@ int main(void) {
 		print_startup();
 
 	while(1) {
-		pin_toggle_A(0);
 		// Copy global timer flags to a local copy, which will be used throughout the program.
 		// This is done to not miss a timer tick.
 		local_time_flags = timer_global_flags;
@@ -249,33 +246,25 @@ int main(void) {
 
 		// Processes the next or current order
 		if (DEBUG_ENABLE)
-			debug_WriteString_P(PSTR("main.c : main() :  process_orders()\n"));
-		pin_set_A(1);
+			debug_write_string_p(PSTR("main.c : main() :  process_orders()\n"));
 		process_orders();
-		pin_clear_A(1);
 
 		// If a LCD is pluged in we get nice status messages on it
 		if (LCD_PRESENT) {
 			if (DEBUG_ENABLE)
-				debug_WriteString_P(PSTR("main.c : main() :  lcd_update_screen()\n"));
-			pin_set_A(2);
+				debug_write_string_p(PSTR("main.c : main() :  lcd_update_screen()\n"));
 			lcd_update_screen();
-			pin_clear_A(2);
 		}
 
 		// Update the order parser
 		if (DEBUG_ENABLE)
-			debug_WriteString_P(PSTR("main.c : main() :  parser_update()\n"));
-		pin_set_A(3);
+			debug_write_string_p(PSTR("main.c : main() :  parser_update()\n"));
 		parser_update();
-		pin_clear_A(3);
 
 		// Housekeeping for the order queue
 		if (DEBUG_ENABLE)
-			debug_WriteString_P(PSTR("main.c : main() :  queue_update()\n"));
-		pin_set_A(4);
+			debug_write_string_p(PSTR("main.c : main() :  queue_update()\n"));
 		queue_update();
-		pin_clear_A(4);
 	}
 
 	// Should be never reached

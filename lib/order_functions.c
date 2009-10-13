@@ -74,7 +74,7 @@ void control_instruction(order_t *order) {
 	// Extract the specific Control Instruction we should carry out
 	int instruction = order->data[0] & 0xf0;
 	if (DEBUG_ENABLE)
-		debug_WriteInteger(PSTR("order_functions.c : control_instruction()\n"), instruction);
+		debug_write_integer(PSTR("order_functions.c : control_instruction()\n"), instruction);
 	switch (instruction) {
 		case 0x10: // Reset Instruction
 			wdt_reset();
@@ -101,7 +101,7 @@ void control_instruction(order_t *order) {
 	// Remove the priority Order from Queue
 	queue_clear_priority();
 	// Set Position for the ABS
-	drive_brake_active_set(/*WHEEL_ALL*/);
+	drive_brake_active_set(WHEEL_ALL);
 }
 
 /**
@@ -118,16 +118,16 @@ void query_instruction(order_t *order) {
 	order_t *current_order = 0;
 	uint8_t current_order_size = 0;
 	if (DEBUG_ENABLE)
-		debug_WriteString_P(PSTR("order_functions.c : query_instruction()\n"));
+		debug_write_string_p(PSTR("order_functions.c : query_instruction()\n"));
 	switch (instruction) {
 		case 0x10: // left wheel Speed
 			io_obj_start();
-			io_put(motor_ReadSpeed(WHEEL_LEFT));
+			io_put(motor_read_speed(WHEEL_LEFT));
 			io_obj_end();
 			break;
 		case 0x20: // right wheel Speed
 			io_obj_start();
-			io_put(motor_ReadSpeed(WHEEL_RIGHT));
+			io_put(motor_read_speed(WHEEL_RIGHT));
 			io_obj_end();
 			break;
 		case 0x30: // number of Orders in the Queue
@@ -146,7 +146,7 @@ void query_instruction(order_t *order) {
 			io_put(current_order_size);
 			io_obj_end();
 			if (DEBUG_ENABLE)
-				debug_WriteInteger(PSTR("order_functions.c : query_instruction() : current_order_size = "), current_order_size);
+				debug_write_integer(PSTR("order_functions.c : query_instruction() : current_order_size = "), current_order_size);
 			// send the Order data
 			if (current_order) {
 				uint8_t i = 0;
@@ -154,7 +154,7 @@ void query_instruction(order_t *order) {
 				for (;i < current_order_size;i++) {
 					io_put(current_order->data[i]);
 					if (DEBUG_ENABLE)
-						debug_WriteInteger(PSTR("order_functions.c : query_instruction() : put = "), current_order->data[i]);
+						debug_write_integer(PSTR("order_functions.c : query_instruction() : put = "), current_order->data[i]);
 				}
 				io_obj_end();
 			}
@@ -208,7 +208,7 @@ void query_instruction(order_t *order) {
  * will be set.
  * @todo Unify setTrigger and setAdvancedTrigger
  */
-void setTrigger(uint8_t trigger_type, uint8_t wheel, int16_t trigger_value) {
+void set_trigger(uint8_t trigger_type, uint8_t wheel, int16_t trigger_value) {
 	switch(trigger_type) {
 		case 0x10:
 		case 0x40:
@@ -234,7 +234,7 @@ void setTrigger(uint8_t trigger_type, uint8_t wheel, int16_t trigger_value) {
  * @param[in] trigger_value_time The value for the time trigger.
  * @param[in] trigger_value_position The value for the position trigger.
  */
-void setAdvancedTrigger(uint8_t wheel, int16_t trigger_value_time, int16_t trigger_value_position) {
+void set_advanced_trigger(uint8_t wheel, int16_t trigger_value_time, int16_t trigger_value_position) {
 	timer_t_trigger_counter[wheel] = trigger_value_time;
 	irq_p_trigger_position[wheel] = trigger_value_position;
 }
@@ -249,7 +249,7 @@ void setAdvancedTrigger(uint8_t wheel, int16_t trigger_value_time, int16_t trigg
  * values are #WHEEL_LEFT and #WHEEL_RIGHT.
  * @return <em>uint16_t</em> Zero if trigger is reached.
  */
-uint16_t checkTrigger(uint8_t trigger_type, uint8_t wheel) {
+uint16_t check_trigger(uint8_t trigger_type, uint8_t wheel) {
 	switch(trigger_type) {
 		case 0x10:
 		case 0x40:
@@ -274,7 +274,7 @@ uint16_t checkTrigger(uint8_t trigger_type, uint8_t wheel) {
  * values are #WHEEL_LEFT and #WHEEL_RIGHT.
  * @return <em>uint16_t</em> Zero if trigger is reached.
  */
-uint16_t checkAdvancedTrigger(uint8_t trigger_type, uint8_t wheel) {
+uint16_t check_advanced_trigger(uint8_t trigger_type, uint8_t wheel) {
 	switch(trigger_type) {
 		case 0x10:// (L: ZvP R: N  )
 		case 0x40:// (L: N   R: ZVP)
@@ -305,14 +305,14 @@ void drive_instruction(order_t *order) {
 	// Import the option for ABS
 	extern uint8_t ACTIVE_BRAKE_WHEN_TRIGGER_REACHED;
 	if (DEBUG_ENABLE) {
-		debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  trigger_type_left = "), trigger_type_left);
-		debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  trigger_type_right = "), trigger_type_right);
+		debug_write_integer(PSTR("order_functions.c : drive_instruction() :  trigger_type_left = "), trigger_type_left);
+		debug_write_integer(PSTR("order_functions.c : drive_instruction() :  trigger_type_right = "), trigger_type_right);
 	}
 
 	// This if shouldn't be taken, just to make sure
 	if (order->status & ORDER_STATUS_DONE) {
 		if (DEBUG_ENABLE)
-			debug_WriteString_P(PSTR("order_functions.c : drive_instruction() :  status = ORDER_STATUS_DONE\n"));
+			debug_write_string_p(PSTR("order_functions.c : drive_instruction() :  status = ORDER_STATUS_DONE\n"));
 		return;
 	}
 
@@ -321,34 +321,34 @@ void drive_instruction(order_t *order) {
 		// Local variable to save the checkTrigger return value for debug output
 		uint16_t result = 0;
 		if (DEBUG_ENABLE)
-			debug_WriteString_P(PSTR("order_functions.c : drive_instruction() :  status = ORDER_STATUS_STARTED\n"));
+			debug_write_string_p(PSTR("order_functions.c : drive_instruction() :  status = ORDER_STATUS_STARTED\n"));
 		// Check Left trigger
-		result = checkTrigger(trigger_type_left, WHEEL_LEFT);
+		result = check_trigger(trigger_type_left, WHEEL_LEFT);
 		if (DEBUG_ENABLE)
-			debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  checkTrigger(LEFT) = "), result);
+			debug_write_integer(PSTR("order_functions.c : drive_instruction() :  checkTrigger(LEFT) = "), result);
 		// Left Trigger reached in this Iteration?
 		if (!(order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED) &&
 				result == 0) {
 			// Set the Trigger reached flag
 			order->status |= ORDER_STATUS_TRIGGER_LEFT_REACHED;
 			// set the ABS ref position
-			drive_brake_active_set_left();
+			drive_brake_active_set(WHEEL_LEFT);
 			if (DEBUG_ENABLE)
-				debug_WriteString_P(PSTR("order_functions.c : drive_instruction() :  status = ORDER_STATUS_TRIGGER_LEFT_REACHED\n"));
+				debug_write_string_p(PSTR("order_functions.c : drive_instruction() :  status = ORDER_STATUS_TRIGGER_LEFT_REACHED\n"));
 		}
 		// Right trigger reached
-		result = checkTrigger(trigger_type_right, WHEEL_RIGHT);
+		result = check_trigger(trigger_type_right, WHEEL_RIGHT);
 		if (DEBUG_ENABLE)
-			debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  checkTrigger(RIGHT) = "), result);
+			debug_write_integer(PSTR("order_functions.c : drive_instruction() :  checkTrigger(RIGHT) = "), result);
 		// Right Trigger reached in this Iteration?
 		if (!(order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED) &&
 				result == 0 ) {
 			// Set the Trigger reached flag
 			order->status |= ORDER_STATUS_TRIGGER_RIGHT_REACHED;
 			// set the ABS ref position
-			drive_brake_active_set_right();
+			drive_brake_active_set(WHEEL_RIGHT);
 			if (DEBUG_ENABLE)
-				debug_WriteString_P(PSTR("order_functions.c : drive_instruction() :  status = ORDER_STATUS_TRIGGER_RIGHT_REACHED\n"));
+				debug_write_string_p(PSTR("order_functions.c : drive_instruction() :  status = ORDER_STATUS_TRIGGER_RIGHT_REACHED\n"));
 		}
 		// If in PID with D mode one reached trigger equals all trigger reached
 		if ((order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED ||
@@ -360,31 +360,31 @@ void drive_instruction(order_t *order) {
 		if (order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED && 
 			order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED) {
 			if (DEBUG_ENABLE)
-				debug_WriteString_P(PSTR("order_functions.c : drive_instruction() :  All trigger reached\n"));
+				debug_write_string_p(PSTR("order_functions.c : drive_instruction() :  All trigger reached\n"));
 			order->status |= ORDER_STATUS_DONE;	
 			// stop the wheels
-			drive_UsePID(WHEEL_BOTH, 0);
-			wheel_ClearDifference();
+			drive_use_pid(WHEEL_BOTH, 0);
+			wheel_clear_difference();
 		}
 	
 		// When it is wanted, we will use active breaking on the wheel where the trigger has been reached
 		if (ACTIVE_BRAKE_WHEN_TRIGGER_REACHED) {
 			if (order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED)
-				drive_brake_active_left();
+				drive_brake_active(WHEEL_LEFT);
 			else if (order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED)
-				drive_brake_active_right();
+				drive_brake_active(WHEEL_RIGHT);
 		}
 		// Use error-correction while driving every 100 ms
 		if (local_time_flags & TIMER_100MS) {
 			if (trigger_type_left == 0x30) { // Use function for both wheels to use PID mode with D
-				drive_UsePID(WHEEL_BOTH, order->data[1]);
+				drive_use_pid(WHEEL_BOTH, order->data[1]);
 			} else {
 				// Only drive the wheels if the triggers haven't been reached
 				if (!(order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED)) {
-					drive_UsePID(WHEEL_LEFT, order->data[1]);
+					drive_use_pid(WHEEL_LEFT, order->data[1]);
 				}
 				if (!(order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED)) {
-					drive_UsePID(WHEEL_RIGHT, order->data[2]);
+					drive_use_pid(WHEEL_RIGHT, order->data[2]);
 				}
 			}
 		}
@@ -393,9 +393,9 @@ void drive_instruction(order_t *order) {
 		int16_t trigger_value_left = 0;
 		int16_t trigger_value_right = 0;
 		if (DEBUG_ENABLE) {
-			debug_WriteString_P(PSTR("order_functions.c : drive_instruction() :  Start execution\n"));
-			debug_WriteInteger(PSTR("order_functions.c : drive_instruction() : speed_left = "), order->data[1]);
-			debug_WriteInteger(PSTR("order_functions.c : drive_instruction() : speed_right = "), order->data[2]);
+			debug_write_string_p(PSTR("order_functions.c : drive_instruction() :  Start execution\n"));
+			debug_write_integer(PSTR("order_functions.c : drive_instruction() : speed_left = "), order->data[1]);
+			debug_write_integer(PSTR("order_functions.c : drive_instruction() : speed_right = "), order->data[2]);
 		}
 
 		trigger_value_left = ((order->data[3] << 8) + order->data[4]);
@@ -403,7 +403,7 @@ void drive_instruction(order_t *order) {
 
 		if (trigger_type_right == 0xc0) { // Set new differential correction
 			trigger_value_left = (order->data[1] << 8) + order->data[2];
-			wheel_WriteDifference(trigger_value_left);
+			wheel_write_difference(trigger_value_left);
 			// We are done with this order
 			order->status |= ORDER_STATUS_DONE;
 			return;
@@ -413,12 +413,12 @@ void drive_instruction(order_t *order) {
 		}
 		// Set the triggers for each wheel
 		if (DEBUG_ENABLE) {
-			debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  trigger_value_left = "), trigger_value_left);
-			debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  trigger_value_right = "), trigger_value_right);
+			debug_write_integer(PSTR("order_functions.c : drive_instruction() :  trigger_value_left = "), trigger_value_left);
+			debug_write_integer(PSTR("order_functions.c : drive_instruction() :  trigger_value_right = "), trigger_value_right);
 		}
 		// Set the Trigger values
-		setTrigger(trigger_type_left, WHEEL_LEFT, trigger_value_left);
-		setTrigger(trigger_type_right, WHEEL_RIGHT, trigger_value_right);
+		set_trigger(trigger_type_left, WHEEL_LEFT, trigger_value_left);
+		set_trigger(trigger_type_right, WHEEL_RIGHT, trigger_value_right);
 		// Set Status to started as setup is complete
 		order->status |= ORDER_STATUS_STARTED;
 	}
@@ -444,38 +444,38 @@ void advanced_drive_instruction(order_t *order) {
 	if (order->status & ORDER_STATUS_STARTED) { //Instruction is already running
 		// Left trigger reached
 		if (!(order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED) && 
-				checkAdvancedTrigger(trigger_type_left, WHEEL_LEFT) == 0) {
+				check_advanced_trigger(trigger_type_left, WHEEL_LEFT) == 0) {
 			order->status |= ORDER_STATUS_TRIGGER_LEFT_REACHED;
-			drive_brake_active_set_left();
+			drive_brake_active_set(WHEEL_LEFT);
 		}
 		// Right trigger reached
 		if (!(order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED) &&
-				checkAdvancedTrigger(trigger_type_right, WHEEL_RIGHT) == 0 ) {
+				check_advanced_trigger(trigger_type_right, WHEEL_RIGHT) == 0 ) {
 			order->status |= ORDER_STATUS_TRIGGER_RIGHT_REACHED;
-			drive_brake_active_set_right();
+			drive_brake_active_set(WHEEL_RIGHT);
 		}
 		// both triggers reached, ergo order is done 
 		if (order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED && 
 			order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED) {
 			order->status |= ORDER_STATUS_DONE;	
 			// stop the wheels
-			drive_UsePID(WHEEL_BOTH, 0);
-			wheel_ClearDifference();
+			drive_use_pid(WHEEL_ALL, 0);
+			wheel_clear_difference();
 		}
 
 		if (ACTIVE_BRAKE_WHEN_TRIGGER_REACHED) {
 			if (order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED)
-				drive_brake_active_left();
+				drive_brake_active(WHEEL_LEFT);
 			else if (order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED)
-				drive_brake_active_right();
+				drive_brake_active(WHEEL_RIGHT);
 		}
 		// Use error-correction while driving every 100 ms
 		if (local_time_flags & TIMER_100MS) {
 			if (!(order->status & ORDER_STATUS_TRIGGER_LEFT_REACHED)) {
-				drive_UsePID(WHEEL_LEFT, order->data[1]);
+				drive_use_pid(WHEEL_LEFT, order->data[1]);
 			}
 			if (!(order->status & ORDER_STATUS_TRIGGER_RIGHT_REACHED)) {
-				drive_UsePID(WHEEL_RIGHT, order->data[2]);
+				drive_use_pid(WHEEL_RIGHT, order->data[2]);
 			}
 		}
 	} else {
@@ -484,7 +484,7 @@ void advanced_drive_instruction(order_t *order) {
 		int16_t trigger_value_right_time = 0;
 		int16_t trigger_value_right_position = 0;
 		if (DEBUG_ENABLE)
-			debug_WriteString_P(PSTR("order_functions.c : advanced_drive_instruction() :  Start execution\n"));
+			debug_write_string_p(PSTR("order_functions.c : advanced_drive_instruction() :  Start execution\n"));
 
 		trigger_value_left_time = ((order->data[3] << 8) + order->data[4]);
 		trigger_value_left_position = ((order->data[5] << 8) + order->data[6]);
@@ -492,8 +492,8 @@ void advanced_drive_instruction(order_t *order) {
 		trigger_value_right_position = ((order->data[9] << 8) + order->data[10]);
 
 		// Set the triggers for each wheel
-		setAdvancedTrigger(WHEEL_LEFT, trigger_value_left_time, trigger_value_left_position);
-		setAdvancedTrigger(WHEEL_RIGHT, trigger_value_right_time, trigger_value_right_position);
+		set_advanced_trigger(WHEEL_LEFT, trigger_value_left_time, trigger_value_left_position);
+		set_advanced_trigger(WHEEL_RIGHT, trigger_value_right_time, trigger_value_right_position);
 		order->status |= ORDER_STATUS_STARTED;
 	}
 }
@@ -507,25 +507,25 @@ void advanced_drive_instruction(order_t *order) {
  */
 void set_pid_instruction(order_t *order) {
 	uint8_t wheel = order->data[0] >> 4;
-	int16_t P, I, D, S;
+	int16_t pfactor, ifactor, dfactor, sum_error;
 	if (DEBUG_ENABLE)
-		debug_WriteString_P(PSTR("order_functions.c : set_pid_instruction() :  Start execution\n"));
+		debug_write_string_p(PSTR("order_functions.c : set_pid_instruction() :  Start execution\n"));
 
 	if(order->status & ORDER_STATUS_DONE)
 		return;
 
-	P = ((order->data[1] << 8) + order->data[2]);
-	I = ((order->data[3] << 8) + order->data[4]);
-	D = ((order->data[5] << 8) + order->data[6]);
-	S = ((order->data[7] << 8) + order->data[8]);
+	pfactor = ((order->data[1] << 8) + order->data[2]);
+	ifactor = ((order->data[3] << 8) + order->data[4]);
+	dfactor = ((order->data[5] << 8) + order->data[6]);
+	sum_error = ((order->data[7] << 8) + order->data[8]);
 	if (DEBUG_ENABLE) {
-		debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  wheel = "), wheel);
-		debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  P = "), P);
-		debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  I = "), I);
-		debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  D = "), D);
-		debug_WriteInteger(PSTR("order_functions.c : drive_instruction() :  S = "), S);
+		debug_write_integer(PSTR("order_functions.c : drive_instruction() :  wheel = "), wheel);
+		debug_write_integer(PSTR("order_functions.c : drive_instruction() :  P = "), pfactor);
+		debug_write_integer(PSTR("order_functions.c : drive_instruction() :  I = "), ifactor);
+		debug_write_integer(PSTR("order_functions.c : drive_instruction() :  D = "), dfactor);
+		debug_write_integer(PSTR("order_functions.c : drive_instruction() :  S = "), sum_error);
 	}
-	drive_SetPIDParameter(wheel, P, I, D, S);
+	drive_SetPIDParameter(wheel, pfactor, ifactor, dfactor, sum_error);
 	order->status |= ORDER_STATUS_DONE;
 }
 
@@ -533,8 +533,8 @@ void set_pid_instruction(order_t *order) {
  * Option instruction handler function.
  *
  * Used to set behaviour variables, like how active braking should be done.
+ * THIS FUNCTION CHANGES SYSTEM-WIDE VARIABLES.
  * @param[in,out] order The order which contains the new parameters.
- * @todo maybe make it possible to only set one parameter at a time.
  */
 void option_instruction(order_t *order) {
 	extern uint8_t ACTIVE_BRAKE_AMOUNT;
@@ -543,8 +543,8 @@ void option_instruction(order_t *order) {
 	extern uint8_t ACTIVE_BRAKE_WHEN_TRIGGER_REACHED;
 	extern uint8_t LCD_PRESENT;
 	if (DEBUG_ENABLE) {
-		debug_WriteString_P(PSTR("order_functions.c : option_instruction() :  Start execution\n"));
-		debug_WriteInteger(PSTR("order_functions.c : option_instruction() : action = "), order->data[0] & 0xf0);
+		debug_write_string_p(PSTR("order_functions.c : option_instruction() :  Start execution\n"));
+		debug_write_integer(PSTR("order_functions.c : option_instruction() : action = "), order->data[0] & 0xf0);
 	}
 	switch(order->data[0] & 0xf0) {
 		case 0x00:

@@ -115,6 +115,6 @@ void order_process(order_t * const order) {
  * @todo Maybe think about unifiing order_size and bytes_needed
  */
 uint8_t order_size(const order_t * const order) {
-	return bytes_needed(order->data[0]);
+	return parser_bytes_needed(order->data[0]);
 }
 /*@}*/

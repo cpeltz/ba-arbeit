@@ -23,10 +23,6 @@ uint8_t transmission_underway = 0;
  * ISR for the TWI (I²C) Interrupt.
  */
 ISR(TWI_vect) {
-	// Led the blue LED blink if we are in here
-	pin_set_A(5);
-	
-  
   	// temporarily save the last Byte on the bus
 	uint8_t twi_data = TWDR;
 
@@ -131,7 +127,6 @@ ISR(TWI_vect) {
 			TWCR = (1 << TWSTO) | (1 << TWEN) | (1 << TWINT);
 			break;
 	}
-	pin_clear_A(5);
 }
 
 /**

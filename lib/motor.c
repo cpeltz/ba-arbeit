@@ -17,33 +17,33 @@
 static int8_t motor_speed[2];
 
 /**
- * Simple function to let motor 0 run forward.
+ * Simple function to set the direction for motor 0 to forward.
  */
-static void motor_RunForward_M0(void) {
+static void motor_set_direction_forward_0(void) {
 	INPUT_PORT |= (1 << INPUT2);
 	INPUT_PORT &= ~(1 << INPUT1);
 }
 
 /**
- * Simple function to let motor 0 run backward.
+ * Simple function to set the direction for motor 0 to backward.
  */
-static void motor_RunReverse_M0(void) {
+static void motor_set_direction_backward_0(void) {
 	INPUT_PORT &= ~(1 << INPUT2);
 	INPUT_PORT |= (1 << INPUT1);
 }
 
 /**
- * Simple function to let motor 1 run forward.
+ * Simple function to set the direction for motor 1 to forward.
  */
-static void motor_RunForward_M1(void) {
+static void motor_set_direction_forward_1(void) {
 	INPUT_PORT &= ~(1 << INPUT4);
 	INPUT_PORT |= (1 << INPUT3);
 }
 
 /**
- * Simple function to let motor 1 run backward.
+ * Simple function to set the direction for motor 1 to backward.
  */
-static void motor_RunReverse_M1(void) {
+static void motor_set_direction_backward_1(void) {
 	INPUT_PORT |= (1 << INPUT4);
 	INPUT_PORT &= ~(1 << INPUT3);
 }
@@ -82,10 +82,10 @@ void motor_init(void) {
  * @param[in] speed The speed for which the PWM value should be calculated.
  * @return <em>uint8_t</em> The PWM value for the speed parameter.
  */
-static uint8_t motor_CalculatePWM(int8_t speed) {
-	// Wenn speed = 0 -> PWM = 0,
-	// 1 < speed < 38 -> PWM = speed + 38,
-	// 38 < speed -> PWM = (speed * 2) + 1.
+static uint8_t motor_calculate_pwm(int8_t speed) {
+	// If speed = 0 -> PWM = 0,
+	// 1 <= speed < 38 -> PWM = speed + 38,
+	// 38 <= speed -> PWM = (speed * 2) + 1.
 	if ((speed < 1)) {
 		return 0;
 	} else if ((speed < 38)) {
@@ -96,76 +96,49 @@ static uint8_t motor_CalculatePWM(int8_t speed) {
 }
 
 /**
- * Sets the speed for motor 0.
- *
- * @param[in] speed The desired speed of motor 0.
+ * Simple typedef to ease writing.
  */
-static void motor_SetSpeed_M0(int8_t speed) {
-	uint8_t positive;
-
-	positive = abs(speed);
-	if (!(speed)) {
-		ENABLE_A_PWM = 0;
-	} else {
-		switch ((speed / positive)) {
-			case 1:
-				motor_RunForward_M0();
-				break;
-			case -1:
-				motor_RunReverse_M0();
-				break;
-		}
-		ENABLE_A_PWM = motor_CalculatePWM(positive);
-	}
-}
+typedef void (*direction_function)(int8_t);
 
 /**
- * Sets the speed for motor 1.
- *
- * @param[in] speed The desired speed of motor 1.
+ * A function table for the direction settings.
  */
-static void motor_SetSpeed_M1(int8_t speed) {
-	uint8_t positive;
+direction_function motor_direction_functions[NUMBER_OF_WHEELS * 2] = {
+	&motor_set_direction_forward_0,
+	&motor_set_direction_backward_0,
+	&motor_set_direction_forward_1,
+	&motor_set_direction_backward_1
+};
 
-	positive = abs(speed);
-	if (!(speed)) {
-		ENABLE_B_PWM = 0;
-	} else {
-		switch ((speed / positive)) {
-			case 1:
-				motor_RunForward_M1();
-				break;
-			case -1:
-				motor_RunReverse_M1();
-				break;
-		}
-		ENABLE_B_PWM = motor_CalculatePWM(positive);
-	}
-}
+/**
+ * Array of the PWM SFRs.
+ * @todo Check whether or not this works.
+ */
+volatile uint8_t* motor_pwm_registers[NUMBER_OF_WHEELS] = { ENABLE_A_PWM, ENABLE_B_PWM };
+
 
 /**
  * Sets the speed for a motor.
  *
- * @param[in] motor The motor. Valid values are #WHEEL_LEFT,
- * #WHEEL_RIGHT and #WHEEL_BOTH.
- * @param[in] speed The desired speed of motor 0.
- * @todo Remove this bulk and use a dispatch table instead.
+ * @param[in] wheel The motor for the given wheel. Valid values are #WHEEL_LEFT,
+ * #WHEEL_RIGHT and #WHEEL_ALL.
+ * @param[in] speed The desired speed..
+ * @todo Test this
  */
-void motor_SetSpeed(uint8_t motor, int8_t speed) {
-	switch (motor) {
-		case WHEEL_LEFT:
-			motor_speed[WHEEL_LEFT] = speed;
-			motor_SetSpeed_M0(speed);
+void motor_set_speed(uint8_t wheel, int8_t speed) {
+	uint8_t absolute = abs(speed);
+	switch (wheel) {
+		case WHEEL_ALL:
+			for (uint8_t i = 0; i < NUMBER_OF_WHEELS; i++) {
+				motor_speed[i] = speed;
+				motor_direction_functions[i * 2 + (1 * (absolute < 0))];
+				motor_pwm_registers[i] = motor_calculate_pwm(absolute);
+			}
 			break;
-		case WHEEL_RIGHT:
-			motor_speed[WHEEL_RIGHT] = speed;
-			motor_SetSpeed_M1(speed);
-			break;
-		case WHEEL_BOTH:
-			motor_speed[WHEEL_LEFT] = speed;
-			motor_speed[WHEEL_RIGHT] = speed;
-			motor_SetSpeed_M0(speed);
-			motor_SetSpeed_M1(speed);
+		default:
+			motor_speed[wheel] = speed;
+			motor_direction_functions[wheel * 2 + (1 * (absolute < 0))];
+			motor_pwm_registers[wheel] = motor_calculate_pwm(absolute);
 			break;
 	}
 }
@@ -173,12 +146,12 @@ void motor_SetSpeed(uint8_t motor, int8_t speed) {
 /**
  * Reads the set speed for a motor.
  *
- * @param[in] motor The motor, which speed one wants. Valid
+ * @param[in] wheel The motor of the wheel, which speed one wants. Valid
  * values are #WHEEL_LEFT and #WHEEL_RIGHT.
  * @return <em>int8_t</em> The speed of the requested motor.
  */
-int8_t motor_ReadSpeed(uint8_t motor) {
-	return motor_speed[motor];
+int8_t motor_read_speed(uint8_t wheel) {
+	return motor_speed[wheel];
 }
 
 /*@}*/

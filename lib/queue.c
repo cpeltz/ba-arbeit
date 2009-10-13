@@ -16,10 +16,12 @@
  * The order queue buffer.
  */
 static order_t order_queue[QUEUE_SIZE];
+
 /**
  * Single priority order.
  */
 static order_t priority_order;
+
 /**
  * Indicates whether or not the queue execution is paused.
  */
@@ -29,10 +31,12 @@ static uint8_t paused;
  * The position in the buffer, from where to read.
  */
 static uint8_t queue_readposition = 0;
+
 /**
  * The position in the buffer, where to write.
  */
 static uint8_t queue_writeposition = 0;
+
 /**
  * Number of entries in the queue.
  */
@@ -152,23 +156,23 @@ void queue_update(void) {
 	// Check wheter there is a new order
 	if (parser_has_new_order()) {
 		if (DEBUG_ENABLE)
-			debug_WriteString_P(PSTR("queue.c : queue_update() : We have a new order\n"));
+			debug_write_string_p(PSTR("queue.c : queue_update() : We have a new order\n"));
 		order_init(&local_order);
 		// Get the new order
 		parser_get_new_order(&local_order);
 		if (DEBUG_ENABLE) {
-			debug_WriteInteger(PSTR("queue.c : queue_update() : order opcode is = "), local_order.data[0]);
-			debug_WriteInteger(PSTR("queue.c : queue_update() : order status is = "), local_order.status);
+			debug_write_integer(PSTR("queue.c : queue_update() : order opcode is = "), local_order.data[0]);
+			debug_write_integer(PSTR("queue.c : queue_update() : order status is = "), local_order.status);
 		}
 		// If its a Priority order we need to push it in the right place
 		if (local_order.status & ORDER_STATUS_PRIORITY) {
 			if (DEBUG_ENABLE)
-				debug_WriteString_P(PSTR("queue.c : queue_update() : PRIORITY\n"));
+				debug_write_string_p(PSTR("queue.c : queue_update() : PRIORITY\n"));
 			queue_push_priority(&local_order);
 		// No priority order
 		} else {
 			if (DEBUG_ENABLE)
-				debug_WriteString_P(PSTR("queue.c : queue_update() : NO PRIORITY\n"));
+				debug_write_string_p(PSTR("queue.c : queue_update() : NO PRIORITY\n"));
 			queue_push(&local_order);
 		}
 	}

@@ -1,4 +1,5 @@
 #include <inttypes.h>
+#include <string.h>
 #include "definitions.h"
 #include "options.h"
 #include "pid.h"
@@ -19,12 +20,12 @@
 /**
  *	Used to remember the PID-Parameters for each wheel
  */
-static pid_data_t drive_PID[NUMBER_OF_WHEELS];
+static pid_data_t drive_pid[NUMBER_OF_WHEELS];
 
 /**
  * External reference to the Position Variable for the wheels.
  */
-extern int16_t irq_Position[NUMBER_OF_WHEELS];
+extern int16_t irq_position[NUMBER_OF_WHEELS];
 
 /**
  *	Stores the position of the wheels they should hold during active braking.
@@ -34,25 +35,24 @@ int16_t drive_brake_position[NUMBER_OF_WHEELS];
 /**
  * Sets the PID-Parameter for either one wheel or both wheels.
  *
- * @param[in] wheel Possible values include #WHEEL_LEFT, #WHEEL_RIGHT and #WHEEL_BOTH.
- * @param[in] Pfactor the proportional Factor of the PID-System
- * @param[in] Ifactor the integral Part of the PID-System
- * @param[in] Dfactor the differential factor
- * @param[in] SErrorMAX the max value for the sum of all errors
+ * @param[in] wheel Possible values include #WHEEL_LEFT, #WHEEL_RIGHT and #WHEEL_ALL.
+ * @param[in] pfactor the proportional Factor of the PID-System
+ * @param[in] ifactor the integral Part of the PID-System
+ * @param[in] dfactor the differential factor
+ * @param[in] sum_error_max the max value for the sum of all errors
  */
-void drive_SetPIDParameter(	const uint8_t wheel, const int16_t Pfactor, const int16_t Ifactor,
-							const int16_t Dfactor, const int16_t SErrorMAX) {
+void drive_set_pid_parameter( const uint8_t wheel, const int16_t pfactor, const int16_t ifactor,
+                              const int16_t dfactor, const int16_t sum_error_max) {
 	// Sets the parameter for a PID enabled movement
 	if (DEBUG_ENABLE)
-		debug_WriteString_P(PSTR("drive.c : drive_SetPID_Parameter()\n"));
+		debug_write_string_p(PSTR("drive.c : drive_SetPID_Parameter()\n"));
 	switch (wheel) {
-		case WHEEL_LEFT:
-		case WHEEL_RIGHT:
-			pid_Init(Pfactor, Ifactor, Dfactor, SErrorMAX, &drive_PID[wheel]);
+		case WHEEL_ALL:
+			for(uint8_t i = 0; i < NUMBER_OF_WHEELS; i++)
+				pid_init(pfactor, ifactor, dfactor, sum_error_max, &drive_pid[i]);
 			break;
-		case WHEEL_BOTH:
-			pid_Init(Pfactor, Ifactor, Dfactor, SErrorMAX, &drive_PID[WHEEL_LEFT]);
-			pid_Init(Pfactor, Ifactor, Dfactor, SErrorMAX, &drive_PID[WHEEL_RIGHT]);
+		default:
+			pid_init(pfactor, ifactor, dfactor, sum_error_max, &drive_pid[wheel]);
 			break;
     }
 }
@@ -61,23 +61,22 @@ void drive_SetPIDParameter(	const uint8_t wheel, const int16_t Pfactor, const in
  *	Sets the max value for the sum off all errors.
  *
  *	Beware that this function may be obsolete.
- *	@param[in] wheel Possible values include #WHEEL_LEFT, #WHEEL_RIGHT and #WHEEL_BOTH.
- *	@param[in] sumError the max value for the sum of all errors
+ *	@param[in] wheel Possible values include #WHEEL_LEFT, #WHEEL_RIGHT and #WHEEL_ALL.
+ *	@param[in] sum_error the max value for the sum of all errors
  */
 
-void drive_SetPIDSumError(const uint8_t wheel, const int16_t sumError) {
+void drive_set_pid_sum_error(const uint8_t wheel, const int16_t sum_error) {
 	// Used to set the SumError for a PID enabled movement
 	if (DEBUG_ENABLE)
-		debug_WriteString_P(PSTR("drive.c : drive_SetPIDSumError()\n"));
+		debug_write_string_p(PSTR("drive.c : drive_SetPIDSumError()\n"));
 	switch (wheel) {
-		case WHEEL_LEFT:
-		case WHEEL_RIGHT:
-			drive_PID[wheel].sumError = sumError;
-			break;
-		case WHEEL_BOTH:
-			drive_PID[WHEEL_LEFT ].sumError = sumError;
-			drive_PID[WHEEL_RIGHT].sumError = sumError;
+		case WHEEL_ALL:
+			for(uint8_t i = 0; i < NUMBER_OF_WHEELS; i++)
+				drive_pid[i].sum_error = sum_error;
 		break;
+		default:
+			drive_pid[wheel].sum_error = sum_error;
+			break;
 	}
 }
 
@@ -90,67 +89,44 @@ void drive_SetPIDSumError(const uint8_t wheel, const int16_t sumError) {
  * @param[in] speed Describes the speed with which the wheel should be used.
  * @todo Remove the Modulo-Operators
  */
-void drive_UsePID(const uint8_t wheel, const int8_t speed) {
-	int16_t wheel_ModSpeed[2];
-	int16_t wheel_Difference;
+void drive_use_pid(const uint8_t wheel, const int8_t speed) {
+	int16_t wheel_mod_speed[2];
+	int16_t wheel_difference;
 
 	if (DEBUG_ENABLE)
-		debug_WriteString_P(PSTR("drive.c : drive_UsePID()\n"));
+		debug_write_string_p(PSTR("drive.c : drive_UsePID()\n"));
 	switch (wheel) {
-		case WHEEL_LEFT:
-		case WHEEL_RIGHT:
-			// PID Fahrt für linkes Rad
-			// PID Fahrt für rechtes Rad
-			if (speed > 0)
-				motor_SetSpeed(wheel, pid_Controller(speed, wheel_ReadSpeed(wheel), &drive_PID[wheel]));
-			else
-				motor_SetSpeed(wheel, -pid_Controller(-speed, -wheel_ReadSpeed(wheel), &drive_PID[wheel]));
-			break;
 		case WHEEL_BOTH:
-			// PID Fahrt für beide Räder mit Differenzausgleich
-			wheel_ModSpeed[WHEEL_LEFT ] = wheel_ReadSpeed(WHEEL_LEFT);
-			wheel_ModSpeed[WHEEL_RIGHT] = wheel_ReadSpeed(WHEEL_RIGHT);
-			wheel_Difference = wheel_ReadDifference();
-
-			// bei ungerader Differenz immer abwechselnd
-			if (wheel_Difference % 2) {
-				wheel_ModSpeed[WHEEL_LEFT] += wheel_Difference;
-			} else {
-				wheel_ModSpeed[WHEEL_RIGHT] -= wheel_Difference;
-			}
-
-			// geraden Differenzanteil gerecht verteilen
-			wheel_ModSpeed[WHEEL_LEFT] += (wheel_Difference / 2);
-			wheel_ModSpeed[WHEEL_RIGHT] -= (wheel_Difference / 2);
-
-			// Richtungsunterschied da PID Regler nur positiv arbeitet
-			if (speed > 0) {
-				// Veränderte Werte begrenzen
-				if (wheel_ModSpeed[WHEEL_LEFT] < 0)
-					wheel_ModSpeed[WHEEL_LEFT] = 0;
-				else if (wheel_ModSpeed[WHEEL_LEFT] > 127)
-					wheel_ModSpeed[WHEEL_LEFT] = 127;
-				if (wheel_ModSpeed[WHEEL_RIGHT] < 0)
-					wheel_ModSpeed[WHEEL_RIGHT] = 0;
-				else if (wheel_ModSpeed[WHEEL_RIGHT] > 127)
-					wheel_ModSpeed[WHEEL_RIGHT] = 127;
-
-				motor_SetSpeed(WHEEL_LEFT, pid_Controller(speed, wheel_ModSpeed[WHEEL_LEFT], &drive_PID[WHEEL_LEFT]));
-				motor_SetSpeed(WHEEL_RIGHT, pid_Controller(speed, wheel_ModSpeed[WHEEL_RIGHT], &drive_PID[WHEEL_RIGHT]));
-			} else {
-				// Veränderte Werte begrenzen
-				if (wheel_ModSpeed[WHEEL_LEFT] < -127)
-					wheel_ModSpeed[WHEEL_LEFT] = -127;
-				else if (wheel_ModSpeed[WHEEL_LEFT] > 0)
-					wheel_ModSpeed[WHEEL_LEFT] = 0;
-				if (wheel_ModSpeed[WHEEL_RIGHT] < -127)
-					wheel_ModSpeed[WHEEL_RIGHT] = -127;
-				else if (wheel_ModSpeed[WHEEL_RIGHT] > 0)
-					wheel_ModSpeed[WHEEL_RIGHT] = 0;
-
-				motor_SetSpeed(WHEEL_LEFT, -pid_Controller(-speed, -wheel_ModSpeed[WHEEL_LEFT], &drive_PID[WHEEL_LEFT]));
-				motor_SetSpeed(WHEEL_RIGHT, -pid_Controller(-speed, -wheel_ModSpeed[WHEEL_RIGHT], &drive_PID[WHEEL_RIGHT]));
+			// Drive using PID with difference calibration
+			wheel_difference = wheel_read_difference();
+			for (uint8_t i = 0; i < NUMBER_OF_WHEELS; i++) {
+				// calculate the sign for the mod_speed modification
+				uint8_t sign = i - ((i / 2) * 2);
+				// get the speed of the wheel
+				wheel_mod_speed[i] = wheel_read_speed(i);
+				// add or substract a share of the difference
+				wheel_mod_speed[i] += (-1 * sign) * (wheel_Difference / NUMBER_OF_WHEELS);
+				// limit the speed modifications
+				if (speed > 0) {
+					if (wheel_mod_speed[i] > 127)
+						wheel_mod_speed[i] = 127;
+					else if (wheel_mod_speed[i] < 0)
+						wheel_mod_speed[i] = 0;
+				} else {
+					if (wheel_mod_speed[i] < -128)
+						wheel_mod_speed[i] = -128;
+					else if (wheel_mod_speed[i] > 0)
+						wheel_mod_speed[i] = 0;
 				}
+				// calculate sign for motor_set_speed
+				sign = (-1 * (speed =< 0));
+				// set the modified speeds, after they were adjusted by the PID-Controller
+				motor_set_speed(i, sign * pid_controller(sign * speed, sign * wheel_mod_speed[i], &drive_pid[i]));
+			}
+			break;
+		default:
+			uint8_t sign = (-1 * (speed =< 0));
+			motor_set_speed(wheel, sign * pid_controller(sign * speed, sign * wheel_read_speed(wheel), &drive_pid[wheel]));
 			break;
 	}
 }
@@ -164,111 +140,52 @@ void drive_brake_active(void) {
 	extern uint8_t ACTIVE_BRAKE_AMOUNT;
 	if(!ACTIVE_BRAKE_ENABLE)
 		return;
-	if (drive_brake_position[WHEEL_LEFT] == irq_Position[WHEEL_LEFT]) {
-		motor_SetSpeed(WHEEL_LEFT, 0);
+	if (drive_brake_position[WHEEL_LEFT] == irq_position[WHEEL_LEFT]) {
+		motor_set_speed(WHEEL_LEFT, 0);
 	} else if (drive_brake_position[WHEEL_LEFT] < irq_Position[WHEEL_LEFT]) {
-		motor_SetSpeed(WHEEL_LEFT, -(ACTIVE_BRAKE_AMOUNT));
+		motor_set_speed(WHEEL_LEFT, -(ACTIVE_BRAKE_AMOUNT));
 	} else {
-		motor_SetSpeed(WHEEL_LEFT, ACTIVE_BRAKE_AMOUNT);
+		motor_set_speed(WHEEL_LEFT, ACTIVE_BRAKE_AMOUNT);
 	}
 	if (drive_brake_position[WHEEL_RIGHT] == irq_Position[WHEEL_RIGHT]) {
-		motor_SetSpeed(WHEEL_RIGHT, 0);
+		motor_set_speed(WHEEL_RIGHT, 0);
 	} else if (drive_brake_position[WHEEL_RIGHT] < irq_Position[WHEEL_RIGHT]) {
-		motor_SetSpeed(WHEEL_RIGHT, -(ACTIVE_BRAKE_AMOUNT));
+		motor_set_speed(WHEEL_RIGHT, -(ACTIVE_BRAKE_AMOUNT));
 	} else {
-		motor_SetSpeed(WHEEL_RIGHT, ACTIVE_BRAKE_AMOUNT);
+		motor_set_speed(WHEEL_RIGHT, ACTIVE_BRAKE_AMOUNT);
 	}
 }
-
-/**
- * Sets the current position as holding position used while doing active braking.
- *
- * Sets position for both wheels.
- */
-void drive_brake_active_set(void) {
-	// Set the Position of the wheels for use with active braking.
-	drive_brake_active_set_left();
-	drive_brake_active_set_right();
-}
-
-/**
- * Handles active braking for the left wheel.
- *
- * Will only work if ACTIVE_BRAKE_ENABLE not 0.
- */
-void drive_brake_active_left(void) {
-	extern uint8_t ACTIVE_BRAKE_ENABLE;
-	extern uint8_t ACTIVE_BRAKE_AMOUNT;
-	if(!ACTIVE_BRAKE_ENABLE)
-		return;
-	if (drive_brake_position[WHEEL_LEFT] == irq_Position[WHEEL_LEFT]) {
-		motor_SetSpeed(WHEEL_LEFT, 0);
-	} else if (drive_brake_position[WHEEL_LEFT] < irq_Position[WHEEL_LEFT]) {
-		motor_SetSpeed(WHEEL_LEFT, -(ACTIVE_BRAKE_AMOUNT));
-	} else {
-		motor_SetSpeed(WHEEL_LEFT, ACTIVE_BRAKE_AMOUNT);
-	}
-}
-
-/**
- * Sets the position for active braking for the left wheel.
- */
-void drive_brake_active_set_left(void) {
-	drive_brake_position[WHEEL_LEFT] = irq_Position[WHEEL_LEFT];
-}
-
-#include <string.h>
 
 /**
  * Testfunction to set the position for a specified wheel.
  * @todo test this out against the other three functions.
  */
-/*void drive_brake_active_set(uint8_t wheel) {
+void drive_brake_active_set(uint8_t wheel) {
 	switch(wheel) {
-		case WHEEL_BOTH:
-			memcpy(drive_brake_position, irq_Position, WHEEL_BOTH);
+		case WHEEL_ALL:
+			memcpy(drive_brake_position, irq_Position, NUMBER_OF_WHEELS);
 		default:
 			drive_brake_position[wheel] = irq_Position[wheel];
 			break;
 	}
-}*/
-
-/**
- * Handles active braking for the right wheel.
- *
- * Will only work if ACTIVE_BRAKE_ENABLE not 0.
- */
-void drive_brake_active_right(void) {
-	extern uint8_t ACTIVE_BRAKE_ENABLE;
-	extern uint8_t ACTIVE_BRAKE_AMOUNT;
-	if(!ACTIVE_BRAKE_ENABLE)
-		return;
-	if (drive_brake_position[WHEEL_RIGHT] == irq_Position[WHEEL_RIGHT]) {
-		motor_SetSpeed(WHEEL_RIGHT, 0);
-	} else if (drive_brake_position[WHEEL_RIGHT] < irq_Position[WHEEL_RIGHT]) {
-		motor_SetSpeed(WHEEL_RIGHT, -(ACTIVE_BRAKE_AMOUNT));
-	} else {
-		motor_SetSpeed(WHEEL_RIGHT, ACTIVE_BRAKE_AMOUNT);
-	}
 }
 
-/*
+/**
+ * Handles braking for one specified wheel,
+ *
+ * @param wheel The wheel for which active braking should be done.
+ */
 void drive_brake_active(uint8_t wheel) {
 	extern uint8_t ACTIVE_BRAKE_ENABLE;
 	extern uint8_t ACTIVE_BRAKE_AMOUNT;
 	if(!ACTIVE_BRAKE_ENABLE)
 		return;
-	
-	motor_SetSpeed(wheel,
-		(drive_brake_position[wheel] - irq_Position[wheel])
-		* ACTIVE_BRAKE_AMOUNT);
-}
-*/
-
-/**
- * Sets the position for active braking for the right wheel.
- */
-void drive_brake_active_set_right(void) {
-	drive_brake_position[WHEEL_RIGHT] = irq_Position[WHEEL_RIGHT];
+	if (drive_brake_position[wheel] == irq_position[wheel]) {
+		motor_set_speed(wheel, 0);
+	} else if (drive_brake_position[wheel] < irq_position[wheel]) {
+		motor_set_speed(wheel, -(ACTIVE_BRAKE_AMOUNT));
+	} else {
+		motor_set_speed(wheel, ACTIVE_BRAKE_AMOUNT);
+	}
 }
 /*@}*/

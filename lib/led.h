@@ -1,14 +1,12 @@
 #ifndef LED_H
 #define LED_H
 
-#include <inttypes.h>
+#include "definitions.h"
+
+#define led_switch_on(led) (LED_PORT |= (1 << led))
+#define led_switch_off(led) (LED_PORT &= ~(1 << led))
+#define led_toggle(led) (LED_PORT ^= (1 << led))
 
 void led_init(void);
-void led_switch(uint8_t led, uint8_t state);
-void led_switchoff(void);
-void led_test(void);
-uint16_t led_GetState(void);
-void led_ToggleBit(void);
-uint8_t led_ReadToggleBit(void);
 
 #endif

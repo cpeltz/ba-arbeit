@@ -4,12 +4,10 @@
 #include "types.h"
 
 void irq_init(void);
-int16_t wheel_ReadPosition(uint8_t wheel);
-void wheel_ClearPosition(uint8_t wheel);
-int16_t wheel_ReadDifference(void);
-void wheel_WriteDifference(int16_t difference);
-void wheel_ClearDifference(void);
-void trigger_Set_P(const uint8_t wheel, const int16_t trigger_position);
-void trigger_Clear_P(const uint8_t wheel);
+int16_t wheel_read_position(uint8_t wheel);
+void wheel_clear_position(uint8_t wheel);
+int16_t wheel_read_difference(void);
+void wheel_write_difference(int16_t difference);
+void wheel_clear_difference(void);
 
 #endif
