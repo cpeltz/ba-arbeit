@@ -81,7 +81,9 @@ lediglich das Kommando-Byte gesendet werden muss.
 		\hline
 		Clear Queue		& 0x40				& 0x41                    & Die Warteschlange wird gelöscht. \\
 		\hline
-		Stop Drive		& 0x50				& 0x51                    &Befehl wird angehalten, Fahrzeug geht zum aktiven Bremsen über. \\
+		Stop Drive		& 0x50				& 0x51                    & Befehl wird angehalten, Fahrzeug geht zum aktiven Bremsen über. \\
+		\hline
+		Reset Counter	& 0x60				& 0x61                    & Setzt den Sekunden-Zähler zurück. \\
 		\hline
 	\end{tabularx}
 	\caption{\label{protocol_control} Optionen des Control-Befehls}

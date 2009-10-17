@@ -26,6 +26,12 @@ unsigned char order_bytes_to_recv(order_t *order) {
 		case ORDER_QUERY_RIGHT_SPEED:
 		case ORDER_QUERY_QUEUE_SIZE:
 			return 1;
+		case ORDER_QUERY_TIME_TRIGGER_LEFT:
+		case ORDER_QUERY_POS_TRIGGER_LEFT:
+		case ORDER_QUERY_TIME_TRIGGER_RIGHT:
+		case ORDER_QUERY_POS_TRIGGER_RIGHT:
+		case ORDER_QUERY_TIMER:
+			return 2;
 		default:
 			return 0;
 	}

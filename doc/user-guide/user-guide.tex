@@ -172,6 +172,8 @@
 		\hline
 		Stop Drive		& 0x50				& Aktueller Befehl wird angehalten, Fahrzeug geht zum aktiven Bremsen über (falls aktiviert). \\
 		\hline
+		Reset 1s Counter& 0x60				& Setzt den internen Sekunden-Zähler zurück. \\
+		\hline
 	\end{tabularx}
 
 	Die Optionen schließen sich gegenseitig aus, d.h. es kann nur eine der
@@ -406,6 +408,13 @@
 	Geschwindigkeiten, je 2*2 Byte für die Triggerwerte).
 
 	\subsection{Beispiele}
+	\begin{verbatim}
+	Die Geschwindigkeit der linken Rades soll 50 betragen, die des Rechten 100.
+	Das linke benutzt einen UND-Trigger, das rechte einen ODER-Trigger.
+	Alle Trigger haben den Wert 2500.
+	Erstes Byte: 0x04 OR 0x20 OR 0x40 = 0x64
+	Gesamte Befehl: 0x64 0x32 0x64 0x09 0xc4 0x09 0xc4 0x09 0xc4 0x09 0xc4
+	\end{verbatim}
 	\pagebreak
 
 
@@ -458,6 +467,15 @@
 	Die Länge des Befehls beträgt immer 9 Byte (1 Kommando-Byte + 4*2 Byte für die Variablen).
 
 	\subsection{Beispiele}
+	\begin{verbatim}
+	P-Faktor: 1000
+	I-Faktor: 2000
+	D-Faktor: 4000
+	Max-Fehler-Summe: 8000
+	Für beide Räder.
+	Erstes Byte: 0x05 OR 0x20 = 0x25
+	Gesamte Befehl: 0x25 0x03 0xe8 0x07 0xd0 0x0f 0xa0 0x1f 0x40
+	\end{verbatim}
 	\pagebreak
 
 
@@ -502,51 +520,54 @@
 	aktiviert wurde (t falls deaktiviert).
 
 	\subsection{Beispiele}
+	\begin{verbatim}
+	ABS-Geschwindigkeit wird auf 100 gesetzt.
+	Erstes Byte: 0x06 OR 0x10 = 0x16
+	Gesamte Befehl: 0x16 0x64
+	\end{verbatim}
 	\pagebreak
 
 	
 	\section{Verwendung der Befehls-Bibliothek}
 	
-	Die Befehls-Bibliothek ist optional und klein. Sie dient hauptsächlich dazu das Senden von Befehlen an
-	die Motorplatine zu vereinfachen. Ohne die Bibliothek muss der Benutzer selber alle Felder eines Arrays
-	korrekt setzen und sie selber senden. Die Bibliothek hingegen sellt eine große Menge an defines bereit,
-	die das spätere lesen des Codes vereinfachen, sowie einige Funktionen, die das füllen der Parameter
-	kurz und übersichtlich hält. Natürlich hat dies einen geringen Overhead zur Folge (mindestens wegen der
-	Funktionsaufrufe).
+	Die Befehls-Bibliothek ist optional. Sie ermöglicht es einfach Befehle zu erstellen und an die
+	Motorplatine zu senden. Ohne diese Bibliothek muss der Benutzer die Daten der Befehle eigenhändig
+	zusammenstellen und versenden. Die Bibliotek besteht aus 5 Funktionen und einer großen Menge
+	Defines. Die Funktionen helfen den Code einfach lesbar zu halten, bringen aber natürlich einen
+	kleinen Overhead mit sich.
 	Um einen Befehl mit der Bibliothek zu erstellen und abzusenden sind folgende folgene Schritte durchzuführen:
 	\begin{enumerate}
 		\item Erstellen einer Variable vom Typ order\_t
 		\item Initialisieren dieser Variable mit order\_init(order\_t)
-		\item Einstellen des Befehlstypes mit order\_set\_type(order\_t, type) (Hierfür gibt es eine Menge an defines
+		\item Einstellen des Befehlstypes mit order\_set\_type(order\_t, type) (Hierfür gibt es eine Menge an defines,
 			um diesen Aufruf kurz und informativ zu halten)
 		\item Setzen, wenn nötig, der Parameter für den Befehl, mithilfe von order\_add\_params(order\_t, format, param1, ..., paramN)
 		\item Senden des Befehls an die Platine mithilfe von order\_send(order\_t), order\_send\_and\_recv(order\_t) oder
 			order\_send\_and\_recv\_co(order\_t).
 	\end{enumerate}
-	Wichtige Besonderheiten sind, dass der Typ order\_t, zwar größenteils identisch mit dem auf der Platine verwendete
-	Typ ist, statt einer status-Variablen jetzt eine pos-Variable hat, die {\em nur intern verwendet} werden darf.
-	Sie speichert die Schreibposition sowie die länge des Befehls. Das große data Array musste hier in dat umbenannt
-	werden, da data ein reserviertes Wort unter Keil ist. Das erste Feld in dem dat Array speichert die Adresse der
-	Platine und wird während order\_init(order\_t) gesetzt. Ab dem zweiten Feld des dat Array residieren hier nur die
-	Befehlsdaten.
+	Wichtig ist, dass der Typ order\_t, zwar größenteils identisch mit dem auf der Platine verwendete
+	Typ ist, statt einer status-Variablen aber eine pos-Variable hat, die {\em nur intern verwendet} werden darf.
+	Sie speichert die Schreibposition und die Länge des Befehls. Das große data Array musste hier in dat umbenannt
+	werden, da data ein reserviertes Wort in der Keil-Umgebung ist. Das erste Feld in dem dat Array speichert die Adresse der
+	Platine und wird während order\_init(order\_t) gesetzt. Ab dem zweiten Feld des dat Array stehen hier nur die
+	Befehlsdaten.\\
 	Mit order\_set\_type(order\_t, type) wird der Typ des Befehls gesetzt, das bedeutet, das erste Byte des Befehls auch
-	Befehlsbyte genannt. Für jeden validen Typ, das schließt auch alle Optionen mit ein, gibt es ein define, welches man
-	hierfür verwenden kann.
+	Kommando-Byte genannt. Für jeden validen Typ, das schließt auch alle Optionen mit ein, gibt es ein define, welches man
+	hierfür verwenden kann.\\
 	Die Funktion order\_add\_params(order\_t, format, param1, .., paramN) hat eine variable Anzahl an Parametern. Die
 	Anzahl der Parameter und deren Typen wird durch den format-String festgelegt. Dieser besteht aus einer Kombination
 	aus 1en und 2en. Die 1en bedeuten ein 1-Byte Parameter (int8\_t oder äquivalent) wobei die 2en ein 2-Byte
 	Parameter bedeuten (int16\_t oder äquivalent). Sie werden in der Reihenfolge in der sie angegeben wurden auch erwartet
 	und eingefügt. Beispiel: "1121" würde aussagen, dass zwei 1-Byte Parameter, dann ein 2-Byte Parameter, gefolgt von
-	einem weiteren 1-Byte Parameter erwartet wird.
-	Wenn der Befehl nun zur Zufriedenheit konstruiert wurde, kann er mit einem der drei send-Funktionen gesendet werden.
-	Wichtig ist hier die Richtige auszuwählen. Dabei gilt, wird keine Antwort auf den Befehl erwartet (der Großteil der
-	Befehle), dann wird order\_send(order\_t) benutzt. Die Funktion gibt die Anzahl der gesendeten Bytes zurück.
-	Falls der Befehl eine Antwort provoziert (wie die query-Befehle), dann wird order\_send\_and\_recv(order\_t) benutzt.
-	Dieser wird den Befehl senden und an die Stelle der Alten Befehlsdaten (also ab dem zweiten Feld) die Antwort einlesen.
-	Außerdem gibt der Befehl die Anzahl der gelesenen Bytes zurück. (pos wird nicht korrekt gesetzt).
-	Es gibt noch einen Befehl zum Senden und Empfangen, das ist der order\_send\_and\_recv\_co(order\_t). Dieser muss
-	benutzt werden, wenn die Antwort der Platine eine variable Länge hat (so wie die Antwort auf den Query nach dem
-	aktuellen Befehl (current order) von dem der Befehl auch seinen Namen ableitet. Auch dieser Befehl gibt die Anzahl
-	der empfangenen Bytes zurück und speichert die empfangenen Daten ab dem zweiten Feld des dat-Arrays.
+	einem weiteren 1-Byte Parameter erwartet wird.\\
+	Wenn der Befehl zur Zufriedenheit konstruiert wurde, kann er mit der send-Funktionen gesendet werden.
+	Die order\_send(order\_t)-Funktionen sendet jeden beliebigen Befehl und gibt die Anzahl der gesendeten
+	Bytes zurück. Diese sollte gleich order\_t->pos sein, falls nicht, wurde der Befehl nicht vollständig
+	übertragen. Falls mehr als 0 Bytes aber weniger als pos Bytes übertragen wurden, sollte die Motorplatine
+	mit Reset-Befehlen konfrontiert werden. Es sind u.U. 11 Reset-Befehle nötig.\\
+	Die letzte Funktion ist die order\_bytes\_to\_recv(order\_t)-Funktion. Sie gibt für einen Befehl, der eine
+	Antwort der Motorplatine auslöst, die Anzahl der Bytes zurück, die die Antwort lang ist. Dies funktioniert
+	aber nicht, wenn man den aktuellen Befehl abfragt (siehe die Query-Befehls-Beschreibung für genauere
+	Informationen).
 
 \end{document}
