@@ -66,10 +66,10 @@ ISR(TIMER1_COMPC_vect) {
 	}
 
 	// Geschwindigkeiten in timer_Speed_W0/1 übertragen
-	timer_Speed[WHEEL_LEFT] = timer_SpeedSum[WHEEL_LEFT];
-	timer_Speed[WHEEL_RIGHT] = timer_SpeedSum[WHEEL_RIGHT];
-	timer_SpeedSum[WHEEL_LEFT] = 0;
-	timer_SpeedSum[WHEEL_RIGHT] = 0;
+	timer_speed[WHEEL_LEFT] = timer_speed_sum[WHEEL_LEFT];
+	timer_speed[WHEEL_RIGHT] = timer_speed_sum[WHEEL_RIGHT];
+	timer_speed_sum[WHEEL_LEFT] = 0;
+	timer_speed_sum[WHEEL_RIGHT] = 0;
 
 	// Increase counter
 	timer_100ms_counter++;

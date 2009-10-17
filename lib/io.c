@@ -57,7 +57,6 @@ void io_init(void) {
 	led_init();
 	twi_init();
 	uart_init();
-	led_switch(LED_RED1, ON);
 }
 
 /**

@@ -98,7 +98,7 @@ static uint8_t motor_calculate_pwm(int8_t speed) {
 /**
  * Simple typedef to ease writing.
  */
-typedef void (*direction_function)(int8_t);
+typedef void (*direction_function)(void);
 
 /**
  * A function table for the direction settings.
@@ -114,7 +114,10 @@ direction_function motor_direction_functions[NUMBER_OF_WHEELS * 2] = {
  * Array of the PWM SFRs.
  * @todo Check whether or not this works.
  */
-volatile uint8_t* motor_pwm_registers[NUMBER_OF_WHEELS] = { ENABLE_A_PWM, ENABLE_B_PWM };
+volatile uint8_t* motor_pwm_registers[NUMBER_OF_WHEELS] = {
+	(volatile uint8_t *)((0x27) + __SFR_OFFSET),
+	(volatile uint8_t *)((0x28) + __SFR_OFFSET)
+};
 
 
 /**
@@ -131,14 +134,14 @@ void motor_set_speed(uint8_t wheel, int8_t speed) {
 		case WHEEL_ALL:
 			for (uint8_t i = 0; i < NUMBER_OF_WHEELS; i++) {
 				motor_speed[i] = speed;
-				motor_direction_functions[i * 2 + (1 * (absolute < 0))];
-				motor_pwm_registers[i] = motor_calculate_pwm(absolute);
+				motor_direction_functions[i * 2 + (1 * (absolute < 0))]();
+				(*motor_pwm_registers[i]) = motor_calculate_pwm(absolute);
 			}
 			break;
 		default:
 			motor_speed[wheel] = speed;
-			motor_direction_functions[wheel * 2 + (1 * (absolute < 0))];
-			motor_pwm_registers[wheel] = motor_calculate_pwm(absolute);
+			motor_direction_functions[wheel * 2 + (1 * (absolute < 0))]();
+			(*motor_pwm_registers[wheel]) = motor_calculate_pwm(absolute);
 			break;
 	}
 }

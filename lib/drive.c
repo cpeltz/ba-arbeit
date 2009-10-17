@@ -92,20 +92,21 @@ void drive_set_pid_sum_error(const uint8_t wheel, const int16_t sum_error) {
 void drive_use_pid(const uint8_t wheel, const int8_t speed) {
 	int16_t wheel_mod_speed[2];
 	int16_t wheel_difference;
+	uint8_t sign = 0;
 
 	if (DEBUG_ENABLE)
 		debug_write_string_p(PSTR("drive.c : drive_UsePID()\n"));
 	switch (wheel) {
-		case WHEEL_BOTH:
+		case WHEEL_ALL:
 			// Drive using PID with difference calibration
 			wheel_difference = wheel_read_difference();
 			for (uint8_t i = 0; i < NUMBER_OF_WHEELS; i++) {
 				// calculate the sign for the mod_speed modification
-				uint8_t sign = i - ((i / 2) * 2);
+				sign = i - ((i / 2) * 2);
 				// get the speed of the wheel
 				wheel_mod_speed[i] = wheel_read_speed(i);
 				// add or substract a share of the difference
-				wheel_mod_speed[i] += (-1 * sign) * (wheel_Difference / NUMBER_OF_WHEELS);
+				wheel_mod_speed[i] += (-1 * sign) * (wheel_difference / NUMBER_OF_WHEELS);
 				// limit the speed modifications
 				if (speed > 0) {
 					if (wheel_mod_speed[i] > 127)
@@ -119,40 +120,15 @@ void drive_use_pid(const uint8_t wheel, const int8_t speed) {
 						wheel_mod_speed[i] = 0;
 				}
 				// calculate sign for motor_set_speed
-				sign = (-1 * (speed =< 0));
+				sign = (-1 * (speed <= 0));
 				// set the modified speeds, after they were adjusted by the PID-Controller
 				motor_set_speed(i, sign * pid_controller(sign * speed, sign * wheel_mod_speed[i], &drive_pid[i]));
 			}
 			break;
 		default:
-			uint8_t sign = (-1 * (speed =< 0));
+			sign = (-1 * (speed <= 0));
 			motor_set_speed(wheel, sign * pid_controller(sign * speed, sign * wheel_read_speed(wheel), &drive_pid[wheel]));
 			break;
-	}
-}
-
-/**
- * Function used to handle active braking of both wheels at once.
- */
-void drive_brake_active(void) {
-	// Do active braking. Wheels shouldn't move from their position.
-	extern uint8_t ACTIVE_BRAKE_ENABLE;
-	extern uint8_t ACTIVE_BRAKE_AMOUNT;
-	if(!ACTIVE_BRAKE_ENABLE)
-		return;
-	if (drive_brake_position[WHEEL_LEFT] == irq_position[WHEEL_LEFT]) {
-		motor_set_speed(WHEEL_LEFT, 0);
-	} else if (drive_brake_position[WHEEL_LEFT] < irq_Position[WHEEL_LEFT]) {
-		motor_set_speed(WHEEL_LEFT, -(ACTIVE_BRAKE_AMOUNT));
-	} else {
-		motor_set_speed(WHEEL_LEFT, ACTIVE_BRAKE_AMOUNT);
-	}
-	if (drive_brake_position[WHEEL_RIGHT] == irq_Position[WHEEL_RIGHT]) {
-		motor_set_speed(WHEEL_RIGHT, 0);
-	} else if (drive_brake_position[WHEEL_RIGHT] < irq_Position[WHEEL_RIGHT]) {
-		motor_set_speed(WHEEL_RIGHT, -(ACTIVE_BRAKE_AMOUNT));
-	} else {
-		motor_set_speed(WHEEL_RIGHT, ACTIVE_BRAKE_AMOUNT);
 	}
 }
 
@@ -163,9 +139,9 @@ void drive_brake_active(void) {
 void drive_brake_active_set(uint8_t wheel) {
 	switch(wheel) {
 		case WHEEL_ALL:
-			memcpy(drive_brake_position, irq_Position, NUMBER_OF_WHEELS);
+			memcpy(drive_brake_position, irq_position, NUMBER_OF_WHEELS);
 		default:
-			drive_brake_position[wheel] = irq_Position[wheel];
+			drive_brake_position[wheel] = irq_position[wheel];
 			break;
 	}
 }
@@ -180,12 +156,27 @@ void drive_brake_active(uint8_t wheel) {
 	extern uint8_t ACTIVE_BRAKE_AMOUNT;
 	if(!ACTIVE_BRAKE_ENABLE)
 		return;
-	if (drive_brake_position[wheel] == irq_position[wheel]) {
-		motor_set_speed(wheel, 0);
-	} else if (drive_brake_position[wheel] < irq_position[wheel]) {
-		motor_set_speed(wheel, -(ACTIVE_BRAKE_AMOUNT));
-	} else {
-		motor_set_speed(wheel, ACTIVE_BRAKE_AMOUNT);
+	switch (wheel) {
+		case WHEEL_ALL:
+				for (uint8_t i = 0; i < NUMBER_OF_WHEELS; i++){
+					if (drive_brake_position[i] == irq_position[i]) {
+						motor_set_speed(i, 0);
+					} else if (drive_brake_position[i] < irq_position[i]) {
+						motor_set_speed(i, -(ACTIVE_BRAKE_AMOUNT));
+					} else {
+						motor_set_speed(i, ACTIVE_BRAKE_AMOUNT);
+					}
+				}
+			break;
+		default:
+			if (drive_brake_position[wheel] == irq_position[wheel]) {
+				motor_set_speed(wheel, 0);
+			} else if (drive_brake_position[wheel] < irq_position[wheel]) {
+				motor_set_speed(wheel, -(ACTIVE_BRAKE_AMOUNT));
+			} else {
+				motor_set_speed(wheel, ACTIVE_BRAKE_AMOUNT);
+			}
+			break;
 	}
 }
 /*@}*/

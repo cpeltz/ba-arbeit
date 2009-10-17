@@ -525,7 +525,7 @@ void set_pid_instruction(order_t *order) {
 		debug_write_integer(PSTR("order_functions.c : drive_instruction() :  D = "), dfactor);
 		debug_write_integer(PSTR("order_functions.c : drive_instruction() :  S = "), sum_error);
 	}
-	drive_SetPIDParameter(wheel, pfactor, ifactor, dfactor, sum_error);
+	drive_set_pid_parameter(wheel, pfactor, ifactor, dfactor, sum_error);
 	order->status |= ORDER_STATUS_DONE;
 }
 

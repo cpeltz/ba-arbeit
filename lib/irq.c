@@ -211,10 +211,10 @@ void wheel_clear_position(uint8_t wheel) {
 	cli();
 	switch (wheel) {
 		case WHEEL_ALL:
-			memset(irq_Position, 0, NUMBER_OF_WHEELS);
+			memset(irq_position, 0, NUMBER_OF_WHEELS);
 			break;
 		default:
-			irq_Position[wheel] = 0;
+			irq_position[wheel] = 0;
 			break;
 
 	}
