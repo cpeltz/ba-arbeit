@@ -9,7 +9,6 @@
 #include "motor.h"
 #include "lcd_addition.h"
 #include <avr/wdt.h>
-#include <avr/pgmspace.h>
 #include <stdlib.h>
 
 /**

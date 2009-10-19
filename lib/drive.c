@@ -68,7 +68,7 @@ void drive_set_pid_parameter( const uint8_t wheel, const int16_t pfactor, const 
 void drive_set_pid_sum_error(const uint8_t wheel, const int16_t sum_error) {
 	// Used to set the SumError for a PID enabled movement
 	if (DEBUG_ENABLE)
-		debug_write_string_p(PSTR("drive.c : drive_SetPIDSumError()\n"));
+		debug_write_string_p(PSTR("drive.c : drive_set_pid_sum_error()\n"));
 	switch (wheel) {
 		case WHEEL_ALL:
 			for(uint8_t i = 0; i < NUMBER_OF_WHEELS; i++)
@@ -94,19 +94,22 @@ void drive_use_pid(const uint8_t wheel, const int8_t speed) {
 	int16_t wheel_difference;
 	uint8_t sign = 0;
 
-	if (DEBUG_ENABLE)
-		debug_write_string_p(PSTR("drive.c : drive_UsePID()\n"));
+	if (DEBUG_ENABLE) {
+		debug_write_string_p(PSTR("drive.c : drive_use_pid()\n"));
+		debug_write_integer(PSTR("drive.c : drive_use_pid() : speed = "), speed);
+		debug_write_integer(PSTR("drive.c : drive_use_pid() : wheel = "), wheel);
+	}
 	switch (wheel) {
 		case WHEEL_ALL:
 			// Drive using PID with difference calibration
 			wheel_difference = wheel_read_difference();
 			for (uint8_t i = 0; i < NUMBER_OF_WHEELS; i++) {
 				// calculate the sign for the mod_speed modification
-				sign = i - ((i / 2) * 2);
+				sign = (i - ((i / 2) * 2) == 0) ? 1 : -1;
 				// get the speed of the wheel
 				wheel_mod_speed[i] = wheel_read_speed(i);
 				// add or substract a share of the difference
-				wheel_mod_speed[i] += (-1 * sign) * (wheel_difference / NUMBER_OF_WHEELS);
+				wheel_mod_speed[i] += sign * (wheel_difference / NUMBER_OF_WHEELS);
 				// limit the speed modifications
 				if (speed > 0) {
 					if (wheel_mod_speed[i] > 127)
@@ -120,14 +123,14 @@ void drive_use_pid(const uint8_t wheel, const int8_t speed) {
 						wheel_mod_speed[i] = 0;
 				}
 				// calculate sign for motor_set_speed
-				sign = (-1 * (speed <= 0));
+				sign = (-1 * ((speed <= 0) ? 1 : -1));
 				// set the modified speeds, after they were adjusted by the PID-Controller
 				motor_set_speed(i, sign * pid_controller(sign * speed, sign * wheel_mod_speed[i], &drive_pid[i]));
 			}
 			break;
 		default:
-			sign = (-1 * (speed <= 0));
-			motor_set_speed(wheel, sign * pid_controller(sign * speed, sign * wheel_read_speed(wheel), &drive_pid[wheel]));
+			sign = (speed > 0) ? 1 : -1;
+			motor_set_speed(wheel, sign * pid_controller(/*sign * */speed, /*sign * */wheel_read_speed(wheel), &drive_pid[wheel]));
 			break;
 	}
 }

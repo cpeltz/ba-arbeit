@@ -2,6 +2,7 @@
 #define DEBUG_H
 
 #include <inttypes.h>
+#include <avr/pgmspace.h>
 
 #ifdef DEBUG
 	extern uint8_t DEBUG_ENABLE;

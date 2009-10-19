@@ -1,6 +1,7 @@
 #include <avr/io.h>
 #include <inttypes.h>
 #include <stdlib.h>
+#include "debug.h"
 #include "definitions.h"
 #include "motor.h"
 
@@ -130,18 +131,25 @@ volatile uint8_t* motor_pwm_registers[NUMBER_OF_WHEELS] = {
  */
 void motor_set_speed(uint8_t wheel, int8_t speed) {
 	uint8_t absolute = abs(speed);
+	if (DEBUG_ENABLE) {
+		debug_write_integer(PSTR("motor.c : motor_set_speed() : speed = "), speed);
+		debug_write_integer(PSTR("motor.c : motor_set_speed() : wheel = "), wheel);
+	}
 	switch (wheel) {
 		case WHEEL_ALL:
 			for (uint8_t i = 0; i < NUMBER_OF_WHEELS; i++) {
 				motor_speed[i] = speed;
-				motor_direction_functions[i * 2 + (1 * (absolute < 0))]();
+				motor_direction_functions[i * 2 + (1 * (speed < 0))]();
 				(*motor_pwm_registers[i]) = motor_calculate_pwm(absolute);
 			}
 			break;
 		default:
 			motor_speed[wheel] = speed;
-			motor_direction_functions[wheel * 2 + (1 * (absolute < 0))]();
+			motor_direction_functions[wheel * 2 + (1 * (speed < 0))]();
 			(*motor_pwm_registers[wheel]) = motor_calculate_pwm(absolute);
+			if (DEBUG_ENABLE) {
+				debug_write_integer(PSTR("motor.c : motor_set_speed() : new pwm = "), motor_calculate_pwm(absolute));
+			}
 			break;
 	}
 }
