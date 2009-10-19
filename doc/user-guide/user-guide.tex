@@ -104,6 +104,30 @@
 	ist kann in dem Benutzerhandbuch von Timo Klingeberg (http://www.ibr.cs.tu-bs.de/theses/broeke/SA\_Getriebemotorenansteuerung/) nachgelesen werden. Die Einstellungsschritte und
 	das Programm AVR-Studio sind für die Entwicklung allerdings nicht nötig.
 
+	\subsection{Belegung der DIP-Schalter}
+
+	Die Motorplatine besitzt 4 DIP-Schalter, die das Verhalten der Betriebssoftware
+	verändern können:\\
+	\textbf{DIP-Schalter 1} dient der Auswahl der Kommunikatios-Schnittstelle. In der
+	0-Stellung wird der UART-PORT benutzt, in der 1-Stellung der I2C-Bus (1-Stellung ist
+	Standard und empfohlen).\\
+	\textbf{DIP-Schalter 2} schaltet Debug-Ausgaben ein (1-Stellung) und aus
+	(0-Stellung). Dieser Effekt tritt aber nur ein, falls die Betriebssoftware mit dem
+	-DDEBUG-Flag übersetzt wurde, ansonsten hat dieser Schalter keine Funktion.\\
+	\textbf{DIP-Schalter 3} aktiviert die Benutzung eines angeschlossenen LCDs. In der
+	0-Stellung wird kein LCD verwendet, in der 1-Stellung werden allgemeine Informationen
+	auf das LCD ausgegeben. Es muss ein 4 Zeilen mal 20 Zeichen LCD angeschlossen werden,
+	ansonsten funktioniert die Ausgabe nicht einwandfrei. In der ersten Zeile des LCD
+	wird die aktuelle Version der Betriebssoftware angezeigt. In der zweiten Zeile werden
+	ausgewählte Optionen angezeigt. Das sind die ausgewählte Kommunkations-Schnittstelle,
+	die Verfügbarkeit von Debug-Ausgaben und der Zustand des ABS. Wörter in Großbuchstaben
+	zeigen an, dass die Option aktiviert ist. Wörter in Kleinbuchstaben hingegen bedeuten,
+	dass die Option deaktiviert ist. In den Zeilen 3 und 4 wird der Befehl, der aktuell
+	bearbeitet wird, als hexadezimale Zahlen (ohne 0x) angezeigt. Dies gilt aber nur
+	für längere Befehle, da das LCD eine gewisse Zeit benötigt, um die Informationen
+	anzuzeigen.\\
+	\textbf{DIP-Schalter 4} ist ohne Funktion.
+
 	\pagebreak
 
 
@@ -562,12 +586,11 @@
 	einem weiteren 1-Byte Parameter erwartet wird.\\
 	Wenn der Befehl zur Zufriedenheit konstruiert wurde, kann er mit der send-Funktionen gesendet werden.
 	Die order\_send(order\_t)-Funktionen sendet jeden beliebigen Befehl und gibt die Anzahl der gesendeten
-	Bytes zurück. Diese sollte gleich order\_t->pos sein, falls nicht, wurde der Befehl nicht vollständig
+	Bytes zurück. Diese sollte gleich order\_t.pos sein, falls nicht, wurde der Befehl nicht vollständig
 	übertragen. Falls mehr als 0 Bytes aber weniger als pos Bytes übertragen wurden, sollte die Motorplatine
 	mit Reset-Befehlen konfrontiert werden. Es sind u.U. 11 Reset-Befehle nötig.\\
 	Die letzte Funktion ist die order\_bytes\_to\_recv(order\_t)-Funktion. Sie gibt für einen Befehl, der eine
 	Antwort der Motorplatine auslöst, die Anzahl der Bytes zurück, die die Antwort lang ist. Dies funktioniert
 	aber nicht, wenn man den aktuellen Befehl abfragt (siehe die Query-Befehls-Beschreibung für genauere
 	Informationen).
-
 \end{document}
