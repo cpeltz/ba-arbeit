@@ -1,9 +1,10 @@
 \documentclass[]{beamer} 
 
 \usepackage[german]{babel}
-\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps,pgfshade}
 \usepackage[utf8]{inputenc}
 \usepackage{colortbl}
+\usepackage{graphics}
+\usepackage{multicol}
 
 \mode<presentation>
 
@@ -46,15 +47,19 @@ Prof. Lars Wolf und Dipl.-Ing. Dieter Brökelmann}
 \section{Einführung}
 
 \frame{
+	\begin{multicols}{2}
 	\begin{itemize}
 		\item Praktikum ''Programmieren eingebetteter Systeme''
 		\item Fahrzeug wird bewegt
 		\item Teilnehmer sollen sich auf \textbf{ihre} Projekte konzentrieren
 		\item Bisherige Software hat einige Kritikpunkte
 	\end{itemize}
+		\includegraphics[width=0.48\textwidth]{pictures/fahrzeug.png}
+	\end{multicols}
 }
 
 \frame{
+	\begin{multicols}{2}
 	\begin{itemize}
 		\item Verbesserung des Protokolls
 		\item Erweiterbarkeit
@@ -62,23 +67,35 @@ Prof. Lars Wolf und Dipl.-Ing. Dieter Brökelmann}
 		\item Echtzeit-Aspekt
 		\item Umfassende Dokumentation
 	\end{itemize}
+		\includegraphics[width=0.48\textwidth]{pictures/fahrzeug.png}
+	\end{multicols}
 }
 
 \section{Hardware}
 
 \frame{
+\frametitle{Die Motorplatine}
 	\begin{itemize}
 		\item AtMega 2561 (16 MHz, 8 KiB SRAM, 64 KiB Flash)
 		\item PWM, I2C, UART, LCD
 	\end{itemize}
+\begin{figure}[h]
+ \centering
+ \scalebox{0.3}{\includegraphics{pictures/motorplatine.png}}
+\end{figure}
 }
 
 \frame{
+\frametitle{Die Praktikumsplatine}
 	\begin{itemize}
 		\item Seite der Studierenden
 		\item Anschluss an die Motorplatine über I2C
 		\item Anschluss des WLAN-Moduls über UART
 	\end{itemize}
+\begin{figure}[h]
+ \centering
+ \scalebox{0.1}{\includegraphics{pictures/praktikumsplatine.jpg}}
+\end{figure}
 }
 
 \section{Design und Implementierung}
