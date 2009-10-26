@@ -5,6 +5,7 @@
 \usepackage{colortbl}
 \usepackage{graphics}
 \usepackage{multicol}
+\usepackage{textcomp}
 
 \mode<presentation>
 
@@ -117,6 +118,10 @@ Prof. Lars Wolf und Dipl.-Ing. Dieter Brökelmann}
 		\item Endlos-Schleife als Hauptschleife
 		\item Periodisches Aktualisieren
 	\end{itemize}
+\begin{figure}[h]
+ \centering
+ \scalebox{0.5}{\includegraphics{pictures/main_loop_code.png}}
+\end{figure}
 }
 
 \frame{
@@ -135,10 +140,18 @@ Prof. Lars Wolf und Dipl.-Ing. Dieter Brökelmann}
 		\item flexibel Einsetzbar
 		\item abstrakt, kein Wissen in der Struktur
 	\end{itemize}
+\begin{figure}[h]
+ \centering
+ \scalebox{0.4}{\includegraphics{pictures/order_t.png}}
+\end{figure}
 }
 
 \frame{
 \frametitle{Datenpfad der Befehle}
+\begin{figure}[h]
+ \centering
+ \scalebox{0.6}{\includegraphics{pictures/pfad.png}}
+\end{figure}
 }
 
 \frame{
@@ -161,6 +174,10 @@ Prof. Lars Wolf und Dipl.-Ing. Dieter Brökelmann}
 		\item Befehle erstellen
 		\item Befehle direkt senden
 	\end{itemize}
+\begin{figure}[h]
+ \centering
+ \scalebox{0.3}{\includegraphics{pictures/bibliothek.png}}
+\end{figure}
 }
 
 \section{Untersuchung}
@@ -173,10 +190,18 @@ Prof. Lars Wolf und Dipl.-Ing. Dieter Brökelmann}
 		\item pin\_set() und pin\_clear() benötigen 250 ns
 		\item pin\_toggle() benötigt 250 ns
 	\end{itemize}
+\begin{figure}[h]
+ \centering
+ \scalebox{0.29}{\includegraphics{pictures/motorplatine_mod.png}}
+\end{figure}
 }
 
 \frame{
 \frametitle{Verzögerungs-Problem}
+\begin{figure}[h]
+ \centering
+ \scalebox{0.3}{\includegraphics{pictures/messbild.png}}
+\end{figure}
 }
 
 \frame{
@@ -184,10 +209,15 @@ Prof. Lars Wolf und Dipl.-Ing. Dieter Brökelmann}
 	Vorher:
 	\begin{itemize}
 		\item Busy-Waiting benötigt 3250 us
+		\item Ein Aufruf
+		\item Merkbare Latenz
 	\end{itemize}
 	Nachher:
 	\begin{itemize}
 		\item max. 1 Zeichen pro Iteration benötigt 60 us
+		\item Dauernder Aufruf, während noch Daten zu aktualisieren sind
+		\item leicht erhöhte Idle-Zeit
+		\item zusätzlicher Speicher für Puffer
 	\end{itemize}
 }
 
@@ -216,6 +246,21 @@ Prof. Lars Wolf und Dipl.-Ing. Dieter Brökelmann}
 
 \frame{
 \frametitle{Vergleich}
+\begin{table}[htb]
+\begin{center}
+	\small
+	\begin{tabular}{|l||c|}
+		\hline
+		\textbf{Funktion} & \textbf{Zeit} \\ \hline \hline
+		Hauptschleife (Vorläufer) & 121,885 \textmu{}s \\ \hline
+		Hauptschleife (aktuell) & 23,535 \textmu{}s \\ \hline \hline
+		Befehl (kurz, Vorläufer) & 3655 \textmu{}s (13 Byte) \\ \hline
+		Befehl (kurz, aktuell) & 1023 \textmu{}s ( 4 Byte) \\ \hline
+		Befehl (lang, Vorläufer) & 7747 \textmu{}s (27 Byte) \\ \hline
+		Befehl (lang, aktuell) & 2191 \textmu{}s ( 8 Byte) \\ \hline
+	\end{tabular}
+\end{center}
+\end{table}
 }
 
 \section{Fazit}
