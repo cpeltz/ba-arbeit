@@ -20,13 +20,14 @@
 \mode<all>
 
 \title[Betriebssoftware]
-{Betriebssoftware für eine Fahrplattform unter besonderer Berücksichtigung der Echtzeitbedingungen}
+{Betriebssoftware für eine Fahrplattform unter besonderer Berücksichtigung der Echtzeitbedingungen\\
+Bachelorarbeit - Abschlussvortrag}
 \subtitle{}
 \author{Christoph Peltz}
-\institute[IBR, TU Braunschweig]{Institut für Betriebssysteme und Computernetze\\
+\institute[IBR, TU Braunschweig]{Institut für Betriebssysteme und Rechnerverbund\\
 	Technische Universität Braunschweig}
 
-\date{\today} 
+\date{03. November 2009} 
 
 \begin{document}
 
@@ -155,19 +156,6 @@ Prof. Lars Wolf und Dipl.-Ing. Dieter Brökelmann}
 }
 
 \frame{
-	\centerline{Das Aktive-Brems-System}
-	\begin{itemize}
-		\item de-/aktivierbar und konfigurierbar
-		\item Verhindert, dass sich das Fahrzeug ungewollt bewegt
-	\end{itemize}
-	\centerline{Das IO-Framework}
-	\begin{itemize}
-		\item abstrahiert die Ein-/Ausgabe über UART und I2C
-		\item es werden die selben Funktionen benutzt
-	\end{itemize}
-}
-
-\frame{
 \frametitle{Bibliothek}
 	\begin{itemize}
 		\item Praktikumsplatine muss mit der Motorplatine kommunizieren
@@ -180,10 +168,10 @@ Prof. Lars Wolf und Dipl.-Ing. Dieter Brökelmann}
 \end{figure}
 }
 
-\section{Untersuchung}
+\section{Echtzeitanalyse}
 
 \frame{
-\frametitle{Untersuchung}
+\frametitle{Pin Operationen}
 	\begin{itemize}
 		\item Pins setzen/zurücksetzen (Makros)
 		\item auslesen mit Logik-Analyser
@@ -221,21 +209,7 @@ Prof. Lars Wolf und Dipl.-Ing. Dieter Brökelmann}
 	\end{itemize}
 }
 
-\frame{
-\centerline{Compiler-Optimierung}
-	\begin{itemize}
-		\item Wechsel von -Os auf -O2
-		\item Inlining von Funktionen (ca. 32\% Verbesserung)
-	\end{itemize}
-\centerline{Modulo-Operatoren}
-	\begin{itemize}
-		\item Benötigen viel Zeit (ca. 13 us pro \%)
-		\item Einfach zu ersetzen mithilfe von -, / und *
-		\item Verbraucht dann bis zu 90\% weniger Zeit
-	\end{itemize}
-}
-
-\frame{
+\frame[<+->]{
 \frametitle{Echtzeit}
 	\begin{itemize}
 		\item Ist es möglich Interrupts zu verpassen/verlieren?
@@ -268,7 +242,7 @@ Prof. Lars Wolf und Dipl.-Ing. Dieter Brökelmann}
 \frame{
 \frametitle{Ziele erreicht}
 	\begin{itemize}
-		\item gleiche Funktionalität
+		\item mehr Funktionalität
 		\item Erweiterbar
 		\item schneller als Vorläufer
 		\item Protokoll neu implementiert
