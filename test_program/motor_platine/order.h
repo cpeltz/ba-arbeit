@@ -80,6 +80,12 @@
 #define ORDER_SETPID_LEFT_WHEEL 0x05
 #define ORDER_SETPID_RIGHT_WHEEL 0x15
 
+#define ORDER_OPTION 0x06
+#define ORDER_OPTION_ABS_SPEED 0x16
+#define ORDER_OPTION_ABS 0x26
+#define ORDER_OPTION_ABS_IDLE 0x36
+#define ORDER_OPTION_ABS_ON_TRIGGER 0x46
+
 typedef struct ORDER {
 	 unsigned char dat[ORDER_TYPE_MAX_LENGTH];
 	 unsigned char pos;
