@@ -126,7 +126,9 @@ void initialize(void) {
 	dip_init();
 	timer_init();
 	update_dip_flags();
-	lcd_init(LCD_DISP_ON);
+	if (LCD_PRESENT) {
+		lcd_init(LCD_DISP_ON);
+	}
 	io_init();
 	motor_init();
 	order_array_init();
