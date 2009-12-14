@@ -3,6 +3,7 @@
 
 #include <inttypes.h>
 #include <avr/pgmspace.h>
+#include "options.h"
 
 #ifdef DEBUG
 	extern uint8_t DEBUG_ENABLE;

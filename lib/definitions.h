@@ -13,7 +13,7 @@
  
 #include <avr/io.h>
 
-#define VERSION "Ver. 3.3.2"
+#define VERSION "Ver. 3.3.3"
 
 #define INPUT_DDR               DDRB
 #define INPUT_PORT              PORTB
