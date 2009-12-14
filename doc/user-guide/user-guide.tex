@@ -224,17 +224,19 @@
 		\textbf{Option} & \textbf{Bitmaske} & \textbf{Beschreibung} \\
 		\hline
 		\hline
-		Reset 			& 0x10 				& Zurücksetzen der Hardware \\
+		Reset 				& 0x10 				& Zurücksetzen der Hardware \\
 		\hline
-		Stop Queue		& 0x20				& Der Aktuelle Befehl wird verworfen. Warteschlange wird angehalten, aber nicht verworfen. \\
+		Stop Queue			& 0x20				& Der Aktuelle Befehl wird verworfen. Warteschlange wird angehalten, aber nicht verworfen. \\
 		\hline
-		Continue Queue	& 0x30				& Eine gestoppte Warteschlange wird fortgeführt. \\
+		Continue Queue		& 0x30				& Eine gestoppte Warteschlange wird fortgeführt. \\
 		\hline
-		Clear Queue		& 0x40				& Der Inhalt der Warteschlange wird gelöscht. \\
+		Clear Queue			& 0x40				& Der Inhalt der Warteschlange wird gelöscht. \\
 		\hline
-		Stop Drive		& 0x50				& Aktueller Befehl wird angehalten, Fahrzeug geht zum aktiven Bremsen über (falls aktiviert). \\
+		Stop Drive			& 0x50				& Aktueller Befehl wird angehalten, Fahrzeug geht zum aktiven Bremsen über (falls aktiviert). \\
 		\hline
-		Reset 1s Counter& 0x60				& Setzt den internen Sekunden-Zähler zurück. \\
+		Reset 1s Counter	& 0x60				& Setzt den internen Sekunden-Zähler zurück. \\
+		\hline
+		Discard Current Order& 0x70				& Verwirft den aktuellen Befehl. \\
 		\hline
 	\end{tabularx}
 

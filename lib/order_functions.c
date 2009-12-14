@@ -96,6 +96,9 @@ void control_instruction(order_t *order) {
 		case 0x60: // Reset running time timer
 			timer_1s_counter = 0;
 			break;
+		case 0x70: // Remove current Order and go on
+			queue_pop();
+			break;
 	}
 	// Remove the priority Order from Queue
 	queue_clear_priority();
