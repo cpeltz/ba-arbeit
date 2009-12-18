@@ -400,6 +400,14 @@ void drive_instruction(order_t *order) {
 			debug_write_integer(PSTR("order_functions.c : drive_instruction() : speed_right = "), order->data[2]);
 		}
 
+		// -128 is not a accepted speed, so we correct it down by 1
+		if (order->data[1] == 128) {
+			order->data[1] = -127;
+		}
+		if (order->data[2] == 128) {
+			order->data[2] = -127;
+		}
+
 		trigger_value_left = ((order->data[3] << 8) + order->data[4]);
 		trigger_value_right = ((order->data[5] << 8) + order->data[6]);
 

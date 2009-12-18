@@ -1,4 +1,6 @@
 #include "pid.h"
+#include "definitions.h"
+#include "debug.h"
 
 /**
  * @defgroup PID_Module PID Control
@@ -31,7 +33,8 @@ void pid_init(	const int16_t pfactor, const int16_t ifactor, const int16_t dfact
  * Controls the PID values.
  * @todo Discern what this functions does.
  */
-uint8_t pid_controller(const uint8_t set_point, const int16_t process_value, pid_data_t * pid) {
+int8_t pid_controller(const int8_t set_point, const int16_t process_value, pid_data_t * pid) {
+#if PID_CONTROLLER_ENABLED == 1
 	int16_t error = 0;
 	int16_t p_term = 0;
 	int32_t i_term = 0;
@@ -41,6 +44,13 @@ uint8_t pid_controller(const uint8_t set_point, const int16_t process_value, pid
 	error = set_point - process_value;
 
 	pid->sum_error += error;
+
+	if (DEBUG_ENABLE) {
+			debug_write_integer(PSTR("pid.c : pid_controller() : set_point = "), set_point);
+			debug_write_integer(PSTR("pid.c : pid_controller() : process_value = "), process_value);
+			debug_write_integer(PSTR("pid.c : pid_controller() : error = "), error);
+	}
+
 
 	// Fehlersumme begrenzen
 	if ((pid->sum_error > pid->sum_error_max))
@@ -62,6 +72,9 @@ uint8_t pid_controller(const uint8_t set_point, const int16_t process_value, pid
 	if ((ret < 0))
 		ret = 0;
 
-	return ret;
+	return (set_point < 0) ? -ret : ret;
+#else
+	return set_point;
+#endif
 }
 /*@}*/

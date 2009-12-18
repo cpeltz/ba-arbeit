@@ -83,7 +83,7 @@ void motor_init(void) {
  * @param[in] speed The speed for which the PWM value should be calculated.
  * @return <em>uint8_t</em> The PWM value for the speed parameter.
  */
-static uint8_t motor_calculate_pwm(int8_t speed) {
+static uint8_t motor_calculate_pwm(uint8_t speed) {
 	// If speed = 0 -> PWM = 0,
 	// 1 <= speed < 38 -> PWM = speed + 38,
 	// 38 <= speed -> PWM = (speed * 2) + 1.
