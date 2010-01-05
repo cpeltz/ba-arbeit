@@ -80,12 +80,15 @@ uint8_t io_get_free_buffer_size(void) {
  * @return <em>uint8_t</em> Returns either 1, on success, or 0 otherwise.
  */
 uint8_t io_get(uint8_t* value) {
-	uint8_t temp = (inpos_begin + 1);
-	if (temp == inpos_end)
+	if ((inpos_begin + 1) == inpos_end)
 		return 0;
 	*value = in_buffer[inpos_begin];
-	inpos_begin = temp;
 	return 1;
+}
+
+void io_pop(void) {
+	if (inpos_begin + 1 != inpos_end)
+		inpos_begin += 1;
 }
 
 /**

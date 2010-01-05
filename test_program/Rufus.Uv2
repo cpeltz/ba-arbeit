@@ -12,7 +12,6 @@ File 2,2,<.\Startup.a51><Startup.a51>
 File 3,1,<.\timing.c><timing.c>
 File 3,1,<.\lcd.c><lcd.c>
 File 3,1,<.\i2c_master.c><i2c_master.c>
-File 3,1,<.\servo.c><servo.c>
 File 3,1,<.\main.c><main.c>
 File 3,1,<.\helper.c><helper.c>
 File 3,1,<.\motor_platine\order.c><order.c>

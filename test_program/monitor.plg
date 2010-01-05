@@ -12,27 +12,8 @@ assembling Startup.a51...
 compiling timing.c...
 compiling lcd.c...
 compiling i2c_master.c...
-compiling servo.c...
 compiling main.c...
 compiling helper.c...
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(25): error C202: 'ORDER_REGISTER_LEFT_SPEED': undefined identifier
-MOTOR_PLATINE\ORDER.C(26): error C202: 'ORDER_REGISTER_RIGHT_SPEED': undefined identifier
-MOTOR_PLATINE\ORDER.C(27): error C202: 'ORDER_REGISTER_QUEUE_SIZE': undefined identifier
-Target not created
-Build target 'Monitor'
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(25): error C202: 'ORDER_REGISTER_LEFT_SPEED': undefined identifier
-MOTOR_PLATINE\ORDER.C(26): error C202: 'ORDER_REGISTER_RIGHT_SPEED': undefined identifier
-MOTOR_PLATINE\ORDER.C(27): error C202: 'ORDER_REGISTER_QUEUE_SIZE': undefined identifier
-Target not created
-Build target 'Monitor'
-compiling order.c...
-MOTOR_PLATINE\ORDER.C(25): error C202: 'ORDER_REGISTER_LEFT_SPEED': undefined identifier
-MOTOR_PLATINE\ORDER.C(26): error C202: 'ORDER_REGISTER_RIGHT_SPEED': undefined identifier
-MOTOR_PLATINE\ORDER.C(27): error C202: 'ORDER_REGISTER_QUEUE_SIZE': undefined identifier
-Target not created
-Build target 'Monitor'
 compiling order.c...
 linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
@@ -40,7 +21,7 @@ linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_I2C_RECEIVE?I2C_MASTER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
+    SEGMENT: ?PR?_INT2STR?HELPER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_ORDER_BYTES_TO_RECV?ORDER
 *** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
@@ -49,19 +30,18 @@ linking...
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 27B8H
+    ADDRESS: 27B1H
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 295EH
-Program Size: data=10.1 xdata=100 code=2570
+    ADDRESS: 2985H
+Program Size: data=10.1 xdata=125 code=2566
 "monitor" - 0 Error(s), 7 Warning(s).
 Build target 'Monitor'
 assembling Startup.a51...
 compiling timing.c...
 compiling lcd.c...
 compiling i2c_master.c...
-compiling servo.c...
 compiling main.c...
 compiling helper.c...
 compiling order.c...
@@ -71,7 +51,7 @@ linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_I2C_RECEIVE?I2C_MASTER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
+    SEGMENT: ?PR?_INT2STR?HELPER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_ORDER_BYTES_TO_RECV?ORDER
 *** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
@@ -80,19 +60,18 @@ linking...
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 27B8H
+    ADDRESS: 27B1H
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 295EH
-Program Size: data=10.1 xdata=100 code=2570
+    ADDRESS: 2985H
+Program Size: data=10.1 xdata=125 code=2566
 "monitor" - 0 Error(s), 7 Warning(s).
 Build target 'Monitor'
 assembling Startup.a51...
 compiling timing.c...
 compiling lcd.c...
 compiling i2c_master.c...
-compiling servo.c...
 compiling main.c...
 compiling helper.c...
 compiling order.c...
@@ -102,7 +81,7 @@ linking...
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_I2C_RECEIVE?I2C_MASTER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
-    SEGMENT: ?PR?_SERVO_SET_POS?SERVO
+    SEGMENT: ?PR?_INT2STR?HELPER
 *** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
     SEGMENT: ?PR?_ORDER_BYTES_TO_RECV?ORDER
 *** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
@@ -111,10 +90,130 @@ linking...
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 27C5H
+    ADDRESS: 27A4H
 *** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
     SYMBOL:  CONDTIMERSTATUS
     MODULE:  timing.obj (TIMING)
-    ADDRESS: 296DH
-Program Size: data=10.1 xdata=100 code=2585
+    ADDRESS: 2976H
+Program Size: data=10.1 xdata=125 code=2551
+"monitor" - 0 Error(s), 7 Warning(s).
+Build target 'Monitor'
+assembling Startup.a51...
+compiling timing.c...
+compiling lcd.c...
+compiling i2c_master.c...
+compiling main.c...
+compiling helper.c...
+compiling order.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_I2C_RECEIVE?I2C_MASTER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_INT2STR?HELPER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_BYTES_TO_RECV?ORDER
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+    ADDRESS: 27A4H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+    ADDRESS: 2976H
+Program Size: data=10.1 xdata=125 code=2551
+"monitor" - 0 Error(s), 7 Warning(s).
+Build target 'Monitor'
+assembling Startup.a51...
+compiling timing.c...
+compiling lcd.c...
+compiling i2c_master.c...
+compiling main.c...
+compiling helper.c...
+compiling order.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_I2C_RECEIVE?I2C_MASTER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_INT2STR?HELPER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_BYTES_TO_RECV?ORDER
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+    ADDRESS: 27A3H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+    ADDRESS: 2975H
+Program Size: data=10.1 xdata=125 code=2550
+"monitor" - 0 Error(s), 7 Warning(s).
+Build target 'Monitor'
+assembling Startup.a51...
+compiling timing.c...
+compiling lcd.c...
+compiling i2c_master.c...
+compiling main.c...
+compiling helper.c...
+compiling order.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_I2C_RECEIVE?I2C_MASTER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_INT2STR?HELPER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_BYTES_TO_RECV?ORDER
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+    ADDRESS: 27A4H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+    ADDRESS: 2976H
+Program Size: data=10.1 xdata=125 code=2551
+"monitor" - 0 Error(s), 7 Warning(s).
+Build target 'Monitor'
+assembling Startup.a51...
+compiling timing.c...
+compiling lcd.c...
+compiling i2c_master.c...
+compiling main.c...
+compiling helper.c...
+compiling order.c...
+linking...
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_WAIT_WITH_TIMER?TIMING
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_I2C_RECEIVE?I2C_MASTER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_INT2STR?HELPER
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_ORDER_BYTES_TO_RECV?ORDER
+*** WARNING L1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+    ADDRESS: 27A4H
+*** WARNING L2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  CONDTIMERSTATUS
+    MODULE:  timing.obj (TIMING)
+    ADDRESS: 2976H
+Program Size: data=10.1 xdata=125 code=2551
 "monitor" - 0 Error(s), 7 Warning(s).

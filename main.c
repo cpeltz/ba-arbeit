@@ -197,7 +197,7 @@ void process_orders(void) {
 	current_order = queue_get_current_order();
 	if (current_order != NULL) {
 		if (DEBUG_ENABLE)
-			debug_write_string_p(PSTR("main.c : process_orders() :  Ack new Order, starting processing\n"));
+			debug_write_string_p(PSTR("main.c : process_orders() :  Start processing\n"));
 
 		// Got an order. Call the dispatcher to call the corresponding order_function
 		order_process(current_order);

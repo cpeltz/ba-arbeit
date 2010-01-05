@@ -63,7 +63,7 @@ byte xdata buf[10];
 void main() {
 	// Main-Funktion
 	byte send = 0;
-	order_t order;
+	order_t xdata order, query;
 	#ifndef MONITOR51		// Falls nicht für den Monitor übersetzt wird und die
 		initSerial();		// serielle Schnittstelle dort schon initialisiert
 	#endif					// wurde, initialisiere sie jetzt.
@@ -73,6 +73,8 @@ void main() {
 	lcd_print_string("Waiting ... (10s)");
 	wait_ms(10000);
 	lcd_print_string("Ready");
+	order_init(&query);
+	order_set_type(&query, ORDER_QUERY_LEFT_SPEED);
 
 	while(1) {
 		order_init(&order);
@@ -80,11 +82,11 @@ void main() {
 		//order_set_type(&order, 0x16);
 		//order_add_params(&order, "1", (byte) 30);
 		//order_send(&order);
-		/*order_set_type(&order, ORDER_DRIVE_N_N);
-		order_add_params(&order, "11", 0x40, 0x40);
-		send = order_send(&order);*/
-		order_set_type(&order, ORDER_DRIVE_P_P);
-		order_add_params(&order, "1122", 0x9c, 0x9c, (unsigned int)0x0100, (unsigned int)0x0100);
+		//order_set_type(&order, ORDER_DRIVE_N_N);
+		//order_add_params(&order, "11", 0xB4, 0xB4);
+		//send = order_send(&order);
+		order_set_type(&order, ORDER_DRIVE_N_N);
+		order_add_params(&order, "11", 0x80, 0xff);
 		send = order_send(&order);
 		//order_set_type(&order, 0x04);
 		//order_add_params(&order, "11", 0x64, 0x64);
@@ -102,8 +104,13 @@ void main() {
 		buf[2]=100;
 		buf[3]= -50;
 		send = i2c_send(buf,4);*/
-		int2str(buf, send);
-		lcd_print_string(buf);
+		//int2str(buf, send);
+		//lcd_print_string(buf);
+		wait_ms(1);
+		while(1) {
+			wait_ms(1);
+			order_send(&query);
+		}
 		wait_ms(20000);
 		lcd_print_string("STOP");
 		order_set_type(&order, ORDER_CONTROL_RESET);

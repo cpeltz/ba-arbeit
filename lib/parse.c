@@ -35,7 +35,7 @@ uint8_t current_order_position = 0;
 /**
  * Simple forward decleration
  */
-void parser_add_byte(uint8_t);
+uint8_t parser_add_byte(uint8_t);
 
 /**
  * Initializes the Parser Module.
@@ -61,7 +61,11 @@ void parser_update(void) {
 	uint8_t value = 0, times = 255 - io_get_free_buffer_size();
 	for (; 0 < times; times--) {
 		io_get(&value);
-		parser_add_byte(value);
+		if (parser_add_byte(value) == 0)
+			io_pop();
+		else
+			break;
+
 	}
 }
 
@@ -169,7 +173,7 @@ int parser_order_complete(const order_t* order, uint8_t num_bytes) {
  * @param[in] byte The byte which should be added to the order.
  * @todo Look for optimizations, this function has to be as fast as possible
  */
-void parser_add_byte(uint8_t byte) { 
+uint8_t parser_add_byte(uint8_t byte) { 
 	// This function simple adds another byte to the current order
 	// or discards the byte if the buffer is full.
 	if (DEBUG_ENABLE)
@@ -177,7 +181,7 @@ void parser_add_byte(uint8_t byte) {
 	if (current_buffer_position == first_buffer_position) {
 		if (DEBUG_ENABLE)
 			debug_write_string_p(PSTR("parse.c : parser_add_byte() : Buffer full\n"));
-		return; // Discard, buffer full
+		return 1; // Discard, buffer full
 	}
 	// Put the byte at its position and increment
 	parser_order_buffer[current_buffer_position].data[current_order_position] = byte;
@@ -194,6 +198,7 @@ void parser_add_byte(uint8_t byte) {
 		current_buffer_position -= (current_buffer_position / PARSER_ORDER_BUFFER_SIZE) * PARSER_ORDER_BUFFER_SIZE;
 		current_order_position = 0;
 	}
+	return 0;
 }
 
 /**

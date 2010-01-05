@@ -13,9 +13,9 @@
  
 #include <avr/io.h>
 
-#define VERSION "Ver. 3.3.4a"
+#define VERSION "Ver. 3.3.4"
 
-#define PID_CONTROLLER_ENABLED 1
+#define PID_CONTROLLER_ENABLED 0
 
 #define INPUT_DDR               DDRB
 #define INPUT_PORT              PORTB
