@@ -13,7 +13,7 @@
  
 #include <avr/io.h>
 
-#define VERSION "Ver. 3.3.4"
+#define VERSION "Ver. 3.3.6"
 
 #define PID_CONTROLLER_ENABLED 0
 

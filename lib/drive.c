@@ -140,7 +140,8 @@ void drive_use_pid(const uint8_t wheel, const int8_t speed) {
 void drive_brake_active_set(uint8_t wheel) {
 	switch(wheel) {
 		case WHEEL_ALL:
-			memcpy(drive_brake_position, irq_position, NUMBER_OF_WHEELS);
+			memcpy(drive_brake_position, irq_position, NUMBER_OF_WHEELS * sizeof(int16_t));
+			break;
 		default:
 			drive_brake_position[wheel] = irq_position[wheel];
 			break;
