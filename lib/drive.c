@@ -44,12 +44,14 @@ int16_t drive_brake_position[NUMBER_OF_WHEELS];
 void drive_set_pid_parameter( const uint8_t wheel, const int16_t pfactor, const int16_t ifactor,
                               const int16_t dfactor, const int16_t sum_error_max) {
 	// Sets the parameter for a PID enabled movement
-	if (DEBUG_ENABLE)
+	if (DEBUG_ENABLE) {
 		debug_write_string_p(PSTR("drive.c : drive_SetPID_Parameter()\n"));
+	}
 	switch (wheel) {
 		case WHEEL_ALL:
-			for(uint8_t i = 0; i < NUMBER_OF_WHEELS; i++)
+			for (uint8_t i = 0; i < NUMBER_OF_WHEELS; i++) {
 				pid_init(pfactor, ifactor, dfactor, sum_error_max, &drive_pid[i]);
+			}
 			break;
 		default:
 			pid_init(pfactor, ifactor, dfactor, sum_error_max, &drive_pid[wheel]);
@@ -67,13 +69,15 @@ void drive_set_pid_parameter( const uint8_t wheel, const int16_t pfactor, const 
 
 void drive_set_pid_sum_error(const uint8_t wheel, const int16_t sum_error) {
 	// Used to set the SumError for a PID enabled movement
-	if (DEBUG_ENABLE)
+	if (DEBUG_ENABLE) {
 		debug_write_string_p(PSTR("drive.c : drive_set_pid_sum_error()\n"));
+	}
 	switch (wheel) {
 		case WHEEL_ALL:
-			for(uint8_t i = 0; i < NUMBER_OF_WHEELS; i++)
+			for (uint8_t i = 0; i < NUMBER_OF_WHEELS; i++) {
 				drive_pid[i].sum_error = sum_error;
-		break;
+			}
+			break;
 		default:
 			drive_pid[wheel].sum_error = sum_error;
 			break;
@@ -111,15 +115,17 @@ void drive_use_pid(const uint8_t wheel, const int8_t speed) {
 				wheel_mod_speed[i] += sign * (wheel_difference / NUMBER_OF_WHEELS);
 				// limit the speed modifications
 				if (speed > 0) {
-					if (wheel_mod_speed[i] > 127)
+					if (wheel_mod_speed[i] > 127) {
 						wheel_mod_speed[i] = 127;
-					else if (wheel_mod_speed[i] < 0)
+					} else if (wheel_mod_speed[i] < 0) {
 						wheel_mod_speed[i] = 0;
+					}
 				} else {
-					if (wheel_mod_speed[i] < -127)
+					if (wheel_mod_speed[i] < -127) {
 						wheel_mod_speed[i] = -127;
-					else if (wheel_mod_speed[i] > 0)
+					} else if (wheel_mod_speed[i] > 0) {
 						wheel_mod_speed[i] = 0;
+					}
 				}
 				// calculate sign for motor_set_speed
 				//sign = (-1 * ((speed <= 0) ? 1 : -1));
@@ -138,7 +144,7 @@ void drive_use_pid(const uint8_t wheel, const int8_t speed) {
  * @todo test this out against the other three functions.
  */
 void drive_brake_active_set(uint8_t wheel) {
-	switch(wheel) {
+	switch (wheel) {
 		case WHEEL_ALL:
 			memcpy(drive_brake_position, irq_position, NUMBER_OF_WHEELS * sizeof(int16_t));
 			break;
@@ -156,8 +162,9 @@ void drive_brake_active_set(uint8_t wheel) {
 void drive_brake_active(uint8_t wheel) {
 	extern uint8_t ACTIVE_BRAKE_ENABLE;
 	extern uint8_t ACTIVE_BRAKE_AMOUNT;
-	if(!ACTIVE_BRAKE_ENABLE)
+	if (!ACTIVE_BRAKE_ENABLE) {
 		return;
+	}
 	switch (wheel) {
 		case WHEEL_ALL:
 				for (uint8_t i = 0; i < NUMBER_OF_WHEELS; i++){

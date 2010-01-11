@@ -73,7 +73,7 @@ ISR(TWI_vect) {
 			// Own SLA+R has been received;
 			// ACK has been returned
 
-			// The missing break statement is wanted and right.
+			// The missing break statement is desired and correct.
 
 			// We have to reset counting variable and remove the last obj before beginning a new transmission
 			if (transmission_underway) {
@@ -100,7 +100,7 @@ ISR(TWI_vect) {
 			// transmitted (TWEA = "0"); ACK
 			// has been received
 
-			// The missing break is wanted and right.
+			// The missing break is desired and correct.
 
 			// Sending was successful, but we got an unwanted ack, but still remove the obj from the
 			// internal buffer.			

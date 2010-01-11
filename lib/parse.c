@@ -61,11 +61,11 @@ void parser_update(void) {
 	uint8_t value = 0, times = 255 - io_get_free_buffer_size();
 	for (; 0 < times; times--) {
 		io_get(&value);
-		if (parser_add_byte(value) == 0)
+		if (parser_add_byte(value) == 0) {
 			io_pop();
-		else
+		} else {
 			break;
-
+		}
 	}
 }
 
@@ -90,60 +90,70 @@ int parser_extended_order_complete(const order_t* order, uint8_t num_bytes) {
  */
 uint8_t parser_bytes_needed(uint8_t order) {
 	uint8_t ret_value = 0;
-	if (DEBUG_ENABLE)
+	if (DEBUG_ENABLE) {
 		debug_write_integer(PSTR("Bytes needed for "), order);
 		debug_write_string_p(PSTR(" = "));
+	}
 	switch(order & 0x0f) {
 		case 1: //Control Instruction
 		case 2: //Register Query Instruction
-			if (DEBUG_ENABLE);
+			if (DEBUG_ENABLE) {
 				debug_write_integer(PSTR(""), 1);
+			}
 			return 1; //These are all one byte Instructions
 		case 3: //Drive Instruction is a variable byte order
 			ret_value = 3; //min. three bytes are neccessary: one as order, two for speed (left and right)
-			if((order & 0x30) == 0x30) { // Drive Instruction with differntial correction
+			if ((order & 0x30) == 0x30) { // Drive Instruction with differntial correction
 				ret_value = 2;
-				if(order & 0x40 || order & 0x80) { // Time/Position Trigger, needs two extra bytes
+				if (order & 0x40 || order & 0x80) { // Time/Position Trigger, needs two extra bytes
 					ret_value += 2;
 				}
-			} else if((order & 0xc0) == 0xc0) {
+			} else if ((order & 0xc0) == 0xc0) {
 				ret_value = 3;
 			} else { // Normal drive command
-				if(order & 0x10 || order & 0x20) { //left Wheel Time/Position Trigger, needs two extra bytes
+				if (order & 0x10 || order & 0x20) { //left Wheel Time/Position Trigger, needs two extra bytes
 					ret_value += 2;
 				}
-				if(order & 0x40 || order & 0x80) { //right Wheel Time/Position Trigger, needs two extra bytes
+				if (order & 0x40 || order & 0x80) { //right Wheel Time/Position Trigger, needs two extra bytes
 					ret_value += 2;
 				}
 			}
-			if (DEBUG_ENABLE)
+			if (DEBUG_ENABLE) {
 				debug_write_integer(PSTR(""), ret_value);
+			}
 			return ret_value;
 		case 4:
 			ret_value = 3;
-			if (order & 0x30)
+			if (order & 0x30) {
 				ret_value += 4;
-			if (order & 0xc0)
+			}
+			if (order & 0xc0) {
 				ret_value += 4;
-			if (DEBUG_ENABLE)
+			}
+			if (DEBUG_ENABLE) {
 				debug_write_integer(PSTR(""), ret_value);
+			}
 			return ret_value;
 		case 5: //Set PID Parameters Instruction
-			if (DEBUG_ENABLE)
+			if (DEBUG_ENABLE) {
 				debug_write_integer(PSTR(""), 9);
+			}
 			return 9;
 		case 6:
 			if ((order & 0xf0) >= 0x10 && (order & 0xf0) <= 0x40) {
-				if (DEBUG_ENABLE)
+				if (DEBUG_ENABLE) {
 					debug_write_integer(PSTR(""), 2);
+				}
 				return 2;
 			}
-			if (DEBUG_ENABLE)
+			if (DEBUG_ENABLE) {
 				debug_write_integer(PSTR(""), 1);
+			}
 			return 1;
 	}
-	if (DEBUG_ENABLE)
+	if (DEBUG_ENABLE) {
 		debug_write_integer(PSTR("default  = "), 1);
+	}
 	return 1;
 }
 
@@ -155,9 +165,9 @@ uint8_t parser_bytes_needed(uint8_t order) {
  * @return <em>int</em> 1 if the order is complete, otherwise 0.
  */
 int parser_order_complete(const order_t* order, uint8_t num_bytes) { 
-	if ((order->data[0] & 0x0f) == 0 )
+	if ((order->data[0] & 0x0f) == 0 ) {
 		return parser_extended_order_complete(order, num_bytes);
-	else if ((order->data[0] & 0x0f) <= 8 ) {
+	} else if ((order->data[0] & 0x0f) <= 8 ) {
 		// Call "parser_bytes_needed()", a simple helper function
 		// to determine whether or not the order has the right
 		// amount of parameters and therefor bytes.
@@ -176,11 +186,13 @@ int parser_order_complete(const order_t* order, uint8_t num_bytes) {
 uint8_t parser_add_byte(uint8_t byte) { 
 	// This function simple adds another byte to the current order
 	// or discards the byte if the buffer is full.
-	if (DEBUG_ENABLE)
+	if (DEBUG_ENABLE) {
 		debug_write_integer(PSTR("parse.c : parser_add_byte() : Add byte = "), byte);
+	}
 	if (current_buffer_position == first_buffer_position) {
-		if (DEBUG_ENABLE)
+		if (DEBUG_ENABLE) {
 			debug_write_string_p(PSTR("parse.c : parser_add_byte() : Buffer full\n"));
+		}
 		return 1; // Discard, buffer full
 	}
 	// Put the byte at its position and increment
@@ -228,9 +240,10 @@ void parser_check_order(order_t* order) {
 	cmd = order->data[0] & 0x0f;
 	// Is the command code one of the priority orders
 	if (cmd - ORDER_TYPE_CONTROL  == 0 ||
-		cmd - ORDER_TYPE_QUERY == 0)
+		cmd - ORDER_TYPE_QUERY == 0) {
 		// Set priority status
 		order->status |= ORDER_STATUS_PRIORITY;
+	}
 }
 
 /**
@@ -245,8 +258,9 @@ void parser_get_new_order(order_t* order) {
 	// but will do a check on it first. if the Order isn't flagged valid
 	// the caller must discard it.
 	parser_check_order(&parser_order_buffer[first_buffer_position]);
-	if (DEBUG_ENABLE)
+	if (DEBUG_ENABLE) {
 		debug_write_integer(PSTR("parse.c : parser_get_new_order() : status = "), parser_order_buffer[first_buffer_position].status);
+	}
 	// Copy the order to the caller
 	order_copy(&parser_order_buffer[first_buffer_position], order);
 	// Clean the local structure
