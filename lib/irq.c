@@ -211,7 +211,7 @@ void wheel_clear_position(uint8_t wheel) {
 	cli();
 	switch (wheel) {
 		case WHEEL_ALL:
-			memset(irq_position, 0, NUMBER_OF_WHEELS);
+			memset(irq_position, 0, NUMBER_OF_WHEELS * sizeof(int16_t));
 			break;
 		default:
 			irq_position[wheel] = 0;

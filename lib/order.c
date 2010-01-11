@@ -66,7 +66,7 @@ void order_array_init(void) {
 void order_init(order_t *order) {
 	// Function to Initialize a order_t structure
 	// Overwrite every piece of memory with 0
-	memset(order->data, 0, ORDER_TYPE_MAX_LENGTH);
+	memset(order->data, 0, ORDER_TYPE_MAX_LENGTH * sizeof(uint8_t));
 	// Set the Status of the order to Initialized
 	order->status = ORDER_STATUS_INITIALIZED;
 }
@@ -80,7 +80,7 @@ void order_init(order_t *order) {
  */
 void order_copy(const order_t * const from, order_t *to) {
 	// Used to copy the order data from one to another
-	memcpy(to->data, from->data, ORDER_TYPE_MAX_LENGTH);
+	memcpy(to->data, from->data, ORDER_TYPE_MAX_LENGTH * sizeof(uint8_t));
 	to->status = from->status;
 }
 
