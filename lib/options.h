@@ -24,7 +24,7 @@
  * Beware that the byte count for this is (ORDER_TYPE_MAX_LENGTH + 1) * PARSER_ORDER_BUFFER_SIZE
  * and can become quite large.
  */
-#define PARSER_ORDER_BUFFER_SIZE 5
+#define PARSER_ORDER_BUFFER_SIZE 32
 
 /**
  * Number of bytes for order-data.
@@ -45,7 +45,7 @@
  * The byte count here is QUEUE_SIZE * (ORDER_TYPE_MAX_LENGTH + 1)
  * and may become rather large very fast.
  */
-#define QUEUE_SIZE  10
+#define QUEUE_SIZE  64
 
 /**
  * The I²C Bus Slave Address.

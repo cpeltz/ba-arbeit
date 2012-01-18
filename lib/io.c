@@ -70,7 +70,7 @@ uint8_t io_get_free_buffer_size(void) {
 	else if (inpos_begin < inpos_end)
 		return 255 - (inpos_end - 1 - inpos_begin);
 	else // begin > end
-		return inpos_begin - inpos_end - 1;
+		return inpos_begin - inpos_end;
 }
 
 /**
